@@ -683,8 +683,8 @@ describe "Tablo::Table" do
   # >>>>> horizontal rule
   describe "#horizontal_rule" do
     t19a = add_columns_nd(mktable_5i32())
-    it "returns a horizontal line made up of the horizontal rule character, and appropriately placed \
-       corner characters, of an appropriate width for the table" do
+    it "returns a horizontal line made up of the horizontal rule character, and appropriately placed " \
+       "corner characters, of an appropriate width for the table" do
       t19a.horizontal_rule(Tablo::TLine::Top).should eq("+--------------+--------------+")
     end
   end
@@ -764,8 +764,7 @@ describe "Tablo::Table" do
 
     context "shrinkwrap! with padding > 1" do
       t24a = add_columns_7m(mktable_5i32(default_header_alignment: Tablo::Justify::Center, default_column_width: 8, column_padding: 2))
-      it "honors the maximum table width passed to shrinkwrap!, including
-        padding > 1" do
+      it "honors the maximum table width passed to shrinkwrap!, including padding > 1" do
         t24a.shrinkwrap!(70)
         t24a.to_s.should eq \
           %q(+-----+----------+--------+---------+-----------+----------+---------+
