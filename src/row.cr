@@ -1,3 +1,5 @@
+require "./commons.cr"
+
 module Tablo
   class Row
     include Enumerable(CellType)

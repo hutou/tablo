@@ -59,7 +59,7 @@ module Tablo
         when .right?
           [padding, 0]
         else
-          half_padding = padding / 2
+          half_padding = padding // 2
           [padding - half_padding, half_padding]
         end
       "#{" " * left_padding}#{content}#{" " * right_padding}"

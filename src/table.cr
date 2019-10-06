@@ -1,3 +1,5 @@
+require "./row.cr"
+
 module Tablo
   # TODO: Write documentation for `Tablo`
 
@@ -219,7 +221,6 @@ module Tablo
     # Formats a single header row or body row as a String.
     private def format_row(cells, wrap_cells_to)
       row_height = ([wrap_cells_to, cells.map(&.size).max].compact.min || 1)
-
       subrows = (0...row_height).map do |subrow_index|
         subrow_components = cells.zip(column_registry.values).map do |cell, column|
           num_subcells = cell.size

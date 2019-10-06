@@ -1,8 +1,14 @@
 module Tablo
   # The CellType type is the union of commonly used scalar types in
   # source code.
-  alias CellType = Bool | Char | Int::Signed | Int::Unsigned | Float32 |
-                   Float64 | String | Symbol
+
+  # alias temporary disabled : waiting for full Int128 support
+  #  alias CellType = Bool | Char | Int::Signed | Int::Unsigned | Float32 |
+  #                   Float64 | String | Symbol
+
+  alias CellType = Bool | Char | Int16 | Int32 | Int64 | Int8 |
+                   UInt16 | UInt32 | UInt64 | UInt8 |
+                   Float32 | Float64 | String | Symbol
 
   # `Tablo::DataType` is a 2D array of `Tablo::CellType` (ie a rectangular matrix).
   # This is the data structure on which the Tablo module operates. It is fed by

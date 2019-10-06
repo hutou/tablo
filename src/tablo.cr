@@ -1,9 +1,7 @@
-require "./commons.cr"
-require "./row.cr"
-require "./column.cr"
 require "./table.cr"
+require "./column.cr"
 
 module Tablo
-  VERSION = "0.9.0"
+  VERSION = "0.9.1"
   extend self
 end
