@@ -154,7 +154,7 @@ Several columns may use the same data element, and more than one data element ma
 Let's compute the total cost of each pet, by replacing line 19 with :
 
 ```crystal
-19:   t.add_column("Total\nCost", formatter: ->(x : Tablo::CellType) { "%.2f" % x }) { |n| n[3].as(Int32) * n[6].as(Int32) + n[5].as(Float64) }
+19:   t.add_column("Total\nCost", formatter: ->(x : Tablo::CellType) { "%.2f" % x }) { |n| n[3].as(Number) * n[6].as(Number) + n[5].as(Number) }
 ```
 
 _file : examples/readme3.cr_
@@ -238,7 +238,7 @@ for some reason.
 
 ##### Default formatting parameters
 
-- _default_column_width_: 12
+- _default_column_width:_ 12
 
 - _column_padding:_ 1 space
 

@@ -16,6 +16,6 @@ table = Tablo::Table.new(data, connectors: Tablo::CONNECTORS_SINGLE_DOUBLE,
   t.add_column("Sex", align_header: Tablo::Justify::Center, align_body: Tablo::Justify::Center, width: 4) { |n| n[2] }
   t.add_column("Age : weight") { |n| "%3d : %6.1f" % [n[3], n[4]] }
   t.add_column("Initial\ncost", formatter: ->(x : Tablo::CellType) { "%.2f" % x }) { |n| n[5] }
-  t.add_column("Total\nCost", formatter: ->(x : Tablo::CellType) { "%.2f" % x }) { |n| n[3].as(Int32) * n[6].as(Int32) + n[5].as(Float64) }
+  t.add_column("Total\nCost", formatter: ->(x : Tablo::CellType) { "%.2f" % x }) { |n| n[3].as(Number) * n[6].as(Number) + n[5].as(Number) }
 end
 puts table

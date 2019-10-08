@@ -16,6 +16,6 @@ table = Tablo::Table.new(data, connectors: Tablo::CONNECTORS_SINGLE_ROUNDED) do 
   t.add_column("Age") { |n| n[3] }
   t.add_column("Weight") { |n| n[4] }
   t.add_column("Initial\ncost", formatter: ->(x : Tablo::CellType) { "%.2f" % x }) { |n| n[5] }
-  t.add_column("Total\nCost", formatter: ->(x : Tablo::CellType) { "%.2f" % x }) { |n| n[3].as(Int32) * n[6].as(Int32) + n[5].as(Float64) }
+  t.add_column("Total\nCost", formatter: ->(x : Tablo::CellType) { "%.2f" % x }) { |n| n[3].as(Number) * n[6].as(Number) + n[5].as(Number) }
 end
 puts table
