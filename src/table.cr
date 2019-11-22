@@ -78,9 +78,11 @@ module Tablo
         # Here, map applies to self, which is Table, using the each method
         # below to create rows, formatting them with (Row)to_s and joining all
         # formatted rows with newline to output the formatted table
-        io << join_lines(map &.to_s)
+        jl = join_lines(map &.to_s)
+        io << jl
         # io << "\n" << horizontal_rule(TLine::Bot) if @style =~ /BL/i
-        io << "\n" << horizontal_rule(TLine::Bot) if @style =~ /BL/i
+        io << "\n" << horizontal_rule(TLine::Bot) if @style =~ /BL/i &&
+                                                     !jl.empty?
       else
         io << ""
       end

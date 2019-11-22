@@ -15,6 +15,14 @@ describe "Tablo::Table" do
     end
   end
   # <<<<< Table without any column
+  # >>>>> Table empty
+  context "when the table doesn't have any data" do
+    t1 = mktable_empty()
+    it "#to_s returns an empty string" do
+      t1.to_s.should eq("")
+    end
+  end
+  # <<<<< Table empty
 
   # >>>>> header_frequency parameter
   describe "header_frequency parameter" do

@@ -1,6 +1,27 @@
 require "spec"
 require "../src/tablo"
-require "../src/commons.cr"
+
+# Defined table with empty array
+def mktable_empty(default_column_width : Int32 = Tablo::Table::DEFAULT_COLUMN_WIDTH,
+                  column_padding : Int32 = Tablo::Table::DEFAULT_COLUMN_PADDING,
+                  header_frequency : Int32? = 0,
+                  wrap_header_cells_to : Int32? = nil,
+                  wrap_body_cells_to : Int32 | Nil = nil,
+                  default_header_alignment : Tablo::Justify = Tablo::Justify::None,
+                  truncation_indicator : Char = Tablo::Table::DEFAULT_TRUNCATION_INDICATOR,
+                  connectors : String = Tablo::CONNECTORS_TEXT_CLASSIC,
+                  style : String = Tablo::STYLE_ALL_BORDERS)
+  Tablo::Table.new([] of Array(Int32),
+    default_column_width,
+    column_padding,
+    header_frequency,
+    wrap_header_cells_to,
+    wrap_body_cells_to,
+    default_header_alignment,
+    truncation_indicator,
+    connectors,
+    style)
+end
 
 # Defined table with array of 5 integers
 def mktable_5i32(default_column_width : Int32 = Tablo::Table::DEFAULT_COLUMN_WIDTH,
