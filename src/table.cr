@@ -122,8 +122,9 @@ module Tablo
     # Note that calling this method will cause the entire source to
     # be traversed and all the column extractors and formatters to be applied in order
     # to calculate the required widths.
-    def shrinkwrap!(max_table_width = nil)
+    def shrinkwrap!(max_min_width = 0)
       return self if column_registry.none?
+
       columns = column_registry.values
 
       # Adjust column header width to its minimum by calling the `wrapped_with`
@@ -141,7 +142,8 @@ module Tablo
         end
       end
 
-      if max_table_width
+      # specific adjustments
+      if max_min_width != 0
         total_columns_width = columns.reduce(0) { |sum, column| sum + column.width }
         total_padding = column_registry.size * @column_padding * 2
         total_borders = column_registry.size + 1
@@ -149,18 +151,102 @@ module Tablo
 
         # Ensure max table width is at least wide enough to accommodate table borders and padding
         # and one character of content.
-        min_table_width = total_padding + total_borders + column_registry.size
-        max_table_width = min_table_width if min_table_width > max_table_width
-
-        required_reduction = [unadjusted_table_width - max_table_width, 0].max
-
-        required_reduction.times do
-          widest_column = columns.reduce(columns.first) do |widest, column|
-            column.width >= widest.width ? column : widest
-          end
-
-          widest_column.width -= 1
+        if max_min_width < 0
+          # Minimum width required
+          min_table_width = [total_padding + total_borders + column_registry.size, max_min_width.abs].max
+          max_table_width = [unadjusted_table_width, min_table_width].max
+        else
+          # Maximum width required
+          min_table_width = total_padding + total_borders + column_registry.size
+          max_table_width = [unadjusted_table_width, max_min_width].min
         end
+
+        # max_table_width = unadjusted_table_width if max_table_width == 0
+        # min_table_width = [total_padding + total_borders + column_registry.size, min_table_width].max
+        # max_table_width = [max_table_width, min_table_width].max
+
+        if unadjusted_table_width > max_table_width
+          required_adjustment = [unadjusted_table_width - max_table_width, 0].max
+          required_adjustment.times do
+            widest_column = columns.reduce(columns.first) do |widest, column|
+              column.width >= widest.width ? column : widest
+            end
+            widest_column.width -= 1
+          end
+        elsif unadjusted_table_width < min_table_width
+          required_adjustment = [min_table_width - unadjusted_table_width, 0].max
+          required_adjustment.times do
+            narrowest_column = columns.reduce(columns.first) do |narrowest, column|
+              column.width <= narrowest.width ? column : narrowest
+            end
+            narrowest_column.width += 1
+          end
+        else
+          # nothoing to do
+        end
+
+        # required_reduction = [unadjusted_table_width - max_table_width, 0].max
+
+      end
+
+      self
+    end
+
+    def zzz_shrinkwrap!(max_table_width = 0, min_table_width = 0)
+      return self if column_registry.none?
+
+      columns = column_registry.values
+
+      # Adjust column header width to its minimum by calling the `wrapped_with`
+      # method
+      columns.each do |column|
+        column.width = wrapped_width(column.header)
+      end
+
+      # Adjust column data width to its minimum by calling the `wrapped_with`
+      # on each source row
+      @sources.each do |source|
+        columns.each do |column|
+          width = wrapped_width(column.formatted_cell_content(source))
+          column.width = width if width > column.width
+        end
+      end
+
+      # specific adjustments
+      if max_table_width != 0 || min_table_width != 0
+        total_columns_width = columns.reduce(0) { |sum, column| sum + column.width }
+        total_padding = column_registry.size * @column_padding * 2
+        total_borders = column_registry.size + 1
+        unadjusted_table_width = total_columns_width + total_padding + total_borders
+
+        # Ensure max table width is at least wide enough to accommodate table borders and padding
+        # and one character of content.
+        max_table_width = unadjusted_table_width if max_table_width == 0
+        min_table_width = [total_padding + total_borders + column_registry.size, min_table_width].max
+        max_table_width = [max_table_width, min_table_width].max
+
+        if unadjusted_table_width > max_table_width
+          required_adjustment = [unadjusted_table_width - max_table_width, 0].max
+          required_adjustment.times do
+            widest_column = columns.reduce(columns.first) do |widest, column|
+              column.width >= widest.width ? column : widest
+            end
+            widest_column.width -= 1
+          end
+        elsif unadjusted_table_width < min_table_width
+          required_adjustment = [min_table_width - unadjusted_table_width, 0].max
+          required_adjustment.times do
+            narrowest_column = columns.reduce(columns.first) do |narrowest, column|
+              column.width <= narrowest.width ? column : narrowest
+            end
+            narrowest_column.width += 1
+          end
+        else
+          # nothoing to do
+        end
+
+        # required_reduction = [unadjusted_table_width - max_table_width, 0].max
+
       end
 
       self

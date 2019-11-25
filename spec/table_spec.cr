@@ -764,9 +764,26 @@ describe "Tablo::Table" do
            +---+-------+------+-------+-------+------+------+).gsub(/^ +/m, "")
       end
 
+      t22b = add_columns_7m(mktable_5i32(default_header_alignment: Tablo::Justify::Center, default_column_width: 8))
+      it "honors the minimum table width (negative value) passed to shrinkwrap!" do
+        t22b.shrinkwrap!(-80)
+
+        t22b.to_s.should eq \
+          %q(+----------+----------+----------+----------+----------+------------+----------+
+              |     N    |  Double  |   to_s   |   Is it  |    dec   |    word    |   cool   |
+              |          |          |          |   even?  |          |     yep    |          |
+              +----------+----------+----------+----------+----------+------------+----------+
+              |        1 |        2 | 1        |   false  |      1.0 | ww         |          |
+              |        2 |        4 | 2        |   true   |     2.00 | wwww       |          |
+              |        3 |        6 | 3        |   false  |    3.000 | wwwwww     | two      |
+              |          |          |          |          |          |            | lines    |
+              |        4 |        8 | 4        |   true   |   4.0000 | wwwwwwww   |          |
+              |        5 |       10 | 5        |   false  |  5.00000 | wwwwwwwwww |          |
+              +----------+----------+----------+----------+----------+------------+----------+).gsub(/^ +/m, "")
+      end
       t23a = add_columns_7m(mktable_5i32(default_header_alignment: Tablo::Justify::Center, default_column_width: 8))
       it "returns the Table itself" do
-        t23a.shrinkwrap!(max_table_width: [nil, 54, 47].sample).to_s.should eq(t23a.to_s)
+        t23a.shrinkwrap!(max_min_width: [0, 54, 47].sample).to_s.should eq(t23a.to_s)
       end
     end
 

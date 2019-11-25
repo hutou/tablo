@@ -30,6 +30,8 @@ Most features of Tabulo are found in Tablo
 - Set fixed column widths, then either wrap or truncate the overflow.
 - Alternatively, shrinkwrap the table so that each column is just wide enough for its contents.
 - Put an upper limit on total table width when shrinkwrapping, to stop it overflowing your terminal horizontally.
+- Put a lower limit on total table width when shrinkwrapping, to keep table
+  width from being too small.
 - Alignment of cell content is configurable, but has helpful content-based defaults (numbers right, strings left).
 - Headers are repeatable.
 - Newlines within cell content are correctly handled.
@@ -411,7 +413,10 @@ _Take care, however, because the width of columns is then adjusted to their
 content, regardless of their width (fixed or default): so columns may be
 narrowed or widened!_
 
-If table width gets too wide, there is fortunately a workaround : just pass an argument to _shrinkwrap!_ to limit the total width of the table.
+If table width gets too wide, there is fortunately a workaround : just pass an
+argument to _shrinkwrap!_ to limit the total width of the table (or, if table
+width is too small, pass this argument as a negative value to force a minimum
+table width).
 
 ```crystal
 21: table.shrinkwrap!
