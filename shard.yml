@@ -1,9 +1,9 @@
 name: tablo
-version: 0.9.0
+version: 0.9.4
 
 authors:
   - Hubert Toullec <hutou01@gmail.com>
 
-crystal: 0.27.0
+crystal: 0.35.1
 
 license: MIT

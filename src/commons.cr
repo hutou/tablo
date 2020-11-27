@@ -150,4 +150,39 @@ module Tablo
   STYLE_ALL_BORDERS = "LC,MC,RC,TL,ML,BL"
   STYLE_NO_BORDERS  = "mcml"
   STYLE_NO_MID_COL  = "LCRCTLMLBL"
+
+  # fpjust align floating point values on decimal separator
+  #
+  # Parameters :
+  # - col : the column to be formatted
+  # - nbdec : Number of decimals (using printf %.[nbdec]f format)
+  # - mode allows for tuning output :
+  #   - nil : mere printf formatting
+  #   - 0 : non signficant zeroes removed and decimal point kept even if no more decimal digits
+  #   - 1 : non signficant zeroes removed and decimal point also removed if no more decimal digits
+  #   - 2 : All blanks if value == zero
+  #   - 3 : same as 0, but zero added after decimal point if no more decimal digits
+  def fpjust(data : Array(Array(Tablo::CellType?)), col, nbdec, mode)
+    fvleft = [] of String
+    fvright = [] of String
+    data.each do |r|
+      cell = ("%.#{nbdec}f" % r[col])
+      dot = cell.index(".").as(Int32)
+      left, right = [cell[0..dot - 1], cell[dot + 1..-1]]
+      if !mode.nil?
+        right = right.gsub(/0*$/, "")
+        left = "" if left == "0" && right == "" && mode == 2
+        right = "0" if right == "" && mode == 3
+      end
+      fvleft << left
+      fvright << right
+    end
+    maxleft = (fvleft.map &.size).max
+    maxright = (fvright.map &.size).max
+    data.map_with_index do |r, i|
+      sep = fvright[i] == "" && (mode == 1 || mode == 2) ? " " : "."
+      r[col] = "#{fvleft[i].rjust(maxleft)}#{sep}#{fvright[i].ljust(maxright)}"
+    end
+    data
+  end
 end

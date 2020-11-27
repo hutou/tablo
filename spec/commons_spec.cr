@@ -45,4 +45,48 @@ describe Tablo do
       Tablo.connector("abcdefghijklmno", Tablo::TColumn::Right).should eq('l')
     end
   end
+
+  # def fpjust(data : Array(Array(Tablo::CellType?)), col, nbdec, mode)
+  describe "FP align method" do
+    it "correctly format FP adjust - mode = nil" do
+      tdata = [[0.0000.as(Tablo::CellType)],
+               [0.02000.as(Tablo::CellType)],
+               [17.0.as(Tablo::CellType)],
+               [1234.5678.as(Tablo::CellType)],
+      ]
+      Tablo.fpjust(tdata, 0, 4, nil).to_s.should eq(%([["   0.0000"], ["   0.0200"], ["  17.0000"], ["1234.5678"]]))
+    end
+    it "correctly format FP adjust - mode 0" do
+      tdata = [[0.0000.as(Tablo::CellType)],
+               [0.02000.as(Tablo::CellType)],
+               [17.0.as(Tablo::CellType)],
+               [1234.5678.as(Tablo::CellType)],
+      ]
+      Tablo.fpjust(tdata, 0, 4, 0).to_s.should eq(%([["   0.    "], ["   0.02  "], ["  17.    "], ["1234.5678"]]))
+    end
+    it "correctly format FP adjust - mode 1" do
+      tdata = [[0.0000.as(Tablo::CellType)],
+               [0.02000.as(Tablo::CellType)],
+               [17.0.as(Tablo::CellType)],
+               [1234.5678.as(Tablo::CellType)],
+      ]
+      Tablo.fpjust(tdata, 0, 2, 1).to_s.should eq(%([["   0   "], ["   0.02"], ["  17   "], ["1234.57"]]))
+    end
+    it "correctly format FP adjust - mode 2" do
+      tdata = [[0.0000.as(Tablo::CellType)],
+               [0.02000.as(Tablo::CellType)],
+               [17.0.as(Tablo::CellType)],
+               [1234.5678.as(Tablo::CellType)],
+      ]
+      Tablo.fpjust(tdata, 0, 2, 2).to_s.should eq(%([["       "], ["   0.02"], ["  17   "], ["1234.57"]]))
+    end
+    it "correctly format FP adjust - mode 3" do
+      tdata = [[0.0000.as(Tablo::CellType)],
+               [0.02000.as(Tablo::CellType)],
+               [17.0.as(Tablo::CellType)],
+               [1234.5678.as(Tablo::CellType)],
+      ]
+      Tablo.fpjust(tdata, 0, 2, 3).to_s.should eq(%([["   0.0 "], ["   0.02"], ["  17.0 "], ["1234.57"]]))
+    end
+  end
 end

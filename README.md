@@ -338,6 +338,63 @@ _file : examples/readme8.cr_
 ┖──────────┸──────┸──────┸──────────────┸──────────────┸──────────────┚
 ```
 
+As of release 0.9.4, formatting has been enhanced by a new method
+: `Tablo.fpjust`, which allows alignment on decimal point for floating point
+values, after removing non significant digits.
+
+To illustrate, running the program below :
+```crystal
+require "tablo"
+
+data = [
+  # Name        Initial   Initial   Initial   Initial   Initial
+  #                cost      cost      cost      cost      cost
+  ["Charlie",    420.50,   420.50,   420.50,   420.50,   420.50],
+  ["Max",        575.32,   575.32,   575.32,   575.32,   575.32],
+  ["Simba",      498.00,   498.00,   498.00,   498.00,   498.00],
+  ["Coco",       276.36,   276.36,   276.36,   276.36,   276.36],
+  ["Ruby",       320.95,   320.95,   320.95,   320.95,   320.95],
+  ["Freecat",      0.0,      0.0,      0.0,      0.0,      0.0 ],
+]
+
+Tablo.fpjust(data, 1, 5, nil) # Params: data array, column, decimals, mode
+Tablo.fpjust(data, 2, 4, 0)
+Tablo.fpjust(data, 3, 3, 1)
+Tablo.fpjust(data, 4, 2, 2)
+Tablo.fpjust(data, 5, 1, 3)
+table = Tablo::Table.new(data) do |t|
+  t.add_column("Name") { |n| n[0] }
+  t.add_column("Initial\ncost\nmode=nil\ndec=5") { |n| n[1] }
+  t.add_column("Initial\ncost\nmode=0\ndec=4") { |n| n[2] }
+  t.add_column("Initial\ncost\nmode=1\ndec=3") { |n| n[3] }
+  t.add_column("Initial\ncost\nmode=2\ndec=2") { |n| n[4] }
+  t.add_column("Initial\ncost\nmode=3\ndec=1") { |n| n[5] }
+end
+table.shrinkwrap!
+puts table
+```
+_file : examples/readme11.cr_
+
+produces the following output :
+```text
+
++---------+-----------+---------+---------+---------+---------+
+| Name    | Initial   | Initial | Initial | Initial | Initial |
+|         | cost      | cost    | cost    | cost    | cost    |
+|         | mode=nil  | mode=0  | mode=1  | mode=2  | mode=3  |
+|         | dec=5     | dec=4   | dec=3   | dec=2   | dec=1   |
++---------+-----------+---------+---------+---------+---------+
+| Charlie | 420.50000 | 420.5   | 420.5   | 420.5   | 420.5   |
+| Max     | 575.32000 | 575.32  | 575.32  | 575.32  | 575.3   |
+| Simba   | 498.00000 | 498.    | 498     | 498     | 498.0   |
+| Coco    | 276.36000 | 276.36  | 276.36  | 276.36  | 276.4   |
+| Ruby    | 320.95000 | 320.95  | 320.95  | 320.95  | 320.9   |
+| Freecat |   0.00000 |   0.    |   0     |         |   0.0   |
++---------+-----------+---------+---------+---------+---------+
+```
+**Caution:** _Notice that this method alters the input data array, turning a floating point
+column into a string column._
+
 ##### Table methods
 
 There are essentially 4 methods useful for the user : _add_column_, _each_, _horizontal_rule_ and _shrinkwrap!_
