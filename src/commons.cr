@@ -160,14 +160,21 @@ module Tablo
   #   - nil : mere printf formatting
   #   - 0 : non signficant zeroes removed and decimal point kept even if no more decimal digits
   #   - 1 : non signficant zeroes removed and decimal point also removed if no more decimal digits
-  #   - 2 : All blanks if value == zero
+  #   - 2 : like 1, but all blanks if value == zero
   #   - 3 : same as 0, but zero added after decimal point if no more decimal digits
   def fpjust(data : Array(Array(Tablo::CellType?)), col, nbdec, mode)
     fvleft = [] of String
     fvright = [] of String
     data.each do |r|
-      cell = ("%.#{nbdec}f" % r[col])
-      dot = cell.index(".").as(Int32)
+      case r[col]
+      when Float64
+        cell = "%.#{nbdec}f" % r[col]
+      else
+        cell = r[col].to_s
+        cell = "0.0" if cell == ""
+        cell = "#{cell}.0" if cell.index(".").nil?
+      end
+      dot = cell.as(String).index(".").as(Int32)
       left, right = [cell[0..dot - 1], cell[dot + 1..-1]]
       if !mode.nil?
         right = right.gsub(/0*$/, "")
