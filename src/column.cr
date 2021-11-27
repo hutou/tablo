@@ -8,6 +8,7 @@ module Tablo
                    @align_header : Justify,
                    @align_body : Justify,
                    @formatter : CellType -> String,
+                   @styler : CellType -> String,
                    @extractor : Array(CellType) -> CellType)
     end
 
@@ -25,7 +26,7 @@ module Tablo
       type_alignment = infer_alignment(cell_datum) # Compute alignment from cell type
       @align_header = type_alignment if @align_header.none?
       @align_body = type_alignment if @align_body.none?
-      infilled_subcells(formatted_content, @align_body)
+      infilled_subcells(formatted_content, @align_body, true)
     end
 
     # Format the cell using the formatter proc
@@ -40,17 +41,23 @@ module Tablo
 
     # Calculates the number of lines necessary to deal with cell contents and
     # column width, and fills each resulting subcell with aligned data
-    private def infilled_subcells(str, alignment)
+    private def infilled_subcells(str, alignment, apply_styler = false)
       str.split("\n").flat_map do |substr|
         num_subsubcells = [1, (substr.size.to_f / width).ceil].max
         (0...num_subsubcells).map do |i|
-          align_cell_content(substr[i * width, width], alignment)
+          align_cell_content(substr[i * width, width], alignment, apply_styler)
         end
       end
     end
 
     # Calculate alignment and padding of a (sub)cell
-    private def align_cell_content(content, alignment)
+    private def align_cell_content(content, alignment, apply_styler)
+      styled_content =
+        if apply_styler
+          @styler.call(content)
+        else
+          content
+        end
       padding = [width - content.size, 0].max
       left_padding, right_padding =
         case alignment
@@ -62,7 +69,7 @@ module Tablo
           half_padding = padding // 2
           [padding - half_padding, half_padding]
         end
-      "#{" " * left_padding}#{content}#{" " * right_padding}"
+      "#{" " * left_padding}#{styled_content}#{" " * right_padding}"
     end
 
     # Calculate alignment of a (sub)cell
