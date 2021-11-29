@@ -7,6 +7,7 @@ describe Tablo::Column do
     align_header: Tablo::Justify::Left,
     align_body: Tablo::Justify::Left,
     formatter: ->(n : Tablo::CellType) { "%.2f" % n.as(Int32) },
+    styler: ->(n : Tablo::CellType) { n.to_s },
     extractor: ->(n : Array(Tablo::CellType)) { n[0].as(Tablo::CellType) })
 
   describe "#initialize" do

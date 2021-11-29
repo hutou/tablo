@@ -56,6 +56,7 @@ module Tablo
     def add_column(label, header = nil, align_header = Justify::None,
                    align_body = Justify::None, width = nil,
                    formatter : CellType -> String = ->(n : CellType) { n.to_s },
+                   styler : CellType -> String = ->(n : CellType) { n.to_s },
                    &extractor : Array(CellType) -> CellType)
       if column_registry.has_key?(label)
         raise InvalidColumnLabelError.new("Column label already used in this table.")
@@ -67,6 +68,7 @@ module Tablo
         align_header,
         align_body,
         formatter,
+        styler,
         extractor
       )
     end

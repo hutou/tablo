@@ -616,6 +616,27 @@ describe "Tablo::Table" do
     end
     # <<<<< formatter parameter
 
+    # >>>>> styler parameter
+    describe "`styler` param" do
+      it "styles the formatted cell value for display, without affecting the width calculations" do
+        t13a = add_columns_ndfs(mktable_5i32(default_header_alignment: Tablo::Justify::Center))
+        t13a.to_s.should eq \
+          %(+--------------+--------------+--------------+
+         |       N      |    Double    |    Triple    |
+         +--------------+--------------+--------------+
+         |            1 |            2 |         \e[31m3.00\e[0m |
+         |            2 |            4 |         \e[31m6.00\e[0m |
+         |            3 |            6 |         \e[31m9.00\e[0m |
+         |            4 |            8 |        \e[31m12.00\e[0m |
+         |            5 |           10 |        \e[31m15.00\e[0m |
+         +--------------+--------------+--------------+).gsub(/^ +/m, "")
+        top_right_body_cell = t13a.first.to_a.last
+        top_right_body_cell.should eq(3)
+        top_right_body_cell.should be_a(Int32)
+      end
+    end
+    # <<<<< styler parameter
+
     # >>>>> extractor parameter
     describe "'extractor' parameter is mandatory and must be provided as a block" do
       t14a = add_columns_5n(mktable_5i32(default_header_alignment: Tablo::Justify::Center))

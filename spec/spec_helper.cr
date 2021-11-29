@@ -131,6 +131,13 @@ def add_columns_ndf(t : Tablo::Table)
   t
 end
 
+def add_columns_ndfs(t : Tablo::Table)
+  t.add_column("N") { |n| n[0] }
+  t.add_column("Double") { |n| n[0].as(Number) * 2 }
+  t.add_column("Triple", formatter: ->(val : Tablo::CellType) { "%.2f" % val }, styler: ->(val : Tablo::CellType) { "\e[31m#{val}\e[0m" }) { |n| n[0].as(Number) * 3 }
+  t
+end
+
 def add_columns_ndn(t : Tablo::Table)
   t.add_column("N") { |n| n[0] }
   t.add_column("Double") { |n| n[0].as(Number) * 2 }
