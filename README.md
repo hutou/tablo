@@ -37,6 +37,7 @@ Most features of Tabulo are found in Tablo
 - Newlines within cell content are correctly handled.
 - A Table is an Enumerable, so you can step through it a row at a time, printing as you go, without waiting for the entire underlying collection to load.
 - Each Row is also an Enumerable, providing access to the underlying cell values, before formatting.
+- Release 0.10 : styler added feature (colors)
 
 ## Installation
 
@@ -261,6 +262,17 @@ for some reason.
 
 - _style:_ is a string of border initials : _lc_ for left column, _mc_ for middle colums, _rc_ for right column, _tl_ for top line, _ml_ for middle lines and _bl_ for bottom line. With style = "TLMLBL,LCMCRC" (default), all borders are displayed. With style = "ml", only a header/body separator horizontal rule is displayed. Initials may be separated by any space or punctuation character for better readability and are case insensitive.
 
+- Line 18 use the Proc formatter, to properly display the cell value (note that alignment is left unchanged as it depends on the underlying data, which is a number)
+- _styler proc:_ From version 0.10, it is now possible to style the content of a column with the styler proc, using either the ANSI color codes or the Crystal `colorize` methods.
+  The style is applied on the formatted value (a String), for example:
+
+```
+t.add_column("Initial\ncost",
+    formatter: ->(x : Tablo::CellType) { "%.2f" % x },
+    styler : ->(s : Tablo::CellType) { "#{s.colorize(:red)}" })
+    { |n| n[5] }
+```
+
 - _connectors:_ is a string of 15 characters long, containing the cross, corner and line character for drawing borders. Several connectors sets are defined in the module but user may provide its own character set.
   - The first 9 characters define the corner and cross characters (first 3 for the top line, next 3 for the middle line and last 3 for the bottom line.
   - The next 3 are vertical line connectors, one for each column type : lc, mc, rc
@@ -343,6 +355,7 @@ As of release 0.9.4, formatting has been enhanced by a new method
 values, after removing non significant digits.
 
 To illustrate, running the program below :
+
 ```crystal
 require "tablo"
 
@@ -373,9 +386,11 @@ end
 table.shrinkwrap!
 puts table
 ```
+
 _file : examples/readme11.cr_
 
 produces the following output :
+
 ```text
 
 +---------+-----------+---------+---------+---------+---------+
@@ -392,6 +407,7 @@ produces the following output :
 | Freecat |   0.00000 |   0.    |   0     |         |   0.0   |
 +---------+-----------+---------+---------+---------+---------+
 ```
+
 **Caution:** _Notice that this method alters the input data array, turning a floating point
 column into a string column._
 
