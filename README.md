@@ -24,4 +24,53 @@ While overall, Tablo remains, in terms of its functionalities, broadly
 comparable, with a few exceptions, to the Tabulo v3.0 version of Matt
 Harvey, the source code, meanwhile, has been deeply redesigned.
 
+```crystal
+require "colorize"
+require "tablo"
+
+Tablo::Config.styler_tty_only = false
+
+table = Tablo::Table.new([1, 2, 3, 4, 5],
+  border_type: Tablo::BorderName::Fancy,
+  title: Tablo::Heading.new("Title", framed: true),
+  subtitle: Tablo::Heading.new("SubTitle", framed: true),
+  footer: Tablo::Heading.new("Footer", framed: true),
+  row_divider_frequency: 2,
+  body_styler: ->(_c : Tablo::CellType, s : String, r : Tablo::CellData) {
+    if r.row_index % 2 == 0
+      if r.column_index % 2 == 0
+        s.colorize(:red).to_s
+      else
+        s.colorize(:yellow).to_s
+      end
+    else
+      s.colorize(:blue).to_s
+    end
+  },
+  omit_last_rule: true) do |t|
+  t.add_column("row#") { |n, i| i }
+  t.add_group("")
+  t.add_column("col1", &.itself)
+  t.add_column(2, header: "col2\nDouble", &.*(2))
+  t.add_column("col3\n1/5", &./(5))
+  t.add_group("group1")
+  t.add_column("col4\nto_s", &.to_s)
+  t.add_column("col5\neven?", &.even?)
+  t.add_group("group2")
+end
+puts table.pack
+puts table.summary({
+  2 => {header: "Sum\nAvg",
+
+        proc1: ->(ary : Tablo::Numbers) { ary.sum.to_i },
+        proc2: ->(ary : Tablo::Numbers) { (ary.sum / ary.size).to_i },
+        body_styler: ->(c : Tablo::CellType, s : String, r : Tablo::CellData) {
+          color = [:blue, :red, :yellow][r.row_index]?
+          color.nil? ? s : s.colorize(color).to_s
+        },
+  },
+},
+  title: Tablo::Heading.new("Summary", framed: true)
+)
+```
 ![image](https://github.com/hutou/Test/assets/5678331/9a9e0242-353c-4a98-8b89-b6c416fbedd6)
