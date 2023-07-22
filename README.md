@@ -27,6 +27,7 @@ Harvey, the source code, meanwhile, has been deeply redesigned.
 ![table1](docs/assets/images/table1-crop.jpg-1.jpg)
 
 ```crystal
+# program name: create_table_1.cr
 require "colorize"
 require "tablo"
 
@@ -75,6 +76,4 @@ puts table.summary({
   title: Tablo::Heading.new("Summary", framed: true)
 )
 ```
-![image](https://github.com/hutou/Test/assets/5678331/9a9e0242-353c-4a98-8b89-b6c416fbedd6)
-![z4a-crop jpg-1](https://github.com/hutou/Test/assets/5678331/3f7e3055-886b-4a66-99af-b2c36550bc1e)
 
