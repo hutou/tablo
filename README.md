@@ -74,3 +74,5 @@ puts table.summary({
 )
 ```
 ![image](https://github.com/hutou/Test/assets/5678331/9a9e0242-353c-4a98-8b89-b6c416fbedd6)
+![z4a-crop jpg-1](https://github.com/hutou/Test/assets/5678331/3f7e3055-886b-4a66-99af-b2c36550bc1e)
+
