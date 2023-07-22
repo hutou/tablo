@@ -24,7 +24,7 @@ While overall, Tablo remains, in terms of its functionalities, broadly
 comparable, with a few exceptions, to the Tabulo v3.0 version of Matt
 Harvey, the source code, meanwhile, has been deeply redesigned.
 
-![z4a-crop jpg-1](https://github.com/hutou/Test/assets/5678331/3f7e3055-886b-4a66-99af-b2c36550bc1e)
+![table1](docs/assets/images/table 1-crop.jpg-1.jpg)
 
 ```crystal
 require "colorize"
