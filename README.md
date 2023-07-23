@@ -23,13 +23,17 @@ detached border lines, etc.
 While overall, Tablo remains, in terms of its functionalities, broadly
 comparable, with a few exceptions, to the Tabulo v3.0 version of Matt
 Harvey, the source code, meanwhile, has been deeply redesigned.
+
 svg img
+
 <img src="docs/assets/images/z4.svg" width="400">
 
 ![] jpeg
+
 ![table1](docs/assets/images/table1-crop.jpg-1.jpg)
 
 ![] svg
+
 ![table2](docs/assets/images/z4.svg)
 
 
