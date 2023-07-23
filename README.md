@@ -28,6 +28,8 @@ Harvey, the source code, meanwhile, has been deeply redesigned.
 
 ![table2](docs/assets/images/z4.svg)
 
+<img src="docs/assets/images/z4.svg" width="80">
+
 ```crystal
 # program name: create_table_1.cr
 require "colorize"
