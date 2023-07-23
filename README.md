@@ -26,6 +26,8 @@ Harvey, the source code, meanwhile, has been deeply redesigned.
 
 ![table1](docs/assets/images/table1-crop.jpg-1.jpg)
 
+![table2](docs/assets/images/z4.svg)
+
 ```crystal
 # program name: create_table_1.cr
 require "colorize"
