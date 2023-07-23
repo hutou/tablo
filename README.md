@@ -7,7 +7,7 @@ Language.
 
 The first version of Tablo (v0.10.1) was released on November 30, 2021,
 in the context of learning the Crystal language, which explains its
-relative limitations compared to Tabulo v2.7, the current Ruby version
+relative limitations compared to Tabulo v2.7, the current version
 at that time, subject of the software port.
 
 So this version of Tablo (v1.0) is a complete overhaul of the library.
