@@ -30,7 +30,6 @@ Harvey, the source code, meanwhile, has been deeply redesigned.
 ```crystal
 require "colorize"
 require "tablo"
-require "debug"
 
 Tablo::Config.styler_tty_only = false
 
@@ -82,16 +81,7 @@ table = Tablo::Table.new([1, 2, 3, 4, 5],
   t.add_column("col3\n1/5", &./(5))
   t.add_group("group1")
   t.add_column("col4\nto_s", &.to_s)
-  t.add_column("col5\neven?", # body_styler: ->(c : Tablo::CellType, s : String, r : Tablo::CellData) {
-  #   if r.column_index == 3 && c.is_a?(Float) && c >= 0.8
-  #     s.colorize.fore(:red).mode(:bold).to_s
-  #   elsif r.row_index % 2 == 0
-  #     s.colorize(:light_gray).to_s
-  #   else
-  #     s
-  #   end
-  # },
-    &.even?)
+  t.add_column("col5\neven?", &.even?)
   t.add_group("group2")
 end
 
