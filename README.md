@@ -25,8 +25,6 @@ comparable, with a few exceptions, to the Tabulo v3.0 version of Matt
 Harvey, the source code, meanwhile, has been deeply redesigned.
 
 
-<img src="docs/assets/images/toto.svg.gz" width="400">
-
 <img src="docs/assets/images/overview.svg" width="400">
 
 <img src="docs/assets/images/z4.svg" width="400">
