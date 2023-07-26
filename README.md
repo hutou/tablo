@@ -10,7 +10,7 @@ in the context of learning the Crystal language, which explains its
 relative limitations compared to Tabulo v2.7, the current version
 at that time, subject of the software port.
 
-So this version of Tablo (v1.0) is a complete overhaul of the library.
+So this version of Tablo (v1.0) is a complete rewrite of the library.
 
 Compared to the first version, it offers extended capabilities,
 sometimes at the cost of a modified syntax. It also offers new features,
