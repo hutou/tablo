@@ -20,7 +20,7 @@ detached border lines, etc.
 
 While overall, Tablo remains, in terms of its functionalities, broadly
 comparable, with a few exceptions, to the Tabulo v3.0 version of Matt
-Harvey, the source code, meanwhile, has been deeply redesigned.## Features
+Harvey, the source code, meanwhile, has been deeply redesigned.
 
 ## Features
 
