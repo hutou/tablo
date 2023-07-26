@@ -134,6 +134,11 @@ for example :
 require "tablo"
 data = [
 {name: "Enrique", age: 33}
-table = Tablo:Table.new(
+{name: "Edward", age: 44}
+]
+table = Tablo:Table.new(data) do |t|
+t.add_column("Name") {|n| n.name}
+t.add_column("Age") {|n| n.age}
+
 
 
