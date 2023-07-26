@@ -24,6 +24,7 @@ While overall, Tablo remains, in terms of its functionalities, broadly
 comparable, with a few exceptions, to the Tabulo v3.0 version of Matt
 Harvey, the source code, meanwhile, has been deeply redesigned.
 
+To give you a taste of both the richness of the layout and the code that implements it, here's an example that's somewhat contrived, but interesting to study. 
 
 <img src="docs/assets/images/overview.svg" width="400">
 
