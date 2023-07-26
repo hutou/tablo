@@ -39,7 +39,7 @@ Harvey, the source code, meanwhile, has been deeply redesigned.
 - Easily transpose the table, so that rows are swapped with columns
 - Choose from several border configurations, including predefined ones such as Markdown, Ascii (default), and user-defined ones.
 - Adjacent columns can be capped by a group header
-- _A summary table can be added to apply user-defined functions to numeric values of a column_
+- A summary table can be added to apply user-defined functions to numeric values of a column
 
 ## Overview
 
@@ -123,4 +123,17 @@ puts table.summary({
 )
 puts "--- Table Overview ---".center(table.total_table_width)
 ```
+## API
+
+### Table
+
+To create a table, the only parameter required is the Enumerable data source, all other *named* parameters have default values.
+
+for example :
+```crystal
+require "tablo"
+data = [
+{name: "Enrique", age: 33}
+table = Tablo:Table.new(
+
 
