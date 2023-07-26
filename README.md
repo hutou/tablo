@@ -160,7 +160,7 @@ Note that, by default :
 
 #### _title, subtitle and footer_
 
-Changing the line 7 to :
+Changing line 7 to :
 ```crystal
      7	table = Tablo::Table.new(data,
      8	  title: Tablo::HeadingFramed.new("my title", spacing_after: 2),
