@@ -127,7 +127,7 @@ puts "--- Table Overview ---".center(table.total_table_width)
 
 ### Table
 
-To create a table, the only parameter required is the Enumerable data source, all other *named* parameters have default values.
+To create a table, the only parameter required is the Enumerable data source, all other *named* parameters have default values,and the same goes for column creation.
 
 for example :
 ```crystal
