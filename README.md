@@ -130,7 +130,7 @@ puts "--- Table Overview ---".center(table.total_table_width)
 
 To create a table, the only parameter required is the Enumerable data source, all other *named* parameters have default values,and the same goes for column creation.
 
-for example :
+For example, using an array of named tuple, the following table :
 
 <img src="docs/assets/images/default.svg" width="269">
 
