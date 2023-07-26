@@ -47,6 +47,9 @@ To give you a taste of both the richness of the layout and the code that impleme
 
 <img src="docs/assets/images/overview.svg" width="400">
 
+<img src="docs/assets/images/default.svg" width="280">
+
+
 ```crystal
 require "colorize"
 require "tablo"
@@ -145,6 +148,4 @@ table.add_column("Age") { |n| n[:age] }
 puts table
 puts "--- Table Default ---".center(table.total_table_width)
 ```
-
-<img src="docs/assets/images/default.svg" width="200">
 
