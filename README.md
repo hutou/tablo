@@ -1,7 +1,5 @@
 ## Features
 
-## Overview
-
 Tablo is a port of [Matt Harvey's
 Tabulo](https://github.com/matt-harvey/tabulo) Ruby gem to the Crystal
 Language.
@@ -24,6 +22,8 @@ detached border lines, etc.
 While overall, Tablo remains, in terms of its functionalities, broadly
 comparable, with a few exceptions, to the Tabulo v3.0 version of Matt
 Harvey, the source code, meanwhile, has been deeply redesigned.
+
+## Overview
 
 To give you a taste of both the richness of the layout and the code that implements it, here's an example that's somewhat contrived, but interesting to study. 
 
