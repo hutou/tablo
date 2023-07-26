@@ -128,9 +128,10 @@ puts "--- Table Overview ---".center(table.total_table_width)
 
 ### Table
 
-To create a table, the only parameter required is the Enumerable data source, all other *named* parameters have default values,and the same goes for column creation.
+To create a table, the only parameter required is the Enumerable data source, all other _*named*_ parameters have default values,
+and the same goes for column creation : the only parameters required are the column label and the data extraction Proc, all others being inherited from the table.
 
-For example, using an array of named tuple, the following table :
+For example, using an array of named tuple as data source, the following table :
 
 <img src="docs/assets/images/default.svg" width="269">
 
