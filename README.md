@@ -158,3 +158,15 @@ Note that, by default :
 
 ### Table named paraameters
 
+#### _title, subtitle and footer_
+
+Changing the line 7 to :
+```crystal
+     7	table = Tablo::Table.new(data,
+     8	  title: Tablo::HeadingFramed.new("my title", spacing_after: 2),
+     9	  subtitle: Tablo::HeadingFree.new("my subtitle"),
+    10	  footer: Tablo::HeadingFramed.new("My footer", spacing_before: 2)
+    11	)
+```
+
+
