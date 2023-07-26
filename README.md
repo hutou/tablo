@@ -156,7 +156,7 @@ Note that, by default :
 - the border type is the predefined "Ascii" mode, 
 - Name and Age columns are justified according to their type: on the left for the String-type Name column, on the right for the Numeric-type Age column. Header justification follows the same logic, considering, for each column, the type of the first row of data.
 
-### Table named paraameters
+### Table named parameters
 
 #### _title, subtitle and footer_
 
@@ -168,5 +168,6 @@ Changing the line 7 to :
     10	  footer: Tablo::HeadingFramed.new("My footer", spacing_before: 2)
     11	)
 ```
+produces :
 
 
