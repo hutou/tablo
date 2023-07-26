@@ -146,5 +146,5 @@ puts table
 puts "--- Table Default ---".center(table.total_table_width)
 ```
 
-<img src="docs/assets/images/default.svg" width="400">
+<img src="docs/assets/images/default.svg" width="200">
 
