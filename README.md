@@ -24,20 +24,20 @@ Harvey, the source code, meanwhile, has been deeply redesigned.
 
 ## Features
 
-Presents a DRY API that is column-based, not row-based, meaning header and body rows are automatically in sync
-Lets you set fixed column widths, then either wrap or truncate the overflow
-Alternatively, “pack” the table so that columns are auto-sized to their contents, but without overflowing the terminal
-Cell alignment is configurable, but has helpful content-based defaults (numbers right, strings left)
-Tabulate any Enumerable: the underlying collection need not be an array
-Step through your table a row at a time, printing as you go, without waiting for the underlying collection to load. In other words, have a streaming interface for free.
-Add an optional title to your table
-The header row can be repeated at arbitrary intervals
-Newlines within cell content are correctly handled
-Multibyte Unicode characters are correctly handled
-Option to preserve whole words when wrapping content
-Apply colours and other styling to table content and borders, without breaking the table
-Easily transpose the table, so that rows are swapped with columns
-Choose from multiple border configurations, including Markdown, “ASCII”, and smoothly joined Unicode border characters
+- Presents a DRY API that is column-based, not row-based, meaning header and body rows are automatically in sync
+- Lets you set fixed column widths, then either wrap or truncate the overflow
+- Alternatively, “pack” the table so that columns are auto-sized to their contents, but without overflowing the terminal
+- Cell alignment is configurable, but has helpful content-based defaults (numbers right, strings left)
+- Tabulate any Enumerable: the underlying collection need not be an array
+- Step through your table a row at a time, printing as you go, without waiting for the underlying collection to load. In other words, have a streaming interface for free.
+- Add an optional title to your table
+- The header row can be repeated at arbitrary intervals
+- Newlines within cell content are correctly handled
+- Multibyte Unicode characters are correctly handled
+- Option to preserve whole words when wrapping content
+- Apply colours and other styling to table content and borders, without breaking the table
+- Easily transpose the table, so that rows are swapped with columns
+- Choose from multiple border configurations, including Markdown, “ASCII”, and smoothly joined Unicode border characters
 
 ## Overview
 
