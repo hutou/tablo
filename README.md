@@ -170,6 +170,6 @@ Changing the line 7 to :
 ```
 produces :
 
-<img src="docs/assets/images/default.svg" width="269">
+<img src="docs/assets/images/headings.svg" width="269">
 
 
