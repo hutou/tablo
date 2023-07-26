@@ -133,12 +133,24 @@ for example :
 ```crystal
 require "tablo"
 data = [
-{name: "Enrique", age: 33}
-{name: "Edward", age: 44}
+  {name: "Enrique", age: 33},
+  {name: "Edward", age: 44},
 ]
-table = Tablo:Table.new(data) do |t|
-t.add_column("Name") {|n| n.name}
-t.add_column("Age") {|n| n.age}
+# Create the table
+table = Tablo::Table.new(data)
+# add columns
+table.add_column("Name") { |n| n[:name] }
+table.add_column("Age") { |n| n[:age] }
+
+puts table
+puts "--- Table Default ---".center(table.total_table_width)
+```
 
 
-
++--------------+--------------+
+| Name         |          Age |
++--------------+--------------+
+| Enrique      |           33 |
+| Edward       |           44 |
++--------------+--------------+
+     --- Table Default ---
