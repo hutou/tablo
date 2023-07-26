@@ -47,8 +47,6 @@ To give you a taste of both the richness of the layout and the code that impleme
 
 <img src="docs/assets/images/overview.svg" width="400">
 
-<img src="docs/assets/images/default.svg" width="269">
-
 
 ```crystal
 require "colorize"
@@ -133,6 +131,11 @@ puts "--- Table Overview ---".center(table.total_table_width)
 To create a table, the only parameter required is the Enumerable data source, all other *named* parameters have default values,and the same goes for column creation.
 
 for example :
+
+<img src="docs/assets/images/default.svg" width="269">
+
+is produced by :
+
 ```crystal
 require "tablo"
 data = [
