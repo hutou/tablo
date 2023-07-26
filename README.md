@@ -39,7 +39,7 @@ Harvey, the source code, meanwhile, has been deeply redesigned.
 - Easily transpose the table, so that rows are swapped with columns
 - Choose from several border configurations, including predefined ones such as Markdown, Ascii (default), and user-defined ones.
 - Adjacent columns can be capped by a group header
-- __A summary table can be added to apply user-defined functions to numeric values of a column__
+- _A summary table can be added to apply user-defined functions to numeric values of a column_
 
 ## Overview
 
