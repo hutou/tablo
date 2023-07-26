@@ -155,3 +155,6 @@ puts "--- Table Default ---".center(table.total_table_width)
 Note that, by default :
 - the border type is the predefined "Ascii" mode, 
 - Name and Age columns are justified according to their type: on the left for the String-type Name column, on the right for the Numeric-type Age column. Header justification follows the same logic, considering, for each column, the type of the first row of data.
+
+### Table named paraameters
+
