@@ -1,4 +1,5 @@
 ## History
+
 Tablo is a port of [Matt Harvey's
 Tabulo](https://github.com/matt-harvey/tabulo) Ruby gem to the Crystal
 Language.
@@ -43,10 +44,9 @@ Harvey, the source code, meanwhile, has been deeply redesigned.
 
 ## Overview
 
-To give you a taste of both the richness of the layout and the code that implements it, here's an example that's somewhat contrived, but interesting to study. 
+To give you a taste of both the richness of the layout and the code that implements it, here's an example that's somewhat contrived, but interesting to study.
 
 <img src="docs/assets/images/overview.svg" width="400">
-
 
 ```crystal
 require "colorize"
@@ -124,6 +124,7 @@ puts table.summary({
 )
 puts "--- Table Overview ---".center(table.total_table_width)
 ```
+
 ## API
 
 ### Table
@@ -152,15 +153,18 @@ table.add_column("Age") { |n| n[:age] }
 puts table
 puts "--- Table Default ---".center(table.total_table_width)
 ```
+
 Note that, by default :
-- the border type is the predefined "Ascii" mode, 
-- Name and Age columns are justified according to their type: on the left for the String-type Name column, on the right for the Numeric-type Age column. Header justification follows the same logic, considering, for each column, the type of the first row of data.
+
+- the border type is the predefined "Ascii" mode,
+- Name and Age columns are justified according to their type: on the left for the String-type Name column, on the right for the Numeric-type Age column. Header justification follows the same logic, considering, for each column, the type of data of the first row.
 
 ### Table named parameters
 
 #### _title, subtitle and footer_
 
 Changing line 7 to :
+
 ```crystal
      7	table = Tablo::Table.new(data,
      8	  title: Tablo::HeadingFramed.new("my title", spacing_after: 2),
@@ -168,9 +172,7 @@ Changing line 7 to :
     10	  footer: Tablo::HeadingFramed.new("My footer", spacing_before: 2)
     11	)
 ```
+
 produces :
 
 <img src="docs/assets/images/headings.svg" width="269">
-
-
-
