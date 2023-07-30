@@ -3,3 +3,4 @@
 ```crystal
 puts "Hello"
 ```
+image::overview.svg[]
