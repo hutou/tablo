@@ -1,6 +1,7 @@
 require "colorize"
 require "tablo"
 
+
 table = Tablo::Table.new([1, 2, 3, 4, 5],
   border_type: Tablo::BorderName::Fancy,
   border_styler: ->(s : String) { s.colorize(:dark_gray).to_s },
@@ -79,3 +80,4 @@ puts table.summary({
 },
   title: Tablo::HeadingFramed.new("Summary")
 )
+puts "_--- Table Overview ---_".center(table.total_table_width)
