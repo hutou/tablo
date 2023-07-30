@@ -4,3 +4,8 @@
 puts "Hello"
 ```
 image::docs/assets/images/overview.svg[width="400"]
+
+[source, crystal]
+----
+include::docs/assets/sources/overview.cr[]
+----
