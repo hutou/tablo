@@ -1,1 +1,5 @@
 = My README in AsciiDoc
+
+```crystal
+puts "Hello"
+```
