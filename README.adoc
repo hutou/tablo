@@ -3,4 +3,4 @@
 ```crystal
 puts "Hello"
 ```
-image::docs/assets/images/overview.svg[]
+image::docs/assets/images/overview.svg[width="400"]
