@@ -80,4 +80,6 @@ puts table.summary({
 },
   title: Tablo::HeadingFramed.new("Summary")
 )
-puts "_--- Table Overview ---_".center(table.total_table_width)
+
+legend = "--- Table Overview ---".center(table.total_table_width)
+puts "\e[3mlegend\e[0m"
