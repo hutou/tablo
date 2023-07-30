@@ -82,4 +82,4 @@ puts table.summary({
 )
 
 legend = "--- Table Overview ---".center(table.total_table_width)
-puts "\e[3mlegend\e[0m"
+puts "\e[3m#{legend}\e[0m"
