@@ -81,5 +81,5 @@ puts table.summary({
   title: Tablo::HeadingFramed.new("Summary")
 )
 
-legend = "--- Table Overview ---".center(table.total_table_width)
-puts "\e[3m#{legend}\e[0m"
+# legend = "--- Table Overview ---".center(table.total_table_width)
+# puts "\e[3m#{legend}\e[0m"

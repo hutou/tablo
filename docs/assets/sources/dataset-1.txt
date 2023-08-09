@@ -1,0 +1,14 @@
+class MyNumbers
+  include Enumerable(Int32)
+
+  def each(&)
+    yield 1
+    yield 7
+    yield 10
+    yield 13
+    yield 42
+    yield 43
+    yield 59
+    yield 66
+  end
+end
