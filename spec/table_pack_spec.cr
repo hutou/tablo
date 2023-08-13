@@ -37,7 +37,7 @@ describe "#{Tablo::Table} -> packing methods" do
     end
     it "expands or shrinks columns appropriately and defines title width" do
       table = Tablo::Table.new([["abc", "Very long column contents"]],
-        title: Tablo::HeadingFramed.new("This a very long text to be displayed as title heading"),
+        title: Tablo::FramedHeading.new("This a very long text to be displayed as title heading"),
         border_type: Tablo::BorderName::Fancy) do |t|
         t.add_column("short") { |n| n[0] }
         t.add_column("long") { |n| n[1] }
@@ -251,7 +251,7 @@ end
 
 # it "stretches the footer with spaces" do
 #   table = Tablo::Table.new(FNumbers.new,
-#     footer: Tablo::Heading.new("Footer", framed: true, spacing_before: 1,
+#     footer: Tablo::Heading.new("Footer", framed: true, line_breaks_before: 1,
 #       formatter: ->(c : Tablo::CellType) { Tablo::Util.stretch(c.as(String), 16, ' ') }),
 #     border_type: Tablo::BorderName::Fancy) do |t|
 #     t.add_column("itself", width: 16, &.itself)
@@ -360,7 +360,7 @@ end
 # describe "#Formatting groups" do
 # it "stretches the group content to its best width with spaces" do
 #   table = Tablo::Table.new([1, 2, 3],
-#     # footer: Tablo::Heading.new("Footer", framed: true, spacing_before: 1,
+#     # footer: Tablo::Heading.new("Footer", framed: true, line_breaks_before: 1,
 #     #   formatter: ->(c : Tablo::CellType) { Tablo::Util.stretch(c.as(String), 16, ' ') }),
 #     border_type: Tablo::BorderName::Fancy) do |t|
 #     t.add_column("itself", &.itself)
@@ -387,7 +387,7 @@ end
 # describe "#Styling groups" do
 # it "colorize the group content, funny way, character by character" do
 #   table = Tablo::Table.new([1, 2, 3],
-#     # footer: Tablo::Heading.new("Footer", framed: true, spacing_before: 1,
+#     # footer: Tablo::Heading.new("Footer", framed: true, line_breaks_before: 1,
 #     #   formatter: ->(c : Tablo::CellType) { Tablo::Util.stretch(c.as(String), 16, ' ') }),
 #     border_type: Tablo::BorderName::Fancy) do |t|
 #     t.add_column("itself", &.itself)

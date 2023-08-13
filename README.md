@@ -42,6 +42,24 @@ Harvey, the source code, meanwhile, has been deeply redesigned.
 - Adjacent columns can be capped by a group header
 - A summary table can be added to apply user-defined functions to numeric values of a column
 
+== Installation
+
+Add this to your application's `shard.yml`:
+
+```yaml
+dependencies:
+  tablo:
+    gitlab: hutou/tablo
+```
+
+== Usage
+
+```crystal
+require "tablo"
+```
+
+=== Example data set
+
 ## Overview
 
 To give you a taste of both the richness of the layout and the code that implements it, here's an example that's somewhat contrived, but interesting to study.

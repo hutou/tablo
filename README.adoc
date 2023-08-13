@@ -1,3 +1,5 @@
+:source-highlighter: highlight.js
+:highlightjs-languages: crystal
 == History
 
 Tablo is a port of [Matt Harvey's
@@ -23,7 +25,7 @@ While overall, Tablo remains, in terms of its functionalities, broadly
 comparable, with a few exceptions, to the Tabulo v3.0 version of Matt
 Harvey, the source code, meanwhile, has been deeply redesigned.
 
-{empty} +
+// {empty} +
 
 == Features
 
@@ -44,17 +46,248 @@ Harvey, the source code, meanwhile, has been deeply redesigned.
 - Adjacent columns can be capped by a group header
 - A summary table can be added to apply user-defined functions to numeric values of a column
 
-{empty} +
+// {empty} +
 
-== Usage
 
-```crystal
+== Installation
+
+1. Add the dependency to your shard.yml:
+[literal]
+ dependencies:
+   tablo:
+     gitlab: hutou/tablo
+2. Run `shards install`
+3. And insert the line
+
+[source,crystal]
+----
 require "tablo"
-```
+----
+at the beginnning of your app.
 
-== Getting started
+== Tutorial
+In this tutorial, we'll start with a very simple example, which we'll build on as we go along to gradually discover all the possibilities offered by the Tablo library. 
 
+Here's a first look at how to use Tablo to lay out a simple table of integers.
+
+[source,crystal]
+----
+1	require "tablo"
+2	
+3	table = Tablo::Table.new([1, 2, 3]) do |t|
+4	    t.add_column("itself", &.itself)
+5	    t.add_column(2, header: "Double") {|n| n * 2}
+6	    t.add_column(:column_3, header: "String") {|n| n.even?.to_s}
+7	end
+8	puts table
+----
+
+Output:
+
+[literal]
++--------------+--------------+--------------+
+|       itself |       Double | String       |
++--------------+--------------+--------------+
+|            1 |            2 | false        |
+|            2 |            4 | true         |
+|            3 |            6 | false        |
++--------------+--------------+--------------+
+
+A great deal of information can already be extracted from this simple example. Let's list them:
+
+- The only parameter required to create the table is the data source (the array of integers), but to produce a result, you obviously need to add columns
+
+- Any number of columns can be defined, each requiring an identifier and a Proc to extract the data from each row of the source, and, if necessary, modify its type and value
+
+- The column identifier can be of type String, Integer or Symbol. By default, the column header takes the value of the identifier, unless the optional `header:` parameter is used
+
+- Columns are the same width
+
+- We see two types of row: header and body. 
+
+- Number columns are aligned to the right, and text columns to the left, for both headers and body.
+
+- Default borders use the classic `Ascii` type 
+
+Now, let's look at borders
+
+=== Borders
+
+Each border type is defined by a string of exactly 16 characters, which are
+then converted into 16 strings of up to 1 character each.  The definition
+string can contain any character, but two of them have a special meaning:
+after conversion, the uppercase E is replaced by an empty string, and the
+underscore character is replaced by a space. +
+_Please note that using the capital E character may cause alignment
+ difficulties._
+
+The first 9 characters define the junction or intersection of horizontal and
+vertical lines.
+
+[cols="1,5"]
+|===
+|Index | Description 
+
+| 0 | Top left corner
+| 1 | Top middle junction
+| 2 | Top right corner
+| 3 | Middle left junction
+| 4 | Middle middle intersection
+| 5 | Middle right junction
+| 6 | Bottom left corner
+| 7 | Bottom middle junction
+| 8 | Bottom right corner
+|===
+
+The next three characters define vertical separators in data rows
+
+[cols="1,5"]
+|===
+|Index | Description 
+
+| 9  | Left vertical separator
+| 10 | Middle vertical separator
+| 11 | Right vertical separator
+
+|===
+
+And finally, the last four characters define the different types of horizontal
+border, depending on the type of data row or types of adjacent data rows (Row
+type will be the subject of the next section)
+
+[cols="1,5"]
+|===
+|Index | Description 
+
+| 12 | Title, subtitle, footer  
+| 13 | Group 
+| 14 | Header 
+| 15 | Body 
+
+|===
+
+To change a table's border type, simply assign the desired definition to the
+`border_type:` parameter when initializing the table.  This can be done in two
+ways, either by assigning the 16-character string directly to `border_type:`,
+or by assigning the name of one of the 7 predefined borders :
+
+[Literal]
+- `BorderName::Ascii`         => `pass:["+++++++++|||----"]`
+- `BorderName::ReducedAscii`  => `pass:["E_EE_EE_EE_E----"]`
+- `BorderName::Modern`        => `pass:["┌┬┐├┼┤└┴┘│││────"]`
+- `BorderName::ReducedModern` => `pass:["E_EE_EE_EE_E────"]`
+- `BorderName::Markdown`      => `pass:["___|||___|||__-_"]`
+- `BorderName::Fancy`         => `pass:["╭┬╮├┼┤╰┴╯│:│─−-⋅"]`
+- `BorderName::Blank`         => `pass:["EEEEEEEEEEEEEEEE"]`
+
+So, for example, to set `border_type:` to `BorderName::ReducedAscii`, I can either :
+
+use the predefined border name
+[source,crystal]
+----
+3	table = Tablo::Table.new([1, 2, 3]
+      border_type: Tablo::BorderName::ReducedAscii) do |t|
+----
+
+or use its definition string
+[source,crystal]
+----
+3	table = Tablo::Table.new([1, 2, 3]
+      border_type: "E_EE_EE_EE_E----") do |t|
+----
+
+
+Output:
+
+[literal]
+-------------- -------------- --------------
+       itself         Double   String       
+-------------- -------------- --------------
+            1              2   false        
+            2              4   true         
+            3              6   false        
+-------------- -------------- --------------
+
+
+=== Row types
+
+The Header and Body data row types form the basis of formatting. Other types
+can be optionally added to establish the final layout: the Group row type and
+Headings row types (Title, SubTitle and Footer).
+
+==== Group
+Adjacent columns can share a common header, above the column headers
+themselves. This common headers constitute a Group row type.
+
+To create a Group row, simply define a common header after each set of
+adjacent columns to be grouped.  
+
+[source,crystal]
+----
+ 1	require "tablo"
+ 2
+ 3	table = Tablo::Table.new([1, 2, 3]) do |t|
+ 4	    t.add_column("itself", &.itself)
+ 5	    t.add_column(2, header: "Double") {|n| n * 2}
+ 6	    t.add_group("Numbers")
+ 7	    t.add_column(:column_3, header: "String") {|n| n.even?.to_s}
+ 8	    t.add_group("Text")
+ 9	end
+10	puts table
+----
+
+Output:
+
+[literal]
++-----------------------------+--------------+
+|           Numbers           |     Text     |
++--------------+--------------+--------------+
+|       itself |       Double | String       |
++--------------+--------------+--------------+
+|            1 |            2 | false        |
+|            2 |            4 | true         |
+|            3 |            6 | false        |
++--------------+--------------+--------------+
+
+By default, Group headers are centered, but their alignment can be modified
+globally at table initialization time with the `group_alignment:` parameter,
+or locally for a given group with the `alignment:` parameter.
+
+[source,crystal]
+----
+ 3	table = Tablo::Table.new([1, 2, 3],
+      group_alignment: Tablo::Justify::Left) do |t|
+----
+ 
+Output:
+
+[literal]
+| Numbers                     | Text         |
+
+or 
+
+[source,crystal]
+----
+ 8	    t.add_group("Text", alignment: Tablo::Justify::Left)
+----
+ 
+Output:
+
+[literal]
+|           Numbers           | Text         |
+
+Note that the group header can be empty, and that an empty group header is
+automatically created if the last column group is not specified.
+
+==== Headings
+
+A formatted table can optionally include a title, subtitle and footer. Each of these elements is of type FramedHeading or UnFramedHeading.
+
+
+
+////
 == Overview
+
 
 To give you a taste of both the richness of the layout, here's an example that's somewhat contrived, but interesting to study.
 
@@ -64,7 +297,9 @@ image::docs/assets/images/overview.svg[width="400",caption="Figure 8:"]
 
 and the corresponding source code.
 
-[source,Crystal]
+[source,crystal]
 ----
 include::docs/assets/sources/overview.cr[]
 ----
+
+////

@@ -21,7 +21,7 @@ module Tablo
     # :nodoc:
     class_property? omitted_rowtype_framed : Bool = false
     # :nodoc:
-    class_property omitted_rowtype_spacing_after : Int32 = 0
+    class_property omitted_rowtype_line_breaks_after : Int32 = 0
 
     # Table management attributes
 
@@ -59,9 +59,9 @@ module Tablo
     macro initialize(block_given)
 
        def initialize(@sources : Enumerable(T), *,
-          @title : HeadingFree | HeadingFramed = HeadingFramed.new,
-          @subtitle : HeadingFree | HeadingFramed = HeadingFramed.new,
-          @footer : HeadingFree | HeadingFramed = HeadingFramed.new,
+          @title : UnFramedHeading | FramedHeading = FramedHeading.new,
+          @subtitle : UnFramedHeading | FramedHeading = FramedHeading.new,
+          @footer : UnFramedHeading | FramedHeading = FramedHeading.new,
           # @subtitle = HeadingA.new,
           # @footer = HeadingA.new,
           #

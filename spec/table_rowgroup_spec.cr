@@ -10,9 +10,9 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       context "title framed, subtitle framed, footer framed" do
         it "does not display any title, subtitle, header or footer" do
           table = Tablo::Table.new(Numbers.new.select(7..13),
-            title: Tablo::HeadingFramed.new("Numbers"),
-            subtitle: Tablo::HeadingFramed.new("Subtitle"),
-            footer: Tablo::HeadingFramed.new("Footer"),
+            title: Tablo::FramedHeading.new("Numbers"),
+            subtitle: Tablo::FramedHeading.new("Subtitle"),
+            footer: Tablo::FramedHeading.new("Footer"),
             border_type: Tablo::BorderName::Fancy,
             header_frequency: nil) do |t|
             t.add_column("itself", &.itself)
@@ -39,7 +39,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       context "title framed, no subtitle" do
         it "correctly displays framed title, with headers" do
           table = Tablo::Table.new(Numbers.new.select(7..13),
-            title: Tablo::HeadingFramed.new("Numbers", spacing_after: 1),
+            title: Tablo::FramedHeading.new("Numbers", line_breaks_after: 1),
             border_type: Tablo::BorderName::Fancy,
             header_frequency: 0) do |t|
             t.add_column("itself", &.itself)
@@ -70,7 +70,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       context "title framed & linkable, no subtitle" do
         it "correctly displays framed & linked title, with headers" do
           table = Tablo::Table.new(Numbers.new.select(7..13),
-            title: Tablo::HeadingFramed.new("Numbers", spacing_after: 0),
+            title: Tablo::FramedHeading.new("Numbers", line_breaks_after: 0),
             border_type: Tablo::BorderName::Fancy,
             header_frequency: 0) do |t|
             t.add_column("itself", &.itself)
@@ -99,7 +99,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       context "title, no subtitle" do
         it "correctly displays unframed title, with headers" do
           table = Tablo::Table.new(Numbers.new.select(7..13),
-            title: Tablo::HeadingFree.new("Numbers"),
+            title: Tablo::UnFramedHeading.new("Numbers"),
             border_type: Tablo::BorderName::Fancy,
             header_frequency: 0) do |t|
             t.add_column("itself", &.itself)
@@ -128,10 +128,10 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       context "title framed & linkable, subtitle framed & linkable" do
         it "correctly displays framed linked title and subtitle, with headers" do
           table = Tablo::Table.new(Numbers.new.select(7..13),
-            title: Tablo::HeadingFramed.new("Numbers",
-              spacing_after: 0),
-            subtitle: Tablo::HeadingFramed.new("Integers and float",
-              spacing_after: 0),
+            title: Tablo::FramedHeading.new("Numbers",
+              line_breaks_after: 0),
+            subtitle: Tablo::FramedHeading.new("Integers and float",
+              line_breaks_after: 0),
             border_type: Tablo::BorderName::Fancy,
             header_frequency: 0) do |t|
             t.add_column("itself", &.itself)
@@ -163,10 +163,10 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       context "title framed, subtitle framed" do
         it "correctly displays framed title and subtitle, with headers" do
           table = Tablo::Table.new(Numbers.new.select(7..13),
-            title: Tablo::HeadingFramed.new("Numbers",
-              spacing_after: 1),
-            subtitle: Tablo::HeadingFramed.new("Integers and float",
-              spacing_after: 1),
+            title: Tablo::FramedHeading.new("Numbers",
+              line_breaks_after: 1),
+            subtitle: Tablo::FramedHeading.new("Integers and float",
+              line_breaks_after: 1),
             border_type: Tablo::BorderName::Fancy,
             header_frequency: 0) do |t|
             t.add_column("itself", &.itself)
@@ -200,10 +200,10 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       context "title framed & linkable, subtitle framed" do
         it "correctly displays framed title and subtitle, both linked, with headers" do
           table = Tablo::Table.new(Numbers.new.select(7..13),
-            title: Tablo::HeadingFramed.new("Numbers",
-              spacing_after: 0),
-            subtitle: Tablo::HeadingFramed.new("Integers and float",
-              spacing_after: 1),
+            title: Tablo::FramedHeading.new("Numbers",
+              line_breaks_after: 0),
+            subtitle: Tablo::FramedHeading.new("Integers and float",
+              line_breaks_after: 1),
             border_type: Tablo::BorderName::Fancy,
             header_frequency: 0) do |t|
             t.add_column("itself", &.itself)
@@ -236,8 +236,8 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       context "title framed & linkable, subtitle" do
         it "correctly displays framed title, unframed subtitle, with headers" do
           table = Tablo::Table.new(Numbers.new.select(7..13),
-            title: Tablo::HeadingFramed.new("Numbers"),
-            subtitle: Tablo::HeadingFree.new("Integers and float"),
+            title: Tablo::FramedHeading.new("Numbers"),
+            subtitle: Tablo::UnFramedHeading.new("Integers and float"),
             border_type: Tablo::BorderName::Fancy,
             header_frequency: 0) do |t|
             t.add_column("itself", &.itself)
@@ -269,10 +269,10 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       context "title framed & linkable, subtitle, footer framed" do
         it "correctly displays framed title, unframed subtitle, and framed footer, with headers" do
           table = Tablo::Table.new(Numbers.new.select(7..13),
-            title: Tablo::HeadingFramed.new("Numbers"),
-            subtitle: Tablo::HeadingFree.new("Integers and float"),
-            footer: Tablo::HeadingFramed.new("end of data",
-              spacing_before: 1),
+            title: Tablo::FramedHeading.new("Numbers"),
+            subtitle: Tablo::UnFramedHeading.new("Integers and float"),
+            footer: Tablo::FramedHeading.new("end of data",
+              line_breaks_before: 1),
             border_type: Tablo::BorderName::Fancy,
             header_frequency: 0) do |t|
             t.add_column("itself", &.itself)
@@ -309,10 +309,10 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       context "title framed, subtitle" do
         it "correctly displays framed title, unframed subtitle after body" do
           table = Tablo::Table.new(Numbers.new.select(7..43),
-            title: Tablo::HeadingFramed.new("Numbers",
-              spacing_before: 1),
+            title: Tablo::FramedHeading.new("Numbers",
+              line_breaks_before: 1),
             title_repeated: true,
-            subtitle: Tablo::HeadingFree.new("Integers and float"),
+            subtitle: Tablo::UnFramedHeading.new("Integers and float"),
             border_type: Tablo::BorderName::Fancy,
             header_frequency: 3) do |t|
             t.add_column("itself", &.itself)
@@ -355,9 +355,9 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       context "title framed & linkable, subtitle" do
         it "correctly displays framed & linked title, unframed subtitle after body" do
           table = Tablo::Table.new(Numbers.new.select(7..43),
-            title: Tablo::HeadingFramed.new("Numbers", spacing_before: 0),
+            title: Tablo::FramedHeading.new("Numbers", line_breaks_before: 0),
             title_repeated: true,
-            subtitle: Tablo::HeadingFree.new("Integers and float"),
+            subtitle: Tablo::UnFramedHeading.new("Integers and float"),
             border_type: Tablo::BorderName::Fancy,
             header_frequency: 3) do |t|
             t.add_column("itself", &.itself)
@@ -399,9 +399,9 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       context "title and subtitle" do
         it "correctly displays unframed title, unframed subtitle after body" do
           table = Tablo::Table.new(Numbers.new.select(7..43),
-            title: Tablo::HeadingFree.new("Numbers"),
+            title: Tablo::UnFramedHeading.new("Numbers"),
             title_repeated: true,
-            subtitle: Tablo::HeadingFree.new("Integers and float"),
+            subtitle: Tablo::UnFramedHeading.new("Integers and float"),
             border_type: Tablo::BorderName::Fancy,
             header_frequency: 3) do |t|
             t.add_column("itself", &.itself)
@@ -440,10 +440,10 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       context "footer --> title" do
         it "correctly displays framed & body-linked footer, page break and framed title" do
           table = Tablo::Table.new(Numbers.new.select(7..43),
-            title: Tablo::HeadingFramed.new("Numbers",
-              spacing_before: 1, spacing_after: 1),
+            title: Tablo::FramedHeading.new("Numbers",
+              line_breaks_before: 1, line_breaks_after: 1),
             title_repeated: true,
-            footer: Tablo::HeadingFramed.new("end of data", spacing_before: 0),
+            footer: Tablo::FramedHeading.new("end of data", line_breaks_before: 0),
             footer_page_break: true,
             border_type: Tablo::BorderName::Fancy,
             header_frequency: 3) do |t|
@@ -491,10 +491,10 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       context "framed title and framed & linkable footer" do
         it "correctly displays framed & body-linked footer and framed title" do
           table = Tablo::Table.new(Numbers.new.select(7..43),
-            title: Tablo::HeadingFramed.new("Numbers", spacing_after: 1),
+            title: Tablo::FramedHeading.new("Numbers", line_breaks_after: 1),
             title_repeated: true,
-            footer: Tablo::HeadingFramed.new("end of data",
-              spacing_before: 0, spacing_after: 1),
+            footer: Tablo::FramedHeading.new("end of data",
+              line_breaks_before: 0, line_breaks_after: 1),
             footer_page_break: false,
             border_type: Tablo::BorderName::Fancy,
             header_frequency: 3) do |t|
@@ -543,11 +543,11 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       context "framed title and framed footer" do
         it "correctly displays framed and framed title" do
           table = Tablo::Table.new(Numbers.new.select(7..43),
-            title: Tablo::HeadingFramed.new("Numbers",
-              spacing_after: 1, spacing_before: 1),
+            title: Tablo::FramedHeading.new("Numbers",
+              line_breaks_after: 1, line_breaks_before: 1),
             title_repeated: true,
-            footer: Tablo::HeadingFramed.new("end of data",
-              spacing_before: 1),
+            footer: Tablo::FramedHeading.new("end of data",
+              line_breaks_before: 1),
             border_type: Tablo::BorderName::Fancy,
             header_frequency: 3) do |t|
             t.add_column("itself", &.itself)
@@ -597,11 +597,11 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       context "framed title and framed footer, both linked" do
         it "correctly displays linked framed footer and title" do
           table = Tablo::Table.new(Numbers.new.select(7..43),
-            title: Tablo::HeadingFramed.new("Numbers",
-              spacing_before: 0, spacing_after: 1),
+            title: Tablo::FramedHeading.new("Numbers",
+              line_breaks_before: 0, line_breaks_after: 1),
             title_repeated: true,
-            footer: Tablo::HeadingFramed.new("end of data",
-              spacing_before: 1),
+            footer: Tablo::FramedHeading.new("end of data",
+              line_breaks_before: 1),
             border_type: Tablo::BorderName::Fancy,
             header_frequency: 3) do |t|
             t.add_column("itself", &.itself)
@@ -650,11 +650,11 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       context "framed title and framed footer, both linked" do
         it "correctly displays linked framed footer and title" do
           table = Tablo::Table.new(Numbers.new.select(7..43),
-            title: Tablo::HeadingFramed.new("Numbers",
-              spacing_before: 0, spacing_after: 1),
+            title: Tablo::FramedHeading.new("Numbers",
+              line_breaks_before: 0, line_breaks_after: 1),
             title_repeated: true,
-            footer: Tablo::HeadingFramed.new("end of data",
-              spacing_before: 1, spacing_after: 1),
+            footer: Tablo::FramedHeading.new("end of data",
+              line_breaks_before: 1, line_breaks_after: 1),
             footer_page_break: true,
             border_type: Tablo::BorderName::Fancy,
             header_frequency: 3) do |t|
@@ -706,7 +706,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
     context "Table with summary" do
       it "prints a detached summary" do
         table = Tablo::Table.new((1..5).to_a,
-          title: Tablo::HeadingFramed.new("Numbers"),
+          title: Tablo::FramedHeading.new("Numbers"),
           masked_headers: false,
           border_type: Tablo::BorderName::Fancy,
           row_divider_frequency: 1,
@@ -726,7 +726,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
           },
             omit_last_rule: false,
             masked_headers: false,
-            title: Tablo::HeadingFramed.new("Summary", spacing_before: 1),
+            title: Tablo::FramedHeading.new("Summary", line_breaks_before: 1),
           )
         end
         output1 = %Q( ╭────────────────────────────────────────────╮
@@ -768,7 +768,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       end
       it "prints a detached summary, with spacing" do
         table = Tablo::Table.new((1..5).to_a,
-          title: Tablo::HeadingFramed.new("Numbers"),
+          title: Tablo::FramedHeading.new("Numbers"),
           masked_headers: false,
           border_type: Tablo::BorderName::Fancy,
           row_divider_frequency: 1,
@@ -788,7 +788,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
           },
             omit_last_rule: false,
             masked_headers: false,
-            title: Tablo::HeadingFramed.new("Summary", spacing_before: 3),
+            title: Tablo::FramedHeading.new("Summary", line_breaks_before: 3),
           )
         end
         output1 = %Q( ╭────────────────────────────────────────────╮
@@ -831,7 +831,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
 
       it "prints a linked summary" do
         table = Tablo::Table.new((1..5).to_a,
-          title: Tablo::HeadingFramed.new("Numbers"),
+          title: Tablo::FramedHeading.new("Numbers"),
           masked_headers: false,
           border_type: Tablo::BorderName::Fancy,
           row_divider_frequency: 1,
@@ -851,7 +851,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
           },
             omit_last_rule: false,
             masked_headers: false,
-            title: Tablo::HeadingFramed.new("Summary", spacing_before: 0),
+            title: Tablo::FramedHeading.new("Summary", line_breaks_before: 0),
           )
         end
         output1 = %Q( ╭────────────────────────────────────────────╮
@@ -895,7 +895,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         it "prints results !", focus: true do
           # table = Tablo::Table.new(Numbers.new.select(7..43),
           table = Tablo::Table.new((1..5).to_a,
-            title: Tablo::HeadingFramed.new("Numbers"),
+            title: Tablo::FramedHeading.new("Numbers"),
             masked_headers: false,
             border_type: Tablo::BorderName::Fancy,
             row_divider_frequency: 1,
@@ -916,7 +916,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
             },
               omit_last_rule: false,
               masked_headers: false,
-              title: Tablo::HeadingFramed.new("Summary", spacing_before: 0),
+              title: Tablo::FramedHeading.new("Summary", line_breaks_before: 0),
             )
           end
 

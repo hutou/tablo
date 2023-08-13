@@ -59,27 +59,27 @@ module Tablo
       end
     end
 
-    private def spacing_after(rowtype)
+    private def line_breaks_after(rowtype)
       case rowtype
       when RowType::Title
-        table.title.framed? ? table.title.as(HeadingFramed).spacing_after : 0
+        table.title.framed? ? table.title.as(FramedHeading).line_breaks_after : 0
       when RowType::SubTitle
-        table.subtitle.framed? ? table.subtitle.as(HeadingFramed).spacing_after : 0
+        table.subtitle.framed? ? table.subtitle.as(FramedHeading).line_breaks_after : 0
       when RowType::Footer
-        table.footer.framed? ? table.footer.as(HeadingFramed).spacing_after : 0
+        table.footer.framed? ? table.footer.as(FramedHeading).line_breaks_after : 0
       else
         0
       end
     end
 
-    private def spacing_before(rowtype)
+    private def line_breaks_before(rowtype)
       case rowtype
       when RowType::Title
-        table.title.framed? ? table.title.as(HeadingFramed).spacing_before : 0
+        table.title.framed? ? table.title.as(FramedHeading).line_breaks_before : 0
       when RowType::SubTitle
-        table.subtitle.framed? ? table.subtitle.as(HeadingFramed).spacing_before : 0
+        table.subtitle.framed? ? table.subtitle.as(FramedHeading).line_breaks_before : 0
       when RowType::Footer
-        table.footer.framed? ? table.footer.as(HeadingFramed).spacing_before : 0
+        table.footer.framed? ? table.footer.as(FramedHeading).line_breaks_before : 0
       else
         0
       end
@@ -135,18 +135,18 @@ module Tablo
       if row_index == 0 && !Table.omitted_rowtype.nil?
         self.previous_rowtype = Table.omitted_rowtype # if previous_rowtype.nil?
         previous_rowtype_framed = Table.omitted_rowtype_framed?
-        previous_rowtype_spacing_after = Table.omitted_rowtype_spacing_after
+        previous_rowtype_line_breaks_after = Table.omitted_rowtype_line_breaks_after
         Table.omitted_rowtype = nil
         summary_first = true
       else
         previous_rowtype_framed = framed?(previous_rowtype)
-        previous_rowtype_spacing_after = spacing_after(previous_rowtype)
+        previous_rowtype_line_breaks_after = line_breaks_after(previous_rowtype)
         summary_first = false
       end
 
       groups = previous_rowtype == RowType::Group ||
                current_rowtype == RowType::Group ? table.groups : nil
-      spacing = [previous_rowtype_spacing_after, spacing_before(current_rowtype)].max
+      spacing = [previous_rowtype_line_breaks_after, line_breaks_before(current_rowtype)].max
       case {previous_rowtype_framed, framed?(current_rowtype)}
       when {true, true}
         if spacing.zero?
@@ -191,9 +191,9 @@ module Tablo
         fill_page
         add_rule(ROWTYPE_POSITION[{previous_rowtype, :bottom}],
           __LINE__, groups: groups)
-        apply_line_spacing(spacing_after(previous_rowtype) - 1)
+        apply_line_spacing(line_breaks_after(previous_rowtype) - 1)
       when {false, true}
-        apply_line_spacing(spacing_before(current_rowtype) - 1)
+        apply_line_spacing(line_breaks_before(current_rowtype) - 1)
         add_rule(ROWTYPE_POSITION[{current_rowtype, :top}],
           __LINE__, groups: groups)
       when {false, false}
@@ -270,11 +270,11 @@ module Tablo
         if table.omit_last_rule?
           Table.omitted_rowtype = previous_rowtype
           Table.omitted_rowtype_framed = true
-          Table.omitted_rowtype_spacing_after = 0
+          Table.omitted_rowtype_line_breaks_after = 0
           if previous_rowtype == RowType::Footer
             Table.omitted_rowtype_framed = table.footer.framed?
-            # Table.omitted_rowtype_spacing_after = table.footer.spacing_after
-            Table.omitted_rowtype_spacing_after = table.footer.framed? ? table.footer.as(HeadingFramed).spacing_after : 0
+            # Table.omitted_rowtype_line_breaks_after = table.footer.line_breaks_after
+            Table.omitted_rowtype_line_breaks_after = table.footer.framed? ? table.footer.as(FramedHeading).line_breaks_after : 0
           end
         end
         # Table is now printed, reset attribute previous_rowtype to nil to allow
@@ -298,10 +298,10 @@ module Tablo
     end
 
     def old_spacing(prev, curr)
-      if prev.spacing_after.nil? || curr.spacing_before.nil?
+      if prev.line_breaks_after.nil? || curr.line_breaks_before.nil?
         nil
       else
-        [prev.spacing_after.as(Int32), curr.spacing_before.as(Int32)].max
+        [prev.line_breaks_after.as(Int32), curr.line_breaks_before.as(Int32)].max
       end
     end
 

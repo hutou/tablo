@@ -10,8 +10,8 @@ module Tablo
   #
   # Spacing between the different row types (see `RowType`) is done by taking
   # the maximum of the 2 following values (max) :
-  # - *spacing_after* of the previous row
-  # - *spacing_before* of the current row
+  # - *line_breaks_after* of the previous row
+  # - *line_breaks_before* of the current row
   # knowing that spacing (either before or after) of the row types Group, Header
   # and Body is always 0.
   #
@@ -35,7 +35,7 @@ module Tablo
   #   end
   # end
 
-  struct HeadingFree
+  struct UnFramedHeading
     getter? framed = false
     getter value, alignment, formatter, styler
 
@@ -46,22 +46,22 @@ module Tablo
     end
   end
 
-  struct HeadingFramed
+  struct FramedHeading
     getter? framed = true
-    getter value, spacing_before, spacing_after, alignment, formatter, styler
+    getter value, line_breaks_before, line_breaks_after, alignment, formatter, styler
 
     def initialize(@value : CellType = nil, *,
-                   @spacing_before : Int32 = 0,
-                   @spacing_after : Int32 = 0,
+                   @line_breaks_before : Int32 = 0,
+                   @line_breaks_after : Int32 = 0,
                    @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
                    @formatter : TextCellFormatter = DEFAULT_FORMATTER,
                    @styler : TextCellStyler = DEFAULT_STYLER)
     end
   end
 
-  struct Heading
+  struct ZHeading
     getter? framed
-    getter value, spacing_before, spacing_after, alignment, formatter, styler
+    getter value, line_breaks_before, line_breaks_after, alignment, formatter, styler
 
     # Constructor
     # Raise an exception if *value* is an empty string.
@@ -70,15 +70,15 @@ module Tablo
     #
     # - *value* : the only positional parameter, of type `CellType`(default: `nil`)
     # - *framed* : a boolean, indicating if the heading is boxed or not : default: `false`
-    # - *spacing_before* : an Int32, whose value is >= 0, default: 0
-    # - *spacing_after* : an Int32, whose value is >= 0, default: 0
+    # - *line_breaks_before* : an Int32, whose value is >= 0, default: 0
+    # - *line_breaks_after* : an Int32, whose value is >= 0, default: 0
     # - *alignment* : the alignment of *value*, of type `Justify`, default: `Justify::Center`
     # - *formatter* : a Proc to format the heading (see `TextCellFormatter`)
     # - *styler* : a Proc to style the heading (see `TextCellStyler`)
     def initialize(@value : CellType = nil, *,
                    @framed : Bool = false,
-                   @spacing_before : Int32 = 0,
-                   @spacing_after : Int32 = 0,
+                   @line_breaks_before : Int32 = 0,
+                   @line_breaks_after : Int32 = 0,
                    @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
                    @formatter : TextCellFormatter = DEFAULT_FORMATTER,
                    @styler : TextCellStyler = DEFAULT_STYLER)

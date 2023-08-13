@@ -1,0 +1,23 @@
+name: tablo
+version: 0.87.0
+
+authors:
+  - Hubert Toullec <hutou01@gmail.com>
+
+development_dependencies:
+  ameba:
+    github: crystal-ameba/ameba
+    branch: master
+  debug:
+    github: Sija/debug.cr
+  tablo:
+    #path: .
+    gitlab: hutou/tablo
+  statistics:
+    github: lbarasti/statistics
+  uniwidth:
+    github: naqvis/uni_char_width
+
+crystal: ">= 1.7.1"
+
+license: MIT

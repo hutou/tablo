@@ -92,9 +92,9 @@ module Tablo
     PREDEFINED_BORDERS = {
       BorderName::Ascii         => "+++++++++|||----",
       BorderName::ReducedAscii  => "E EE EE EE E----",
+      BorderName::Modern        => "┌┬┐├┼┤└┴┘│││────",
       BorderName::ReducedModern => "E EE EE EE E────",
       BorderName::Markdown      => "   |||   |||  - ",
-      BorderName::Modern        => "┌┬┐├┼┤└┴┘│││────",
       BorderName::Fancy         => "╭┬╮├┼┤╰┴╯│:│─−-⋅",
       BorderName::Blank         => "EEEEEEEEEEEEEEEE",
     }
@@ -112,7 +112,8 @@ module Tablo
                    @styler : BorderStyler = DEFAULT_STYLER,
                    @bordername : BorderName? = nil)
       raise InvalidConnectorString.new "Invalid style definition (size != 16)" unless s.size == 16
-      ars = s.split("").map { |e| e == "E" ? "" : e }
+      # ars = s.split("").map { |e| e == "E" ? "" : e }
+      ars = s.split("").map { |e| e == "E" ? "" : e == "_" ? " " : e }
       @top_left = ars[0]; @top_mid = ars[1]; @top_right = ars[2]
       @mid_left = ars[3]; @mid_mid = ars[4]; @mid_right = ars[5]
       @bottom_left = ars[6]; @bottom_mid = ars[7]; @bottom_right = ars[8]
