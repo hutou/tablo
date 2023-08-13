@@ -1,5 +1,7 @@
 :source-highlighter: highlight.js
 :highlightjs-languages: crystal
+:toc: 
+:toclevels: 4 
 == History
 
 Tablo is a port of [Matt Harvey's
@@ -79,6 +81,19 @@ Here's a first look at how to use Tablo to lay out a simple table of integers.
 5	    t.add_column(2, header: "Double") {|n| n * 2}
 6	    t.add_column(:column_3, header: "String") {|n| n.even?.to_s}
 7	end
+8	puts table
+----
+
+or
+
+[source,crystal]
+----
+1	require "tablo"
+2	
+3	table = Tablo::Table.new([1, 2, 3])
+4	table.add_column("itself", &.itself)
+5	table.add_column(2, header: "Double") {|n| n * 2}
+6	table.add_column(:column_3, header: "String") {|n| n.even?.to_s}
 8	puts table
 ----
 
@@ -213,7 +228,7 @@ Output:
 
 The Header and Body data row types form the basis of formatting. Other types
 can be optionally added to establish the final layout: the Group row type and
-Headings row types (Title, SubTitle and Footer).
+Heading row types (Title, SubTitle and Footer).
 
 ==== Group
 Adjacent columns can share a common header, above the column headers
@@ -281,7 +296,267 @@ automatically created if the last column group is not specified.
 
 ==== Headings
 
-A formatted table can optionally include a title, subtitle and footer. Each of these elements is of type FramedHeading or UnFramedHeading.
+A formatted table can optionally include a title, subtitle and footer. Each of
+these elements is of type FramedHeading or UnFramedHeading.
+
+By default, when the table is initialized, `title:`, `subtitle:` and `footer:` are
+of type FramedHeading and their value is `nil`, so they are not displayed.
+
+To display a title (or subtitle or footer), simply specify it when
+initializing the table.
+
+[source,crystal]
+----
+ 3	table = Tablo::Table.new([1, 2, 3],
+      title: Tablo::FramedHeading.new("Numbers and text")) do |t|
+----
+
+output:
+
+[literal]
++--------------------------------------------+
+|              Numbers and text              |
++-----------------------------+--------------+
+|           Numbers           | Text         |
++--------------+--------------+--------------+
+|       itself |       Double | String       |
++--------------+--------------+--------------+
+|            1 |            2 | false        |
+|            2 |            4 | true         |
+|            3 |            6 | false        |
++--------------+--------------+--------------+
+
+or
+
+[source,crystal]
+----
+ 3	table = Tablo::Table.new([1, 2, 3],
+      title: Tablo::UnFramedHeading.new("Numbers and text")) do |t|
+----
+                        
+output:
+
+[literal]
+               Numbers and text               
++-----------------------------+--------------+
+|           Numbers           | Text         |
++--------------+--------------+--------------+
+|       itself |       Double | String       |
++--------------+--------------+--------------+
+|            1 |            2 | false        |
+|            2 |            4 | true         |
+|            3 |            6 | false        |
++--------------+--------------+--------------+
+
+In addition to text framing, there's another difference between FramedHeading
+and UnFramedHeading. 
+
+FramedHeading accepts 2 additional parameters (`line_breaks_before:` and
+`line_breaks_after:`) which allow it to be more or less detached from the
+preceding or following text by a number of line breaks.
+
+By default, these parameters are set to 0, and the number of line breaks is
+the greater of the current element's `line_breaks_after:` and the next element's
+`line_breaks_before:`, if any.
+
+[source,crystal]
+----
+ 3  table = Tablo::Table.new([1, 2, 3],
+      title: Tablo::FramedHeading.new("Numbers and text",
+        line_breaks_after: 2)) do |t|
+----
+
+output:
+
+[literal]
+----
++--------------------------------------------+
+|              Numbers and text              |
++--------------------------------------------+
+ 
++-----------------------------+--------------+
+|           Numbers           | Text         |
++--------------+--------------+--------------+
+|       itself |       Double | String       |
++--------------+--------------+--------------+
+|            1 |            2 | false        |
+|            2 |            4 | true         |
+|            3 |            6 | false        |
++--------------+--------------+--------------+
+----
+
+In summary, we have 6 types of data rows : 
+
+ 
+[cols="1,2"]
+|===
+| Type | Description 
+
+| Header  | Always displayed, unless `header_frequency:` is `nil` or
+`masked_headers:` is `true`  (_see below_)
+| Body    | Always displayed
+| Group   | Optional
+| Title   | Optional
+| Subtitle| Optional
+| Footer  | Optional
+
+|===
+
+=== Display frequency and repeated title
+
+An important parameter in table initialization is `header_frequency:` 
+
+- By default, it is set to 0, i.e. rows of data other than body are displayed
+only once, at the beginning for titles and headers, at the end for the footer.
+
+[source,crystal]
+----
+ 1  require "tablo"
+ 2
+ 3  table = Tablo::Table.new([1, 2, 3],
+ 4    header_frequency: 0,
+ 5    title: Tablo::FramedHeading.new("Numbers and text", line_breaks_after: 2),
+ 6    subtitle: Tablo::UnFramedHeading.new("No booleans"),
+ 7    footer: Tablo::UnFramedHeading.new("End of page")) do |t|
+ 8    t.add_column("itself", &.itself)
+ 9    t.add_column(2, header: "Double") { |n| n * 2 }
+10    t.add_group("Numbers")
+11    t.add_column(:column_3, header: "String") { |n| n.even?.to_s }
+12    t.add_group("Text", alignment: Tablo::Justify::Left)
+13  end
+14  puts table
+----
+
+Output:
+
+[literal]
+----
++--------------------------------------------+
+|              Numbers and text              |
++--------------------------------------------+
+ 
+                  No booleans                 
++-----------------------------+--------------+
+|           Numbers           | Text         |
++--------------+--------------+--------------+
+|       itself |       Double | String       |
++--------------+--------------+--------------+
+|            1 |            2 | false        |
+|            2 |            4 | true         |
+|            3 |            6 | false        |
++--------------+--------------+--------------+
+                  End of page         
+----
+
+- If set to `nil`, only body rows are displayed.
+
+[source,crystal]
+----
+ 4    header_frequency: nil,
+----
+
+Output:
+
+[literal]
++--------------+--------------+--------------+
+|            1 |            2 | false        |
+|            2 |            4 | true         |
+|            3 |            6 | false        |
++--------------+--------------+--------------+
+
+- If set to `n` (positive), group or column headers are repeated every `n` rows, as
+are footers, but titles and subtitles are not repeated.
+
+[source,crystal]
+----
+ 4    header_frequency: 2,
+----
+
+Output:
+
+[literal]
+----
++--------------------------------------------+
+|              Numbers and text              |
++--------------------------------------------+
+ 
+                  No booleans                 
++-----------------------------+--------------+
+|           Numbers           | Text         |
++--------------+--------------+--------------+
+|       itself |       Double | String       |
++--------------+--------------+--------------+
+|            1 |            2 | false        |
+|            2 |            4 | true         |
++--------------+--------------+--------------+
+                  End of page                 
++-----------------------------+--------------+
+|           Numbers           | Text         |
++--------------+--------------+--------------+
+|       itself |       Double | String       |
++--------------+--------------+--------------+
+|            3 |            6 | false        |
+|              |              |              |
++--------------+--------------+--------------+
+                  End of page                 
+----
+
+However, the `title_repeated:` parameter can be set to `true` to obtain title and
+subtitle repetition.
+
+[source,crystal]
+----
+ 4    header_frequency: 2, title_repeated: true,
+----
+
+Output:
+
+[literal]
+----
++--------------------------------------------+
+|              Numbers and text              |
++--------------------------------------------+
+ 
+                  No booleans                 
++-----------------------------+--------------+
+|           Numbers           | Text         |
++--------------+--------------+--------------+
+|       itself |       Double | String       |
++--------------+--------------+--------------+
+|            1 |            2 | false        |
+|            2 |            4 | true         |
++--------------+--------------+--------------+
+                  End of page                 
++--------------------------------------------+
+|              Numbers and text              |
++--------------------------------------------+
+ 
+                  No booleans                 
++-----------------------------+--------------+
+|           Numbers           | Text         |
++--------------+--------------+--------------+
+|       itself |       Double | String       |
++--------------+--------------+--------------+
+|            3 |            6 | false        |
+|              |              |              |
++--------------+--------------+--------------+
+                  End of page                 
+----
+
+TODO  padding, truncation
+
+TODO row_divider_frequency
+
+TODO wrap
+
+TODO masked_headers (double emploi avec header_frequency: nil ?)
+
+TODO omit_last_rule
+
+TODO footer_page_break
+
+
+== Advanced settings
 
 
 
