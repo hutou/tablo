@@ -543,6 +543,119 @@ Output:
                   End of page                 
 ----
 
+=== Extracting, Formatting and Styling
+    
+At the heart of Tablo's operation lies the Cell, a data structure containing
+all the elements required for display. 
+
+==== Extracting
+
+The Cell `value:` attribute contains the raw data, either extracted from the source
+for Body rows (DataCell) or directly supplied as an argument for other row
+types (TextCell).  
+
+The type of `value:` is `Tablo::CellType`, which is simply defined as an empty
+module restriction type:
+
+[source,crystal]
+----
+module Tablo::CellType
+end
+----
+
+This module is already included in all Crystal main scalar types. To
+use a (non or less used) scalar type or a user defined class or struct, it is
+mandatory to include it by reopening the class or struct. 
+
+For example, to allow a Cell value to contain an array, we could do :
+
+[source,crystal]
+----
+class Array
+  include Tablo::CellType
+end
+
+table = Tablo::Table.new([[1, 2], [3, 4]]) do |t|
+  t.add_column("itself") { |n| n }
+end
+puts table
+----
+
+Output
+
+[literal]
+----
++--------------+
+| itself       |
++--------------+
+| [1, 2]       |
+| [3, 4]       |
++--------------+
+----
+
+==== Formatting
+
+Formatting consists in applying a transformation to the raw data to obtain
+a character string ready to be displayed. The simplest transformation (and
+also the one applied by default) is simply a call to the `to_s` method.
+
+Using a Proc `formatter` allows you to customize the formatting!
+Several types of Proc `formatter` exist:
+
+For TextCell, there are 2:
+                            
+- The first simply expects an argument of type Tablo:CellType (the `value:`)
+
+- The second expects an additional argument (of type Int32) corresponding to
+  the column width (special use cases, like text stretching)
+
+TODO TODO TODO
+Modifier le 2nd pour correspondre au second de DataCall
+Ajouter un 3ème : CellType, Int32 (line), Int32 (width) ???
+
+A voir !!!
+
+TODO TODO TODO
+
+For DataCell, there are 3:
+
+- The first simply expects an argument of type Tablo:CellType (the `value:`)
+
+- The second expects an additional argument (of type Int32) corresponding to
+  the line number when the cell contains potentially more than one. This
+  enables conditional formatting.
+
+- the third expects a CellType as first argument, and a CellData type as
+  second. 
+  And CellData also contain width
+
+[source,crystal]
+----
+struct CellData
+  getter value, row_index, column_index, width
+
+  def initialize(@value : CellType, @row_index : Int32, @column_index : Int32, @width : Int32)
+  end
+end
+----
+
+A CellData attribute is stored in each DataCell, allowing any kind
+of conditional formatting, based on row or column index.
+
+
+
+as fProc(CellType, Int32, String) |
+- Proc(CellType, String)
+  alias DataCellFormatter = Proc(CellType, CellData, String) |
+                            Proc(CellType, Int32, String) |
+                            Proc(CellType, String)
+- The second expects an additional argument (of type Int32) corresponding to
+  the line number when the cell contains potentially more than one. This
+  enables conditional formatting.
+
+==== Styling
+
+
 TODO  padding, truncation
 
 TODO row_divider_frequency
@@ -556,8 +669,52 @@ TODO omit_last_rule
 TODO footer_page_break
 
 
-== Advanced settings
+== Complete API
 
+=== Tablo internals
+Table definition is largely based on default values, which can be modified via
+named parameters if required.
+
+Most of the parameters defined when initializing a table are taken over by
+default, if appropriate, when creating columns.
+
+Tablo features a column-based rather than row-based API, which means
+that header and body lines are automatically synchronized. 
+
+At the heart of Tablo's operation lies the cell, a data structure containing
+all the elements required for display. There are 2 different types of cell:
+
+- Those containing source or source-dependent data, the DataCell type (for Header and Body rows)
+- Text cells, the TextCell type (for Group and Headings)
+
+They differ mainly in 2 exclusive attribute types:
+
+- RowType for TextCell cells
+
+- CellData for DataCell cells
+
+Both have the `value:` attribute, which contains the raw data extracted from
+source. Its type is `Tablo::CellType`
+
+
+[literal]
+----
++--------------------------------------------+
+|              Numbers and text              |
++--------------------------------------------+
+ 
+                  No booleans                 
++--------------+--------------+--------------+
+|            1 |            2 | false        |
+|            2 |            4 | true         |
++--------------+--------------+--------------+
+                  End of page                 
++--------------+--------------+--------------+
+|            3 |            6 | false        |
+|              |              |              |
++--------------+--------------+--------------+
+                  End of page                 
+----
 
 
 ////
