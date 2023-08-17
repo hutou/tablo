@@ -489,7 +489,7 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
         border_type: Tablo::BorderName::Fancy) do |t|
         t.add_column("itself", width: 16,
           body_formatter: ->(c : Tablo::CellType) { Tablo::Util.dot_align(c.as(Float64), 4, :dot) },
-          body_styler: ->(_c : Tablo::CellType, s : String, r : Tablo::CellData) {
+          body_styler: ->(_c : Tablo::CellType, r : Tablo::CellData, s : String) {
             if r.row_index % 2 == 0
               s.colorize(:blue).to_s
             else
@@ -531,7 +531,7 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
     it "conditionnaly colorizes row's body contents, depending on row index" do
       table = Tablo::Table.new(FNumbers.new,
         title: Tablo::FramedHeading.new("Body in color, dot aligned"),
-        body_styler: ->(_c : Tablo::CellType, s : String, r : Tablo::CellData) {
+        body_styler: ->(_c : Tablo::CellType, r : Tablo::CellData, s : String) {
           if r.row_index % 2 == 0
             s.colorize(:red).to_s
           else
@@ -577,7 +577,7 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
     it "conditionnaly colorizes row's body contents, depending on row AND column index" do
       table = Tablo::Table.new(FNumbers.new,
         title: Tablo::FramedHeading.new("Body in color, dot aligned"),
-        body_styler: ->(_c : Tablo::CellType, s : String, r : Tablo::CellData) {
+        body_styler: ->(_c : Tablo::CellType, r : Tablo::CellData, s : String) {
           if r.row_index % 2 == 0
             if r.column_index % 2 == 0
               s.colorize(:red).to_s
@@ -627,7 +627,7 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
     it "conditionnaly colorizes row's body contents, depending on row AND column index AND cell line number" do
       table = Tablo::Table.new(FNumbers.new,
         title: Tablo::FramedHeading.new("Body in color\n2nd line of cell in bold"),
-        body_styler: ->(_c : Tablo::CellType, s : String, r : Tablo::CellData, line : Int32) {
+        body_styler: ->(_c : Tablo::CellType, r : Tablo::CellData, s : String, line : Int32) {
           if line == 1
             s.colorize(:magenta).mode(:bold).to_s
           else

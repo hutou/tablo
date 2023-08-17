@@ -265,7 +265,6 @@ module Tablo
 
     # :nodoc:
     def apply_styler(content, line_index)
-      # debug!(Util.styler_allowed)
       return content unless Util.styler_allowed
       case styler = @styler
       in Proc(String, Int32, String)
@@ -308,6 +307,8 @@ module Tablo
     # :nodoc:
     def apply_formatter
       case formatter = @formatter
+      in Proc(CellType, CellData, Int32, String)
+        formatter.call(@value, @cell_data, @width)
       in Proc(CellType, CellData, String)
         formatter.call(@value, @cell_data)
       in Proc(CellType, Int32, String)
@@ -317,15 +318,13 @@ module Tablo
       end
     end
 
-    # :nodoc:
     def apply_styler(content, line_index)
-      # debug!(Util.styler_allowed)
       return content unless Util.styler_allowed
       case styler = @styler
-      in Proc(CellType, String, CellData, Int32, String)
-        styler.call(@value, content, @cell_data, line_index)
-      in Proc(CellType, String, CellData, String)
-        styler.call(@value, content, @cell_data)
+      in Proc(CellType, CellData, String, Int32, String)
+        styler.call(@value, @cell_data, content, line_index)
+      in Proc(CellType, CellData, String, String)
+        styler.call(@value, @cell_data, content)
       in Proc(CellType, String, String)
         styler.call(@value, content)
       end
@@ -335,7 +334,7 @@ module Tablo
     private def real_alignment
       alignment = @alignment
       return alignment unless alignment.nil?
-      case @cell_data.value
+      case cell_data.body_value
       when Number
         Justify::Right
       when Bool

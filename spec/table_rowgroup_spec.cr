@@ -892,7 +892,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       end
 
       pending "TEST TEST TEST" do
-        it "prints results !", focus: true do
+        it "prints results !" do
           # table = Tablo::Table.new(Numbers.new.select(7..43),
           table = Tablo::Table.new((1..5).to_a,
             title: Tablo::FramedHeading.new("Numbers"),

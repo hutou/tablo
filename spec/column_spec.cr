@@ -4,9 +4,9 @@ describe Tablo::Column do
   column = Tablo::Column(Int32).new(
     header: "Double",
     header_alignment: Tablo::Justify::Right,
-    header_styler: ->(c : Tablo::CellType, _s : String) { c.to_s },
+    header_styler: ->(_c : Tablo::CellType, s : String) { s },
     body_alignment: Tablo::Justify::Right,
-    body_styler: ->(c : Tablo::CellType, _s : String) { c.to_s },
+    body_styler: ->(_c : Tablo::CellType, s : String) { s },
     #
     left_padding: 3,
     right_padding: 5,

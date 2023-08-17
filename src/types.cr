@@ -33,12 +33,17 @@ module Tablo
   DEFAULT_HEADING_ALIGNMENT     = Justify::Center
   DEFAULT_FORMATTER             = ->(c : CellType) { c.to_s }
 
-  # The CellData struct keeps access to the cell value and its coordinates.
-  # These infos are used for conditional styling, notably.
-  struct CellData
+  struct OldCellData
     getter value, row_index, column_index, width
 
     def initialize(@value : CellType, @row_index : Int32, @column_index : Int32, @width : Int32)
+    end
+  end
+
+  struct CellData
+    getter body_value, row_index, column_index
+
+    def initialize(@body_value : CellType, @row_index : Int32, @column_index : Int32)
     end
   end
 
@@ -97,6 +102,9 @@ module Tablo
   # ```
   alias TextCellStyler = Proc(String, Int32, String) |
                          Proc(String, String)
+  # Corresponding parameters:
+  # formatter.call(@content, @width)
+  # formatter.call(@content)
 
   # ---------- DataCellStyler -----------------------------------------------------
   #
@@ -145,9 +153,13 @@ module Tablo
   #   end
   # }
   # ```
-  alias DataCellStyler = Proc(CellType, String, CellData, Int32, String) |
-                         Proc(CellType, String, CellData, String) |
+  alias DataCellStyler = Proc(CellType, CellData, String, Int32, String) |
+                         Proc(CellType, CellData, String, String) |
                          Proc(CellType, String, String)
+  # Corresponding parameters:
+  # value, cell_data, content, line_index
+  # value, cell_data, content
+  # value, content
 
   # ---------- TextCellFormatter --------------------------------------------------
   #
@@ -163,6 +175,9 @@ module Tablo
   # ```
   alias TextCellFormatter = Proc(CellType, Int32, String) |
                             Proc(CellType, String)
+  # Corresponding parameters:
+  # value, width
+  # value
 
   # ---------- DataCellFormatter --------------------------------------------------
   #
@@ -182,9 +197,15 @@ module Tablo
   # ```
   #
   # The second form is the same as `Tablo::TextCellFormatter`
-  alias DataCellFormatter = Proc(CellType, CellData, String) |
+  alias DataCellFormatter = Proc(CellType, CellData, Int32, String) |
+                            Proc(CellType, CellData, String) |
                             Proc(CellType, Int32, String) |
                             Proc(CellType, String)
+  # Corresponding parameters:
+  # value, cell_data, width
+  # value, cell_data
+  # value, width
+  # value
 
   # ---------- LabelType ----------------------------------------------------------
   #

@@ -87,7 +87,7 @@ module Tablo
     # Creates a BodyCell type cell
     def body_cell(source, row_index, column_index)
       value = body_cell_value(source, row_index)
-      cell_data = CellData.new(value, row_index, @index, width)
+      cell_data = CellData.new(value, row_index, @index)
       DataCell.new(
         value: value,
         cell_data: cell_data,
