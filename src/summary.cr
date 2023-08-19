@@ -42,9 +42,9 @@ module Tablo
           next if value.nil? || !value.is_a?(Number)
           case value
           when Int
-            data_series[label] << value.to_i
+            data_series[label] << value.as(Int).to_i
           when Float
-            data_series[label] << value.to_f
+            data_series[label] << value.as(Float).to_f
           end
         end
       end

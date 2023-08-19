@@ -83,226 +83,50 @@ module Tablo
     # -------------- stretch --------------------------------------------------------
     #
     #
-
-    def self.stretch(s : String, width : Int32, insert_char : Char,
-                     gap : Int32 = 0, margin : Int32 = 0)
-      arrout = [] of String
-      width -= (margin * 2)
+    def self.stretch(s : String, width : Int32, insert_char : Char, gap : Int32 = 0, margin = 0)
+      # first, we need to compute the optimized working_gap, the gap
+      # which "harmonize" all lines
+      working_gap = 999
+      working_width = width - (margin * 2)
       s.each_line do |line|
-        if line =~ /^\s*$/
-          arrout << ""
-        else
-          # compute allowable gap value
-          # allowed_gap = line.size == 1 ? width : width // (line.size - 1)
-          allowed_gap = if line.size == 1
-                          width
-                        elsif width % line.size == 0
-                          width // (line.size + 1)
-                        else
-                          width // line.size
-                        end
-          unless gap == 0
-            allowed_gap = [gap, allowed_gap].min
-          end
-          # compute new line
-          ary_src = line.chars
-          ary_dest = Array(Char).new(width, insert_char)
-          last_pos = 0
-          if allowed_gap > 0
-            ary_src.each.with_index do |c, i|
-              pos = [((allowed_gap + 1) * i).to_i, width - 1].min
-              # pos = [i, width - 1].min if pos > width
-              # pos = i if pos > width
-              ary_dest[pos] = c unless c.whitespace?
-              last_pos = pos
-            end
-            ary_dest.delete_at((last_pos + 1), ary_dest.size - last_pos)
-          else
-            ary_dest = ary_src
-          end
-          arrout << ary_dest.join
-          # arrout << " " * margin + ary_dest.join + " " * margin:w
+        if line.size > 1
+          intervals = line.size - 1
+          max_gap = (working_width - line.size) // intervals
+          max_gap = 0 if max_gap < 0
+          working_gap = [working_gap, max_gap].min
         end
       end
-      arrout.join("\n")
-    end
-
-    def self.debug_stretch(s : String, width : Int32, insert_char : Char, gap : Int32 = 0, margin = 0)
-      arrout = [] of String
-      width -= (margin * 2)
-      debug!(width)
-      debug!(gap)
-      s.each_line do |line|
-        debug!(line)
-        debug!(line.size)
-        if line =~ /^\s*$/
-          arrout << ""
-        else
-          # compute allowable gap value
-          # allowed_gap = line.size == 1 ? width : width // (line.size - 1)
-          allowed_gap = if line.size == 1
-                          width
-                        elsif width % line.size == 0
-                          width // (line.size + 1)
-                        else
-                          width // line.size
-                        end
-          debug!(allowed_gap)
-          unless gap == 0
-            allowed_gap = [gap, allowed_gap].min
-          end
-          debug!(allowed_gap)
-          # compute new line
-          ary_src = line.chars
-          ary_dest = Array(Char).new(width, insert_char)
-          debug!(allowed_gap)
-          last_pos = 0
-          if allowed_gap > 0
-            ary_src.each.with_index do |c, i|
-              debug!(((allowed_gap + 1) * i).to_i)
-              pos = [((allowed_gap + 1) * i).to_i, width - 1].min
-              # pos = [i, width - 1].min if pos > width
-              # pos = i if pos > width
-              debug!(pos)
-              ary_dest[pos] = c unless c.whitespace?
-              last_pos = pos
-              debug!(last_pos)
-            end
-            debug!(last_pos)
-            debug!(ary_dest.join)
-            ary_dest.delete_at((last_pos + 1), ary_dest.size - last_pos)
-            debug!(ary_dest.join)
-          else
-            ary_dest = ary_src
-          end
-          debug!(ary_dest.join)
-          arrout << ary_dest.join
-          # arrout << " " * margin + ary_dest.join + " " * margin:w
-        end
-        debug!("")
-      end
-      debug!(arrout)
-      arrout.join("\n")
-    end
-
-    def self.new3_stretch(s : String, width : Int32, insert_char : Char, gap = 0, margins = 0)
-      # To obtain best result, width must be equal to : s.width + (s.width -1) * n
+      # now, compute final_gap, min between gap and working_gap if gap > 0
+      final_gap = if gap == 0
+                    working_gap
+                  else
+                    [working_gap, gap].min
+                  end
+      # and finally, compute streched lines
       arrout = [] of String
       s.each_line do |line|
         if line =~ /^\s*$/
           arrout << ""
+        elsif line.size == 1
+          arrout << line
         else
-          # w = width - (margins * 2)
-          insert_gap = gap
-          debug!(line)
-          debug!(width)
-          debug!(line.size)
-          # return s if width < line.size
-          if gap == 0
-            if line.size == 1
-              insert_gap = width
-            else
-              insert_gap = width // (line.size - 1)
-            end
+          intervals = line.size - 1
+          if final_gap == 0
+            arrout << line
           else
-            insert_gap = gap + 1
-          end
-          ary_src = line.chars
-          ary_dest = Array(Char).new(width, insert_char)
-          loop do
-            if line.size + insert_gap * (line.size - 1) > width
-              insert_gap -= 1
-            else
-              break
-            end
-          end
-          debug!(insert_gap)
-          if insert_gap > 0
-            ary_src.each.with_index do |c, i|
-              debug!((insert_gap * i).to_i)
-              pos = [(insert_gap * i).to_i, width - 1].min
-              # pos = [i, width - 1].min if pos > width
-              pos = i if pos > width
-              debug!(pos)
-              ary_dest[pos] = c unless c.whitespace?
-            end
-          else
-            ary_dest = ary_src
-          end
-          debug!(ary_dest.join)
-          arrout << ary_dest.join
-        end
-        debug!("")
-      end
-      debug!(arrout)
-      arrout.join("\n")
-    end
-
-    def self.new2_stretch(s : String, width : Int32, insert_char : Char, gap = 0, margins = 0)
-      # To obtain best result, width must be equal to : s.width + (s.width -1) * n
-      arrout = [] of String
-      s.each_line do |line|
-        w = width - (margins * 2)
-        return s if w < line.size
-        if gap == 0
-          if line.size == 1
-            insert_gap = w
-          else
-            insert_gap = w // (line.size - 1)
-          end
-        else
-          insert_gap = gap + 1
-        end
-        ary_src = line.chars
-        ary_dest = Array(Char).new(w, insert_char)
-        ary_src.each.with_index do |c, i|
-          pos = [(insert_gap * i).to_i, w - 1].min
-          ary_dest[pos] = c unless c.whitespace?
-        end
-        arrout << " " * margins + ary_dest.join + " " * margins
-      end
-      arrout.join("\n")
-    end
-
-    def self.new_stretch(s : String, width : Int32, insert_char : Char, before = "", after = "")
-      # To obtain best result, width must be equal to : s.width + (s.width -1) * n
-      arrout = [] of String
-      s.each_line do |line|
-        w = width - (before.size + after.size)
-        return s if w < line.size
-        insert_gap = w // (line.size - 1)
-        ary_src = line.chars
-        ary_dest = Array(Char).new(w, insert_char)
-        ary_src.each.with_index do |c, i|
-          pos = [(insert_gap * i).to_i, w - 1].min
-          ary_dest[pos] = c unless c.whitespace?
-        end
-        arrout << before + ary_dest.join + after
-      end
-      arrout.join("\n")
-    end
-
-    def self.old_stretch(s : String, width : Int32, insert_char : Char, before = "", after = "")
-      # To obtain best result, width must be equal to : s.width + (s.width -1) * n
-      strout = String.build do |str|
-        s.each_line do |line|
-          if line =~ /^\s*$/
-            str << "\n"
-          else
-            width -= (before.size + after.size)
-            return s if width < line.size
-            insert_gap = width // (line.size - 1)
             ary_src = line.chars
-            ary_dest = Array(Char).new(width, insert_char)
+            final_length = line.size + (intervals * final_gap)
+            ary_dest = Array(Char).new(final_length, insert_char)
+            pos = 0
             ary_src.each.with_index do |c, i|
-              pos = [(insert_gap * i).to_i, width - 1].min
-              ary_dest[pos] = c unless c.whitespace?
+              ary_dest[pos] = c
+              pos += (1 + final_gap)
             end
-            str << before << ary_dest.join << after
+            arrout << ary_dest.join
           end
         end
       end
-      strout
+      arrout.join("\n")
     end
 
     enum DotAlign # All trailing decimal zeroes are replaced by spaces

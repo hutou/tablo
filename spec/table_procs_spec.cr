@@ -51,7 +51,7 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
       # ../tablo_doc/scripts/create_overview.cr-14-        insert_char: ' ', gap: 2, margin: 4)
 
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
-      output = "  m-y---t-i-t-l-e  \n" +
+      output = "  m-y- -t-i-t-l-e  \n" +
                %q( ╭─────────────────╮
                    │          itself │
                    ├-----------------┤
