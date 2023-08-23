@@ -155,7 +155,8 @@ module Tablo
   # ```
   alias DataCellStyler = Proc(CellType, CellData, String, Int32, String) |
                          Proc(CellType, CellData, String, String) |
-                         Proc(CellType, String, String)
+                         Proc(CellType, String, String) |
+                         Proc(String, String)
   # Corresponding parameters:
   # value, cell_data, content, line_index
   # value, cell_data, content

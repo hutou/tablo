@@ -3,6 +3,8 @@
 :toc: 
 :toclevels: 4 
 :icons: font 
+:imagesdir: docs/assets/images
+
 == History
 
 Tablo is a port of [Matt Harvey's
@@ -530,19 +532,107 @@ subtitle repetition.
 At the heart of Tablo's operation lies the Cell, a data structure containing
 all the elements required for display. 
 
+A cell, whether fed by data extracted from the source or directly from the
+code, can span several lines. Even if it initially occupies a single line,
+reducing the column width can result in a cell being displayed over several
+lines.
+
+You can limit the number of lines displayed by using the `header_wrap` or
+`body_wrap` parameters when initializing the table (These 2 parameters are
+global to the table, and cannot be set on individual columns). If the cell
+content cannot be displayed due to this restriction, a special character
+(tilde by default) is inserted in the right-hand padding area of the last line
+of the cell (unless right padding is set to 0 for the column).
+
+Note here the use of the `row_divider_frequency` parameter to separate body rows
+
+[source,crystal]
+----
+require "tablo"
+
+table = Tablo::Table.new(["abc", "def\nghi\njkl\nmno\npqr", "xyz"],
+  header_wrap: 2,
+  body_wrap: 3,
+  row_divider_frequency: 1
+) do |t|
+  t.add_column("A\nfour\nlines\ncell", &.itself)
+end
+puts table
+----
+
+[literal]
+----
++--------------+
+| A            |
+| four        ~|
++--------------+
+| abc          |
++--------------+
+| def          |
+| ghi          |
+| jkl         ~|
++--------------+
+| xyz          |
++--------------+
+----
+
+In addition, to have greater control over the line break, we can use the
+`wrap_mode` parameter to choose between `Rune` (~`Char`) line break and `Word`
+line break when cutting a line.
+
+To use Tablo with non-Romanic languages, it is mandatory to use the
+`naqviz/uni_char_width` shard so that the width of each grapheme is correctly
+managed, without impacting alignment.
+
+
+To do this, you need to:
+
+1. Add the dependency to your shard.yml:
+[literal]
+ dependencies:
+   tablo:
+     gitlab: hutou/tablo
+   uniwidth:
+     github: naqvis/uni_char_width
+2. Run `shards install`
+3. And insert the lines
+
+[source,crystal]
+----
+require "tablo"
+require "uniwidth"
+----
+at the beginnning of your app.
+
+  
 ==== Extracting
 
-The Cell `value:` attribute contains the raw data.
+The Cell `value` attribute contains the raw data.
 
-If extracted from the source for Body rows, the type of the Cell is
-a `DataCell`, and the corresponding column header is also a `DataCell` (as it
-depends on the type of `value:` for alignment).
+If directly given as argument to Headings or Group, the Cell is a `TextCell`
+as it is not related to source data.
 
-If directly given as argument (Headings and Group), the Cell is a `TextCell`
-and it does not offer the same flexibility as `DataCell` for formatting and styling.
+If extracted from the source (body rows), the cell is of type `DataCell`, and
+the corresponding column header is also a `DataCell` (as it depends on the
+type of body `value` for alignment).
+
+The `cell_data` attribute, specific to the `DataCell` type, provides access to
+the cell's coordinates (`row_index` and `column_index`), as well as the
+`body_value`.  This information is used to activate conditional formatting
+and styling.
+
+[source,crystal]
+----
+struct CellData
+  getter body_value, row_index, column_index
+
+  def initialize(@body_value : CellType, @row_index : Int32, @column_index : Int32)
+  end
+end
+----
 
 
-The type of `value:` is `Tablo::CellType`, which is simply defined as an empty
+The type of `value` is `Tablo::CellType`, which is simply defined as an empty
 module restriction type:
 
 [source,crystal]
@@ -581,20 +671,22 @@ puts table
 
 ==== Formatting
 
-Formatting consists in applying a transformation to the raw data to obtain
-a character string ready to be displayed. The simplest transformation (and
-also the one applied by default) is simply a call to the `to_s` method.
+Formatting consists in applying a transformation to the raw data (the
+`value`) to obtain a character string ready to be displayed. The simplest
+transformation (which is also the one applied by default) is simply a call to the
+`to_s` method.
 
-Using a Proc `formatter` allows you to customize the formatting!
-Several types of Proc `formatter` exist:
+Using a Proc `formatter` allows you to customize formatting in a variety of
+ways, from using `sprintf` formatting strings for numeric values to various
+`String` methods for text  and specific `Tablo::Util` methods for both.
 
-===== TextCell
+A formatter Proc can take four forms : the first two apply equally to TextCell
+and DataCell and are applied unconditionally on `value`.
 
-For `TextCell`, there are 2:
-                            
-====== 1st form
-
-The first simply expects an argument of type `Tablo:CellType` (the `value:`)
+The first form expects one parameter (`value`) and the second two `value` and
+`width` (column width).
+ 
+Here is an example of the first form: 
 
 [source,crystal]
 ----
@@ -605,7 +697,7 @@ table = Tablo::Table.new([1, 2, 3]) do |t|
   t.add_column(2, header: "Double") { |n| n * 2 }
   t.add_column(3, header: "Float",
     header_formatter: ->(value : Tablo::CellType) { value.as(String).upcase },
-    body_formatter: ->(value: Tablo::CellType) {"%.3f" % value.as(Float)}) { |n| n ** 0.5 } 
+    body_formatter: ->(value : Tablo::CellType) {"%.3f" % value.as(Float)}) { |n| n ** 0.5 } 
 end
 puts table
 ----
@@ -627,7 +719,7 @@ governed by the type of `value`, which is a float.
 
 
 If the formatting were done directly at the data extraction level, `value` would
-be of type String and column would be aligned to the left. 
+be of type `String` and column would be aligned to the left. 
 
 [source,crystal]
 ----
@@ -637,7 +729,9 @@ table = Tablo::Table.new([1, 2, 3]) do |t|
   t.add_column("itself", &.itself)
   t.add_column(2, header: "Double") { |n| n * 2 }
   t.add_column(3, header: "Float",
-    header_formatter: ->(value : Tablo::CellType) { value.as(String).upcase } { |n| "%.3f" % (n ** 0.5) }
+    header_formatter: ->(value : Tablo::CellType) { value.as(String).upcase }) { |n|
+    "%.3f" % (n ** 0.5)
+  }
 end
 puts table
 ----
@@ -653,11 +747,9 @@ puts table
 +--------------+--------------+--------------+
 ----
 
-====== 2nd form
+To illustrate the 2nd form, we will use the `Tablo::Util.stretch` method,
+which can be useful on groups or headings.
 
-The second expects an additional argument (of type `Int32`) corresponding to
-the column width (for special use cases, like text stretching)
-  
 [source,crystal]
 ----
 require "tablo"
@@ -665,214 +757,227 @@ require "tablo"
 table = Tablo::Table.new([1, 2, 3]) do |t|
   t.add_column("itself", &.itself)
   t.add_column(2, header: "Double") { |n| n * 2 }
-  t.add_column(3, header: "Float",
-    header_formatter: ->(value : Tablo::CellType, width : Int32)
-    { Tablo::Util.stretch(value.as(String), width, ' ')}, 
-    body_formatter: ->(value : Tablo::CellType)
-    { Tablo::Util.dot_align(value, 4, Tablo::Util::DotAlign::Blank) }) {|n| n ** 0.5 }
-  t.add_column(:column_4, header: "String") { |n| n.even?.to_s }
+  t.add_group("Numbers",
+    formatter: ->(value : Tablo::CellType, width : Int32) {
+      Tablo::Util.stretch(value.as(String), width, ' ') })
+  t.add_column(:column_3, header: "String") { |n| n.even?.to_s }
+  t.add_group("Text")
+end
+puts table
+----
+
+[Literal]
+----
++-----------------------------+--------------+
+|  N   u   m   b   e   r   s  |     Text     |
++--------------+--------------+--------------+
+|       itself |       Double | String       |
++--------------+--------------+--------------+
+|            1 |            2 | false        |
+|            2 |            4 | true         |
+|            3 |            6 | false        |
++--------------+--------------+--------------+
+----
+
+Form 3 and form 4 apply only on DataCell cell types, as they use the
+`cell_data` parameter to conditionnally format the `value`.
+
+Here is an exemple of form 3 with another method from `Tablo::Util`, which use
+the `column_index` as formatting condition.
+
+[source,crystal]
+----
+require "tablo"
+
+table = Tablo::Table.new([0.0, 1.470001, 2.234, 5.78707],
+  body_formatter: ->(value : Tablo::CellType, cell_data : Tablo::CellData) {
+    case cell_data.column_index
+    when 1 then Tablo::Util.dot_align(value.as(Float), 4, Tablo::Util::DotAlign::Empty)
+    when 2 then Tablo::Util.dot_align(value.as(Float), 4, Tablo::Util::DotAlign::Blank)
+    when 3 then Tablo::Util.dot_align(value.as(Float), 4, Tablo::Util::DotAlign::Dot)
+    when 4 then Tablo::Util.dot_align(value.as(Float), 4, Tablo::Util::DotAlign::DotZero)
+    else        value.as(Float).to_s
+    end
+  }) do |t|
+  t.add_column("itself", &.itself)
+  t.add_column("dot_align\nEmpty", &.itself)
+  t.add_column("dot_align\nBlank", &.itself)
+  t.add_column("dot_align\nDot", &.itself)
+  t.add_column("dot_align\nDotZero", &.itself)
 end
 puts table
 ----
 
 [literal]
 ----
-+--------------+--------------+--------------+--------------+
-|       itself |       Double |    F l o a t | String       |
-+--------------+--------------+--------------+--------------+
-|            1 |            2 |       1      | false        |
-|            2 |            4 |       1.4142 | true         |
-|            3 |            6 |       1.7321 | false        |
-+--------------+--------------+--------------+--------------+
++--------------+--------------+--------------+--------------+--------------+
+|       itself |    dot_align |    dot_align |    dot_align |    dot_align |
+|              |        Empty |        Blank |          Dot |      DotZero |
++--------------+--------------+--------------+--------------+--------------+
+|          0.0 |              |       0      |       0.     |       0.0    |
+|     1.470001 |       1.47   |       1.47   |       1.47   |       1.47   |
+|        2.234 |       2.234  |       2.234  |       2.234  |       2.234  |
+|      5.78707 |       5.7871 |       5.7871 |       5.7871 |       5.7871 |
++--------------+--------------+--------------+--------------+--------------+
 ----
+Incidentally, this last example displays all the formatting possibilities of
+the `Tablo::Util.dot_align` method.
 
-In the example, we also use the first form to illustrate another utility
-method : `Tablo::Util.dot_align`. +
-_See full API for `Tablo::Util` methods_
+Compared to the third form, form 4 also allows the use of the width value. +
+Its usefulness seems less obvious, however.
 
-===== DataCell
+Overview of the 4 different forms of formatter procs:
 
-For `DataCell`, there are 4 possible formatter types, 2 of which are identical
-to those of TextCell, so we will look here at only the 3rd and 4th form.
+[cols="1,5"]
+|===
+| Forms of formatter procs | Parameter and types, in order 
 
-====== 3rd form
+| 1st form | `value` : `Tablo::CellType` +
+ used by: `TextCell` or `DataCell` 
 
-in Proc(CellType, CellData, String)
-formatter.call(@value, @cell_data)
+| 2nd form | `value` : `Tablo::CellType`, `width` : `Int32` +
+ used by: `TextCell` or `DataCell` 
 
-====== 4th form
-in Proc(CellType, CellData, Int32, String)
-formatter.call(@value, @cell_data, @width)
+| 3rd form | `value` : `Tablo::CellType`, `cell_data` : `Tablo::CellData` +
+ used by: `DataCell` 
 
-[Literal]
-----
-TEXTCELL
+| 4th form | `value` : `Tablo::CellType`, `cell_data` : `Tablo::CellData`, 
+`width` : `Int32` +
+ used by: `DataCell` 
 
-formatter
-    2 forms :
-    value, width
-    value
-styler
-    2 forms :                 
-    content, line_index
-    content
+|===
 
-DATACELL
-
-formatter
-    2 forms :
-    value, cell_data
-    value
-    or perhaps 3:
-    value, cell_data
-    value, width
-    value
-    or perhaps 4: YES
-    value, cell_data, width
-    value, cell_data
-    value, width
-    value
-
-styler
-    forms :
-    value, cell_data, content, line_index
-    value, cell_data, content
-    value, content
-
-TEXTCELL
-    def apply_formatter
-      # @formatter.call(@value)
-      case formatter = @formatter
-      in Proc(CellType, Int32, String)
-        formatter.call(@value, @width)
-      in Proc(CellType, String)
-        formatter.call(@value)
-      end
-    end
-
-2 forms :
-value, width
-value
-
-    # :nodoc:
-    def apply_styler(content, line_index)
-      # debug!(Util.styler_allowed)
-      return content unless Util.styler_allowed
-      case styler = @styler
-      in Proc(String, Int32, String)
-        styler.call(content, line_index)
-      in Proc(String, String)
-        styler.call(content)
-      end
-    end
-2 forms :                 
-content, line_index
-content
-
-DATACELL
-    def apply_formatter
-      # debug!("in DataCell apply_formatter")
-      case formatter = @formatter
-      in Proc(CellType, CellData, String)
-        formatter.call(@value, @cell_data)
-        # Useless as width is included into celldata
-        # in Proc(CellType, Int32, String)
-        #  formatter.call(@value, @width)
-      in Proc(CellType, String)
-        formatter.call(@value)
-      end
-    end
-  2 forms :
-  value, cell_data
-  value
-  or perhaps 3:
-  value, cell_data
-  value, width
-  value
-
-    # :nodoc:
-    def apply_styler(content, line_index)
-      # debug!(Util.styler_allowed)
-      return content unless Util.styler_allowed
-      case styler = @styler
-      in Proc(CellType, String, CellData, Int32, String)
-        styler.call(@value, content, @cell_data, line_index)
-      in Proc(CellType, String, CellData, String)
-        styler.call(@value, content, @cell_data)
-      in Proc(CellType, String, String)
-        styler.call(@value, content)
-      end
-    end
-forms :
-value, content, cell_data, line_index
-value, content, cell_data
-value, content
-    
-----
-
-
-
-
-
-TODO TODO TODO
-Modifier le 2nd pour correspondre au second de DataCall
-Ajouter un 3ème : CellType, Int32 (line), Int32 (width) ???
-
-A voir !!!
-
-TODO TODO TODO
-
-For DataCell, there are 3:
-
-- The first simply expects an argument of type Tablo:CellType (the `value:`)
-
-- The second expects an additional argument (of type Int32) corresponding to
-  the line number when the cell contains potentially more than one. This
-  enables conditional formatting.
-
-- the third expects a CellType as first argument, and a CellData type as
-  second. 
-  And CellData also contain width
-
-[source,crystal]
-----
-struct CellData
-  getter value, row_index, column_index, width
-
-  def initialize(@value : CellType, @row_index : Int32, @column_index : Int32, @width : Int32)
-  end
-end
-----
-
-A CellData attribute is stored in each DataCell, allowing any kind
-of conditional formatting, based on row or column index.
-
-
-
-as fProc(CellType, Int32, String) |
-- Proc(CellType, String)
-  alias DataCellFormatter = Proc(CellType, CellData, String) |
-                            Proc(CellType, Int32, String) |
-                            Proc(CellType, String)
-- The second expects an additional argument (of type Int32) corresponding to
-  the line number when the cell contains potentially more than one. This
-  enables conditional formatting.
 
 ==== Styling
 
+When it comes to terminal styling, the possibilities are limited, especially
+as they depend on the terminal's capabilities. There are therefore
+2 complementary ways of proceeding:
 
-TODO  padding, truncation
+- play with the mode (underlined, bold, italic...)
+- use color
 
-TODO row_divider_frequency
+This can be done using ANSI code sequences, or preferably, using the
+`colorize` module of the standard library.
 
-TODO wrap
+In this section, we'll be using color, altered characters and graphic borders
+with the Fancy border type. Output will therefore be presented as SVG images, so as
+to guarantee perfect rendering, whatever the medium used. 
 
-TODO masked_headers (double emploi avec header_frequency: nil ?)
+For styling, there are 5 forms of Procs.
 
-TODO omit_last_rule
+The first uses only (formatted) content as a parameter, and therefore does not
+allow conditional styling.
 
-TODO footer_page_break
+Let's look at a simple example, with yellow borders and blue headers.
 
+[source,crystal]
+----
+require "tablo"
+require "colorize"
+
+table = Tablo::Table.new([1, 2, 3],
+  border_type: Tablo::BorderName::Fancy,
+  border_styler: ->(border_char : String) {border_char.colorize(:yellow).to_s},
+  header_styler: ->(content : String) {content.colorize(:blue).to_s} ) do |t|
+  t.add_column("itself", &.itself)
+  t.add_column(2, header: "Double") { |n| n * 2 }
+  t.add_column(:column_3, header: "String") { |n| n.even?.to_s }
+end
+puts table
+----
+
+image:styling_first_form.svg[width="460",caption="Styling
+first form:"]
+
+Cool! Let's do now some conditional styling, painting in bold green all values
+greater than 2 in all numeric columns and underlining "true" `String` values in third
+column: this is the third form of styling.
+
+Just add, at the table level before `header_styler`, the following lines :
+[source,crystal]
+----
+  body_styler: ->(value : Tablo::CellType, content : String) {
+    case value
+    when Int32
+      value > 2 ? content.colorize.fore(:green).mode(:bold).to_s : content
+    else
+      value == "true" ? content.colorize.mode(:underline).to_s : content
+    end
+  },
+----
+
+image:styling_third_form.svg[width="460",caption="Styling
+third form:"]
+
+Let's end with a final example, with a black-and-white look: how do you
+display rows alternately in light gray (with a bit of italics) and dark gray
+to make them easier to read?
+
+This would be the 4th form.
+
+
+[source,crystal]
+----
+require "tablo"
+require "colorize"
+
+table = Tablo::Table.new([1, 2, 3, 4, 5],
+  title: Tablo::FramedHeading.new("My black and white fancy table"),
+  footer: Tablo::FramedHeading.new("End of data"),
+  border_type: Tablo::BorderName::Fancy,
+  border_styler: ->(border_char : String) {border_char.colorize(:light_gray).to_s},
+  body_styler: ->(value : Tablo::CellType, cell_data : Tablo::CellData, content : String) {
+    if cell_data.row_index.even? 
+      "\e[3m" + content.colorize(:light_gray).to_s + "\e[0m"  <1>
+    else
+      content.colorize.fore(:dark_gray).mode(:bold).to_s
+    end },
+  header_styler: ->(content : String) {content.colorize.mode(:bold).to_s} ) do |t|
+  t.add_column("itself", &.itself)
+  t.add_column(2, header: "Double") { |n| n * 2 }
+  t.add_column(:column_3, header: "String") { |n| n.even?.to_s }
+end
+puts table
+----
+
+<1> In version 1.9.2 of the Crystal language, the `colorize` module does not yet
+support the `:italic` mode.  We therefore use an ANSI sequence to obtain the result.
+
+image:styling_fourth_form.svg[width="460",caption="Styling
+fourth form:"]
+
+Overview of the 5 different forms of styler procs:
+
+[cols="1,5"]
+|===
+| Forms of styler procs | Parameter and types, in order 
+
+| 1st form | `(formatted) content` : `String` +
+ used by: `Border`, `TextCell` or `DataCell`
+
+| 2nd form | `(formatted) content` : `String`, `line_index` :  `Int32` +
+ used by: `TextCell`
+
+| 3rd form | `value` : `Tablo::CellType`, `(formatted) content` : `String` +
+ used by: `DataCell`
+
+| 4th form | `value` : `Tablo::CellType`, `cell_data` : `Tablo::CellData`, 
+`(formatted) content` : `String` +
+ used by: `DataCell`
+
+| 5th form | `value` : `Tablo::CellType`, `cell_data` : `Tablo::CellData`, 
+`(formatted) content` : `String`, `line_index` : `Int32` +
+ used by: `DataCell`
+|===
+
+
+=== Column width and packing
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+I AM HERE
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+    
 
 == Complete API
 
@@ -898,7 +1003,7 @@ They differ mainly in 2 exclusive attribute types:
 
 - CellData for DataCell cells
 
-Both have the `value:` attribute, which contains the raw data extracted from
+Both have the `value` attribute, which contains the raw data extracted from
 source. Its type is `Tablo::CellType`
 
 

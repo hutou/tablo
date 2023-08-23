@@ -327,6 +327,8 @@ module Tablo
         styler.call(@value, @cell_data, content)
       in Proc(CellType, String, String)
         styler.call(@value, content)
+      in Proc(String, String)
+        styler.call(content)
       end
     end
 
