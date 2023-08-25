@@ -941,8 +941,8 @@ end
 puts table
 ----
 
-<1> In version 1.9.2 of the Crystal language, the `colorize` module does not yet
-support the `:italic` mode.  We therefore use an ANSI sequence to obtain the result.
+<1> From version 1.10 onwards, Crystal does support italic mode, and the use
+of ANSI sequences is given here simply as an example.
 
 image:styling_fourth_form.svg[width="460",caption="Styling
 fourth form:"]
@@ -972,12 +972,28 @@ Overview of the 5 different forms of styler procs:
 |===
 
 
-=== Column width and packing
+=== Packing
+In the previous examples, the notion of column width was used. For a better
+understanding, the diagram below highlights the structure of a column.
+                   
+image:column_layout.svg[width="460"]
+
+As we saw at the start of this tutorial, by default, all columns have the same
+width, i.e. 12 characters.  
+
+Of course, this value can be modified globally when initializing the table, or
+individually when defining columns.  The same applies to left and right
+padding, as well as to the padding character (a space, by default). 
+
+The border width is 1 character maximum, but can be 0 (i.e. no border) if the
+letter E is used in the border definition string.
+
+The `pack` method ...
+
 &&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 I AM HERE
 &&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
-    
 
 == Complete API
 
