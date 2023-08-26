@@ -556,7 +556,7 @@ module Tablo
       (cells = @group_registry.map { |_, v| v }).each do |c|
         # group cells need to be zapped (ie set to nil) so that
         # group width can be recomputed properly
-        c.zap_rendered_subcells
+        c.reset_rendered_subcells
       end
       format_row(cells, @header_wrap)
     end
