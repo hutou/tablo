@@ -788,15 +788,6 @@ module Tablo
       self
     end
 
-    def zzz_update_summary_widths
-      unless (st = summary_table).nil?
-        widths = @column_registry.map { |k, v| v.width }
-        st.column_registry.each_with_index do |(k, v), i|
-          v.width = widths[i]
-        end
-      end
-    end
-
     # :nodoc:
     # Resets all the column widths so that each column is *just* wide enough to
     # accommodate its header text as well as the formatted content of each cell for
@@ -1014,6 +1005,15 @@ module Tablo
     private def join_lines(lines)
       # TODO what if Windows \n\r ?
       lines.join("\n")
+    end
+  end
+
+  def zzz_update_summary_widths
+    unless (st = summary_table).nil?
+      widths = @column_registry.map { |k, v| v.width }
+      st.column_registry.each_with_index do |(k, v), i|
+        v.width = widths[i]
+      end
     end
   end
 end

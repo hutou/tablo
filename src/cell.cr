@@ -140,8 +140,8 @@ module Tablo
       line_index = 0
       memoized_formatted_value.split(NEWLINE).flat_map do |line|
         if line =~ /^\s*$/
-          # Allows for blank lines
-          parsed_subcell = [line]
+          # Allows for blank lines, but send EMPTY one
+          parsed_subcell = [""]
         else
           parsed_subcell = case @wrap_mode
                            in WrapMode::Rune
