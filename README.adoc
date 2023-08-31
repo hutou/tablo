@@ -973,6 +973,7 @@ Overview of the 5 different forms of styler procs:
 
 
 === Packing
+
 In the previous examples, the notion of column width was used. For a better
 understanding, the diagram below highlights the structure of a column.
                    
@@ -988,12 +989,252 @@ padding, as well as to the padding character (a space, by default).
 The border width is 1 character maximum, but can be 0 (i.e. no border) if the
 letter E is used in the border definition string.
 
-The `pack` method ...
+The `pack` method is a welcome aid to table formatting. It accepts
+3 parameters, all optional: 
 
-&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-I AM HERE
-&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+- `width`: total width required for the formatted table. If no `width` is
+  given and if the value of parameter `Config.terminal_capped_width` is true,
+  the value of `width` is read from the size of the terminal, otherwise its
+  value is `nil` and in that case, only `starting_widths == AutoSized` has an
+  effect.
 
+- `starting_widths` : column widths taken as starting point for resizing, possible 
+  values are :
+  * `Current` : resizing starts from columns current width
+  * `Initial` : current values are reset to their initial values, at column
+    definition time
+  * `AutoSized` : current values are set to their 'best fit' values, ie they are
+    automatically adapted to their largest content
+
+- `except`: column or array of columns excluded from being resized, 
+  identified by their label
+  
+The following examples will illustrate the behaviour of the different
+parameters values, starting from the 'standard' one, with all column widths to
+their default value : 12 characters.
+
+[source,crystal]
+----
+require "tablo"
+
+data = [
+  [1, "Box", "Orange", "Elephant", "Mont St Michel"],
+]
+
+table = Tablo::Table.new(data) do |t|
+  t.add_column("Primes") { |n| n[0].as(Int32) }
+  t.add_column(2, header: "Things") { |n| n[1].as(String) }
+  t.add_column(:fruits, header: "Fruits") { |n| n[2].as(String) }
+  t.add_column(3, header: "Animals") { |n| n[3].as(String) }
+  t.add_column("Famous\nSites") { |n| n[4].as(String) }
+end
+
+puts "puts table"
+puts table
+puts "table width = #{table.total_table_width}"
+----
+
+Table standard output, from default width values, without any packing
+
+[literal]
+----
+puts table
++--------------+--------------+--------------+--------------+--------------+
+|       Primes | Things       | Fruits       | Animals      | Famous       |
+|              |              |              |              | Sites        |
++--------------+--------------+--------------+--------------+--------------+
+|            1 | Box          | Orange       | Elephant     | Mont St      |
+|              |              |              |              | Michel       |
++--------------+--------------+--------------+--------------+--------------+
+table width = 76
+----
+
+Using default `pack` parameters (ie: none !), we get an optimal packing
+
+[literal]
+----
+puts table.pack
++--------+--------+--------+----------+----------------+
+| Primes | Things | Fruits | Animals  | Famous         |
+|        |        |        |          | Sites          |
++--------+--------+--------+----------+----------------+
+|      1 | Box    | Orange | Elephant | Mont St Michel |
++--------+--------+--------+----------+----------------+
+table width = 56
+----
+
+But using `pack` with same table width (56) on initial widths values gives
+a significantly poorer result 
+
+[literal]
+----
+puts table.pack(56, starting_widths: Tablo::StartingWidths::Initial)
++----------+----------+----------+----------+----------+
+|   Primes | Things   | Fruits   | Animals  | Famous   |
+|          |          |          |          | Sites    |
++----------+----------+----------+----------+----------+
+|        1 | Box      | Orange   | Elephant | Mont St  |
+|          |          |          |          | Michel   |
++----------+----------+----------+----------+----------+
+table width = 56
+----
+
+This is due to the way Tablo reduces or increases column size. See the
+description of the algorithm in the API section for `Table.pack`.
+
+Using the `width` parameter, any table width can be obtained, by reducing or
+increasing the width of each column progressively to reach the desired table
+width
+
+[literal]
+----
+puts table.pack(30)
++-----+-----+-----+-----+----+
+| Pri | Thi | Fru | Ani | Fa |
+| mes | ngs | its | mal | mo |
+|     |     |     | s   | us |
+|     |     |     |     | Si |
+|     |     |     |     | te |
+|     |     |     |     | s  |
++-----+-----+-----+-----+----+
+|   1 | Box | Ora | Ele | Mo |
+|     |     | nge | pha | nt |
+|     |     |     | nt  | St |
+|     |     |     |     | Mi |
+|     |     |     |     | ch |
+|     |     |     |     | el |
++-----+-----+-----+-----+----+
+table width = 30
+----
+
+or 
+
+[literal]
+----
+puts table.pack(90)
++----------------+-----------------+-----------------+-----------------+-----------------+
+|         Primes | Things          | Fruits          | Animals         | Famous          |
+|                |                 |                 |                 | Sites           |
++----------------+-----------------+-----------------+-----------------+-----------------+
+|              1 | Box             | Orange          | Elephant        | Mont St Michel  |
++----------------+-----------------+-----------------+-----------------+-----------------+
+table width = 90
+----
+
+There is, however, a limit to the reduction: each column must be able to
+accommodate at least one character. Here, we're asking for a table width of
+15, but the minimum size to respect this rule is 21!
+
+[literal]
+----
+puts table.pack(15)
++---+---+---+---+---+
+| P | T | F | A | F |
+| r | h | r | n | a |
+| i | i | u | i | m |
+| m | n | i | m | o |
+| e | g | t | a | u |
+| s | s | s | l | s |
+|   |   |   | s | S |
+|   |   |   |   | i |
+|   |   |   |   | t |
+|   |   |   |   | e |
+|   |   |   |   | s |
++---+---+---+---+---+
+| 1 | B | O | E | M |
+|   | o | r | l | o |
+|   | x | a | e | n |
+|   |   | n | p | t |
+|   |   | g | h | S |
+|   |   | e | a | t |
+|   |   |   | n | M |
+|   |   |   | t | i |
+|   |   |   |   | c |
+|   |   |   |   | h |
+|   |   |   |   | e |
+|   |   |   |   | l |
++---+---+---+---+---+
+table width = 21
+----
+
+If, with the parameter `starting_widths == Startingwidths::AutoSized` by default 
+(set by `Config.starting_widths`), the `pack` method automatically adapts the width of
+columns to their largest content (body or header) before resizing, this
+requires you to go through the entire source dataset, which can be costly in
+terms of performance in some cases.  
+
+This behavior can be avoided, but possibly with a loss of quality, by changing
+the value of `starting_widths` to `Current` or `Initial`. In this case,
+however, a value for `width` must be supplied, either directly or by reading
+the terminal size, otherwise `pack` will become a non-operation.  
+
+Finally, using the `except` parameter, you can temporarily freeze the size of
+one or more columns at their current value, so that they are excluded from
+resizing.
+
+[literal]
+----
+puts table.pack(80,except: [2, :fruits])
++-------------------+--------+--------+-------------------+--------------------+
+|            Primes | Things | Fruits | Animals           | Famous             |
+|                   |        |        |                   | Sites              |
++-------------------+--------+--------+-------------------+--------------------+
+|                 1 | Box    | Orange | Elephant          | Mont St Michel     |
++-------------------+--------+--------+-------------------+--------------------+
+table width = 80
+----
+
+Note that when a column is created using the `add_column` method, the width
+is stored in 2 different attributes: the current value and the initial value
+(never subsequently modified).  
+
+The `pack` method simply modifies the current value of the column widths, and
+the `to_s` method then takes care of the layout.
+
+It is therefore equivalent to writing :
+
+[source,crystal]
+----
+table.pack
+puts table
+----
+and
+[source,crystal]
+----
+puts table.pack
+----
+
+To sum up:
+
+[cols="1,2"]
+|===
+| Type of call | - Results (with `StartingWidths::AutoSized` as default)
+
+| `table.pack` | - Automatically adapts columns to their largest content +
+- Modifies current values of column width
+
+| `table.pack(40)` | - Automatically adapts columns to their largest content +
+- Modifies current values of column width +
+- Reduces or increases column widths to meet total table size requirements 
+
+| `table.pack(starting_widths: StartingWidths::Current`) | - No-op 
+
+| `table.pack(40, starting_widths: StartingWidths::Current`) | 
+- Reduces or increases column widths to meet total table size requirements 
+
+| `table.pack(starting_widths: StartingWidths::Initial`) | - Only resets current
+column values to their initial values, no packing is done
+
+| `table.pack(40, starting_widths: StartingWidths::Initial`) | - Resets current
+column values to their initial values +  
+- Reduces or increases column widths to meet total table size requirements 
+
+|===
+
+=== Transpose
+&&&&&&&&&&&&&&&&&&&& to be continued &&&&&&&&&&&&&&&&&&&&&&
+
+=== Summary
 
 == Complete API
 
@@ -1021,6 +1262,43 @@ They differ mainly in 2 exclusive attribute types:
 
 Both have the `value` attribute, which contains the raw data extracted from
 source. Its type is `Tablo::CellType`
+
+=== class Table 
+
+==== pack method
+[source,crystal]
+----
+def pack(width : TableWidth? = GetWidthFrom::Screen, *,
+    starting_widths : StartingWidths = Config.starting_widths,
+    except : Except? = nil)   
+----
+
+The `pack` method is a welcome aid to table formatting. It accepts
+3 parameters, all optional: 
+
+- `width`: the total width of the formatted table. With positive `width`, this
+  is a maximum value, and with negative `width`, a minimum value. If the value
+  of parameter `Config.terminal_capped_width` is true, the value of
+  `width`, if not directly supplied, is the number of columns in
+  the terminal. 
+
+- `autosize` : if true (default), column widths are automatically adapted to their
+  largest content, before any attempt is made to increase or reduce the total
+  width of the table. 
+
+- `except`: column label (or label array) to be excluded from resizing
+  processing.
+
+If, with the parameter `autosize = true` by default (set by
+`Config.pack_autosize`), the `pack` method automatically adapts the width of
+columns to their largest content (body or header) before resizing, this
+requires you to go through the entire source dataset, which can be costly in
+terms of performance in some cases.  
+
+This behavior can be avoided with the `autosize = false` parameter: in this
+case, however, a positive or negative value for `width` must be supplied,
+either directly or by reading the terminal width, otherwise `pack` will become
+a non-operation.  
 
 
 [literal]
