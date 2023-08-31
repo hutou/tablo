@@ -688,97 +688,71 @@ module Tablo
       arlines.join("\n")
     end
 
-    # Resets all the column widths so that each column is *just* wide enough to accommodate
-    # its header text as well as the formatted content of each its cells for the entire
-    # collection, together with padding (by default 1 character on either side of the column),
-    # without wrapping. Other adjustments may also be performed (see below).
+    # -------------- Pack and its auxiliary methods----------------------------------
     #
-    # In addition, if the table has a title but is not wide enough to
-    # accommodate (without wrapping) the title text (with a character of padding either side),
-    # widens the columns roughly evenly until the table as a whole is just wide enough to
-    # accommodate the title text.
     #
-    # Note that calling this method will cause the entire source Enumerable to
-    # be traversed and all the column extractors and formatters to be applied in order
-    # to calculate the required widths.
-    #
-    # Note also that this method causes column widths to be fixed as appropriate to the
-    # formatted cell contents given the state of the source Enumerable at the point it
-    # is called. If the source Enumerable changes between that point, and the point when
-    # the Table is printed, then columns will *not* be resized yet again on printing.
-    #
-    # @param [nil, :auto, Numeric] table_width With no args, or if passed <tt>:auto</tt>,
-    #   stops the total table width (including padding and border) from expanding beyond the
-    #   bounds of the terminal screen.
-    #   If passed <tt>nil</tt>, the table width will not be capped.
-    #   Width is deducted from columns if required to achieve this, with one character progressively
-    #   deducted from the width of the widest column until the target is reached. When the
-    #   table is printed, wrapping or truncation will then occur in these columns as required
-    #   (depending on how they were configured).
-    #   Note that regardless of the value passed to `table_width`, the table will always be left wide
-    #   enough to accommodate at least 1 character's width of content for each column, and the padding
-    #   configured for each column (by default 1 character either side), together with border characters
-    #   (1 on each side of the table and 1 between adjacent columns). I.e. there is a certain width below width the
-    #   Table will refuse to shrink itself.
-    # @param [nil, Symbol, Integer, Array[Symbol|Integer]] except If passed one or multiple column labels,
-    #   these columns will be excluded from resizing and will keep their current width.
-    #   (Note if passing integers, these are not necessarily positional: only columns _explicitly_
-    #   given an integer label will have these as labels.)
-    # @return [Table] the Table itself
-    # def pack(table_width: :auto, except: nil)
 
-    # # no parameters
-    # # table is capped
-
-    # parameters :
-    # - width : Int32? or GetWidthFrom
-    #   . nil : table width won't be capped
-    #   . GetWidthFrom == screen : width limited to terminal width (default) or nil if
-    #     output is redirected
-    #   . Int32 : required user max width, or min width if < 0
-    # - init : PackInit?, pre-processing before packing (autosize or reset)
-    #   - autosize : set column size to the (maximum) width of formatted content
-    #   - reset : set column size to its original value
-    # - except : array of column labels (LabelType) to be excluded from packing
+    # The `pack` method allows for adapting the total width of the table.
+    # It accepts 3 parameters, all optional:
+    #
+    # - `width`: total width required for the formatted table. If no `width` is
+    #   given and if the value of parameter `Config.terminal_capped_width` is true,
+    #   the value of `width` is read from the size of the terminal, otherwise its
+    #   value is `nil` and in that case, only `starting_widths == AutoSized` has an
+    #   effect.
+    #
+    # - `starting_widths` : column widths taken as starting point for resizing, possible
+    #   values are :
+    #   * `Current` : resizing starts from columns current width
+    #   * `Initial` : current values are reset to their initial values, at column
+    #     definition time
+    #   * `AutoSized` : current values are set to their 'best fit' values, ie they are
+    #     automatically adapted to their largest content
+    #
+    # - `except`: column or array of columns excluded from being resized,
+    #   identified by their label
+    #
+    # The following examples will illustrate the behaviour of the different
+    # parameters values, starting from the 'standard' one, with all column widths to
+    # their default value : 12 characters.
+    #
+    # returns the Table itself
     def pack(width : TableWidth? = GetWidthFrom::Screen, *,
-             init : PackInit? = PackInit::AutoSize,
+             starting_widths : StartingWidths = Config.starting_widths,
              except : Except? = nil)
-      case init
-      in Nil
+      required_width = case width
+                       in Nil
+                         nil
+                       in GetWidthFrom
+                         if width == GetWidthFrom::Screen && STDOUT.tty? &&
+                            Config.terminal_capped_width?
+                           Util.get_terminal_lines_and_columns[1]
+                         else
+                           nil
+                         end
+                       in Int32
+                         width
+                       end
+
+      case starting_widths
+      in StartingWidths::Current
         # no change to current column widths before packing
-      in PackInit::Reset
+      in StartingWidths::Initial
         # all columns, 'except' excepted, have their width reset to their initial value
         column_list(except: except).each do |c|
           c.width = c.initial_width
         end
-      in PackInit::AutoSize # default
+      in StartingWidths::AutoSized # default
         # all columns, 'except' excepted, have their width set to their
         # largest formatted content size --> Implies browsing all source rows
         autosize_columns(except: except)
       end
 
-      max_width = case width
-                  in Nil
-                    nil
-                  in GetWidthFrom
-                    if width == GetWidthFrom::Screen && STDOUT.tty? &&
-                       Config.terminal_capped_width?
-                      Util.get_terminal_lines_and_columns[1]
-                    else
-                      nil
-                    end
-                  in Int32
-                    width
-                  end
-      unless max_width.nil?
-        if max_width < 0
-          if total_table_width > max_width.abs
-            shrink(max_width.abs, except)
-          else
-            expand(max_width.abs, except)
-          end
+      unless required_width.nil?
+        if total_table_width > required_width
+          shrink(required_width, except)
         else
-          shrink(max_width, except)
+          expand(required_width, except)
         end
       end
       # Here we need also to update widths of summary, if it exists
@@ -788,21 +762,17 @@ module Tablo
       self
     end
 
-    # :nodoc:
     # Resets all the column widths so that each column is *just* wide enough to
     # accommodate its header text as well as the formatted content of each cell for
     # the entire collection, together with padding, without wrapping.
-    #
-    # - *except* parameter is of type LabelType | Array(LableType). Columns listed
-    # will be excluded from resizing and will keep their current width.
-    #
-    # Returns the Table itself
     private def autosize_columns(except = nil)
       columns = column_list(except: except)
       @sources.each_with_index do |source, row_index|
         columns.each_with_index do |column, column_index|
+          # create a DataCell (Body)
           body_cell = column.body_cell(source, row_index: row_index, column_index: column_index)
           if row_index == 0
+            # if first row, create a DataCell for Header
             header_cell = column.header_cell(body_cell)
             column.width = wrapped_width(header_cell.memoized_formatted_value)
           end
@@ -812,30 +782,8 @@ module Tablo
       end
     end
 
-    # If `max_table_width` is passed an integer, then column widths will be adjusted downward so
-    # that the total table width is reduced to the passed target width. (If the total width of the
-    # table exceeds the passed `max_table_width`, then this method is a no-op.)
-    #
-    # Width is deducted from columns if required to achieve this, with one character progressively
-    # deducted from the width of the widest column until the target is reached. When the
-    # table is printed, wrapping or truncation will then occur in these columns as required
-    # (depending on how they were configured).
-    #
-    # Note that regardless of the value passed to `max_table_width`, the table will always be left wide
-    # enough to accommodate at least 1 character's width of content for each column, and the padding
-    # configured for each column (by default 1 character either side), together with border characters
-    # (1 on each side of the table and 1 between adjacent columns). I.e. there is a certain width below width the
-    # Table will refuse to shrink itself.
-    #
-    # If `max_table_width` is passed the symbol `:screen`, then this method will behave as if it
-    # were passed an integer, with that integer being the width of the terminal.
-    #
-    # @param [Integer, :screen] the desired maximum table width
-    # @param [nil, Symbol, Integer, Array[Symbol|Integer]] except If passed one or multiple column labels,
-    #   these columns will be excluded from resizing and will keep their current width.
-    #   (Note if passing integers, these are not necessarily positional: only columns _explicitly_
-    #   given an integer label will have these as labels.)
-    # @return [Table] the Table itself
+    # The shrink auxiliary method reduces column widths, with one character progressively
+    # deducted from the width of the widest column until the target width is reached.
     private def shrink(max_table_width, except)
       border_padding_width = padding_widths_sum + border_widths_sum
       shrinkable_columns = column_list(except: except)
@@ -847,7 +795,6 @@ module Tablo
       else
         except = [except] unless except.is_a?(Array)
         unshrinkable_width = except.sum { |label| column_registry[label].width }
-        # unshrinkable_width = except.map { |label| column_registry[label].width }.sum
         min_table_width = column_count - except.size +
                           unshrinkable_width + border_padding_width
       end
@@ -863,6 +810,8 @@ module Tablo
       end
     end
 
+    # The expand auxiliary method increases column widths, with one character progressively
+    # added to the width of the narrowest column until the target width is reached.
     private def expand(min_table_width, except)
       expandable_columns = column_list(except: except)
       return if expandable_columns.empty?
@@ -874,6 +823,10 @@ module Tablo
         narrowest_column.width += 1
       end
     end
+
+    # -------------- Transpose method -----------------------------------------------
+    #
+    #
 
     def transpose(**opts)
       default_opts = {
@@ -944,9 +897,36 @@ module Tablo
       table
     end
 
-    # :nodoc:
+    # -------------- Public auxiliary methods ---------------------------------------
+    #
+    #
+
+    # returns the total actual width of the table as a whole
+    # TODO : to be renamed to 'width' ???
+    #        but wait for global refactoring and renaming
+    def total_table_width
+      widths_sum + padding_widths_sum + border_widths_sum
+    end
+
+    # -------------- private auxiliary methods---------------------------------------
+    #
+    #
+
+    # Returns the length of the longest segment of str when split by newlines
+    private def wrapped_width(str)
+      return 0 if str.empty?
+      segments = str.split(NEWLINE)
+      segments.reduce(1) do |size, segment|
+        {% if @top_level.has_constant?("UnicodeCharWidth") %}
+          [size, UnicodeCharWidth.width(segment)].max
+        {% else %}
+          [size, segment.size].max
+        {% end %}
+      end
+    end
+
     # Returns an array of Column instances, after possibly filtering on label exceptions
-    protected def column_list(except : Except? = nil)
+    private def column_list(except : Except? = nil)
       if except.nil?
         column_registry.values
       else
@@ -954,11 +934,6 @@ module Tablo
         column_labels = column_registry.keys - except
         column_labels.map { |label| column_registry[label] }
       end
-    end
-
-    # returns the total combined width of padding characters
-    private def padding_widths_sum
-      column_list.reduce(0) { |sum, column| sum + column.total_padding }
     end
 
     # returns the total combined width of vertical border characters
@@ -970,16 +945,9 @@ module Tablo
       left + mid + right
     end
 
-    # returns the total combined width of column contents (excludes border and padding)
-    private def widths_sum
-      column_list.reduce(0) { |sum, column| sum + column.width }
-    end
-
-    # @return [Integer] the total actual width of the table as a whole
-    # TODO : to be renamed to 'width' ???
-    #        but wait for global refactoring and renaming
-    def total_table_width
-      widths_sum + padding_widths_sum + border_widths_sum
+    # returns the total combined width of padding characters
+    private def padding_widths_sum
+      column_list.reduce(0) { |sum, column| sum + column.total_padding }
     end
 
     # returns the count of defined columns
@@ -987,33 +955,76 @@ module Tablo
       column_registry.size
     end
 
-    #
-    # Returns the length of the longest segment of str when split by newlines
-    private def wrapped_width(str)
-      return 0 if str.empty?
-      segments = str.split(NEWLINE)
-      segments.reduce(1) do |size, segment|
-        # TODO replace segment.size in line above with Unicode::DisplayWidth.of(segment)
-        {% if @top_level.has_constant?("UnicodeCharWidth") %}
-          [size, UnicodeCharWidth.width(segment)].max
-        {% else %}
-          [size, segment.size].max
-        {% end %}
-      end
+    # returns the total combined width of column contents (excludes border and padding)
+    private def widths_sum
+      column_list.reduce(0) { |sum, column| sum + column.width }
     end
 
+    # returns the string of joined lines by newline
     private def join_lines(lines)
       # TODO what if Windows \n\r ?
       lines.join("\n")
     end
-  end
 
-  def zzz_update_summary_widths
-    unless (st = summary_table).nil?
-      widths = @column_registry.map { |k, v| v.width }
-      st.column_registry.each_with_index do |(k, v), i|
-        v.width = widths[i]
+    # -------------- unused, old or obsolete mrthods --------------------------------
+    #
+    #
+
+    def zzz_update_summary_widths
+      unless (st = summary_table).nil?
+        widths = @column_registry.map { |k, v| v.width }
+        st.column_registry.each_with_index do |(k, v), i|
+          v.width = widths[i]
+        end
       end
+    end
+
+    def old_pack(width : TableWidth? = GetWidthFrom::Screen, *,
+                 init : PackInit? = PackInit::AutoSize,
+                 except : Except? = nil)
+      case init
+      in Nil
+        # no change to current column widths before packing
+      in PackInit::Reset
+        # all columns, 'except' excepted, have their width reset to their initial value
+        column_list(except: except).each do |c|
+          c.width = c.initial_width
+        end
+      in PackInit::AutoSize # default
+        # all columns, 'except' excepted, have their width set to their
+        # largest formatted content size --> Implies browsing all source rows
+        autosize_columns(except: except)
+      end
+
+      max_width = case width
+                  in Nil
+                    nil
+                  in GetWidthFrom
+                    if width == GetWidthFrom::Screen && STDOUT.tty? &&
+                       Config.terminal_capped_width?
+                      Util.get_terminal_lines_and_columns[1]
+                    else
+                      nil
+                    end
+                  in Int32
+                    width
+                  end
+      unless max_width.nil?
+        if max_width < 0
+          if total_table_width > max_width.abs
+            shrink(max_width.abs, except)
+          else
+            expand(max_width.abs, except)
+          end
+        else
+          shrink(max_width, except)
+        end
+      end
+      # Here we need also to update widths of summary, if it exists
+      # TODO To be studied
+      # update_summary_widths
+      update_group_widths
+      self
     end
   end
 end
