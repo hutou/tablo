@@ -19,6 +19,7 @@ module Tablo
     protected getter body_formatter, header_formatter
     protected getter body_styler, header_styler
     protected getter header
+
     protected getter initial_width
 
     # -------------- special getters / setters --------------------------------------

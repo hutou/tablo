@@ -23,18 +23,15 @@ module Tablo
     # :nodoc:
     class_property omitted_rowtype_line_breaks_after : Int32 = 0
 
-    # Table management attributes
+    # -------------- Table management attributes ------------------------------------
+    #
+    #
 
-    # :nodoc:
-    getter column_registry = {} of LabelType => Column(T)
-    # :nodoc:
-    getter group_registry = {} of LabelType => TextCell
-    # :nodoc:
-    getter groups = [] of Range(Int32, Int32)
-    # :nodoc:
-    property row_count : Int32 = 0
-    # :nodoc:
-    property summary_table : Table(Array(Float64 | Int32 | String | Nil))? = nil
+    protected getter column_registry = {} of LabelType => Column(T)
+    protected getter group_registry = {} of LabelType => TextCell
+    protected getter groups = [] of Range(Int32, Int32)
+    protected property row_count : Int32 = 0
+    protected property summary_table : Table(Array(Float64 | Int32 | String | Nil))? = nil
 
     # Table parameters
     getter sources
@@ -62,8 +59,6 @@ module Tablo
           @title : UnFramedHeading | FramedHeading = FramedHeading.new,
           @subtitle : UnFramedHeading | FramedHeading = FramedHeading.new,
           @footer : UnFramedHeading | FramedHeading = FramedHeading.new,
-          # @subtitle = HeadingA.new,
-          # @footer = HeadingA.new,
           #
           @group_alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
           @group_formatter : TextCellFormatter = DEFAULT_FORMATTER,
@@ -201,7 +196,7 @@ module Tablo
     # Second constructor, with same parameters as the first one, but with a block given
     initialize(block_given: true)
 
-    # -------------- check table parameters -----------------------------------------
+    # -------------- parameters checks  ---------------------------------------------
     #
     #
 
@@ -370,7 +365,7 @@ module Tablo
     #
     # Returns an instance of class `TextCell`
     def add_group(label, *,
-                  header = label,
+                  header = label.to_s,
                   alignment = group_alignment,
                   formatter = group_formatter,
                   styler = group_styler,
@@ -538,21 +533,26 @@ module Tablo
     # When printed, the first row will visually include the headers
     # (depending on the "@header_frquency* value, however).
     # Iterates on source elements, creating formatted rows dynamically
+    # show_divider is true if
+    # - rdf not nil
+    # - index > 0 (not first row)
+    # - rdf % index == 0
+    # - hf % index != 0 (not matching hf row)
+    # TODO to be checked
     def each(&)
       @sources.each_with_index do |source, index|
         show_divider = false
-        if !(row_divider_frequency = @row_divider_frequency).nil? &&
-           !row_divider_frequency.zero?
-          show_divider = (index != 0) && (index % row_divider_frequency == 0)
-          if !(header_frequency = @header_frequency).nil? && !header_frequency.zero?
-            show_divider &&= (index % header_frequency != 0)
+        unless (rdf = row_divider_frequency).nil?
+          show_divider = (index > 0) && (index % rdf == 0)
+          unless (hf = header_frequency).nil?
+            show_divider &&= (index % hf != 0) if hf > 0
           end
         end
         yield Row.new(table: self, source: source, divider: show_divider, index: index)
       end
     end
 
-    def rendered_group_row
+    protected def rendered_group_row
       (cells = @group_registry.map { |_, v| v }).each do |c|
         # group cells need to be zapped (ie set to nil) so that
         # group width can be recomputed properly
@@ -561,7 +561,7 @@ module Tablo
       format_row(cells, @header_wrap)
     end
 
-    def rendered_header_row(source, row_index)
+    protected def rendered_header_row(source, row_index)
       body_cells = row_cells(source, row_index)
       # Use of body_cells is necessary here to automatically justify headers
       # based on body value type
@@ -571,20 +571,20 @@ module Tablo
       format_row(header_cells, @header_wrap)
     end
 
-    def rendered_body_row(source, index)
+    protected def rendered_body_row(source, index)
       cells = row_cells(source, index)
       format_row(cells, @body_wrap)
     end
 
-    def rendered_title_row
+    protected def rendered_title_row
       rendered_heading_row(RowType::Title)
     end
 
-    def rendered_subtitle_row
+    protected def rendered_subtitle_row
       rendered_heading_row(RowType::SubTitle)
     end
 
-    def rendered_footer_row(page_count)
+    protected def rendered_footer_row(page_count)
       rendered_heading_row(RowType::Footer, page_count)
     end
 
@@ -621,6 +621,7 @@ module Tablo
     private def format_row(cells, wrap_cells_to)
       # The line below does the whole job of formatting and styling cells
       line_count_max = cells.map(&.line_count).max
+      # Array.compact removes all nil elements
       row_line_count = ([wrap_cells_to, line_count_max].compact.min || 1)
       subcell_stacks = cells.map do |cell|
         cell.padded_truncated_subcells(row_line_count)
@@ -1025,6 +1026,20 @@ module Tablo
       # update_summary_widths
       update_group_widths
       self
+    end
+
+    def old_each(&)
+      @sources.each_with_index do |source, index|
+        show_divider = false
+        if !(row_divider_frequency = @row_divider_frequency).nil? &&
+           !row_divider_frequency.zero?
+          show_divider = (index != 0) && (index % row_divider_frequency == 0)
+          if !(header_frequency = @header_frequency).nil? && !header_frequency.zero?
+            show_divider &&= (index % header_frequency != 0)
+          end
+        end
+        yield Row.new(table: self, source: source, divider: show_divider, index: index)
+      end
     end
   end
 end

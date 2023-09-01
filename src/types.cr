@@ -233,9 +233,10 @@ module Tablo
   end
   alias TableWidth = GetWidthFrom | Int32
 
-  enum PackInit
-    Reset
-    AutoSize
+  enum StartingWidths
+    Initial
+    Current
+    AutoSized
   end
 
   # an Enum to define cutting modes

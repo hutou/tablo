@@ -86,7 +86,7 @@ module Tablo
   #
   #
 
-  # Cell is an abstract class representing a single cell inside a Table
+  # Cell is an abstract class representing a single cell inside a Table.
   # Derived concrete cells are : TextCell and DataCell
   abstract class Cell
     include CellType
@@ -132,7 +132,7 @@ module Tablo
     # - last, each subcell is aligned and styled
     #
     # Returns the array(String) of subcells
-    def render_subcells
+    private def render_subcells
       subcells = [] of String
       line_index = 0
       memoized_formatted_value.split(NEWLINE).flat_map do |line|
@@ -245,11 +245,12 @@ module Tablo
                    @width : Int32)
     end
 
+    # needed for group width recalculation
     def reset_rendered_subcells
       self.rendered_subcells = nil
     end
 
-    def apply_formatter
+    private def apply_formatter
       case f = formatter
       in Proc(CellType, Int32, String)
         f.call(value, width)
@@ -258,7 +259,7 @@ module Tablo
       end
     end
 
-    def apply_styler(content, line_index)
+    private def apply_styler(content, line_index)
       return content unless Util.styler_allowed
       case s = styler
       in Proc(String, Int32, String)
@@ -298,7 +299,7 @@ module Tablo
                    @width : Int32)
     end
 
-    def apply_formatter
+    private def apply_formatter
       case f = formatter
       in Proc(CellType, CellData, Int32, String)
         f.call(value, cell_data, width)
@@ -311,7 +312,7 @@ module Tablo
       end
     end
 
-    def apply_styler(content, line_index)
+    private def apply_styler(content, line_index)
       return content unless Util.styler_allowed
       case s = styler
       in Proc(CellType, CellData, String, Int32, String)

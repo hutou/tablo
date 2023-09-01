@@ -385,7 +385,7 @@ In summary, we have 6 types of data rows :
 | Type | Description 
 
 | Header  | Always displayed, unless `header_frequency:` is `nil` or
-`masked_headers:` is `true`  (_see below_)
+`masked_headers:` is `true`
 | Body    | Always displayed
 | Group   | Optional
 | Title   | Optional
@@ -1188,8 +1188,14 @@ Note that when a column is created using the `add_column` method, the width
 is stored in 2 different attributes: the current value and the initial value
 (never subsequently modified).  
 
-The `pack` method simply modifies the current value of the column widths, and
-the `to_s` method then takes care of the layout.
+The `pack` method simply modifies the current column width value, and the
+`to_s` method then takes care of the layout, and we can save the table in its
+output layout in a string with :
+
+[source,crystal]
+----
+formatted_table = table.to_s
+----
 
 It is therefore equivalent to writing :
 
@@ -1265,13 +1271,266 @@ source. Its type is `Tablo::CellType`
 
 === class Table 
 
-==== pack method
+==== Method `initialize`
+
+Returns an instance of `Table(T)`
+
+[cols="1,2"]
+|===
+| Used constants | Default value
+
+| `DEFAULT_HEADING_ALIGNMENT` |  `Justify::Center`
+
+|  `DEFAULT_FORMATTER` |  `-&gt;(c : CellType) { c.to_s }` 
+
+|  `DEFAULT_STYLER` | `-&gt;(s : String) { s }`   
+
+| `DEFAULT_DATA_DEPENDENT_STYLER` | `-&gt;(_c : CellType, s : String) { s }`
+|===
+
+[cols="1,2,3"]
+|===
+| Parameters | Type and default value | Comments
+
+3+^| _Mandatory positional parameter_ 
+
+|`sources` |  `Enumerable(T)` | Can be any Enumerable data type +
+_(`Range` is currently (Crystal 1.9.2) not correctly supported in this context: use `Range.to_a` instead)_
+3+^| _Optional named parameters, with default values_ 
+| `title`, `subtitle`, `footer` | `UnFramedHeading` \|  `FramedHeading` =
+`FramedHeading.new` | Initializing an (`Un`)`FrameHeading` class without any argument sets
+its value to `nil`, so there is nothing to display 
+
+| `group_alignment` | `Justify` = `DEFAULT_HEADING_ALIGNMENT` |   
+
+| `group_formatter` | `TextCellFormatter` = `DEFAULT_FORMATTER` |   
+
+| `group_styler` | `TextCellStyler` = `DEFAULT_STYLER` |    
+
+| `header_alignment` | `Justify? = nil` | With `nil` as default, alignment
+depends on the type of the related body cell value
+
+| `header_formatter` | `DataCellFormatter` = `DEFAULT_FORMATTER` |
+
+| `header_styler` | `DataCellStyler` = `DEFAULT_DATA_DEPENDENT_STYLER` |
+
+| `body_alignment` | `Justify?` = `nil` |  With `nil` as default, alignment
+depends on the type of the body cell value 
+
+| `body_formatter` | `DataCellFormatter` = `DEFAULT_FORMATTER` |
+
+| `body_styler` | `DataCellStyler` = `DEFAULT_DATA_DEPENDENT_STYLER` |
+
+| `border_type` |  `BorderType` = `BorderName::Ascii` a| 
+* Other `BorderName` are `ReducedAscii`, `Modern`, `ReducedModern`, `Markdown`, 
+  `Fancy` and `Blank`         
+* `border_type` may also be initialized directly by a string of 16 characters
+
+| `border_styler` | `BorderStyler` = `DEFAULT_STYLER` |
+
+| `left_padding` | `Int32` = `1` |  Permitted range of values
+governed by `Config.padding_width_range` in the `check_padding`  method
+(raises `InvalidValue` runtime exception if value not in range)
+
+| `right_padding` | `Int32` = `1` |  Permitted range of values
+governed by `Config.padding_width_range` in the `check_padding`  method
+(raises `InvalidValue` runtime exception if value not in range)
+
+| `padding_character` | `String` = `" "` |  The `check_padding_character`
+auxiliairy method ensures the `padding_character` string size is only one, raises an
+`InvalidValue` runtime exception otherwise     
+
+| `truncation_indicator`| `String` = `"~"` |  The `check_truncation_indicator`
+auxiliairy method ensures the `truncation_indicator` string size is only one, raises an
+`InvalidValue` runtime exception otherwise
+
+| `width` | `Int32` = `12` | Global width value for columns.
+
+Permitted range of values governed by `Config.column_width_range` in the
+`check_width` auxiliary  method (raises `InvalidValue` runtime exception
+unless value in range)        
+
+| `header_frequency` | `Int32?` = `0` a|
+* If set to `0`, rows of data other than body are displayed
+only once, at the beginning for titles and headers, at the end for the footer.
+* If set to `n` (positive), group or column headers are repeated every `n` rows, as
+are footers, but titles and subtitles are not repeated (unless
+`title_repeated` parameter below is set to `true`)
+* If set to `nil`, only body rows are displayed. 
+
+Permitted range of values governed by `Config.header_frequency_range` in
+the `check_header_frequency` auxiliary method (raises `InvalidValue` runtime
+exception unless value in range or `nil`)
+
+| `row_divider_frequency` | `Int32?` = `nil` |  Permitted range of values
+governed by `Config.row_divider_frequency_range` in the
+`check_row_divider_frequency` auxiliary  method (raises `InvalidValue` runtime
+exception unless value in range or `nil`)
+
+| `wrap_mode` |  `WrapMode` = `WrapMode::Word` a|
+`WrapMode` enum defines 2 modes :
+
+* `Rune` : long lines can be cut between characters (graphemes)
+* `Word` : long lines can be cut between words only
+
+| `header_wrap` | `Int32?` = `nil` |  Permitted range of values
+governed by `Config.header_wrap_range` in the
+`check_header_wrap` auxiliary  method (raises `InvalidValue` runtime
+exception unless value in range or `nil`)        
+
+| `body_wrap` | `Int32?` = `nil` |  Permitted range of values
+governed by `Config.body_wrap_range` in the
+`check_body_wrap` auxiliary  method (raises `InvalidValue` runtime
+exception unless value in range or `nil`)
+
+| `masked_headers`| `Bool` = `false` |  If `true`, groups and column headers are
+not displayed (this does not prevent display of title, subtitle and footer)
+
+| `omit_last_rule` | `Bool` = `false` | If `true`, the closing rule of table 
+is not displayed. This is useful for custom rendering (and notably for Summary 
+table linking)
+
+| `title_repeated` | `Bool` = `false` | If `true`, force title and subtitle to
+be repeated at header frequency 
+
+| `footer_page_break` | `Bool` = `false` |  If `true`, emit a page break
+after footer
+|===
+
+==== Method `add_column`
+
+Returns an instance of `Column(T)`
+
+[cols="1,2,3"]
+|===
+| Parameters | Type and default value | Comments
+
+3+^| _Mandatory positional parameter_ 
+
+|`label` |  `LabelType` | The label identifies the column. It can be an `Int32`,
+a `Symbol` or a `String`
+
+3+^| _Optional named parameters, with default values_ 
+
+| `header` | `String` = `label.to_s` | Can be an empty string
+
+| `header_alignment` | `Justify?` = `header_alignment` | By default, inherits
+from table `header_alignment` initializer
+
+| `header_formatter` | `DataCellFormatter` = `header_formatter` |   By default, inherits
+from table `header_formatter` initializer                                   
+
+| `header_styler` | `DataCellStyler` = `header_styler` |   By default, inherits
+from table `header_styler` initializer                                                
+
+| `body_alignment` | `Justify?` = `body_alignment` | By default, inherits
+from table  `body_alignment` initializer
+
+| `body_formatter` | `DataCellFormatter` = `body_formatter` |   By default, inherits
+from table `body_formatter` initializer                                    
+
+| `body_styler` | `DataCellStyler` = `body_styler` |   By default, inherits
+from table `body_styler` initializer                                               
+
+| `left_padding` | `Int32` = `left_padding` |   By default, inherits
+from table `left_padding` initializer                  
+
+| `right_padding` | `Int32` = `right_padding` | By default, inherits
+from table `right_padding` initializer            
+
+| `padding_character` | `String` = `padding_character` |   By default, inherits
+from table `padding_character` initializer          
+
+| `width` | `Int32`  = `width` |  By default, inherits
+from table `width` initializer                  
+
+| `truncation_indicator` | `String` = `truncation_indicator` | By default, inherits
+from table `truncation_indicator` initializer                  
+
+| `wrap_mode` | `WrapMode` = `wrap_mode` |  By default, inherits
+from table `wrap_mode` initializer                  
+
+| `&extractor` | `(T \| Int32) -&gt; CellType` |  Captured block for
+extracting data from source
+|===
+
+==== Method `add_group` 
+
+Returns an instance of `TextCell`
+
+[cols="1,2,3"]
+|===
+| Parameters | Type and default value | Comments
+
+3+^| _Mandatory positional parameter_ 
+
+|`label` |  `LabelType` | The label identifies the group. It can be an `Int32`,
+a `Symbol` or a `String`
+
+3+^| _Optional named parameters, with default values_ 
+
+| `header` | `String` = `label.to_s` | Can be an empty string
+| `alignment` | `Justify` = `group_alignment` |  By default, inherits
+from table `group_alignment` initializer                 
+| `formatter` | `TextCellFormatter` = `group_formatter` | By default, inherits
+from table `group_formatter` initializer                            
+| `styler` | `TextCellFormatter` = `group_styler` |  By default, inherits
+from table `group_styler` initializer                   
+| `padding_character` | `String` = `padding_character` |  By default, inherits
+from table `padding_character` initializer                   
+| `truncation_indicator`  | `String`  = `truncation_indicator` | By default, inherits
+from table `truncation_indicator` initializer                   
+| `wrap_mode` | `WrapMode` = `wrap_mode` | By default, inherits
+from table `wrap_mode` initializer                     
+|===
+
+==== Method `reset_sources`
+Replaces existing data source with a new one and returns it +
+_(This could be seen as a hack to do some special form of pagination !)_
+
+[cols="1,2,3"]
+|===
+| Parameters | Type and default value | Comments
+
+3+^| _Mandatory positional parameter_ 
+
+| `src` | `Enumerable(T)` | The new data source must also be an `Enumerable(T)`
+|===
+
+==== Method `to_s`
+
+Returns the table as a formatted string
+
+==== Method `each`
+
+==== Method `summary`
+
+==== Method `horizontal_rule`
+
+==== Method `transpose`
+
+==== Method `total_table_width`
+
+==== Method `pack`
+
 [source,crystal]
 ----
 def pack(width : TableWidth? = GetWidthFrom::Screen, *,
     starting_widths : StartingWidths = Config.starting_widths,
     except : Except? = nil)   
 ----
+[cols="1,2,3"]
+|===
+| Parameters | Type and default value | Comments
+
+| `width`   |   `TableWidth? = GetWidthFrom::Screen` |
+| `starting_widths`   |   `StartingWidths = Config.starting_widths` |
+| `except`   |   `Except? = nil` |
+|===
+
+the pack method falls down  to its previous state in the event of failure
+
+
 
 The `pack` method is a welcome aid to table formatting. It accepts
 3 parameters, all optional: 
@@ -1299,6 +1558,8 @@ This behavior can be avoided with the `autosize = false` parameter: in this
 case, however, a positive or negative value for `width` must be supplied,
 either directly or by reading the terminal width, otherwise `pack` will become
 a non-operation.  
+
+=== classes FramedHeading and UnFramedHeading
 
 
 [literal]
