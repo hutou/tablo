@@ -2,9 +2,28 @@ require "./types"
 require "./heading"
 
 module Tablo
+  # Each time the source is read, an instance of the RowGroup class is created
+  # to display Body and all other preceeding possible row types and rule
+  # types.
+  #
+  # The main purpose of the RowGroup class is to manage the alternation of
+  # different row types  and their separating rule types.
+  #
+  # To do this, the previous and current row types are used to determine the
+  # rule type and deduce border position to be used (see ROWTYPE_POSITION below).
+
+  # From one instance to the next, the RowGroup class has no memory: the
+  # Table.rowtype_memory class variable is therefore used to ensure the link:
+  # when a new instance of RowGroup is created, the previous_rowtype instance
+  # variable is initialized by Table.rowtype_memory, and on exit from
+  # RowGroup's run method, the current_rowtype instance variable is assigned to
+  # Table.rowtype_memory.
   class RowGroup(T)
     @rows = [] of String
-    property previous_rowtype : RowType? = Table.previous_rowtype
+    # Whenever we enter rowgroup, we retrieve the previous rowtype from
+    # the recorded value in class variable Table.rowtype_memory
+    property previous_rowtype : RowType? = Table.rowtype_memory
+    # property previous_rowtype : RowType? = Table.previous_rowtype
     property current_rowtype : RowType? = nil
     private getter table, source, row_index, row_divider
     property rows
@@ -15,34 +34,41 @@ module Tablo
                    @row_index : Int32)
     end
 
-    def add_row(rows)
-      {% if flag?(:DEBUG_ROWS) %}
+    {% if flag?(:DEBUG_ROWS) %}
+      def add_row(rows, linenum = 0)
         rows.each_line.with_index do |r, i|
           if i == 0
-            self.rows << "[in %-8s from %-8s%24s] => %s" % [
-              current_rowtype.to_s, previous_rowtype.to_s, "", r,
+            # self.rows << "[in %-8s from %-8s%24s] => %s" % [
+            # current_rowtype.to_s, previous_rowtype.to_s, "", r,
+            self.rows << "[in %-8s from %-8s%18s (%3d)] => %s" % [
+              current_rowtype.to_s, previous_rowtype.to_s, "", linenum, r,
             ]
           else
             self.rows << "%-15s%-16s%24s%s" % ["", "...", "", r]
           end
         end
-      {% else %}
-        self.rows << rows
-      {% end %}
-    end
+      end
 
-    def add_rule(position, linenum = 0, groups = nil)
-      row = table.horizontal_rule(position, groups)
-      unless row.empty?
-        {% if flag?(:DEBUG_ROWS) %}
+      def add_rule(position, groups = nil, linenum = 0)
+        row = table.horizontal_rule(position, groups)
+        unless row.empty?
           self.rows << "[in %-8s from %-8s  pos:%-12.12s (%3d)] => %s" % [
             current_rowtype.to_s, previous_rowtype.to_s, position.to_s, linenum, row,
           ]
-        {% else %}
-          self.rows << row
-        {% end %}
+        end
       end
-    end
+    {% else %}
+      def add_row(rows, linenum = 0)
+        self.rows << rows
+      end
+
+      def add_rule(position, groups = nil, linenum = 0)
+        row = table.horizontal_rule(position, groups)
+        unless row.empty?
+          self.rows << row
+        end
+      end
+    {% end %}
 
     def framed?(rowtype)
       case rowtype
@@ -125,9 +151,12 @@ module Tablo
       if previous_rowtype == RowType::Body && current_rowtype == RowType::Footer
         missing_rows.times do
           add_rule(ROWTYPE_POSITION[{RowType::Body, :filler}],
-            __LINE__, groups: nil)
+            groups: nil, linenum: __LINE__)
         end
       end
+    end
+
+    private def summary_first_row?
     end
 
     private def apply_rules
@@ -146,7 +175,8 @@ module Tablo
 
       groups = previous_rowtype == RowType::Group ||
                current_rowtype == RowType::Group ? table.groups : nil
-      spacing = [previous_rowtype_line_breaks_after, line_breaks_before(current_rowtype)].max
+      spacing = [line_breaks_after(previous_rowtype), line_breaks_before(current_rowtype)].max
+      # case {framed?(previous_rowtype), framed?(current_rowtype)}
       case {previous_rowtype_framed, framed?(current_rowtype)}
       when {true, true}
         if spacing.zero?
@@ -157,72 +187,84 @@ module Tablo
             case {previous_rowtype, current_rowtype}
             when {RowType::Body, RowType::Header}
               add_rule(Position::SummaryHeader,
-                __LINE__, groups: groups)
+                groups: groups, linenum: __LINE__)
             when {RowType::Body, RowType::Body}
               add_rule(Position::SummaryBody,
-                __LINE__, groups: groups)
+                groups: groups, linenum: __LINE__)
             else
               add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}],
-                __LINE__, groups: groups)
+                groups: groups, linenum: __LINE__)
             end
           else
             case {previous_rowtype, current_rowtype}
             when {RowType::Body, RowType::Body}
               add_rule(Position::BodyBody,
-                __LINE__, groups: groups) if row_divider
+                groups: groups, linenum: __LINE__) if row_divider
             else
+              # puts "zzz #{ROWTYPE_POSITION[{previous_rowtype, current_rowtype}]}"
               add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}],
-                __LINE__, groups: groups)
+                groups: groups, linenum: __LINE__)
             end
           end
         else
           fill_page
           add_rule(ROWTYPE_POSITION[{previous_rowtype, :bottom}],
-            __LINE__, groups: groups)
+            groups: groups, linenum: __LINE__)
           # add page break after framed footer
           if previous_rowtype == RowType::Footer && table.footer_page_break?
             self.rows[-1] += "\f"
           end
           apply_line_spacing(spacing - 1)
           add_rule(ROWTYPE_POSITION[{current_rowtype, :top}],
-            __LINE__, groups: groups)
+            groups: groups, linenum: __LINE__)
         end
       when {true, false}
         fill_page
         add_rule(ROWTYPE_POSITION[{previous_rowtype, :bottom}],
-          __LINE__, groups: groups)
+          groups: groups, linenum: __LINE__)
         apply_line_spacing(line_breaks_after(previous_rowtype) - 1)
       when {false, true}
         apply_line_spacing(line_breaks_before(current_rowtype) - 1)
         add_rule(ROWTYPE_POSITION[{current_rowtype, :top}],
-          __LINE__, groups: groups)
+          groups: groups, linenum: __LINE__)
       when {false, false}
       end
-      case current_rowtype
-      when RowType::Title
-        add_row(table.rendered_title_row)
-      when RowType::SubTitle
-        add_row(table.rendered_subtitle_row)
-      when RowType::Group
-        add_row(table.rendered_group_row)
-      when RowType::Header
-        add_row(table.rendered_header_row(source, row_index))
-      when RowType::Body
-        add_row(table.rendered_body_row(source, row_index))
-      when RowType::Footer
-        add_row(table.rendered_footer_row(page))
-        self.rows[-1] += "\f" if table.footer_page_break? && !table.footer.framed?
-      end
+      add_rowtype
       self.previous_rowtype = current_rowtype
     end
 
-    def run
-      # if we are on first row of the table
-      if row_index.zero?
-        # restore previous_rowtype from previous table (Detail)
-        self.previous_rowtype = Table.omitted_rowtype unless Table.omitted_rowtype.nil?
+    def add_rowtype
+      case current_rowtype
+      when RowType::Title
+        add_row(table.rendered_title_row, linenum: __LINE__)
+      when RowType::SubTitle
+        add_row(table.rendered_subtitle_row, linenum: __LINE__)
+      when RowType::Group
+        add_row(table.rendered_group_row, linenum: __LINE__)
+      when RowType::Header
+        add_row(table.rendered_header_row(source, row_index), linenum: __LINE__)
+      when RowType::Body
+        add_row(table.rendered_body_row(source, row_index), linenum: __LINE__)
+      when RowType::Footer
+        add_row(table.rendered_footer_row(page), linenum: __LINE__)
+        self.rows[-1] += "\f" if table.footer_page_break? && !table.footer.framed?
       end
+    end
 
+    def close_table
+      # Only Body and Footer row types are possible
+      case previous_rowtype
+      when RowType::Body
+        add_rule(Position::BodyBottom, linenum: __LINE__)
+      when RowType::Footer
+        add_rule(Position::TitleBottom, linenum: __LINE__) if table.footer.framed?
+        self.rows[-1] += "\f" if table.footer_page_break?
+      end
+      # Clear Table memory for next table display
+      Table.rowtype_memory = nil
+    end
+
+    def run
       if has_title?
         self.current_rowtype = RowType::Title
         apply_rules
@@ -248,42 +290,50 @@ module Tablo
       apply_rules
 
       if has_footer?
+        # debugger
         self.current_rowtype = RowType::Footer
         apply_rules
       end
 
       if last_row?
-        # we must terminate with last horizontal_rule, if appropriate
-        if previous_rowtype == RowType::Body
-          add_rule(Position::BodyBottom, __LINE__) unless table.omit_last_rule?
-        elsif previous_rowtype == RowType::Footer
-          if table.footer.framed?
-            unless table.omit_last_rule?
-              add_rule(Position::TitleBottom, __LINE__)
-              if table.footer_page_break?
-                self.rows[-1] += "\f"
+        # Do we have a summary table ?
+        if table.summary_table.nil?
+          # No summary, so we can close table
+          close_table unless table.omit_last_rule?
+        else
+          # yes, we have a summary table
+          # Do we have a request for linking tables ?
+          if table.omit_last_rule?
+            # Ok, linked tables wanted, but conditions are :
+            #  - previous_rowtype == Body
+            #  - previous_rowtype == Footer *AND* # FramedHeading *AND* no footer_page_break
+            if previous_rowtype == RowType::Body ||
+               (previous_rowtype == RowType::Footer && table.footer.framed? &&
+               !table.footer_page_break?)
+              # Okay, linking is allowed, so we save data for next run
+              Table.omitted_rowtype = previous_rowtype
+              Table.omitted_rowtype_framed = true
+              Table.omitted_rowtype_line_breaks_after = 0
+              if previous_rowtype == RowType::Footer
+                Table.omitted_rowtype_framed = table.footer.framed?
+                # Table.omitted_rowtype_line_breaks_after = table.footer.line_breaks_after
+                Table.omitted_rowtype_line_breaks_after = table.footer.framed? ? table.footer.as(FramedHeading).line_breaks_after : 0
               end
+            else
+              # no linking allowed, we must close
+              # and not obey omitting last rule in that case !
+              close_table
             end
+          else
+            # No linking requested
+            close_table unless table.omit_last_rule?
           end
         end
-        # saved omitted_rowtype allows for linking between detail and summary table
-        if table.omit_last_rule?
-          Table.omitted_rowtype = previous_rowtype
-          Table.omitted_rowtype_framed = true
-          Table.omitted_rowtype_line_breaks_after = 0
-          if previous_rowtype == RowType::Footer
-            Table.omitted_rowtype_framed = table.footer.framed?
-            # Table.omitted_rowtype_line_breaks_after = table.footer.line_breaks_after
-            Table.omitted_rowtype_line_breaks_after = table.footer.framed? ? table.footer.as(FramedHeading).line_breaks_after : 0
-          end
-        end
-        # Table is now printed, reset attribute previous_rowtype to nil to allow
-        # 'fresh' printing of next table
-        Table.previous_rowtype = nil
       else
         # save current rowtype for next run in current table²
-        Table.previous_rowtype = previous_rowtype
+        Table.rowtype_memory = previous_rowtype
       end
+
       rows
     end
 
@@ -293,26 +343,19 @@ module Tablo
       end
     end
 
+    private def first_row?
+      row_index == 0
+    end
+
     private def last_row?
       row_index == table.row_count - 1
-    end
-
-    def old_spacing(prev, curr)
-      if prev.line_breaks_after.nil? || curr.line_breaks_before.nil?
-        nil
-      else
-        [prev.line_breaks_after.as(Int32), curr.line_breaks_before.as(Int32)].max
-      end
-    end
-
-    private def is_first?
-      row_index == 0
     end
 
     private def has_title?
       return false if table.title.value.nil? ||
                       table.header_frequency.nil?
-      is_first? || (is_repeated? && table.title_repeated?)
+      first_row? || (repeated? && table.title_repeated?)
+      # masked_headers involved ???? TODO
     end
 
     private def has_subtitle?
@@ -324,13 +367,13 @@ module Tablo
       return false if table.group_registry.size.zero? ||
                       table.header_frequency.nil? ||
                       table.masked_headers?
-      is_first? || is_repeated?
+      first_row? || repeated?
     end
 
     private def has_header?
       return false if table.header_frequency.nil? ||
                       table.masked_headers?
-      is_first? || is_repeated?
+      first_row? || repeated?
     end
 
     private def has_footer?
@@ -345,18 +388,7 @@ module Tablo
       disp || last_row?
     end
 
-    private def zzz_has_footer?
-      return false if table.header_frequency.nil? || table.footer.value.nil?
-      hf = table.header_frequency.as(Int32).abs
-      disp = if row_index > 0 && hf > 0
-               (row_index + 1) % hf == 0
-             else
-               row_index == (hf - 1)
-             end
-      disp || last_row?
-    end
-
-    private def is_repeated?
+    private def repeated?
       if (hf = table.header_frequency).nil?
         false
       else
