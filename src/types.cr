@@ -228,10 +228,10 @@ module Tablo
 
   # :nodoc:
   # Table width, packing
-  enum GetWidthFrom
-    Screen
-  end
-  alias TableWidth = GetWidthFrom | Int32
+  # enum GetWidthFrom
+  #   Screen
+  # end
+  # alias TableWidth = GetWidthFrom | Int32
 
   enum StartingWidths
     Initial
@@ -318,5 +318,8 @@ module Tablo
   end
 
   class InvalidValue < TabloException
+  end
+
+  class IncompatibleValue < TabloException
   end
 end

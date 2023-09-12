@@ -167,6 +167,7 @@ module Tablo
           width: column.width,
         ) { |n| n[column_index] }
       end
+      summary_table.name = :summary
       summary_table
     end
   end

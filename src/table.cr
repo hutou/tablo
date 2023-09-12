@@ -13,14 +13,15 @@ module Tablo
   class Table(T)
     include Enumerable(Row(T))
     # Class properties to manage row types framing and summary table linking
-
-    # :nodoc:
+    # for summary table
+    #
+    # Table.rowtype_memory records the current rowtype emitted in rowgroup
+    class_property rowtype_memory : RowType? = nil
+    #
     class_property previous_rowtype : RowType? = nil
-    # :nodoc:
+    # class_property last_main_rowtype : RowType? = nil
     class_property omitted_rowtype : RowType? = nil
-    # :nodoc:
     class_property? omitted_rowtype_framed : Bool = false
-    # :nodoc:
     class_property omitted_rowtype_line_breaks_after : Int32 = 0
 
     # -------------- Table management attributes ------------------------------------
@@ -32,6 +33,7 @@ module Tablo
     protected getter groups = [] of Range(Int32, Int32)
     protected property row_count : Int32 = 0
     protected property summary_table : Table(Array(Float64 | Int32 | String | Nil))? = nil
+    protected property name : Symbol = :main
 
     # Table parameters
     getter sources
@@ -718,15 +720,12 @@ module Tablo
     # their default value : 12 characters.
     #
     # returns the Table itself
-    def pack(width : TableWidth? = GetWidthFrom::Screen, *,
+    def pack(width : Int32? = nil, *,
              starting_widths : StartingWidths = Config.starting_widths,
              except : Except? = nil)
       required_width = case width
                        in Nil
-                         nil
-                       in GetWidthFrom
-                         if width == GetWidthFrom::Screen && STDOUT.tty? &&
-                            Config.terminal_capped_width?
+                         if STDOUT.tty? && Config.terminal_capped_width?
                            Util.get_terminal_lines_and_columns[1]
                          else
                            nil
@@ -1019,6 +1018,51 @@ module Tablo
           end
         else
           shrink(max_width, except)
+        end
+      end
+      # Here we need also to update widths of summary, if it exists
+      # TODO To be studied
+      # update_summary_widths
+      update_group_widths
+      self
+    end
+
+    def old2_pack(width : TableWidth? = GetWidthFrom::Screen, *,
+                  starting_widths : StartingWidths = Config.starting_widths,
+                  except : Except? = nil)
+      required_width = case width
+                       in Nil
+                         nil
+                       in GetWidthFrom
+                         if width == GetWidthFrom::Screen && STDOUT.tty? &&
+                            Config.terminal_capped_width?
+                           Util.get_terminal_lines_and_columns[1]
+                         else
+                           nil
+                         end
+                       in Int32
+                         width
+                       end
+
+      case starting_widths
+      in StartingWidths::Current
+        # no change to current column widths before packing
+      in StartingWidths::Initial
+        # all columns, 'except' excepted, have their width reset to their initial value
+        column_list(except: except).each do |c|
+          c.width = c.initial_width
+        end
+      in StartingWidths::AutoSized # default
+        # all columns, 'except' excepted, have their width set to their
+        # largest formatted content size --> Implies browsing all source rows
+        autosize_columns(except: except)
+      end
+
+      unless required_width.nil?
+        if total_table_width > required_width
+          shrink(required_width, except)
+        else
+          expand(required_width, except)
         end
       end
       # Here we need also to update widths of summary, if it exists
