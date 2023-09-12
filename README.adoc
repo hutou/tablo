@@ -394,6 +394,19 @@ In summary, we have 6 types of data rows :
 
 |===
 
+=== Rule types
+
+Between the different types of rows, there are also different types of
+separator lines, whose format varies according to the types of rows they
+separate.  
+
+In the case of framed rows, for example, there may be a single separating
+line, making the rows linked, or on the contrary, there may first be a closing
+line for the top row, possibly followed by line breaks before the opening line
+of the bottom row.  
+
+The border manager formats these separating lines, whose type is RuleType
+
 === Display frequency and repeated title
 
 An important parameter in table initialization is `header_frequency:` 
@@ -1271,6 +1284,9 @@ source. Its type is `Tablo::CellType`
 
 === class Table 
 
+The class `Table` is the main class of Tablo. After équipée de données et
+e colonnes ....;
+
 ==== Method `initialize`
 
 Returns an instance of `Table(T)`
@@ -1407,8 +1423,7 @@ Returns an instance of `Column(T)`
 
 3+^| _Mandatory positional parameter_ 
 
-|`label` |  `LabelType` | The label identifies the column. It can be an `Int32`,
-a `Symbol` or a `String`
+|`label` |  `LabelType` | The label identifies the column (`LabelType` is an alias of `Int32 \| Symbol \| String`)
 
 3+^| _Optional named parameters, with default values_ 
 
@@ -1464,8 +1479,7 @@ Returns an instance of `TextCell`
 
 3+^| _Mandatory positional parameter_ 
 
-|`label` |  `LabelType` | The label identifies the group. It can be an `Int32`,
-a `Symbol` or a `String`
+|`label` |  `LabelType` | The label identifies the group.
 
 3+^| _Optional named parameters, with default values_ 
 
@@ -1503,6 +1517,64 @@ Returns the table as a formatted string
 
 ==== Method `each`
 
+Returns successive formatted rows, with all corresponding headers and footers, 
+according to the parameters defined.
+
+In fact,
+[source,crystal]
+----
+table.each do |r|
+  puts r
+end
+----
+is the same as
+
+[source,crystal]
+----
+puts table
+----
+
+==== Method `pack`
+
+Returns `self` (the current Table instance) after modifying its column widths
+
+
+[cols="1,2,3"]
+|===
+| Parameters | Type and default value | Comments
+
+3+^| _All named parameters are optional, with default values_ 
+
+
+| `width`   |   `Int32?` = `nil` |  The requested total table width.
+
+If `width` is `nil` and `Config.terminal_capped_width`
+is `true` (and output not redirected), `width` finally takes the value of the terminal size.
+
+| `starting_widths`   |   `StartingWidths = Config.starting_widths` a| `Starting_widths` 
+allows you to specify the starting point for resizing :
+
+* either from the current column width value (`StartingWidths::Current`)
+ 
+* or from its initial value (`StartingWidths::Initial`)
+
+or ignore it and directly perform optimized resizing (`StartingWidths::AutoSized`)
+
+| `except`   |   `Except?` = `nil` | Column identifier or array of column identifiers to be excluded from packing (`Except` is an alias of `LabelType \| Array(LabelType)`) 
+|===
+
+===== Description of the packing algorithm
+The resizing algorithm is actually quite simple.
+
+if the final value of the  `width` parameter is not `nil`, it first compares
+the table's current width with the requested width, to determine whether this
+is a reduction or an increase in size. Then, depending on the case, either the
+widest column is reduced, or the narrowest increased, in steps of 1, until the
+requested table width is reached.
+
+This explains why the final result of resizing depends on the starting column
+widths.
+
 ==== Method `summary`
 
 ==== Method `horizontal_rule`
@@ -1511,75 +1583,8 @@ Returns the table as a formatted string
 
 ==== Method `total_table_width`
 
-==== Method `pack`
-
-[source,crystal]
-----
-def pack(width : TableWidth? = GetWidthFrom::Screen, *,
-    starting_widths : StartingWidths = Config.starting_widths,
-    except : Except? = nil)   
-----
-[cols="1,2,3"]
-|===
-| Parameters | Type and default value | Comments
-
-| `width`   |   `TableWidth? = GetWidthFrom::Screen` |
-| `starting_widths`   |   `StartingWidths = Config.starting_widths` |
-| `except`   |   `Except? = nil` |
-|===
-
-the pack method falls down  to its previous state in the event of failure
-
-
-
-The `pack` method is a welcome aid to table formatting. It accepts
-3 parameters, all optional: 
-
-- `width`: the total width of the formatted table. With positive `width`, this
-  is a maximum value, and with negative `width`, a minimum value. If the value
-  of parameter `Config.terminal_capped_width` is true, the value of
-  `width`, if not directly supplied, is the number of columns in
-  the terminal. 
-
-- `autosize` : if true (default), column widths are automatically adapted to their
-  largest content, before any attempt is made to increase or reduce the total
-  width of the table. 
-
-- `except`: column label (or label array) to be excluded from resizing
-  processing.
-
-If, with the parameter `autosize = true` by default (set by
-`Config.pack_autosize`), the `pack` method automatically adapts the width of
-columns to their largest content (body or header) before resizing, this
-requires you to go through the entire source dataset, which can be costly in
-terms of performance in some cases.  
-
-This behavior can be avoided with the `autosize = false` parameter: in this
-case, however, a positive or negative value for `width` must be supplied,
-either directly or by reading the terminal width, otherwise `pack` will become
-a non-operation.  
 
 === classes FramedHeading and UnFramedHeading
-
-
-[literal]
-----
-+--------------------------------------------+
-|              Numbers and text              |
-+--------------------------------------------+
- 
-                  No booleans                 
-+--------------+--------------+--------------+
-|            1 |            2 | false        |
-|            2 |            4 | true         |
-+--------------+--------------+--------------+
-                  End of page                 
-+--------------+--------------+--------------+
-|            3 |            6 | false        |
-|              |              |              |
-+--------------+--------------+--------------+
-                  End of page                 
-----
 
 
 ////
