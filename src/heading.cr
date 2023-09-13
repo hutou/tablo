@@ -35,58 +35,88 @@ module Tablo
   #   end
   # end
 
-  struct UnFramedHeading
-    getter? framed = false
-    getter value, alignment, formatter, styler
+  # struct UnFramedHeading
+  #   getter? framed = false
+  #   getter value, alignment, formatter, styler
 
-    def initialize(@value : CellType = nil, *,
-                   @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
-                   @formatter : TextCellFormatter = DEFAULT_FORMATTER,
-                   @styler : TextCellStyler = DEFAULT_STYLER)
-    end
-  end
+  #   def initialize(@value : CellType = nil, *,
+  #                  @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
+  #                  @formatter : TextCellFormatter = DEFAULT_FORMATTER,
+  #                  @styler : TextCellStyler = DEFAULT_STYLER)
+  #   end
+  # end
 
-  struct FramedHeading
-    getter? framed = true
-    getter value, line_breaks_before, line_breaks_after, alignment, formatter, styler
+  # struct FramedHeading
+  #   getter? framed = true
+  #   getter value, line_breaks_before, line_breaks_after, alignment, formatter, styler
 
-    def initialize(@value : CellType = nil, *,
-                   @line_breaks_before : Int32 = 0,
-                   @line_breaks_after : Int32 = 0,
-                   @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
-                   @formatter : TextCellFormatter = DEFAULT_FORMATTER,
-                   @styler : TextCellStyler = DEFAULT_STYLER)
-    end
-  end
+  #   def initialize(@value : CellType = nil, *,
+  #                  @line_breaks_before : Int32 = 0,
+  #                  @line_breaks_after : Int32 = 0,
+  #                  @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
+  #                  @formatter : TextCellFormatter = DEFAULT_FORMATTER,
+  #                  @styler : TextCellStyler = DEFAULT_STYLER)
+  #   end
+  # end
 
-  struct ZHeading
-    getter? framed
-    getter value, line_breaks_before, line_breaks_after, alignment, formatter, styler
+  struct Frame
+    getter line_breaks_before, line_breaks_after
 
-    # Constructor
-    # Raise an exception if *value* is an empty string.
-    #
-    # Parameters:
-    #
-    # - *value* : the only positional parameter, of type `CellType`(default: `nil`)
-    # - *framed* : a boolean, indicating if the heading is boxed or not : default: `false`
-    # - *line_breaks_before* : an Int32, whose value is >= 0, default: 0
-    # - *line_breaks_after* : an Int32, whose value is >= 0, default: 0
-    # - *alignment* : the alignment of *value*, of type `Justify`, default: `Justify::Center`
-    # - *formatter* : a Proc to format the heading (see `TextCellFormatter`)
-    # - *styler* : a Proc to style the heading (see `TextCellStyler`)
-    def initialize(@value : CellType = nil, *,
-                   @framed : Bool = false,
-                   @line_breaks_before : Int32 = 0,
-                   @line_breaks_after : Int32 = 0,
-                   @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
-                   @formatter : TextCellFormatter = DEFAULT_FORMATTER,
-                   @styler : TextCellStyler = DEFAULT_STYLER)
-      if !value.nil?
-        if value.is_a?(String) && value.empty?
-          raise InvalidValue.new "Heading string value cannot be empty!"
-        end
+    def initialize(@line_breaks_before : Int32 = 0,
+                   @line_breaks_after : Int32 = 0)
+      unless line_breaks_before.in?(Config.line_breaks_range) &&
+             line_breaks_after.in?(Config.line_breaks_range)
+        raise InvalidValue.new "Line breaks must be in range " \
+                               "(#{Config.line_breaks_range})"
       end
+    end
+  end
+
+  abstract struct Heading
+    getter value, frame, alignment, formatter, styler
+
+    def initialize(@value : CellType? = nil, *,
+                   @frame : Frame? = nil,
+                   @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
+                   @formatter : TextCellFormatter = DEFAULT_FORMATTER,
+                   @styler : TextCellStyler = DEFAULT_STYLER)
+    end
+
+    def framed?
+      !frame.nil?
+    end
+  end
+
+  struct Title < Heading
+    getter? repeated
+
+    def initialize(@value : CellType? = nil, *,
+                   @frame : Frame? = nil,
+                   @repeated : Bool = false,
+                   @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
+                   @formatter : TextCellFormatter = DEFAULT_FORMATTER,
+                   @styler : TextCellStyler = DEFAULT_STYLER)
+    end
+  end
+
+  struct SubTitle < Heading
+    def initialize(@value : CellType? = nil, *,
+                   @frame : Frame? = nil,
+                   @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
+                   @formatter : TextCellFormatter = DEFAULT_FORMATTER,
+                   @styler : TextCellStyler = DEFAULT_STYLER)
+    end
+  end
+
+  struct Footer < Heading
+    getter? page_break
+
+    def initialize(@value : CellType? = nil, *,
+                   @frame : Frame? = nil,
+                   @page_break : Bool = false,
+                   @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
+                   @formatter : TextCellFormatter = DEFAULT_FORMATTER,
+                   @styler : TextCellStyler = DEFAULT_STYLER)
     end
   end
 end

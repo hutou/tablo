@@ -58,9 +58,12 @@ module Tablo
     macro initialize(block_given)
 
        def initialize(@sources : Enumerable(T), *,
-          @title : UnFramedHeading | FramedHeading = FramedHeading.new,
-          @subtitle : UnFramedHeading | FramedHeading = FramedHeading.new,
-          @footer : UnFramedHeading | FramedHeading = FramedHeading.new,
+          #@title : UnFramedHeading | FramedHeading = FramedHeading.new,
+          #@subtitle : UnFramedHeading | FramedHeading = FramedHeading.new,
+          #@footer : UnFramedHeading | FramedHeading = FramedHeading.new,
+          @title : Title = Title.new,
+          @subtitle : SubTitle = SubTitle.new,
+          @footer : Footer = Footer.new,
           #
           @group_alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
           @group_formatter : TextCellFormatter = DEFAULT_FORMATTER,
@@ -632,11 +635,14 @@ module Tablo
       subrows = subcell_stacks.transpose.map do |subrow_components|
         case cell = cells.first
         in TextCell
-          if cell.row_type == RowType::SubTitle && !@subtitle.framed?
+          # if cell.row_type == RowType::SubTitle && !@subtitle.framed?
+          if cell.row_type == RowType::SubTitle && @subtitle.frame.nil?
             " " + subrow_components.join(" ") + " "
-          elsif cell.row_type == RowType::Title && !@title.framed?
+            # elsif cell.row_type == RowType::Title && !@title.framed?
+          elsif cell.row_type == RowType::Title && @title.frame.nil?
             " " + subrow_components.join(" ") + " "
-          elsif cell.row_type == RowType::Footer && !@footer.framed?
+            # elsif cell.row_type == RowType::Footer && !@footer.framed?
+          elsif cell.row_type == RowType::Footer && @footer.frame.nil?
             " " + subrow_components.join(" ") + " "
           else
             @border.join_cell_contents(subrow_components)

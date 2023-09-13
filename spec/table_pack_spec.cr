@@ -8,9 +8,9 @@ describe "\n\n#{Tablo::Table} -> packing method\n\n", tags: "pack" do
            " and body and adapts headings contents inside" do
           Tablo::Config.starting_widths = Tablo::StartingWidths::AutoSized
           table = Tablo::Table.new([["abc", "not so large", "Very long column contents"]],
-            title: Tablo::FramedHeading.new("This a very long text to be displayed as title heading"),
-            subtitle: Tablo::FramedHeading.new("A very simple subtitle"),
-            footer: Tablo::FramedHeading.new("Do you need a footer?"),
+            title: Tablo::Title.new("This a very long text to be displayed as title heading", frame: Tablo::Frame.new),
+            subtitle: Tablo::SubTitle.new("A very simple subtitle", frame: Tablo::Frame.new),
+            footer: Tablo::Footer.new("Do you need a footer?", frame: Tablo::Frame.new),
             border_type: Tablo::BorderName::Fancy) do |t|
             t.add_column("short") { |n| n[0] }
             t.add_column("medium") { |n| n[1] }
@@ -44,9 +44,11 @@ describe "\n\n#{Tablo::Table} -> packing method\n\n", tags: "pack" do
         it "After autosizing columns, shrinks columns to meet total width requirement" do
           Tablo::Config.starting_widths = Tablo::StartingWidths::AutoSized
           table = Tablo::Table.new([["abc", "Very long column contents"]],
-            title: Tablo::FramedHeading.new("This a very long text to be displayed as title heading"),
-            subtitle: Tablo::FramedHeading.new("A very simple subtitle"),
-            footer: Tablo::FramedHeading.new("Do you need a footer?"),
+
+            title: Tablo::Title.new("This a very long text to be displayed as title heading", frame: Tablo::Frame.new),
+            subtitle: Tablo::SubTitle.new("A very simple subtitle", frame: Tablo::Frame.new),
+            footer: Tablo::Footer.new("Do you need a footer?", frame: Tablo::Frame.new),
+
             border_type: Tablo::BorderName::Fancy) do |t|
             t.add_column("short") { |n| n[0] }
             t.add_column("long") { |n| n[1] }
@@ -77,9 +79,9 @@ describe "\n\n#{Tablo::Table} -> packing method\n\n", tags: "pack" do
         it "After autosizing columns, expands columns to meet total width requirement" do
           Tablo::Config.starting_widths = Tablo::StartingWidths::AutoSized
           table = Tablo::Table.new([["abc", "Very long column contents"]],
-            title: Tablo::FramedHeading.new("This a very long text to be displayed as title heading"),
-            subtitle: Tablo::FramedHeading.new("A very simple subtitle"),
-            footer: Tablo::FramedHeading.new("Do you need a footer?"),
+            title: Tablo::Title.new("This a very long text to be displayed as title heading", frame: Tablo::Frame.new),
+            subtitle: Tablo::SubTitle.new("A very simple subtitle", frame: Tablo::Frame.new),
+            footer: Tablo::Footer.new("Do you need a footer?", frame: Tablo::Frame.new),
             border_type: Tablo::BorderName::Fancy) do |t|
             t.add_column("short") { |n| n[0] }
             t.add_column("long") { |n| n[1] }
@@ -109,9 +111,9 @@ describe "\n\n#{Tablo::Table} -> packing method\n\n", tags: "pack" do
            "to their initial value" do
           Tablo::Config.starting_widths = Tablo::StartingWidths::Initial
           table = Tablo::Table.new([["abc", "Very long column contents"]],
-            title: Tablo::FramedHeading.new("This a very long text to be displayed as title heading"),
-            subtitle: Tablo::FramedHeading.new("A very simple subtitle"),
-            footer: Tablo::FramedHeading.new("Do you need a footer?"),
+            title: Tablo::Title.new("This a very long text to be displayed as title heading", frame: Tablo::Frame.new),
+            subtitle: Tablo::SubTitle.new("A very simple subtitle", frame: Tablo::Frame.new),
+            footer: Tablo::Footer.new("Do you need a footer?", frame: Tablo::Frame.new),
             border_type: Tablo::BorderName::Fancy) do |t|
             t.add_column("short") { |n| n[0] }
             t.add_column("long") { |n| n[1] }
@@ -144,9 +146,9 @@ describe "\n\n#{Tablo::Table} -> packing method\n\n", tags: "pack" do
            "and shrinks columns to meet total width requirement" do
           Tablo::Config.starting_widths = Tablo::StartingWidths::Initial
           table = Tablo::Table.new([["abc", "Very long column contents"]],
-            title: Tablo::FramedHeading.new("This a very long text to be displayed as title heading"),
-            subtitle: Tablo::FramedHeading.new("A very simple subtitle"),
-            footer: Tablo::FramedHeading.new("Do you need a footer?"),
+            title: Tablo::Title.new("This a very long text to be displayed as title heading", frame: Tablo::Frame.new),
+            subtitle: Tablo::SubTitle.new("A very simple subtitle", frame: Tablo::Frame.new),
+            footer: Tablo::Footer.new("Do you need a footer?", frame: Tablo::Frame.new),
             border_type: Tablo::BorderName::Fancy) do |t|
             t.add_column("short") { |n| n[0] }
             t.add_column("long") { |n| n[1] }
@@ -179,9 +181,9 @@ describe "\n\n#{Tablo::Table} -> packing method\n\n", tags: "pack" do
            "and expands columns to meet total width requirement" do
           Tablo::Config.starting_widths = Tablo::StartingWidths::Initial
           table = Tablo::Table.new([["abc", "Very long column contents"]],
-            title: Tablo::FramedHeading.new("This a very long text to be displayed as title heading"),
-            subtitle: Tablo::FramedHeading.new("A very simple subtitle"),
-            footer: Tablo::FramedHeading.new("Do you need a footer?"),
+            title: Tablo::Title.new("This a very long text to be displayed as title heading", frame: Tablo::Frame.new),
+            subtitle: Tablo::SubTitle.new("A very simple subtitle", frame: Tablo::Frame.new),
+            footer: Tablo::Footer.new("Do you need a footer?", frame: Tablo::Frame.new),
             border_type: Tablo::BorderName::Fancy) do |t|
             t.add_column("short") { |n| n[0] }
             t.add_column("long") { |n| n[1] }
@@ -209,9 +211,9 @@ describe "\n\n#{Tablo::Table} -> packing method\n\n", tags: "pack" do
           it "should not do anything !" do
             Tablo::Config.starting_widths = Tablo::StartingWidths::Current
             table = Tablo::Table.new([["abc", "Very long column contents"]],
-              title: Tablo::FramedHeading.new("This a very long text to be displayed as title heading"),
-              subtitle: Tablo::FramedHeading.new("A very simple subtitle"),
-              footer: Tablo::FramedHeading.new("Do you need a footer?"),
+              title: Tablo::Title.new("This a very long text to be displayed as title heading", frame: Tablo::Frame.new),
+              subtitle: Tablo::SubTitle.new("A very simple subtitle", frame: Tablo::Frame.new),
+              footer: Tablo::Footer.new("Do you need a footer?", frame: Tablo::Frame.new),
               border_type: Tablo::BorderName::Fancy) do |t|
               t.add_column("short") { |n| n[0] }
               t.add_column("long") { |n| n[1] }
@@ -243,9 +245,9 @@ describe "\n\n#{Tablo::Table} -> packing method\n\n", tags: "pack" do
           it "shrinks columns to meet total width requirement" do
             Tablo::Config.starting_widths = Tablo::StartingWidths::Current
             table = Tablo::Table.new([["abc", "Very long column contents"]],
-              title: Tablo::FramedHeading.new("This a very long text to be displayed as title heading"),
-              subtitle: Tablo::FramedHeading.new("A very simple subtitle"),
-              footer: Tablo::FramedHeading.new("Do you need a footer?"),
+              title: Tablo::Title.new("This a very long text to be displayed as title heading", frame: Tablo::Frame.new),
+              subtitle: Tablo::SubTitle.new("A very simple subtitle", frame: Tablo::Frame.new),
+              footer: Tablo::Footer.new("Do you need a footer?", frame: Tablo::Frame.new),
               border_type: Tablo::BorderName::Fancy) do |t|
               t.add_column("short") { |n| n[0] }
               t.add_column("long") { |n| n[1] }
@@ -277,9 +279,9 @@ describe "\n\n#{Tablo::Table} -> packing method\n\n", tags: "pack" do
           it "expands columns to meet total width requirement" do
             Tablo::Config.starting_widths = Tablo::StartingWidths::Current
             table = Tablo::Table.new([["abc", "Very long column contents"]],
-              title: Tablo::FramedHeading.new("This a very long text to be displayed as title heading"),
-              subtitle: Tablo::FramedHeading.new("A very simple subtitle"),
-              footer: Tablo::FramedHeading.new("Do you need a footer?"),
+              title: Tablo::Title.new("This a very long text to be displayed as title heading", frame: Tablo::Frame.new),
+              subtitle: Tablo::SubTitle.new("A very simple subtitle", frame: Tablo::Frame.new),
+              footer: Tablo::Footer.new("Do you need a footer?", frame: Tablo::Frame.new),
               border_type: Tablo::BorderName::Fancy) do |t|
               t.add_column("short") { |n| n[0] }
               t.add_column("long") { |n| n[1] }
@@ -310,9 +312,9 @@ describe "\n\n#{Tablo::Table} -> packing method\n\n", tags: "pack" do
              " and body, except for excluded column \"long\"" do
             Tablo::Config.starting_widths = Tablo::StartingWidths::AutoSized
             table = Tablo::Table.new([["abc", "not so large", "Very long column contents"]],
-              title: Tablo::FramedHeading.new("This a very long text to be displayed as title heading"),
-              subtitle: Tablo::FramedHeading.new("A very simple subtitle"),
-              footer: Tablo::FramedHeading.new("Do you need a footer?"),
+              title: Tablo::Title.new("This a very long text to be displayed as title heading", frame: Tablo::Frame.new),
+              subtitle: Tablo::SubTitle.new("A very simple subtitle", frame: Tablo::Frame.new),
+              footer: Tablo::Footer.new("Do you need a footer?", frame: Tablo::Frame.new),
               border_type: Tablo::BorderName::Fancy) do |t|
               t.add_column("short") { |n| n[0] }
               t.add_column("medium") { |n| n[1] }

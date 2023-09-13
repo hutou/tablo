@@ -88,11 +88,11 @@ module Tablo
     private def line_breaks_after(rowtype)
       case rowtype
       when RowType::Title
-        table.title.framed? ? table.title.as(FramedHeading).line_breaks_after : 0
+        table.title.framed? ? table.title.frame.as(Frame).line_breaks_after : 0
       when RowType::SubTitle
-        table.subtitle.framed? ? table.subtitle.as(FramedHeading).line_breaks_after : 0
+        table.subtitle.framed? ? table.subtitle.frame.as(Frame).line_breaks_after : 0
       when RowType::Footer
-        table.footer.framed? ? table.footer.as(FramedHeading).line_breaks_after : 0
+        table.footer.framed? ? table.footer.frame.as(Frame).line_breaks_after : 0
       else
         0
       end
@@ -101,11 +101,11 @@ module Tablo
     private def line_breaks_before(rowtype)
       case rowtype
       when RowType::Title
-        table.title.framed? ? table.title.as(FramedHeading).line_breaks_before : 0
+        table.title.framed? ? table.title.frame.as(Frame).line_breaks_before : 0
       when RowType::SubTitle
-        table.subtitle.framed? ? table.subtitle.as(FramedHeading).line_breaks_before : 0
+        table.subtitle.framed? ? table.subtitle.frame.as(Frame).line_breaks_before : 0
       when RowType::Footer
-        table.footer.framed? ? table.footer.as(FramedHeading).line_breaks_before : 0
+        table.footer.framed? ? table.footer.frame.as(Frame).line_breaks_before : 0
       else
         0
       end
@@ -211,7 +211,7 @@ module Tablo
           add_rule(ROWTYPE_POSITION[{previous_rowtype, :bottom}],
             groups: groups, linenum: __LINE__)
           # add page break after framed footer
-          if previous_rowtype == RowType::Footer && table.footer_page_break?
+          if previous_rowtype == RowType::Footer && table.footer.page_break?
             self.rows[-1] += "\f"
           end
           apply_line_spacing(spacing - 1)
@@ -247,7 +247,7 @@ module Tablo
         add_row(table.rendered_body_row(source, row_index), linenum: __LINE__)
       when RowType::Footer
         add_row(table.rendered_footer_row(page), linenum: __LINE__)
-        self.rows[-1] += "\f" if table.footer_page_break? && !table.footer.framed?
+        self.rows[-1] += "\f" if table.footer.page_break? && !table.footer.framed?
       end
     end
 
@@ -258,7 +258,7 @@ module Tablo
         add_rule(Position::BodyBottom, linenum: __LINE__)
       when RowType::Footer
         add_rule(Position::TitleBottom, linenum: __LINE__) if table.footer.framed?
-        self.rows[-1] += "\f" if table.footer_page_break?
+        self.rows[-1] += "\f" if table.footer.page_break?
       end
       # Clear Table memory for next table display
       Table.rowtype_memory = nil
@@ -309,7 +309,7 @@ module Tablo
             #  - previous_rowtype == Footer *AND* # FramedHeading *AND* no footer_page_break
             if previous_rowtype == RowType::Body ||
                (previous_rowtype == RowType::Footer && table.footer.framed? &&
-               !table.footer_page_break?)
+               !table.footer.page_break?)
               # Okay, linking is allowed, so we save data for next run
               Table.omitted_rowtype = previous_rowtype
               Table.omitted_rowtype_framed = true
@@ -317,7 +317,8 @@ module Tablo
               if previous_rowtype == RowType::Footer
                 Table.omitted_rowtype_framed = table.footer.framed?
                 # Table.omitted_rowtype_line_breaks_after = table.footer.line_breaks_after
-                Table.omitted_rowtype_line_breaks_after = table.footer.framed? ? table.footer.as(FramedHeading).line_breaks_after : 0
+                # Table.omitted_rowtype_line_breaks_after = table.footer.framed? ? table.footer.as(FramedHeading).line_breaks_after : 0
+                Table.omitted_rowtype_line_breaks_after = table.footer.framed? ? table.footer.frame.as(Frame).line_breaks_after : 0
               end
             else
               # no linking allowed, we must close
@@ -354,7 +355,7 @@ module Tablo
     private def has_title?
       return false if table.title.value.nil? ||
                       table.header_frequency.nil?
-      first_row? || (repeated? && table.title_repeated?)
+      first_row? || (repeated? && table.title.repeated?)
       # masked_headers involved ???? TODO
     end
 

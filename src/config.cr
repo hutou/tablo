@@ -25,5 +25,7 @@ module Tablo
     class_property header_wrap_range : Range(Int32, Int32) = 1..8
     class_property body_wrap_range : Range(Int32, Int32) = 1..8
     class_property column_width_range : Range(Int32, Int32) = 1..128
+
+    class_property line_breaks_range : Range(Int32, Int32) = 0..8
   end
 end
