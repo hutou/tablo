@@ -4,7 +4,7 @@ require "./spec_helper"
 # border transitions between rows
 
 describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
-         "group, header, body and footer" do
+         "group, header, body and footer", tags: "rowgroup" do
   describe "# Title, subtitle and footer variations, *NO* summary" do
     context "header_frequency=nil" do
       context "title framed, subtitle framed, footer framed" do
@@ -891,6 +891,516 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         {% end %}
       end
 
+      it "prints a detached summary, hf=0, oml: false, from Body" do
+        table = Tablo::Table.new([1, 2, 3],
+          header_frequency: 0,
+          border_type: Tablo::BorderName::Fancy,
+          # title: Tablo::FramedHeading.new("Numbers and text", line_breaks_after: 2),
+          subtitle: Tablo::UnFramedHeading.new("No booleans"),
+          # footer: Tablo::FramedHeading.new("End of page"),
+          # footer_page_break: true,
+          omit_last_rule: false) do |t|
+          t.add_column("itself", &.itself)
+          t.add_column(2, header: "") { |n| n * 2 }
+          t.add_group("")
+          t.add_column(:column_3, header: "") { |n| n.even?.to_s }
+          t.add_group("Text", alignment: Tablo::Justify::Left)
+          t.summary({
+            2 => {header: "somme",
+                  body: ->(ary : Tablo::Numbers) { ary.sum },
+            },
+          }, # masked_headers: true,
+            title: Tablo::FramedHeading.new("Summary"),
+            header_frequency: nil,
+            omit_last_rule: false)
+        end
+
+        output1 = %Q(╭─────────────────────────────┬──────────────╮
+                     │                             : Text         │
+                     ├−−−−−−−−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−┤
+                     │       itself :              :              │
+                     ├--------------┼--------------┼--------------┤
+                     │            1 :            2 : false        │
+                     │            2 :            4 : true         │
+                     │            3 :            6 : false        │
+                     ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+        output2 = %Q(╭──────────────┬──────────────┬──────────────╮
+                     │              :         12.0 :              │
+                     ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+        table.to_s.should eq output1
+        table.summary.to_s.should eq output2
+        {% if flag?(:DEBUG) %}
+          puts ""
+          puts table
+          puts table.summary
+        {% end %}
+      end
+
+      it "prints a linked summary, hf=0, oml: true, from Body" do
+        table = Tablo::Table.new([1, 2, 3],
+          header_frequency: 0,
+          border_type: Tablo::BorderName::Fancy,
+          # title: Tablo::FramedHeading.new("Numbers and text", line_breaks_after: 2),
+          subtitle: Tablo::UnFramedHeading.new("No booleans"),
+          # footer: Tablo::FramedHeading.new("End of page"),
+          # footer_page_break: true,
+          omit_last_rule: true) do |t|
+          t.add_column("itself", &.itself)
+          t.add_column(2, header: "") { |n| n * 2 }
+          t.add_group("")
+          t.add_column(:column_3, header: "") { |n| n.even?.to_s }
+          t.add_group("Text", alignment: Tablo::Justify::Left)
+          t.summary({
+            2 => {header: "somme",
+                  body: ->(ary : Tablo::Numbers) { ary.sum },
+            },
+          }, # masked_headers: true,
+            title: Tablo::FramedHeading.new("Summary"),
+            header_frequency: nil,
+            omit_last_rule: false)
+        end
+
+        output1 = %Q(╭─────────────────────────────┬──────────────╮
+                     │                             : Text         │
+                     ├−−−−−−−−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−┤
+                     │       itself :              :              │
+                     ├--------------┼--------------┼--------------┤
+                     │            1 :            2 : false        │
+                     │            2 :            4 : true         │
+                     │            3 :            6 : false        │).gsub(/^ */m, "")
+        output2 = %Q(├──────────────┼──────────────┼──────────────┤
+                     │              :         12.0 :              │
+                     ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+        table.to_s.should eq output1
+        table.summary.to_s.should eq output2
+        {% if flag?(:DEBUG) %}
+          puts ""
+          puts table
+          puts table.summary
+        {% end %}
+      end
+
+      it "prints a detached summary, hf: nil, oml: false, from Body" do
+        table = Tablo::Table.new([1, 2, 3],
+          header_frequency: nil,
+          border_type: Tablo::BorderName::Fancy,
+          # title: Tablo::FramedHeading.new("Numbers and text", line_breaks_after: 2),
+          subtitle: Tablo::UnFramedHeading.new("No booleans"),
+          # footer: Tablo::FramedHeading.new("End of page"),
+          # footer_page_break: true,
+          omit_last_rule: false) do |t|
+          t.add_column("itself", &.itself)
+          t.add_column(2, header: "") { |n| n * 2 }
+          t.add_group("")
+          t.add_column(:column_3, header: "") { |n| n.even?.to_s }
+          t.add_group("Text", alignment: Tablo::Justify::Left)
+          t.summary({
+            2 => {header: "somme",
+                  body: ->(ary : Tablo::Numbers) { ary.sum },
+            },
+          }, # masked_headers: true,
+            title: Tablo::FramedHeading.new("Summary"),
+            header_frequency: nil,
+            omit_last_rule: false)
+        end
+
+        output1 = %Q(╭──────────────┬──────────────┬──────────────╮
+                     │            1 :            2 : false        │
+                     │            2 :            4 : true         │
+                     │            3 :            6 : false        │
+                     ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+        output2 = %Q(╭──────────────┬──────────────┬──────────────╮
+                     │              :         12.0 :              │
+                     ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+        table.to_s.should eq output1
+        table.summary.to_s.should eq output2
+        {% if flag?(:DEBUG) %}
+          puts ""
+          puts table
+          puts table.summary
+        {% end %}
+      end
+
+      it "prints a linked summary, hf: nil, oml: true, from Body" do
+        table = Tablo::Table.new([1, 2, 3],
+          header_frequency: nil,
+          border_type: Tablo::BorderName::Fancy,
+          # title: Tablo::FramedHeading.new("Numbers and text", line_breaks_after: 2),
+          subtitle: Tablo::UnFramedHeading.new("No booleans"),
+          # footer: Tablo::FramedHeading.new("End of page"),
+          # footer_page_break: true,
+          omit_last_rule: true) do |t|
+          t.add_column("itself", &.itself)
+          t.add_column(2, header: "") { |n| n * 2 }
+          t.add_group("")
+          t.add_column(:column_3, header: "") { |n| n.even?.to_s }
+          t.add_group("Text", alignment: Tablo::Justify::Left)
+          t.summary({
+            2 => {header: "somme",
+                  body: ->(ary : Tablo::Numbers) { ary.sum },
+            },
+          }, # masked_headers: true,
+            title: Tablo::FramedHeading.new("Summary"),
+            header_frequency: nil,
+            omit_last_rule: false)
+        end
+
+        output1 = %Q(╭──────────────┬──────────────┬──────────────╮
+                     │            1 :            2 : false        │
+                     │            2 :            4 : true         │
+                     │            3 :            6 : false        │).gsub(/^ */m, "")
+        output2 = %Q(├──────────────┼──────────────┼──────────────┤
+                     │              :         12.0 :              │
+                     ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+
+        table.to_s.should eq output1
+        table.summary.to_s.should eq output2
+        {% if flag?(:DEBUG) %}
+          puts ""
+          puts table
+          puts table.summary
+        {% end %}
+      end
+
+      it "prints a detached summary, hf=0, oml: false, from footer, pgbrk: false" do
+        table = Tablo::Table.new([1, 2, 3],
+          header_frequency: 0,
+          border_type: Tablo::BorderName::Fancy,
+          # title: Tablo::FramedHeading.new("Numbers and text", line_breaks_after: 2),
+          subtitle: Tablo::UnFramedHeading.new("No booleans"),
+          footer: Tablo::FramedHeading.new("End of page"),
+          footer_page_break: false,
+          omit_last_rule: false) do |t|
+          t.add_column("itself", &.itself)
+          t.add_column(2, header: "") { |n| n * 2 }
+          t.add_group("")
+          t.add_column(:column_3, header: "") { |n| n.even?.to_s }
+          t.add_group("Text", alignment: Tablo::Justify::Left)
+          t.summary({
+            2 => {header: "somme",
+                  body: ->(ary : Tablo::Numbers) { ary.sum },
+            },
+          }, # masked_headers: true,
+            title: Tablo::FramedHeading.new("Summary"),
+            header_frequency: nil,
+            omit_last_rule: false)
+        end
+        output1 = %Q(╭─────────────────────────────┬──────────────╮
+                     │                             : Text         │
+                     ├−−−−−−−−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−┤
+                     │       itself :              :              │
+                     ├--------------┼--------------┼--------------┤
+                     │            1 :            2 : false        │
+                     │            2 :            4 : true         │
+                     │            3 :            6 : false        │
+                     ├──────────────┴──────────────┴──────────────┤
+                     │                 End of page                │
+                     ╰────────────────────────────────────────────╯).gsub(/^ */m, "")
+        output2 = %Q(╭──────────────┬──────────────┬──────────────╮
+                     │              :         12.0 :              │
+                     ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+
+        table.to_s.should eq output1
+        table.summary.to_s.should eq output2
+        {% if flag?(:DEBUG) %}
+          puts ""
+          puts table
+          puts table.summary
+        {% end %}
+      end
+      it "prints a detached summary, hf=0, oml: false, from footer, pgbrk: true" do
+        table = Tablo::Table.new([1, 2, 3],
+          header_frequency: 0,
+          border_type: Tablo::BorderName::Fancy,
+          # title: Tablo::FramedHeading.new("Numbers and text", line_breaks_after: 2),
+          subtitle: Tablo::UnFramedHeading.new("No booleans"),
+          footer: Tablo::FramedHeading.new("End of page"),
+          footer_page_break: true,
+          omit_last_rule: false) do |t|
+          t.add_column("itself", &.itself)
+          t.add_column(2, header: "") { |n| n * 2 }
+          t.add_group("")
+          t.add_column(:column_3, header: "") { |n| n.even?.to_s }
+          t.add_group("Text", alignment: Tablo::Justify::Left)
+          t.summary({
+            2 => {header: "somme",
+                  body: ->(ary : Tablo::Numbers) { ary.sum },
+            },
+          }, # masked_headers: true,
+            title: Tablo::FramedHeading.new("Summary"),
+            header_frequency: nil,
+            omit_last_rule: false)
+        end
+        output1 = %Q(╭─────────────────────────────┬──────────────╮
+                     │                             : Text         │
+                     ├−−−−−−−−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−┤
+                     │       itself :              :              │
+                     ├--------------┼--------------┼--------------┤
+                     │            1 :            2 : false        │
+                     │            2 :            4 : true         │
+                     │            3 :            6 : false        │
+                     ├──────────────┴──────────────┴──────────────┤
+                     │                 End of page                │
+                     ╰────────────────────────────────────────────╯\f).gsub(/^ */m, "")
+        output2 = %Q(╭──────────────┬──────────────┬──────────────╮
+                     │              :         12.0 :              │
+                     ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+
+        table.to_s.should eq output1
+        table.summary.to_s.should eq output2
+        {% if flag?(:DEBUG) %}
+          puts ""
+          puts table
+          puts table.summary
+        {% end %}
+      end
+      it "prints a linked summary, hf=0, oml: true, from footer, pgbrk: false" do
+        table = Tablo::Table.new([1, 2, 3],
+          header_frequency: 0,
+          border_type: Tablo::BorderName::Fancy,
+          # title: Tablo::FramedHeading.new("Numbers and text", line_breaks_after: 2),
+          subtitle: Tablo::UnFramedHeading.new("No booleans"),
+          footer: Tablo::FramedHeading.new("End of page"),
+          footer_page_break: false,
+          omit_last_rule: true) do |t|
+          t.add_column("itself", &.itself)
+          t.add_column(2, header: "") { |n| n * 2 }
+          t.add_group("")
+          t.add_column(:column_3, header: "") { |n| n.even?.to_s }
+          t.add_group("Text", alignment: Tablo::Justify::Left)
+          t.summary({
+            2 => {header: "somme",
+                  body: ->(ary : Tablo::Numbers) { ary.sum },
+            },
+          }, # masked_headers: true,
+            title: Tablo::FramedHeading.new("Summary"),
+            header_frequency: nil,
+            omit_last_rule: false)
+        end
+        output1 = %Q(╭─────────────────────────────┬──────────────╮
+                     │                             : Text         │
+                     ├−−−−−−−−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−┤
+                     │       itself :              :              │
+                     ├--------------┼--------------┼--------------┤
+                     │            1 :            2 : false        │
+                     │            2 :            4 : true         │
+                     │            3 :            6 : false        │
+                     ├──────────────┴──────────────┴──────────────┤
+                     │                 End of page                │).gsub(/^ */m, "")
+        output2 = %Q(├──────────────┬──────────────┬──────────────┤
+                     │              :         12.0 :              │
+                     ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+
+        table.to_s.should eq output1
+        table.summary.to_s.should eq output2
+        {% if flag?(:DEBUG) %}
+          puts ""
+          puts table
+          puts table.summary
+        {% end %}
+      end
+      it "prints a detached summary, hf=0, oml: true, from footer, pgbrk: true" do
+        table = Tablo::Table.new([1, 2, 3],
+          header_frequency: 0,
+          border_type: Tablo::BorderName::Fancy,
+          # title: Tablo::FramedHeading.new("Numbers and text", line_breaks_after: 2),
+          subtitle: Tablo::UnFramedHeading.new("No booleans"),
+          footer: Tablo::FramedHeading.new("End of page"),
+          footer_page_break: true,
+          omit_last_rule: true) do |t|
+          t.add_column("itself", &.itself)
+          t.add_column(2, header: "") { |n| n * 2 }
+          t.add_group("")
+          t.add_column(:column_3, header: "") { |n| n.even?.to_s }
+          t.add_group("Text", alignment: Tablo::Justify::Left)
+          t.summary({
+            2 => {header: "somme",
+                  body: ->(ary : Tablo::Numbers) { ary.sum },
+            },
+          }, # masked_headers: true,
+            title: Tablo::FramedHeading.new("Summary"),
+            header_frequency: nil,
+            omit_last_rule: false)
+        end
+        output1 = %Q(╭─────────────────────────────┬──────────────╮
+                     │                             : Text         │
+                     ├−−−−−−−−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−┤
+                     │       itself :              :              │
+                     ├--------------┼--------------┼--------------┤
+                     │            1 :            2 : false        │
+                     │            2 :            4 : true         │
+                     │            3 :            6 : false        │
+                     ├──────────────┴──────────────┴──────────────┤
+                     │                 End of page                │
+                     ╰────────────────────────────────────────────╯\f).gsub(/^ */m, "")
+        output2 = %Q(╭──────────────┬──────────────┬──────────────╮
+                     │              :         12.0 :              │
+                     ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+        table.to_s.should eq output1
+        table.summary.to_s.should eq output2
+        {% if flag?(:DEBUG) %}
+          puts ""
+          puts table
+          puts table.summary
+        {% end %}
+      end
+
+      it "prints a detached summary, hf=nil, oml: false, from footer, pgbrk: false" do
+        table = Tablo::Table.new([1, 2, 3],
+          header_frequency: nil,
+          border_type: Tablo::BorderName::Fancy,
+          # title: Tablo::FramedHeading.new("Numbers and text", line_breaks_after: 2),
+          subtitle: Tablo::UnFramedHeading.new("No booleans"),
+          footer: Tablo::FramedHeading.new("End of page"),
+          footer_page_break: false,
+          omit_last_rule: false) do |t|
+          t.add_column("itself", &.itself)
+          t.add_column(2, header: "") { |n| n * 2 }
+          t.add_group("")
+          t.add_column(:column_3, header: "") { |n| n.even?.to_s }
+          t.add_group("Text", alignment: Tablo::Justify::Left)
+          t.summary({
+            2 => {header: "somme",
+                  body: ->(ary : Tablo::Numbers) { ary.sum },
+            },
+          }, # masked_headers: true,
+            title: Tablo::FramedHeading.new("Summary"),
+            header_frequency: nil,
+            omit_last_rule: false)
+        end
+        output1 = %Q(╭──────────────┬──────────────┬──────────────╮
+                     │            1 :            2 : false        │
+                     │            2 :            4 : true         │
+                     │            3 :            6 : false        │
+                     ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+        output2 = %Q(╭──────────────┬──────────────┬──────────────╮
+                     │              :         12.0 :              │
+                     ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+
+        table.to_s.should eq output1
+        table.summary.to_s.should eq output2
+        {% if flag?(:DEBUG) %}
+          puts ""
+          puts table
+          puts table.summary
+        {% end %}
+      end
+      it "prints a detached summary, hf=nil, oml: false, from footer, pgbrk: true" do
+        table = Tablo::Table.new([1, 2, 3],
+          header_frequency: nil,
+          border_type: Tablo::BorderName::Fancy,
+          # title: Tablo::FramedHeading.new("Numbers and text", line_breaks_after: 2),
+          subtitle: Tablo::UnFramedHeading.new("No booleans"),
+          footer: Tablo::FramedHeading.new("End of page"),
+          footer_page_break: true,
+          omit_last_rule: false) do |t|
+          t.add_column("itself", &.itself)
+          t.add_column(2, header: "") { |n| n * 2 }
+          t.add_group("")
+          t.add_column(:column_3, header: "") { |n| n.even?.to_s }
+          t.add_group("Text", alignment: Tablo::Justify::Left)
+          t.summary({
+            2 => {header: "somme",
+                  body: ->(ary : Tablo::Numbers) { ary.sum },
+            },
+          }, # masked_headers: true,
+            title: Tablo::FramedHeading.new("Summary"),
+            header_frequency: nil,
+            omit_last_rule: false)
+        end
+        output1 = %Q(╭──────────────┬──────────────┬──────────────╮
+                     │            1 :            2 : false        │
+                     │            2 :            4 : true         │
+                     │            3 :            6 : false        │
+                     ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+        output2 = %Q(╭──────────────┬──────────────┬──────────────╮
+                     │              :         12.0 :              │
+                     ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+        table.to_s.should eq output1
+        table.summary.to_s.should eq output2
+        {% if flag?(:DEBUG) %}
+          puts ""
+          puts table
+          puts table.summary
+        {% end %}
+      end
+      it "prints a linked summary, hf=nil, oml: true, from footer, pgbrk: false" do
+        table = Tablo::Table.new([1, 2, 3],
+          header_frequency: nil,
+          border_type: Tablo::BorderName::Fancy,
+          # title: Tablo::FramedHeading.new("Numbers and text", line_breaks_after: 2),
+          subtitle: Tablo::UnFramedHeading.new("No booleans"),
+          footer: Tablo::FramedHeading.new("End of page"),
+          footer_page_break: false,
+          omit_last_rule: true) do |t|
+          t.add_column("itself", &.itself)
+          t.add_column(2, header: "") { |n| n * 2 }
+          t.add_group("")
+          t.add_column(:column_3, header: "") { |n| n.even?.to_s }
+          t.add_group("Text", alignment: Tablo::Justify::Left)
+          t.summary({
+            2 => {header: "somme",
+                  body: ->(ary : Tablo::Numbers) { ary.sum },
+            },
+          }, # masked_headers: true,
+            title: Tablo::FramedHeading.new("Summary"),
+            header_frequency: nil,
+            omit_last_rule: false)
+        end
+        output1 = %Q(╭──────────────┬──────────────┬──────────────╮
+                     │            1 :            2 : false        │
+                     │            2 :            4 : true         │
+                     │            3 :            6 : false        │).gsub(/^ */m, "")
+        output2 = %Q(├──────────────┼──────────────┼──────────────┤
+                     │              :         12.0 :              │
+                     ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+
+        table.to_s.should eq output1
+        table.summary.to_s.should eq output2
+        {% if flag?(:DEBUG) %}
+          puts ""
+          puts table
+          puts table.summary
+        {% end %}
+      end
+      it "prints a linked summary, hf=nil, oml: true, from footer, pgbrk: true" do
+        table = Tablo::Table.new([1, 2, 3],
+          header_frequency: nil,
+          border_type: Tablo::BorderName::Fancy,
+          # title: Tablo::FramedHeading.new("Numbers and text", line_breaks_after: 2),
+          subtitle: Tablo::UnFramedHeading.new("No booleans"),
+          footer: Tablo::FramedHeading.new("End of page"),
+          footer_page_break: true,
+          omit_last_rule: true) do |t|
+          t.add_column("itself", &.itself)
+          t.add_column(2, header: "") { |n| n * 2 }
+          t.add_group("")
+          t.add_column(:column_3, header: "") { |n| n.even?.to_s }
+          t.add_group("Text", alignment: Tablo::Justify::Left)
+          t.summary({
+            2 => {header: "somme",
+                  body: ->(ary : Tablo::Numbers) { ary.sum },
+            },
+          }, # masked_headers: true,
+            title: Tablo::FramedHeading.new("Summary"),
+            header_frequency: nil,
+            omit_last_rule: false)
+        end
+        output1 = %Q(╭──────────────┬──────────────┬──────────────╮
+                     │            1 :            2 : false        │
+                     │            2 :            4 : true         │
+                     │            3 :            6 : false        │).gsub(/^ */m, "")
+        output2 = %Q(├──────────────┼──────────────┼──────────────┤
+                     │              :         12.0 :              │
+                     ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+        table.to_s.should eq output1
+        table.summary.to_s.should eq output2
+        {% if flag?(:DEBUG) %}
+          puts ""
+          puts table
+          puts table.summary
+        {% end %}
+      end
       pending "TEST TEST TEST" do
         it "prints results !" do
           # table = Tablo::Table.new(Numbers.new.select(7..43),
