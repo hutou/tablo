@@ -81,27 +81,27 @@ Here's a first look at how to use Tablo to lay out a simple table of integers.
 
 [source,crystal]
 ----
-1	require "tablo"
-2	
-3	table = Tablo::Table.new([1, 2, 3]) do |t|
-4	    t.add_column("itself", &.itself)
-5	    t.add_column(2, header: "Double") {|n| n * 2}
-6	    t.add_column(:column_3, header: "String") {|n| n.even?.to_s}
-7	end
-8	puts table
+require "tablo"
+
+table = Tablo::Table.new([1, 2, 3]) do |t|
+    t.add_column("itself", &.itself)
+    t.add_column(2, header: "Double") {|n| n * 2}
+    t.add_column(:column_3, header: "String") {|n| n.even?.to_s}
+end
+puts table
 ----
 
 or
 
 [source,crystal]
 ----
-1	require "tablo"
-2	
-3	table = Tablo::Table.new([1, 2, 3])
-4	table.add_column("itself", &.itself)
-5	table.add_column(2, header: "Double") {|n| n * 2}
-6	table.add_column(:column_3, header: "String") {|n| n.even?.to_s}
-8	puts table
+require "tablo"
+
+table = Tablo::Table.new([1, 2, 3])
+table.add_column("itself", &.itself)
+table.add_column(2, header: "Double") {|n| n * 2}
+table.add_column(:column_3, header: "String") {|n| n.even?.to_s}
+puts table
 ----
 
 [literal]
@@ -119,7 +119,7 @@ A great deal of information can already be extracted from this simple example. L
 
 - Any number of columns can be defined, each requiring an identifier and a Proc to extract the data from each row of the source, and, if necessary, modify its type and value
 
-- The column identifier can be of type String, Integer or Symbol. By default, the column header takes the value of the identifier, unless the optional `header:` parameter is used
+- The column identifier can be of type String, Integer or Symbol. By default, the column header takes the value of the identifier, unless the optional `header` parameter is used
 
 - Columns are the same width
 
@@ -187,33 +187,36 @@ type will be the subject of the next section)
 |===
 
 To change a table's border type, simply assign the desired definition to the
-`border_type:` parameter when initializing the table.  This can be done in two
-ways, either by assigning the 16-character string directly to `border_type:`,
+`border_type` parameter when initializing the table.  This can be done in two
+ways, either by assigning the 16-character string directly to `border_type`,
 or by assigning the name of one of the 7 predefined borders :
 
-[Literal]
-- `BorderName::Ascii`         => `pass:["+++++++++|||----"]`
-- `BorderName::ReducedAscii`  => `pass:["E_EE_EE_EE_E----"]`
-- `BorderName::Modern`        => `pass:["┌┬┐├┼┤└┴┘│││────"]`
-- `BorderName::ReducedModern` => `pass:["E_EE_EE_EE_E────"]`
-- `BorderName::Markdown`      => `pass:["___|||___|||__-_"]`
-- `BorderName::Fancy`         => `pass:["╭┬╮├┼┤╰┴╯│:│─−-⋅"]`
-- `BorderName::Blank`         => `pass:["EEEEEEEEEEEEEEEE"]`
 
-So, for example, to set `border_type:` to `BorderName::ReducedAscii`, I can either :
+[Literal]
+----
+BorderName::Ascii         = "+++++++++|||----"
+BorderName::ReducedAscii  = "E_EE_EE_EE_E----"
+BorderName::Modern        = "┌┬┐├┼┤└┴┘│││────"
+BorderName::ReducedModern = "E_EE_EE_EE_E────"
+BorderName::Markdown      = "___|||___|||__-_"
+BorderName::Fancy         = "╭┬╮├┼┤╰┴╯│:│─−-⋅"
+BorderName::Blank         = "EEEEEEEEEEEEEEEE"
+----
+
+So, for example, to set `border_type` to `BorderName::ReducedAscii`, I can either :
 
 use the predefined border name
 [source,crystal]
 ----
-3	table = Tablo::Table.new([1, 2, 3]
-      border_type: Tablo::BorderName::ReducedAscii) do |t|
+table = Tablo::Table.new([1, 2, 3]
+  border_type: Tablo::BorderName::ReducedAscii) do |t|
 ----
 
 or use its definition string
 [source,crystal]
 ----
-3	table = Tablo::Table.new([1, 2, 3]
-      border_type: "E_EE_EE_EE_E----") do |t|
+table = Tablo::Table.new([1, 2, 3]
+  border_type: "E_EE_EE_EE_E----") do |t|
 ----
 
 
@@ -236,23 +239,23 @@ Heading row types (Title, SubTitle and Footer).
 
 ==== Group
 Adjacent columns can share a common header, above the column headers
-themselves. This common headers constitute a Group row type.
+themselves. This common header constitute a Group row type.
 
 To create a Group row, simply define a common header after each set of
 adjacent columns to be grouped.  
 
 [source,crystal]
 ----
- 1	require "tablo"
- 2
- 3	table = Tablo::Table.new([1, 2, 3]) do |t|
- 4	    t.add_column("itself", &.itself)
- 5	    t.add_column(2, header: "Double") {|n| n * 2}
- 6	    t.add_group("Numbers")
- 7	    t.add_column(:column_3, header: "String") {|n| n.even?.to_s}
- 8	    t.add_group("Text")
- 9	end
-10	puts table
+require "tablo"
+
+table = Tablo::Table.new([1, 2, 3]) do |t|
+  t.add_column("itself", &.itself)
+  t.add_column(2, header: "Double") {|n| n * 2}
+  t.add_group("Numbers")
+  t.add_column(:column_3, header: "String") {|n| n.even?.to_s}
+  t.add_group("Text")
+end
+puts table
 ----
 
 [literal]
@@ -267,13 +270,13 @@ adjacent columns to be grouped.
 +--------------+--------------+--------------+
 
 By default, Group headers are centered, but their alignment can be modified
-globally at table initialization time with the `group_alignment:` parameter,
-or locally for a given group with the `alignment:` parameter.
+globally at table initialization time with the `group_alignment` parameter,
+or locally for a given group with the `alignment` parameter.
 
 [source,crystal]
 ----
- 3	table = Tablo::Table.new([1, 2, 3],
-      group_alignment: Tablo::Justify::Left) do |t|
+table = Tablo::Table.new([1, 2, 3],
+  group_alignment: Tablo::Justify::Left) do |t|
 ----
  
 [literal]
@@ -283,7 +286,7 @@ or
 
 [source,crystal]
 ----
- 8	    t.add_group("Text", alignment: Tablo::Justify::Left)
+t.add_group("Text", alignment: Tablo::Justify::Left)
 ----
  
 [literal]
@@ -295,41 +298,21 @@ automatically created if the last column group is not specified.
 ==== Headings
 
 A formatted table can optionally include a title, subtitle and footer. Each of
-these elements is of type FramedHeading or UnFramedHeading.
+these elements is of type Title, SubTitle or Footer, inherited from the
+abstract class Heading (see API).
 
-By default, when the table is initialized, `title:`, `subtitle:` and `footer:` are
-of type FramedHeading and their value is `nil`, so they are not displayed.
+By default, when the table is initialized, their value is `nil`, so nothing is
+displayed.
 
-To display a title (or subtitle or footer), simply specify it when
+To display a title (or subtitle or footer), simply specify its value when
 initializing the table.
 
 [source,crystal]
 ----
- 3	table = Tablo::Table.new([1, 2, 3],
-      title: Tablo::FramedHeading.new("Numbers and text")) do |t|
+table = Tablo::Table.new([1, 2, 3],
+  title: Tablo::Title.new("Numbers and text")) do |t|                       
 ----
 
-[literal]
-+--------------------------------------------+
-|              Numbers and text              |
-+-----------------------------+--------------+
-|           Numbers           | Text         |
-+--------------+--------------+--------------+
-|       itself |       Double | String       |
-+--------------+--------------+--------------+
-|            1 |            2 | false        |
-|            2 |            4 | true         |
-|            3 |            6 | false        |
-+--------------+--------------+--------------+
-
-or
-
-[source,crystal]
-----
- 3	table = Tablo::Table.new([1, 2, 3],
-      title: Tablo::UnFramedHeading.new("Numbers and text")) do |t|
-----
-                        
 [literal]
                Numbers and text               
 +-----------------------------+--------------+
@@ -342,22 +325,19 @@ or
 |            3 |            6 | false        |
 +--------------+--------------+--------------+
 
-In addition to text framing, there's another difference between FramedHeading
-and UnFramedHeading. 
+These elements can also be framed, possibly with line breaks before and after
+(defined in the `Frame` struct initializer as `line_breaks_before` and
+`line_breaks_after` with a value of 0).
 
-FramedHeading accepts 2 additional parameters (`line_breaks_before:` and
-`line_breaks_after:`) which allow it to be more or less detached from the
-preceding or following text by a number of line breaks.
-
-By default, these parameters are set to 0, and the number of line breaks is
-the greater of the current element's `line_breaks_after:` and the next element's
-`line_breaks_before:`, if any.
+The number of line breaks between adjacent elements is equal to the highest
+value between the current element's `line_breaks_after` and the next element's
+`line_breaks_before`.
 
 [source,crystal]
 ----
- 3  table = Tablo::Table.new([1, 2, 3],
-      title: Tablo::FramedHeading.new("Numbers and text",
-        line_breaks_after: 2)) do |t|
+table = Tablo::Table.new([1, 2, 3],
+  title: Tablo::Title.new("Numbers and text", 
+    frame: Tablo::Frame.new(line_breaks_before: 0, line_breaks_after: 2))) do |t|
 ----
 
 [literal]
@@ -367,7 +347,7 @@ the greater of the current element's `line_breaks_after:` and the next element's
 +--------------------------------------------+
  
 +-----------------------------+--------------+
-|           Numbers           | Text         |
+|           Numbers           |     Text     |
 +--------------+--------------+--------------+
 |       itself |       Double | String       |
 +--------------+--------------+--------------+
@@ -376,6 +356,7 @@ the greater of the current element's `line_breaks_after:` and the next element's
 |            3 |            6 | false        |
 +--------------+--------------+--------------+
 ----
+    
 
 In summary, we have 6 types of data rows : 
 
@@ -394,7 +375,7 @@ In summary, we have 6 types of data rows :
 
 |===
 
-=== Rule types
+=== Rules 
 
 Between the different types of rows, there are also different types of
 separator lines, whose format varies according to the types of rows they
@@ -405,7 +386,8 @@ line, making the rows linked, or on the contrary, there may first be a closing
 line for the top row, possibly followed by line breaks before the opening line
 of the bottom row.  
 
-The border manager formats these separating lines, whose type is RuleType
+These horizontal rules are formatted by the `horizontal_rule` method of class
+Border.
 
 === Display frequency and repeated title
 
@@ -416,20 +398,20 @@ only once, at the beginning for titles and headers, at the end for the footer.
 
 [source,crystal]
 ----
- 1  require "tablo"
- 2
- 3  table = Tablo::Table.new([1, 2, 3],
- 4    header_frequency: 0,
- 5    title: Tablo::FramedHeading.new("Numbers and text", line_breaks_after: 2),
- 6    subtitle: Tablo::UnFramedHeading.new("No booleans"),
- 7    footer: Tablo::UnFramedHeading.new("End of page")) do |t|
- 8    t.add_column("itself", &.itself)
- 9    t.add_column(2, header: "Double") { |n| n * 2 }
-10    t.add_group("Numbers")
-11    t.add_column(:column_3, header: "String") { |n| n.even?.to_s }
-12    t.add_group("Text", alignment: Tablo::Justify::Left)
-13  end
-14  puts table
+require "tablo"
+
+table = Tablo::Table.new([1, 2, 3],
+  header_frequency: 0,
+  title: Tablo::Title.new("Numbers and text", frame: Tablo::Frame.new(0, 2)),
+  subtitle: Tablo::SubTitle.new("No booleans"),
+  footer: Tablo::Footer.new("End of page")) do |t|
+  t.add_column("itself", &.itself)
+  t.add_column(2, header: "Double") { |n| n * 2 }
+  t.add_group("Numbers")
+  t.add_column(:column_3, header: "String") { |n| n.even?.to_s }
+  t.add_group("Text", alignment: Tablo::Justify::Left)
+end
+puts table
 ----
 
 [literal]
@@ -448,14 +430,14 @@ only once, at the beginning for titles and headers, at the end for the footer.
 |            2 |            4 | true         |
 |            3 |            6 | false        |
 +--------------+--------------+--------------+
-                  End of page         
+                  End of page                 
 ----
 
 - If set to `nil`, only body rows are displayed.
 
 [source,crystal]
 ----
- 4    header_frequency: nil,
+header_frequency: nil,
 ----
 
 [literal]
@@ -470,7 +452,7 @@ are footers, but titles and subtitles are not repeated.
 
 [source,crystal]
 ----
- 4    header_frequency: 2,
+header_frequency: 2,
 ----
 
 [literal]
@@ -497,15 +479,17 @@ are footers, but titles and subtitles are not repeated.
 |            3 |            6 | false        |
 |              |              |              |
 +--------------+--------------+--------------+
-                  End of page                 
+                  End of page    
 ----
 
-However, the `title_repeated:` parameter can be set to `true` to obtain title and
+However, if the title `repeated` parameter is set to `true`, we obtain title and
 subtitle repetition.
 
 [source,crystal]
 ----
- 4    header_frequency: 2, title_repeated: true,
+header_frequency: 2,
+title: Tablo::Title.new("Numbers and text", frame: Tablo::Frame.new(0, 2),
+  repeated: true),
 ----
 
 [literal]
@@ -875,7 +859,7 @@ This can be done using ANSI code sequences, or preferably, using the
 
 In this section, we'll be using color, altered characters and graphic borders
 with the Fancy border type. Output will therefore be presented as SVG images, so as
-to guarantee perfect rendering, whatever the medium used. 
+to guarantee perfect rendering, whatever the medium used for display. 
 
 For styling, there are 5 forms of Procs.
 
@@ -936,8 +920,8 @@ require "tablo"
 require "colorize"
 
 table = Tablo::Table.new([1, 2, 3, 4, 5],
-  title: Tablo::FramedHeading.new("My black and white fancy table"),
-  footer: Tablo::FramedHeading.new("End of data"),
+  title: Tablo::Title.new("My black and white fancy table", frame: Tablo::Frame.new),
+  footer: Tablo::Footer.new("End of data", frame: Tablo::Frame.new),
   border_type: Tablo::BorderName::Fancy,
   border_styler: ->(border_char : String) {border_char.colorize(:light_gray).to_s},
   body_styler: ->(value : Tablo::CellType, cell_data : Tablo::CellData, content : String) {
@@ -1313,9 +1297,10 @@ Returns an instance of `Table(T)`
 |`sources` |  `Enumerable(T)` | Can be any Enumerable data type +
 _(`Range` is currently (Crystal 1.9.2) not correctly supported in this context: use `Range.to_a` instead)_
 3+^| _Optional named parameters, with default values_ 
-| `title`, `subtitle`, `footer` | `UnFramedHeading` \|  `FramedHeading` =
-`FramedHeading.new` | Initializing an (`Un`)`FrameHeading` class without any argument sets
-its value to `nil`, so there is nothing to display 
+| `title`, `subtitle`, `footer` | `Title`, `SubTitle` and `Footer`,
+respectively initialized by `Title.new`, `SubTitle.new` and `Footer.new`
+| Initializing these classes without any argument set their value to `nil`, 
+so there is nothing to display 
 
 | `group_alignment` | `Justify` = `DEFAULT_HEADING_ALIGNMENT` |   
 
@@ -1405,12 +1390,6 @@ not displayed (this does not prevent display of title, subtitle and footer)
 | `omit_last_rule` | `Bool` = `false` | If `true`, the closing rule of table 
 is not displayed. This is useful for custom rendering (and notably for Summary 
 table linking)
-
-| `title_repeated` | `Bool` = `false` | If `true`, force title and subtitle to
-be repeated at header frequency 
-
-| `footer_page_break` | `Bool` = `false` |  If `true`, emit a page break
-after footer
 |===
 
 ==== Method `add_column`
@@ -1584,8 +1563,18 @@ widths.
 ==== Method `total_table_width`
 
 
-=== classes FramedHeading and UnFramedHeading
+=== classes Heading : Title, SubTitle and Footer
 
+[cols="1,2,3"]
+|===
+| Parameters | Type and default value | Comments
+
+| `repeated` | `Bool` = `false` | If `true`, force title (and subtitle) to
+be repeated at header frequency 
+
+| `page_break` | `Bool` = `false` |  If `true`, emit a page break
+after footer
+|===
 
 ////
 == Overview

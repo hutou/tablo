@@ -10,54 +10,16 @@ module Tablo
   #
   # Spacing between the different row types (see `RowType`) is done by taking
   # the maximum of the 2 following values (max) :
-  # - *line_breaks_after* of the previous row
-  # - *line_breaks_before* of the current row
+  # - *line_breaks_after* of the current row
+  # - *line_breaks_before* of the next row
   # knowing that spacing (either before or after) of the row types Group, Header
   # and Body is always 0.
   #
-  # When both rows (previous and current) are framed (row types Group, Header
+  # When both rows (current and next) are framed (row types Group, Header
   # or Body are always framed), and max is zero, the frames
   # are linked (proper rendering depends on border type).
   #
-  # if `max > 0`, `max - 1` empty lines are inserted between previous and current rows.
-  # abstract struct HeadingA
-  #   getter value, alignment, formatter, styler
-
-  #   def initialize(@value : CellType = nil, *,
-  #                  @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
-  #                  @formatter : TextCellFormatter = DEFAULT_FORMATTER,
-  #                  @styler : TextCellStyler = DEFAULT_STYLER)
-  #     if !value.nil?
-  #       if value.is_a?(String) && value.empty?
-  #         raise InvalidValue.new "Heading string value cannot be empty!"
-  #       end
-  #     end
-  #   end
-  # end
-
-  # struct UnFramedHeading
-  #   getter? framed = false
-  #   getter value, alignment, formatter, styler
-
-  #   def initialize(@value : CellType = nil, *,
-  #                  @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
-  #                  @formatter : TextCellFormatter = DEFAULT_FORMATTER,
-  #                  @styler : TextCellStyler = DEFAULT_STYLER)
-  #   end
-  # end
-
-  # struct FramedHeading
-  #   getter? framed = true
-  #   getter value, line_breaks_before, line_breaks_after, alignment, formatter, styler
-
-  #   def initialize(@value : CellType = nil, *,
-  #                  @line_breaks_before : Int32 = 0,
-  #                  @line_breaks_after : Int32 = 0,
-  #                  @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
-  #                  @formatter : TextCellFormatter = DEFAULT_FORMATTER,
-  #                  @styler : TextCellStyler = DEFAULT_STYLER)
-  #   end
-  # end
+  # if `max > 0`, `max - 1` empty lines are inserted between current and next rows.
 
   struct Frame
     getter line_breaks_before, line_breaks_after
@@ -73,22 +35,22 @@ module Tablo
   end
 
   abstract struct Heading
-    getter value, frame, alignment, formatter, styler
-
-    def initialize(@value : CellType? = nil, *,
-                   @frame : Frame? = nil,
-                   @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
-                   @formatter : TextCellFormatter = DEFAULT_FORMATTER,
-                   @styler : TextCellStyler = DEFAULT_STYLER)
-    end
-
     def framed?
       !frame.nil?
+    end
+
+    private def check_value
+      unless value.nil?
+        if (v = value).is_a?(String) && v.empty?
+          raise InvalidValue.new "Heading string value cannot be empty!"
+        end
+      end
     end
   end
 
   struct Title < Heading
     getter? repeated
+    getter value, frame, alignment, formatter, styler
 
     def initialize(@value : CellType? = nil, *,
                    @frame : Frame? = nil,
@@ -96,20 +58,25 @@ module Tablo
                    @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
                    @formatter : TextCellFormatter = DEFAULT_FORMATTER,
                    @styler : TextCellStyler = DEFAULT_STYLER)
+      check_value
     end
   end
 
   struct SubTitle < Heading
+    getter value, frame, alignment, formatter, styler
+
     def initialize(@value : CellType? = nil, *,
                    @frame : Frame? = nil,
                    @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
                    @formatter : TextCellFormatter = DEFAULT_FORMATTER,
                    @styler : TextCellStyler = DEFAULT_STYLER)
+      check_value
     end
   end
 
   struct Footer < Heading
     getter? page_break
+    getter value, frame, alignment, formatter, styler
 
     def initialize(@value : CellType? = nil, *,
                    @frame : Frame? = nil,
@@ -117,6 +84,7 @@ module Tablo
                    @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
                    @formatter : TextCellFormatter = DEFAULT_FORMATTER,
                    @styler : TextCellStyler = DEFAULT_STYLER)
+      check_value
     end
   end
 end
