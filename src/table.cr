@@ -15,14 +15,10 @@ module Tablo
     # Class properties to manage row types framing and summary table linking
     # for summary table
     #
-    # Table.rowtype_memory records the current rowtype emitted in rowgroup
+    # Class property to manage transition betwen :main and :summary tables
+    class_property transition_footer : Footer? = nil
+    # class property to manage transition between successive rows issued from data source
     class_property rowtype_memory : RowType? = nil
-    #
-    class_property previous_rowtype : RowType? = nil
-    # class_property last_main_rowtype : RowType? = nil
-    class_property omitted_rowtype : RowType? = nil
-    class_property? omitted_rowtype_framed : Bool = false
-    class_property omitted_rowtype_line_breaks_after : Int32 = 0
 
     # -------------- Table management attributes ------------------------------------
     #

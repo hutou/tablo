@@ -7,17 +7,22 @@ module Tablo
   # types.
   #
   # The main purpose of the RowGroup class is to manage the alternation of
-  # different row types  and their separating rule types.
+  # different row types and their separating rule types.
   #
   # To do this, the previous and current row types are used to determine the
   # rule type and deduce border position to be used (see ROWTYPE_POSITION below).
-
+  #
   # From one instance to the next, the RowGroup class has no memory: the
   # Table.rowtype_memory class variable is therefore used to ensure the link:
   # when a new instance of RowGroup is created, the previous_rowtype instance
   # variable is initialized by Table.rowtype_memory, and on exit from
   # RowGroup's run method, the current_rowtype instance variable is assigned to
   # Table.rowtype_memory.
+  #
+  # Linking conditions between table :main and table :summary is governed by
+  # the class variable Table.transition_footer, where we store the footer of
+  # :main or nil, depending of the last rowtype of :main. This info is then
+  # use on first row of :summary to properly link or not the two tables.
   class RowGroup(T)
     @rows = [] of String
     # Whenever we enter rowgroup, we retrieve the previous rowtype from
@@ -38,8 +43,6 @@ module Tablo
       def add_row(rows, linenum = 0)
         rows.each_line.with_index do |r, i|
           if i == 0
-            # self.rows << "[in %-8s from %-8s%24s] => %s" % [
-            # current_rowtype.to_s, previous_rowtype.to_s, "", r,
             self.rows << "[in %-8s from %-8s%18s (%3d)] => %s" % [
               current_rowtype.to_s, previous_rowtype.to_s, "", linenum, r,
             ]
@@ -79,7 +82,11 @@ module Tablo
       when RowType::SubTitle
         table.subtitle.framed?
       when RowType::Footer
-        table.footer.framed?
+        if summary_first?
+          Table.transition_footer.as(Footer).framed?
+        else
+          table.footer.framed?
+        end
       else
         true
       end
@@ -156,37 +163,23 @@ module Tablo
       end
     end
 
-    private def summary_first_row?
-    end
-
     private def apply_rules
-      # Deal with table transition from Detail to Summary
-      if row_index == 0 && !Table.omitted_rowtype.nil?
-        self.previous_rowtype = Table.omitted_rowtype # if previous_rowtype.nil?
-        previous_rowtype_framed = Table.omitted_rowtype_framed?
-        previous_rowtype_line_breaks_after = Table.omitted_rowtype_line_breaks_after
-        Table.omitted_rowtype = nil
-        summary_first = true
-      else
-        previous_rowtype_framed = framed?(previous_rowtype)
-        previous_rowtype_line_breaks_after = line_breaks_after(previous_rowtype)
-        summary_first = false
-      end
-
       groups = previous_rowtype == RowType::Group ||
                current_rowtype == RowType::Group ? table.groups : nil
       spacing = [line_breaks_after(previous_rowtype), line_breaks_before(current_rowtype)].max
-      # case {framed?(previous_rowtype), framed?(current_rowtype)}
-      case {previous_rowtype_framed, framed?(current_rowtype)}
+      case {framed?(previous_rowtype), framed?(current_rowtype)}
       when {true, true}
         if spacing.zero?
           fill_page
-          if summary_first
+          if summary_first?
             # Table linking is done if adjacent row types are framed, with no spacing
             # we must use a specific horizontal rule do separate detail and summary
             case {previous_rowtype, current_rowtype}
             when {RowType::Body, RowType::Header}
               add_rule(Position::SummaryHeader,
+                groups: groups, linenum: __LINE__)
+            when {RowType::Footer, RowType::Body}
+              add_rule(Position::TitleBody,
                 groups: groups, linenum: __LINE__)
             when {RowType::Body, RowType::Body}
               add_rule(Position::SummaryBody,
@@ -201,7 +194,6 @@ module Tablo
               add_rule(Position::BodyBody,
                 groups: groups, linenum: __LINE__) if row_divider
             else
-              # puts "zzz #{ROWTYPE_POSITION[{previous_rowtype, current_rowtype}]}"
               add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}],
                 groups: groups, linenum: __LINE__)
             end
@@ -265,6 +257,16 @@ module Tablo
     end
 
     def run
+      if summary_first?
+        if Table.rowtype_memory.nil?
+          # :main has been closed, so no previous rowtype !
+          self.previous_rowtype = nil
+        else
+          # Linking allowed
+          self.previous_rowtype = Table.transition_footer.nil? ? RowType::Body : RowType::Footer
+        end
+      end
+
       if has_title?
         self.current_rowtype = RowType::Title
         apply_rules
@@ -290,51 +292,52 @@ module Tablo
       apply_rules
 
       if has_footer?
-        # debugger
         self.current_rowtype = RowType::Footer
         apply_rules
       end
 
+      # After each fired rule, previous_rowtype and current_rowtype are equal
+
       if last_row?
-        # Do we have a summary table ?
-        if table.summary_table.nil?
-          # No summary, so we can close table
-          close_table unless table.omit_last_rule?
-        else
-          # yes, we have a summary table
-          # Do we have a request for linking tables ?
-          if table.omit_last_rule?
-            # Ok, linked tables wanted, but conditions are :
-            #  - previous_rowtype == Body
-            #  - previous_rowtype == Footer *AND* # FramedHeading *AND* no footer_page_break
-            if previous_rowtype == RowType::Body ||
-               (previous_rowtype == RowType::Footer && table.footer.framed? &&
-               !table.footer.page_break?)
-              # Okay, linking is allowed, so we save data for next run
-              Table.omitted_rowtype = previous_rowtype
-              Table.omitted_rowtype_framed = true
-              Table.omitted_rowtype_line_breaks_after = 0
-              if previous_rowtype == RowType::Footer
-                Table.omitted_rowtype_framed = table.footer.framed?
-                # Table.omitted_rowtype_line_breaks_after = table.footer.line_breaks_after
-                # Table.omitted_rowtype_line_breaks_after = table.footer.framed? ? table.footer.as(FramedHeading).line_breaks_after : 0
-                Table.omitted_rowtype_line_breaks_after = table.footer.framed? ? table.footer.frame.as(Frame).line_breaks_after : 0
+        # where are we ?
+        case table.name
+        when :main
+          # So :main is printed, and we know if a summary has already been defined
+          # by testing table.summary_table.nil?, but if not, we do not know for sure
+          # if it would be defined later or not
+          if !table.summary_table.nil?
+            # a summary is defined, but do we have to save last row of :main for it
+            # is linking possible ?
+            if table.omit_last_rule?
+              # Ok, linked tables wanted, but conditions are :
+              #  - previous_rowtype == Body
+              #  - previous_rowtype == Footer *AND* # FramedHeading *AND* no footer_page_break
+              if current_rowtype == RowType::Body ||
+                 (current_rowtype == RowType::Footer && table.footer.framed? &&
+                 !table.footer.page_break?)
+              else
+                # no linking allowed, we must close
+                # and not obey omitting last rule in that case !
+                close_table
               end
             else
-              # no linking allowed, we must close
-              # and not obey omitting last rule in that case !
-              close_table
+              # No linking requested
+              close_table # unless table.omit_last_rule?
             end
+            Table.transition_footer = current_rowtype == RowType::Footer ? table.footer : nil
           else
-            # No linking requested
-            close_table unless table.omit_last_rule?
+            # No way to know if summary would be defined later, so we can just
+            # close :main, and linking would not possible
+            close_table # unless table.omit_last_rule?
           end
+        when :summary
+          # Okay, we are done, clear transition_data for next runs
+          close_table # unless table.omit_last_rule?
         end
       else
         # save current rowtype for next run in current table²
         Table.rowtype_memory = previous_rowtype
       end
-
       rows
     end
 
@@ -350,6 +353,10 @@ module Tablo
 
     private def last_row?
       row_index == table.row_count - 1
+    end
+
+    private def summary_first?
+      first_row? && table.name == :summary ? true : false
     end
 
     private def has_title?

@@ -1113,13 +1113,13 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
                      │              :         12.0 :              │
                      ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
 
-        table.to_s.should eq output1
-        table.summary.to_s.should eq output2
         {% if flag?(:DEBUG) %}
           puts ""
           puts table
           puts table.summary
         {% end %}
+        table.to_s.should eq output1
+        table.summary.to_s.should eq output2
       end
       it "prints a linked summary, hf=0, oml: true, from footer, pgbrk: false" do
         table = Tablo::Table.new([1, 2, 3],
@@ -1157,13 +1157,13 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
                      │              :         12.0 :              │
                      ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
 
-        table.to_s.should eq output1
-        table.summary.to_s.should eq output2
         {% if flag?(:DEBUG) %}
           puts ""
           puts table
           puts table.summary
         {% end %}
+        table.to_s.should eq output1
+        table.summary.to_s.should eq output2
       end
       it "prints a detached summary, hf=0, oml: true, from footer, pgbrk: true" do
         table = Tablo::Table.new([1, 2, 3],

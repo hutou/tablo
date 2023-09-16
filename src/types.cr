@@ -33,13 +33,6 @@ module Tablo
   DEFAULT_HEADING_ALIGNMENT     = Justify::Center
   DEFAULT_FORMATTER             = ->(c : CellType) { c.to_s }
 
-  struct OldCellData
-    getter value, row_index, column_index, width
-
-    def initialize(@value : CellType, @row_index : Int32, @column_index : Int32, @width : Int32)
-    end
-  end
-
   struct CellData
     getter body_value, row_index, column_index
 

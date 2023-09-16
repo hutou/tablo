@@ -1268,8 +1268,9 @@ source. Its type is `Tablo::CellType`
 
 === class Table 
 
-The class `Table` is the main class of Tablo. After équipée de données et
-e colonnes ....;
+The Table class is Tablo's main class.  Its initialization defines the main
+parameters governing the overall operation of the Tablo library, in particular
+the data source and column definitions. 
 
 ==== Method `initialize`
 
@@ -1563,17 +1564,86 @@ widths.
 ==== Method `total_table_width`
 
 
-=== classes Heading : Title, SubTitle and Footer
+=== abstract class Heading : concrete classes Title, SubTitle and Footer
+
+`Title`, `SubTitle` and `Footer` structs are inherited from the `Heading` abstract struct. 
+
+==== abstract struct Heading
+
+===== Method `framed?`
+
+Returns `true` if `Title`, `SubTitle` or `Footer` contents are framed, `false` otherwise.
+
+==== struct Frame
+The `Frame` struct is used to add a frame to `Title`, `SubTitle` or `Footer`.
+
+===== Method `initialize`
+
+Returns an instance of `Frame`
 
 [cols="1,2,3"]
 |===
 | Parameters | Type and default value | Comments
+| `line_breaks_before` |  `Int32` = 0 | The count of line breaks to emit before displaying framed contents 
+| `line_breaks_after` |  `Int32` = 0 | The count of line breaks to emit after displaying framed contents 
+|===
 
+The effective count of line breaks is the maximum value of `line_breaks_before` and `line_breaks_after` for adjacent rows.
+
+==== struct Title
+
+===== Method `initialize`
+
+Returns an instance of `Title`
+
+[cols="1,2,3"]
+|===
+| Parameters | Type and default value | Comments
+| `value` |  `CellType?` = `nil` | The title contents (may not be an empty string). 
+No display if `nil`
+| `frame` | `Frame?` = `nil` | Defines a frame around title contents. If `nil`, no frame.
 | `repeated` | `Bool` = `false` | If `true`, force title (and subtitle) to
 be repeated at header frequency 
+| `alignment` | `Justify` =  `DEFAULT_HEADING_ALIGNMENT` |
+| `formatter` | `TextCellFormatter` = `DEFAULT_FORMATTER` |
+| `styler` | `TextCellStyler` = `DEFAULT_STYLER` |
+|===
 
+
+==== struct SubTitle
+
+===== Method `initialize`
+
+Returns an instance of `SubTitle`
+
+[cols="1,2,3"]
+|===
+| Parameters | Type and default value | Comments
+| `value` |  `CellType?` = `nil` | The title contents (may not be an empty string). 
+No display if `nil`
+| `frame` | `Frame?` = `nil` | Defines a frame around title contents
+| `alignment` | `Justify` =  `DEFAULT_HEADING_ALIGNMENT` |
+| `formatter` | `TextCellFormatter` = `DEFAULT_FORMATTER` |
+| `styler` | `TextCellStyler` = `DEFAULT_STYLER` |
+|===
+
+==== struct Footer
+
+===== Method `initialize`
+
+Returns an instance of `Footer`
+
+[cols="1,2,3"]
+|===
+| Parameters | Type and default value | Comments
+| `value` |  `CellType?` = `nil` | The title contents (may not be an empty string). 
+No display if `nil`
+| `frame` | `Frame?` = `nil` | Defines a frame around title contents
 | `page_break` | `Bool` = `false` |  If `true`, emit a page break
 after footer
+| `alignment` | `Justify` =  `DEFAULT_HEADING_ALIGNMENT` |
+| `formatter` | `TextCellFormatter` = `DEFAULT_FORMATTER` |
+| `styler` | `TextCellStyler` = `DEFAULT_STYLER` |
 |===
 
 ////
