@@ -295,6 +295,37 @@ t.add_group("Text", alignment: Tablo::Justify::Left)
 Note that the group header can be empty, and that an empty group header is
 automatically created if the last column group is not specified.
 
+Group and header are intimately linked and only separated by a horizontal
+line. For custom rendering, this line can be omitted by setting the Table
+`omit_group_header_rule` parameter to `true`.
+[source,crystal]
+----
+require "tablo"
+
+table = Tablo::Table.new([1, 2, 3],
+  omit_group_header_rule: true) do |t|
+  t.add_column("itself", &.itself)
+  t.add_column(2, header: "Double") {|n| n * 2}
+  t.add_group("Numbers")
+  t.add_column(:column_3, header: "Boolean") {|n| n.even?.to_s}
+    t.add_column(:column_4, header: "String") {|n| n.to_s * n}
+  t.add_group("Text")
+end
+puts table.pack
+----
+
+[literal]
+----
++-----------------+------------------+
+|     Numbers     |       Text       |
+| itself | Double | Boolean | String |
++--------+--------+---------+--------+
+|      1 |      2 | false   | 1      |
+|      2 |      4 | true    | 22     |
+|      3 |      6 | false   | 333    |
++--------+--------+---------+--------+
+----
+
 ==== Headings
 
 A formatted table can optionally include a title, subtitle and footer. Each of
@@ -1387,6 +1418,9 @@ exception unless value in range or `nil`)
 
 | `masked_headers`| `Bool` = `false` |  If `true`, groups and column headers are
 not displayed (this does not prevent display of title, subtitle and footer)
+
+| `omit_group_header_rule` | `Bool` = `false` | If `true`, the rule between Group
+and Header rows is not displayed. This is useful for headers custom rendering.
 
 | `omit_last_rule` | `Bool` = `false` | If `true`, the closing rule of table 
 is not displayed. This is useful for custom rendering (and notably for Summary 
