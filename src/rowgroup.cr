@@ -256,6 +256,54 @@ module Tablo
       Table.rowtype_memory = nil
     end
 
+    private def process_last_row
+      # where are we ?
+      case table.name
+      when :main
+        # So :main has been displayed, and we know if a summary has already
+        # been defined by testing table.summary_table.nil?, but if not, we do
+        # not know for sure if it would be defined later or not
+        if !table.summary_table.nil?
+          # a summary is defined, but do we have to save last row of :main for it
+          # is linking possible ?
+          if table.omit_last_rule?
+            # Ok, linked tables wanted, but conditions are :
+            #  - previous_rowtype == Body
+            #  - previous_rowtype == Footer *AND* # FramedHeading *AND* no footer_page_break
+            if current_rowtype == RowType::Body ||
+               (current_rowtype == RowType::Footer && table.footer.framed? &&
+               !table.footer.page_break?)
+            else
+              # no linking allowed, but we must obey omit_last_rule and
+              # not close :main, just prevent linking
+              Table.rowtype_memory = nil
+              # Do not omit formfeed if page_break? == true
+              self.rows[-1] += "\f" if table.footer.page_break?
+            end
+          else
+            # No linking requested, we can close table
+            close_table
+          end
+          Table.transition_footer = current_rowtype == RowType::Footer ? table.footer : nil
+        else
+          # No way to know if summary would be defined later
+          if table.omit_last_rule?
+            # We must obey omit_last_rule: we do not close :main
+            # but just prevent linking !
+            Table.rowtype_memory = nil
+            # Do not omit formfeed if page_break? == true
+            self.rows[-1] += "\f" if table.footer.page_break?
+          else
+            # No linking requested, we can close table
+            close_table
+          end
+        end
+      when :summary
+        # Okay, we are done, clear transition_data for next runs
+        close_table
+      end
+    end
+
     def run
       if summary_first?
         if Table.rowtype_memory.nil?
@@ -299,41 +347,7 @@ module Tablo
       # After each fired rule, previous_rowtype and current_rowtype are equal
 
       if last_row?
-        # where are we ?
-        case table.name
-        when :main
-          # So :main is printed, and we know if a summary has already been defined
-          # by testing table.summary_table.nil?, but if not, we do not know for sure
-          # if it would be defined later or not
-          if !table.summary_table.nil?
-            # a summary is defined, but do we have to save last row of :main for it
-            # is linking possible ?
-            if table.omit_last_rule?
-              # Ok, linked tables wanted, but conditions are :
-              #  - previous_rowtype == Body
-              #  - previous_rowtype == Footer *AND* # FramedHeading *AND* no footer_page_break
-              if current_rowtype == RowType::Body ||
-                 (current_rowtype == RowType::Footer && table.footer.framed? &&
-                 !table.footer.page_break?)
-              else
-                # no linking allowed, we must close
-                # and not obey omitting last rule in that case !
-                close_table
-              end
-            else
-              # No linking requested
-              close_table # unless table.omit_last_rule?
-            end
-            Table.transition_footer = current_rowtype == RowType::Footer ? table.footer : nil
-          else
-            # No way to know if summary would be defined later, so we can just
-            # close :main, and linking would not possible
-            close_table # unless table.omit_last_rule?
-          end
-        when :summary
-          # Okay, we are done, clear transition_data for next runs
-          close_table # unless table.omit_last_rule?
-        end
+        process_last_row
       else
         # save current rowtype for next run in current table²
         Table.rowtype_memory = previous_rowtype
