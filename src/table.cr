@@ -465,7 +465,7 @@ module Tablo
     #   - body_styler: `DataCellStyler`
     #   - header_styler: `DataCellStyler`     \
     # and
-    #   - any (unique) key: `SummaryFunction`
+    #   - any (unique) key: `SummaryNumCol` or `SummaryNumCols`
     #
     # for example:
     # ```
@@ -474,12 +474,12 @@ module Tablo
     #     header:           "Sum",
     #     header_formatter: ->(c : Tablo::CellType) { c.to_s.downcase },
     #     body_styler:      ->(c : Tablo::CellType, s : String) { s.colorize(:yellow).to_s },
-    #     proc:             ->(ary : Tablo::Numbers) { ary.sum.to_i },
+    #     proc:             ->(ary : Tablo::NumCol) { ary.sum.to_i },
     #   },
     #   "B" => {
     #     header: "Sum/Avg",
-    #     proc1:  ->(ary : Tablo::Numbers) { ary.sum.to_i },
-    #     proc2:  ->(ary : Tablo::Numbers) { ary.size > 0 ? (ary.sum/ary.size).to_s : "NA" },
+    #     proc1:  ->(ary : Tablo::NumCol) { ary.sum.to_i },
+    #     proc2:  ->(ary : Tablo::NumCols) { ary["B"].size > 0 ? (ary["B"].sum/ary["B"].size).to_s : "NA" },
     #   },
     # }
     # ```

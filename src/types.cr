@@ -281,16 +281,16 @@ module Tablo
     Right
   end
 
-  # :nodoc:
-  alias SummaryInputTypes = Float64 | Int32
-  # :nodoc:
-  alias SummaryOutputTypes = Float64 | Int32 | String
-  # :nodoc:
-  alias Numbers = Enumerable(SummaryInputTypes)
-  # :nodoc:
-  alias SummaryFunction = Proc(Numbers, Float64) |
-                          Proc(Numbers, Int32) |
-                          Proc(Numbers, String)
+  alias Num = Float64 | Int32
+  alias NumCol = Array(Num)
+  alias NumCols = Hash(LabelType, NumCol)
+
+  alias SummaryNumCols = Proc(NumCols, Float64) |
+                         Proc(NumCols, Int32) |
+                         Proc(NumCols, String)
+  alias SummaryNumCol = Proc(NumCol, Float64) |
+                        Proc(NumCol, Int32) |
+                        Proc(NumCol, String)
 
   # Tablo Exceptions hierarchy
   #
