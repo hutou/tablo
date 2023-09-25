@@ -43,7 +43,8 @@ module Tablo
     protected getter width, truncation_indicator
     protected getter header_frequency, row_divider_frequency
     protected getter wrap_mode, header_wrap, body_wrap
-    protected getter? masked_headers, omit_last_rule, title_repeated, footer_page_break
+    protected getter? masked_headers, omit_last_rule, omit_group_header_rule
+    protected getter? title_repeated, footer_page_break
 
     # -------------- initialize -----------------------------------------------------
     #
@@ -89,6 +90,7 @@ module Tablo
           @body_wrap : Int32? = nil,
           #
           @masked_headers  : Bool = false,
+          @omit_group_header_rule : Bool = false,
           @omit_last_rule : Bool = false,
           @title_repeated : Bool = false,
           {% if block_given %}

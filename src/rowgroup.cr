@@ -193,6 +193,9 @@ module Tablo
             when {RowType::Body, RowType::Body}
               add_rule(Position::BodyBody,
                 groups: groups, linenum: __LINE__) if row_divider
+            when {RowType::Group, RowType::Header}
+              add_rule(Position::GroupHeader,
+                groups: groups, linenum: __LINE__) unless table.omit_group_header_rule?
             else
               add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}],
                 groups: groups, linenum: __LINE__)
