@@ -137,7 +137,7 @@ Each border type is defined by a string of exactly 16 characters, which are
 then converted into 16 strings of up to 1 character each.  The definition
 string can contain any character, but two of them have a special meaning:
 after conversion, the uppercase E is replaced by an empty string, and the
-underscore character is replaced by a space. +
+uppercase S character is replaced by a space (a simple space may also be used, of course). +
 _Please note that using the capital E character may cause alignment
  difficulties._
 
@@ -195,9 +195,9 @@ or by assigning the name of one of the 7 predefined borders :
 [Literal]
 ----
 BorderName::Ascii         = "+++++++++|||----"
-BorderName::ReducedAscii  = "E_EE_EE_EE_E----"
+BorderName::ReducedAscii  = "ESEESEESEESE----"
 BorderName::Modern        = "┌┬┐├┼┤└┴┘│││────"
-BorderName::ReducedModern = "E_EE_EE_EE_E────"
+BorderName::ReducedModern = "ESEESEESEESE────"
 BorderName::Markdown      = "___|||___|||__-_"
 BorderName::Fancy         = "╭┬╮├┼┤╰┴╯│:│─−-⋅"
 BorderName::Blank         = "EEEEEEEEEEEEEEEE"
@@ -216,7 +216,7 @@ or use its definition string
 [source,crystal]
 ----
 table = Tablo::Table.new([1, 2, 3]
-  border_type: "E_EE_EE_EE_E----") do |t|
+  border_type: "ESEESEESEESE----") do |t|
 ----
 
 
