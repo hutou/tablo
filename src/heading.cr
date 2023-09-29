@@ -35,6 +35,8 @@ module Tablo
   end
 
   abstract struct Heading
+    property value, frame
+
     def framed?
       !frame.nil?
     end
@@ -49,8 +51,9 @@ module Tablo
   end
 
   struct Title < Heading
-    getter? repeated
-    getter value, frame, alignment, formatter, styler
+    property? repeated
+    property alignment
+    getter formatter, styler
 
     def initialize(@value : CellType? = nil, *,
                    @frame : Frame? = nil,
@@ -63,7 +66,8 @@ module Tablo
   end
 
   struct SubTitle < Heading
-    getter value, frame, alignment, formatter, styler
+    property alignment
+    getter formatter, styler
 
     def initialize(@value : CellType? = nil, *,
                    @frame : Frame? = nil,
@@ -75,8 +79,9 @@ module Tablo
   end
 
   struct Footer < Heading
-    getter? page_break
-    getter value, frame, alignment, formatter, styler
+    property? page_break
+    property alignment
+    getter formatter, styler
 
     def initialize(@value : CellType? = nil, *,
                    @frame : Frame? = nil,

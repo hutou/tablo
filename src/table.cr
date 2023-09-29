@@ -36,7 +36,7 @@ module Tablo
     # Table parameters
     getter sources
     private setter sources
-    protected getter title, subtitle, footer
+    property title, subtitle, footer
     protected getter group_alignment, group_formatter, group_styler
     protected getter header_alignment, header_formatter, header_styler
     protected getter body_alignment, body_formatter, body_styler
