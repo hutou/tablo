@@ -77,17 +77,13 @@ module Tablo
   # for colorized output, either by using ANSI sequences or "colorize" module
   # (default: no style)
   struct Border
-    # :nodoc:
-    getter vdiv_left, vdiv_mid, vdiv_right, bordername
+    getter top_left : String, top_mid : String, top_right : String
+    getter mid_left : String, mid_mid : String, mid_right : String
+    getter bottom_left : String, bottom_mid : String, bottom_right : String
+    getter vdiv_left : String, vdiv_mid : String, vdiv_right : String
+    getter hdiv_tbs : String, hdiv_grp : String, hdiv_hdr : String
+    getter hdiv_bdy : String, styler, bordername
 
-    @top_left : String; @top_mid : String; @top_right : String
-    @mid_left : String; @mid_mid : String; @mid_right : String
-    @bottom_left : String; @bottom_mid : String; @bottom_right : String
-    @vdiv_left : String; @vdiv_mid : String; @vdiv_right : String
-    @hdiv_tbs : String; @hdiv_grp : String; @hdiv_hdr : String
-    @hdiv_bdy : String
-
-    # :nodoc:
     # Border predefined strings, enabled by name, described in `enum BorderName`
     PREDEFINED_BORDERS = {
       BorderName::Ascii         => "+++++++++|||----",
@@ -99,21 +95,32 @@ module Tablo
       BorderName::Blank         => "EEEEEEEEEEEEEEEE",
     }
 
-    # :nodoc:
     # Secondary constructor, defined by a hash of predefined strings of connectors
     # Border is defined by an enum referring to a predefined hash of connectors
     def self.new(bd : BorderName, styler : BorderStyler = DEFAULT_STYLER)
       new(PREDEFINED_BORDERS[bd], styler, bd)
     end
 
-    # :nodoc:
     # Primary constructor
     def initialize(s : String = "EEEEEEEEEEEEEEEEEE",
                    @styler : BorderStyler = DEFAULT_STYLER,
                    @bordername : BorderName? = nil)
       raise InvalidConnectorString.new "Invalid style definition (size != 16)" unless s.size == 16
-      # ars = s.split("").map { |e| e == "E" ? "" : e }
-      ars = s.split("").map { |e| e == "E" ? "" : e == "_" ? " " : e }
+      ars = s.split("").map { |e|
+        case e
+        when "E"
+          ""
+        when "S"
+          " "
+          # TODO double or triple mid vertical eparator not ready yet !
+          # when "D"
+          #   "  "
+          # when "T"
+          #   "   "
+        else
+          e
+        end
+      }
       @top_left = ars[0]; @top_mid = ars[1]; @top_right = ars[2]
       @mid_left = ars[3]; @mid_mid = ars[4]; @mid_right = ars[5]
       @bottom_left = ars[6]; @bottom_mid = ars[7]; @bottom_right = ars[8]
@@ -122,54 +129,16 @@ module Tablo
       @hdiv_bdy = ars[15]
     end
 
-    # :nodoc:
-    # returns the border definition string
-    def to_s(io : IO)
-      ar = [@top_left, @top_mid, @top_right, @mid_left, @mid_mid, @mid_right,
-            @bottom_left, @bottom_mid, @bottom_right, @vdiv_left, @vdiv_mid,
-            @vdiv_right, @hdiv_tbs, @hdiv_grp, @hdiv_hdr, @hdiv_bdy]
-      io << ar.map { |e| e == "" ? "E" : e }.join
-    end
-
-    # :nodoc:
-    # returns a tuple of 5 connector strings, depending on the row position
-    def connectors(position)
-      case position
-      # BorderName::Fancy used as example
-      # (Fifth connector only used when Group involved)
-      in Position::BodyBody      then {@mid_left, @mid_mid, @mid_right, @hdiv_bdy, ""}               # ├ ┼ ┤ ⋅ E
-      in Position::BodyBottom    then {@bottom_left, @bottom_mid, @bottom_right, @hdiv_tbs, ""}      # ╰ ┴ ╯ ─ E
-      in Position::BodyFiller    then {@vdiv_left, @vdiv_mid, @vdiv_right, " ", ""}                  # │ : │   E
-      in Position::BodyGroup     then {@mid_left, @mid_mid, @mid_right, @hdiv_grp, @bottom_mid}      # ├ ┼ ┤ − ┴
-      in Position::BodyHeader    then {@mid_left, @mid_mid, @mid_right, @hdiv_hdr, ""}               # ├ ┼ ┤ - E
-      in Position::BodyTitle     then {@mid_left, @bottom_mid, @mid_right, @hdiv_tbs, ""}            # ├ ┴ ┤ ─ E
-      in Position::BodyTop       then {@top_left, @top_mid, @top_right, @hdiv_tbs, ""}               # ╭ ┬ ╮ ─ E
-      in Position::GroupHeader   then {@mid_left, @mid_mid, @mid_right, @hdiv_grp, @top_mid}         # ├ ┼ ┤ − ┬
-      in Position::GroupTop      then {@top_left, @top_mid, @top_right, @hdiv_tbs, @hdiv_tbs}        # ╭ ┬ ╮ ─ ─
-      in Position::HeaderBody    then {@mid_left, @mid_mid, @mid_right, @hdiv_hdr, ""}               # ├ ┼ ┤ - E
-      in Position::HeaderTop     then {@top_left, @top_mid, @top_right, @hdiv_tbs, ""}               # ╭ ┬ ╮ ─ E
-      in Position::SummaryBody   then {@mid_left, @mid_mid, @mid_right, @hdiv_tbs, ""}               # ├ ┼ ┤ ─ E
-      in Position::SummaryHeader then {@mid_left, @mid_mid, @mid_right, @hdiv_tbs, ""}               # ├ ┼ ┤ ─ E
-      in Position::TitleBody     then {@mid_left, @top_mid, @mid_right, @hdiv_tbs, ""}               # ├ ┬ ┤ ─ E
-      in Position::TitleBottom   then {@bottom_left, @hdiv_tbs, @bottom_right, @hdiv_tbs, @hdiv_tbs} # ╰ ─ ╯ ─ ─
-      in Position::TitleGroup    then {@mid_left, @top_mid, @mid_right, @hdiv_tbs, @hdiv_tbs}        # ├ ┬ ┤ ─ ─
-      in Position::TitleHeader   then {@mid_left, @top_mid, @mid_right, @hdiv_tbs, ""}               # ├ ┬ ┤ ─ E
-      in Position::TitleTitle    then {@mid_left, @hdiv_tbs, @mid_right, @hdiv_tbs, ""}              # ├ ─ ┤ ─ E
-      in Position::TitleTop      then {@top_left, @hdiv_tbs, @top_right, @hdiv_tbs, ""}              # ╭ ─ ╮ ─ E
-      end
-    end
-
-    # :nodoc:
     # renders a horizontal rule, depending on its position
-    def horizontal_rule(column_widths, position = Position::Bottom, groups = nil)
+    protected def horizontal_rule(column_widths, position = Position::Bottom, groups = nil)
       left, middle, right, segment, altmiddle = connectors(position)
       segments = column_widths.map { |width| segment * width }
       left = right = middle = "" if segments.all?(&.empty?)
       str = if groups.nil?
-              segments.join(@vdiv_mid.empty? ? "" : middle)
+              segments.join(vdiv_mid.empty? ? "" : middle)
             else
               middles = groups.flat_map { |e|
-                Array.new(e.size - 1) { @vdiv_mid.empty? ? "" : altmiddle } << middle
+                Array.new(e.size - 1) { vdiv_mid.empty? ? "" : altmiddle } << middle
               }
               String.build do |s|
                 (segments.size - 1).times do |i|
@@ -181,20 +150,68 @@ module Tablo
       style("#{left}#{str}#{right}")
     end
 
-    # :nodoc:
     # joins element of a row (styled connectors and column contents)
-    def join_cell_contents(cells)
-      styled_divider_vertical = style(@vdiv_mid)
-      styled_edge_left = style(@vdiv_left)
-      styled_edge_right = style(@vdiv_right)
+    protected def join_cell_contents(cells)
+      styled_divider_vertical = style(vdiv_mid)
+      styled_edge_left = style(vdiv_left)
+      styled_edge_right = style(vdiv_right)
       styled_edge_left + cells.join(styled_divider_vertical) + styled_edge_right
     end
 
-    # :nodoc:
+    # returns a tuple of 5 connector strings, depending on the row position
+    private def connectors(position)
+      case position
+      # BorderName::Fancy used as example
+      # (Fifth connector only used when Group involved)
+      in Position::BodyBody      then {mid_left, mid_mid, mid_right, hdiv_bdy, ""}              # ├ ┼ ┤ ⋅ E
+      in Position::BodyBottom    then {bottom_left, bottom_mid, bottom_right, hdiv_tbs, ""}     # ╰ ┴ ╯ ─ E
+      in Position::BodyFiller    then {vdiv_left, vdiv_mid, vdiv_right, " ", ""}                # │ : │   E
+      in Position::BodyGroup     then {mid_left, mid_mid, mid_right, hdiv_grp, bottom_mid}      # ├ ┼ ┤ − ┴
+      in Position::BodyHeader    then {mid_left, mid_mid, mid_right, hdiv_hdr, ""}              # ├ ┼ ┤ - E
+      in Position::BodyTitle     then {mid_left, bottom_mid, mid_right, hdiv_tbs, ""}           # ├ ┴ ┤ ─ E
+      in Position::BodyTop       then {top_left, top_mid, top_right, hdiv_tbs, ""}              # ╭ ┬ ╮ ─ E
+      in Position::GroupHeader   then {mid_left, mid_mid, mid_right, hdiv_grp, top_mid}         # ├ ┼ ┤ − ┬
+      in Position::GroupTop      then {top_left, top_mid, top_right, hdiv_tbs, hdiv_tbs}        # ╭ ┬ ╮ ─ ─
+      in Position::HeaderBody    then {mid_left, mid_mid, mid_right, hdiv_hdr, ""}              # ├ ┼ ┤ - E
+      in Position::HeaderTop     then {top_left, top_mid, top_right, hdiv_tbs, ""}              # ╭ ┬ ╮ ─ E
+      in Position::SummaryBody   then {mid_left, mid_mid, mid_right, hdiv_tbs, ""}              # ├ ┼ ┤ ─ E
+      in Position::SummaryHeader then {mid_left, mid_mid, mid_right, hdiv_tbs, ""}              # ├ ┼ ┤ ─ E
+      in Position::TitleBody     then {mid_left, top_mid, mid_right, hdiv_tbs, ""}              # ├ ┬ ┤ ─ E
+      in Position::TitleBottom   then {bottom_left, hdiv_tbs, bottom_right, hdiv_tbs, hdiv_tbs} # ╰ ─ ╯ ─ ─
+      in Position::TitleGroup    then {mid_left, top_mid, mid_right, hdiv_tbs, hdiv_tbs}        # ├ ┬ ┤ ─ ─
+      in Position::TitleHeader   then {mid_left, top_mid, mid_right, hdiv_tbs, ""}              # ├ ┬ ┤ ─ E
+      in Position::TitleTitle    then {mid_left, hdiv_tbs, mid_right, hdiv_tbs, ""}             # ├ ─ ┤ ─ E
+      in Position::TitleTop      then {top_left, hdiv_tbs, top_right, hdiv_tbs, ""}             # ╭ ─ ╮ ─ E
+      end
+    end
+
+    # returns the border definition string
+    private def to_s(io : IO)
+      ar = [top_left, top_mid, top_right, mid_left, mid_mid, mid_right,
+            bottom_left, bottom_mid, bottom_right, vdiv_left, vdiv_mid,
+            vdiv_right, hdiv_tbs, hdiv_grp, hdiv_hdr, hdiv_bdy]
+      # io << ar.map { |e| e == "" ? "E" : e }.join
+      io << ar.map { |e|
+        case e
+        when ""
+          "E"
+        when " "
+          "S"
+          # TODO double or triple mid vertical eparator not ready yet !
+          # when "  "
+          #   "D"
+          # when "   "
+          #   "T"
+        else
+          e
+        end
+      }.join
+    end
+
     # returns a styled connector, if not empty and styling allowed
     private def style(s)
-      # debug!(Util.styler_allowed)
-      @styler && !s.empty? && Util.styler_allowed ? @styler.call(s) : s
+      # # debug!(Util.styler_allowed)
+      styler && !s.empty? && Util.styler_allowed ? styler.call(s) : s
     end
   end
 end
