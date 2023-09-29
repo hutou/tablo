@@ -20,6 +20,8 @@ module Tablo
     # class property to manage transition between successive rows issued from data source
     class_property rowtype_memory : RowType? = nil
 
+    #
+    #
     # -------------- Table management attributes ------------------------------------
     #
     #
@@ -44,8 +46,9 @@ module Tablo
     protected getter header_frequency, row_divider_frequency
     protected getter wrap_mode, header_wrap, body_wrap
     protected getter? masked_headers, omit_last_rule, omit_group_header_rule
-    protected getter? title_repeated, footer_page_break
 
+    #
+    #
     # -------------- initialize -----------------------------------------------------
     #
     #
@@ -54,50 +57,45 @@ module Tablo
     # and one with block_given = false
     macro initialize(block_given)
 
-       def initialize(@sources : Enumerable(T), *,
-          #@title : UnFramedHeading | FramedHeading = FramedHeading.new,
-          #@subtitle : UnFramedHeading | FramedHeading = FramedHeading.new,
-          #@footer : UnFramedHeading | FramedHeading = FramedHeading.new,
-          @title : Title = Title.new,
-          @subtitle : SubTitle = SubTitle.new,
-          @footer : Footer = Footer.new,
-          #
-          @group_alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
-          @group_formatter : TextCellFormatter = DEFAULT_FORMATTER,
-          @group_styler : TextCellStyler = DEFAULT_STYLER,
-          #
-          @header_alignment : Justify? = nil,
-          @header_formatter : DataCellFormatter = DEFAULT_FORMATTER,
-          @header_styler : DataCellStyler = DEFAULT_DATA_DEPENDENT_STYLER,
-          #
-          @body_alignment : Justify? = nil,
-          @body_formatter : DataCellFormatter = DEFAULT_FORMATTER,
-          @body_styler : DataCellStyler = DEFAULT_DATA_DEPENDENT_STYLER,
-          #
-          @border_type : BorderType = BorderName::Ascii,
-          @border_styler : BorderStyler = DEFAULT_STYLER,
-          #
-          @left_padding : Int32 = 1,
-          @right_padding : Int32 = 1,
-          @padding_character : String = " ",
-          @truncation_indicator : String = "~",
-          @width : Int32 = 12,
-          #
-          @header_frequency : Int32? = 0,
-          @row_divider_frequency : Int32? = nil,
-          @wrap_mode : WrapMode = WrapMode::Word,
-          @header_wrap : Int32? = nil,
-          @body_wrap : Int32? = nil,
-          #
-          @masked_headers  : Bool = false,
-          @omit_group_header_rule : Bool = false,
-          @omit_last_rule : Bool = false,
-          @title_repeated : Bool = false,
-          {% if block_given %}
-            @footer_page_break : Bool = false, &)
-          {% else %}
-            @footer_page_break : Bool = false)
-          {% end %}
+      def initialize(@sources : Enumerable(T), *,
+        @title : Title = Config.title,
+        @subtitle : SubTitle = Config.subtitle,
+        @footer : Footer = Config.footer,
+        #
+        @group_alignment : Justify = Config.group_alignment,
+        @group_formatter : TextCellFormatter = Config.group_formatter,
+        @group_styler : TextCellStyler = Config.group_styler,
+        #
+        @header_alignment : Justify? = Config.header_alignment,
+        @header_formatter : DataCellFormatter = Config.header_formatter,
+        @header_styler : DataCellStyler = Config.header_styler,
+        #
+        @body_alignment : Justify? = Config.body_alignment,
+        @body_formatter : DataCellFormatter = Config.body_formatter,
+        @body_styler : DataCellStyler = Config.body_styler,
+        #
+        @border_type : BorderType = Config.border_type,
+        @border_styler : BorderStyler = Config.border_styler,
+        #
+        @left_padding : Int32 = Config.left_padding,
+        @right_padding : Int32 = Config.right_padding,
+        @padding_character : String = Config.padding_character,
+        @truncation_indicator : String = Config.truncation_indicator,
+        @width : Int32 = Config.width,
+        #
+        @header_frequency : Int32? = Config.header_frequency,
+        @row_divider_frequency : Int32? = Config.row_divider_frequency ,
+        @wrap_mode : WrapMode = Config.wrap_mode,
+        @header_wrap : Int32? = Config.header_wrap,
+        @body_wrap : Int32? = Config.body_wrap,
+        #
+        @masked_headers  : Bool = Config.masked_headers?,
+        @omit_group_header_rule : Bool = Config.omit_group_header_rule?,
+        {% if block_given %}
+        @omit_last_rule : Bool = Config.omit_last_rule?, &)
+        {% else %}
+        @omit_last_rule : Bool = Config.omit_last_rule?)
+        {% end %}
 
         @border = Border.new(border_type, border_styler)
         self.row_count = sources.size
@@ -189,8 +187,6 @@ module Tablo
     #   - *body_wrap*: same as above, for body (raise an `Tablo::InvalidValue` exception if zero or negative values are given to body_wrap or header_wrap)
     #   - *masked_headers* : `bool` = `false`. keep all headers from being displayed
     #   - *omit_last_rule* : `bool` = `false`. If `true`, the last closing rule of table is not displayed. This is useful for custom rendering (and notably for table linking)
-    #   - *title_repeated* : `bool` = `false`. If `true`, Title heading (and subtitle) are repeated depending on `header_frequency` value.
-    #   - *footer_page_break* : `bool` = `false`. If `true`, display a formfeed after footer.
     #
     # **return value:**
     # An instance of class Table
@@ -199,6 +195,8 @@ module Tablo
     # Second constructor, with same parameters as the first one, but with a block given
     initialize(block_given: true)
 
+    #
+    #
     # -------------- parameters checks  ---------------------------------------------
     #
     #
@@ -239,6 +237,8 @@ module Tablo
       end
     end
 
+    #
+    #
     # -------------- check table & column parameters --------------------------------
     #
     #
@@ -267,6 +267,8 @@ module Tablo
                              " *one* character" if truncation_string.size != 1
     end
 
+    #
+    #
     # -------------- reset_sources --------------------------------------------------
     #
     #
@@ -432,7 +434,7 @@ module Tablo
         acc + width
       end
       group_width -= (left_padding + right_padding)
-      group_width += (columns.size - 1) unless border.vdiv_mid.empty?
+      group_width += ((columns.size - 1) * border.vdiv_mid.size) unless border.vdiv_mid.empty?
       group_width
     end
 

@@ -272,7 +272,7 @@ module Tablo
           if table.omit_last_rule?
             # Ok, linked tables wanted, but conditions are :
             #  - previous_rowtype == Body
-            #  - previous_rowtype == Footer *AND* # FramedHeading *AND* no footer_page_break
+            #  - previous_rowtype == Footer *AND* # Framed *AND* no page_break
             if current_rowtype == RowType::Body ||
                (current_rowtype == RowType::Footer && table.footer.framed? &&
                !table.footer.page_break?)
