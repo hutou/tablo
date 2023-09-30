@@ -1,13 +1,14 @@
 module Tablo
   module Util
-    # :nodoc:
-    # Update namedtuple (dst) existing fields from another namedtuple (src) fields
-    # Fields existing in src and missing in dest are ignored
+    # Update namedtuple (dst) fields from another namedtuple (src) fields
+    # Fields existing in src and missing in dst are ignored
+    # Returns the updated dst as a new NamedTuple
     def self.update(dst : NamedTuple, from src : NamedTuple)
       update_impl(dst, src)
     end
 
     # :nodoc:
+    # auxiliary method for update
     private def self.update_impl(dst : T, from src : U) forall T, U
       {% begin %}
       {% u_keys = U.keys %}
@@ -29,26 +30,32 @@ module Tablo
       {% end %}
     end
 
-    def self.merge(nt1 : NamedTuple, nt2 : NamedTuple)
-      merge_impl(nt1, nt2)
-    end
+    # Merge all namedtuple (nt1) fields and namedtuple (nt2) fields
+    # For fields existing in both nt1 and nt2, merge use nt2 field value
+    # This is equivalent to stdlib NameTuple.merge method
+    # (Shown here as an example of macro)
+    # Returns a new NamedTuple
+    # def self.merge(nt1 : NamedTuple, nt2 : NamedTuple)
+    #   merge_impl(nt1, nt2)
+    # end
 
-    private def self.merge_impl(nt1 : T, nt2 : U) forall T, U
-      {% begin %}
-      {% u_keys = U.keys %}
-        NamedTuple.new(
-          {% for k in T.keys %}
-            {% unless u_keys.includes?(k) %}
-            {{ k.stringify }}: nt1[{{ k.symbolize }}],
-            {% end %}
-          {% end %}
-          {% for k in U.keys %}
-            {{ k.stringify }}: nt2[{{ k.symbolize }}],
-          {% end %}
-          )
-      {% debug %}
-      {% end %}
-    end
+    # # auxiliary method for merge
+    # private def self.merge_impl(nt1 : T, nt2 : U) forall T, U
+    #   {% begin %}
+    #   {% u_keys = U.keys %}
+    #     NamedTuple.new(
+    #       {% for k in T.keys %}
+    #         {% unless u_keys.includes?(k) %}
+    #         {{ k.stringify }}: nt1[{{ k.symbolize }}],
+    #         {% end %}
+    #       {% end %}
+    #       {% for k in U.keys %}
+    #         {{ k.stringify }}: nt2[{{ k.symbolize }}],
+    #       {% end %}
+    #       )
+    #   {% debug %}
+    #   {% end %}
+    # end
 
     # :nodoc:
     # Checks if a command can be executed (found in Path)
@@ -83,11 +90,12 @@ module Tablo
     # -------------- stretch --------------------------------------------------------
     #
     #
-    def self.stretch(s : String, width : Int32, insert_char : Char, gap : Int32 = 0, margin = 0)
+    def self.stretch(s : String, width : Int32, insert_char : Char, gap : Int32 = 0,
+                     left_margin : String = "", right_margin : String = "")
       # first, we need to compute the optimized working_gap, the gap
       # which "harmonize" all lines
       working_gap = 999
-      working_width = width - (margin * 2)
+      working_width = width - (left_margin.size + right_margin.size)
       s.each_line do |line|
         if line.size > 1
           intervals = line.size - 1
@@ -102,7 +110,7 @@ module Tablo
                   else
                     [working_gap, gap].min
                   end
-      # and finally, compute streched lines
+      # and finally, compute stretched lines
       arrout = [] of String
       s.each_line do |line|
         if line =~ /^\s*$/
@@ -122,7 +130,7 @@ module Tablo
               ary_dest[pos] = c
               pos += (1 + final_gap)
             end
-            arrout << ary_dest.join
+            arrout << left_margin + ary_dest.join + right_margin
           end
         end
       end
