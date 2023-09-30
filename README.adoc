@@ -1265,10 +1265,16 @@ column values to their initial values +
 
 |===
 
+=== Summary
+The `summary` method allows you to perform calculations on the numerical data
+in the table, for example to obtain totals, averages, etc. Calculations are
+performed column by column, separately, so it is not possible to perform
+a calculation on the detailed data of 2 or more columns at the same time.
+However, this limitation does not apply to aggregated values, and it is
+perfectly possible, for example, to add the total of 2 different columns.
+
 === Transpose
 &&&&&&&&&&&&&&&&&&&& to be continued &&&&&&&&&&&&&&&&&&&&&&
-
-=== Summary
 
 == Complete API
 

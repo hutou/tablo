@@ -281,20 +281,29 @@ module Tablo
     Right
   end
 
+  # TODO Define all proper aliases here
   alias Num = Float64 | Int32
+  alias StrNum = Num | String
+
+  # alias Num = Float64 | Int32
   alias NumCol = Array(Num)
   alias NumCols = Hash(LabelType, NumCol)
 
   alias SummaryNumCols = Proc(NumCols, Float64) |
                          Proc(NumCols, Int32) |
-                         Proc(NumCols, String)
+                         Proc(NumCols, String) |
+                         Proc(NumCols, Nil)
   alias SummaryNumCol = Proc(NumCol, Float64) |
                         Proc(NumCol, Int32) |
-                        Proc(NumCol, String)
+                        Proc(NumCol, String) |
+                        Proc(NumCol, Nil)
+
+  # alias SummaryNumCol = Proc(NumCol, StrNum?)
 
   # Tablo Exceptions hierarchy
   #
   # Parent class
+
   class TabloException < Exception
   end
 

@@ -4,8 +4,8 @@ require "./table"
 module Tablo
   class Summary(T, U, V)
     private getter data_series = {} of LabelType => NumCol
-    private getter summary_sources = [] of Array(Num | String | Nil)
-    private getter proc_results = {} of LabelType => Array(Num | String)
+    private getter summary_sources = [] of Array(StrNum?)
+    private getter proc_results = {} of LabelType => Array(StrNum?)
     private getter body_alignments = {} of LabelType => Justify
     private getter header_alignments = {} of LabelType => Justify
     private getter body_formatters = {} of LabelType => DataCellFormatter
@@ -32,7 +32,7 @@ module Tablo
     private def initialize_arrays
       summary_def.each do |label, _|
         data_series[label] = [] of Num
-        proc_results[label] = [] of Num | String
+        proc_results[label] = [] of StrNum?
       end
     end
 
@@ -81,13 +81,10 @@ module Tablo
             body_formatters[column_label] = value
           when {:body_styler, DataCellStyler}
             body_stylers[column_label] = value
-          when {_, SummaryNumCol | SummaryNumCols}
-            case value
-            when SummaryNumCol
-              proc_results[column_label] << value.call(data_series[column_label])
-            when SummaryNumCols
-              proc_results[column_label] << value.call(data_series)
-            end
+          when {_, SummaryNumCols}
+            proc_results[column_label] << value.call(data_series)
+          when {_, SummaryNumCol}
+            proc_results[column_label] << value.call(data_series[column_label])
           else
             raise InvalidValue.new("Invalid summary definition key <#{key}>")
           end
@@ -102,8 +99,7 @@ module Tablo
       # puts all summary results them in colum/row matrix for output
       loop do
         ok = false
-        # summary_source = Array.new(table.column_registry.size, nil.as(SummaryOutputTypes?))
-        summary_source = Array.new(table.column_registry.size, nil.as(Num | String | Nil))
+        summary_source = Array.new(table.column_registry.size, nil.as(StrNum?))
         table.column_registry.each_with_index do |(label, column), column_index|
           if proc_results.has_key?(label) && !proc_results[label].empty?
             summary_source[column_index] = proc_results[label].shift
