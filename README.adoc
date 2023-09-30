@@ -1626,6 +1626,9 @@ The effective count of line breaks is the maximum value of `line_breaks_before` 
 
 ==== struct Title
 
+Attributes `value`, `frame`, `alignment` and `repeated` are declared as properties, and can be modified
+after initialization
+
 ===== Method `initialize`
 
 Returns an instance of `Title`
@@ -1646,6 +1649,9 @@ be repeated at header frequency
 
 ==== struct SubTitle
 
+Attributes `value`, `frame` and `alignment` are declared as properties, and can be modified
+after initialization
+
 ===== Method `initialize`
 
 Returns an instance of `SubTitle`
@@ -1662,6 +1668,8 @@ No display if `nil`
 |===
 
 ==== struct Footer
+
+Attributes `value`, `frame`, `alignment` and `page_break` are declared as properties, and can be modifiedafter initialization
 
 ===== Method `initialize`
 
