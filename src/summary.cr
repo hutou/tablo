@@ -4,8 +4,8 @@ require "./table"
 module Tablo
   class Summary(T, U, V)
     private getter data_series = {} of LabelType => NumCol
-    private getter summary_sources = [] of Array(StrNum?)
     private getter proc_results = {} of LabelType => Array(StrNum?)
+    private getter summary_sources = [] of Array(StrNum?)
     private getter body_alignments = {} of LabelType => Justify
     private getter header_alignments = {} of LabelType => Justify
     private getter body_formatters = {} of LabelType => DataCellFormatter
@@ -31,7 +31,7 @@ module Tablo
     # Returns nil
     private def initialize_arrays
       summary_def.each do |label, _|
-        data_series[label] = [] of Num
+        data_series[label] = [] of Num?
         proc_results[label] = [] of StrNum?
       end
     end
@@ -45,13 +45,15 @@ module Tablo
         # for each column used in summary
         summary_def.each do |label, _|
           value = table.column_registry[label].body_cell_value(source, row_index: row_index)
-          next if value.nil? || !value.is_a?(Number)
           case value
           when Int
-            # data_series[label] << value.as(Int).to_i
-            data_series[label] << value.as(Int).to_f64
+            data_series[label] << value.as(Int).to_i32
           when Float
             data_series[label] << value.as(Float).to_f64
+          else
+            # All other values must be set to nil, not ignored, in order to
+            # keep source data rows in sync.
+            data_series[label] << nil
           end
         end
       end

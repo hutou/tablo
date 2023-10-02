@@ -286,7 +286,7 @@ module Tablo
   alias StrNum = Num | String
 
   # alias Num = Float64 | Int32
-  alias NumCol = Array(Num)
+  alias NumCol = Array(Num?)
   alias NumCols = Hash(LabelType, NumCol)
 
   alias SummaryNumCols = Proc(NumCols, Float64) |
@@ -297,8 +297,6 @@ module Tablo
                         Proc(NumCol, Int32) |
                         Proc(NumCol, String) |
                         Proc(NumCol, Nil)
-
-  # alias SummaryNumCol = Proc(NumCol, StrNum?)
 
   # Tablo Exceptions hierarchy
   #
