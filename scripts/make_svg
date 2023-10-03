@@ -1,0 +1,17 @@
+#!/usr/bin/bash
+
+if [[ $# -ne 1 ]]; then
+    echo "missing svg name !"
+    exit 1
+fi
+
+aha -y 'font-size:0.6em' -f "$1".txt | weasyprint - "$1".pdf
+rm "$1".txt
+
+pdfcrop "$1".pdf "$1"_cropped.pdf
+rm "$1".pdf
+
+pdf2svg "$1"_cropped.pdf "$1".svg
+rm "$1"_cropped.pdf
+
+mv "$1".svg docs/assets/images/
