@@ -289,14 +289,26 @@ module Tablo
   alias NumCol = Array(Num?)
   alias NumCols = Hash(LabelType, NumCol)
 
-  alias SummaryNumCols = Proc(NumCols, Float64) |
-                         Proc(NumCols, Int32) |
-                         Proc(NumCols, String) |
-                         Proc(NumCols, Nil)
-  alias SummaryNumCol = Proc(NumCol, Float64) |
-                        Proc(NumCol, Int32) |
-                        Proc(NumCol, String) |
-                        Proc(NumCol, Nil)
+  alias SummaryCols = Proc(Array(Enumerable(CellType)), CellType)
+  alias SummaryCol = Proc(Enumerable(CellType), CellType)
+
+  # alias SummaryCols = Proc(Array(Enumerable(CellType)), Float64) |
+  #                     Proc(Array(Enumerable(CellType)), Int32) |
+  #                     Proc(Array(Enumerable(CellType)), String) |
+  #                     Proc(Array(Enumerable(CellType)), Nil)
+  # alias SummaryCol = Proc(Enumerable(CellType), Float64) |
+  #                    Proc(Enumerable(CellType), Int32) |
+  #                    Proc(Enumerable(CellType), String) |
+  #                    Proc(Enumerable(CellType), Nil)
+
+  # alias SummaryNumCols = Proc(NumCols, Float64) |
+  #                        Proc(NumCols, Int32) |
+  #                        Proc(NumCols, String) |
+  #                        Proc(NumCols, Nil)
+  # alias SummaryNumCol = Proc(NumCol, Float64) |
+  #                       Proc(NumCol, Int32) |
+  #                       Proc(NumCol, String) |
+  #                       Proc(NumCol, Nil)
 
   # Tablo Exceptions hierarchy
   #

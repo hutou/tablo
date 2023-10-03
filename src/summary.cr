@@ -3,7 +3,7 @@ require "./table"
 
 module Tablo
   class Summary(T, U, V)
-    private getter data_series = {} of LabelType => NumCol
+    private getter data_series = {} of LabelType => Enumerable(CellType)
     private getter proc_results = {} of LabelType => Array(StrNum?)
     private getter summary_sources = [] of Array(StrNum?)
     private getter body_alignments = {} of LabelType => Justify
@@ -31,7 +31,7 @@ module Tablo
     # Returns nil
     private def initialize_arrays
       summary_def.each do |label, _|
-        data_series[label] = [] of Num?
+        data_series[label] = [] of CellType
         proc_results[label] = [] of StrNum?
       end
     end
@@ -44,17 +44,17 @@ module Tablo
       table.sources.each_with_index do |source, row_index|
         # for each column used in summary
         summary_def.each do |label, _|
-          value = table.column_registry[label].body_cell_value(source, row_index: row_index)
-          case value
-          when Int
-            data_series[label] << value.as(Int).to_i32
-          when Float
-            data_series[label] << value.as(Float).to_f64
-          else
-            # All other values must be set to nil, not ignored, in order to
-            # keep source data rows in sync.
-            data_series[label] << nil
-          end
+          data_series[label] = table.column_registry[label].body_cell_value(source, row_index: row_index)
+          # case value
+          # when Int
+          #   data_series[label] << value.as(Int).to_i32
+          # when Float
+          #   data_series[label] << value.as(Float).to_f64
+          # else
+          #   # All other values must be set to nil, not ignored, in order to
+          #   # keep source data rows in sync.
+          #   data_series[label] << nil
+          # end
         end
       end
     end
@@ -83,9 +83,9 @@ module Tablo
             body_formatters[column_label] = value
           when {:body_styler, DataCellStyler}
             body_stylers[column_label] = value
-          when {_, SummaryNumCols}
+          when {_, SummaryCols}
             proc_results[column_label] << value.call(data_series)
-          when {_, SummaryNumCol}
+          when {_, SummaryCol}
             proc_results[column_label] << value.call(data_series[column_label])
           else
             raise InvalidValue.new("Invalid summary definition key <#{key}>")
