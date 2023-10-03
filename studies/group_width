@@ -1,0 +1,184 @@
+Cas de figure : No paddings at all
+
+On a 3 cas de figure impliquant les groupes :
+1. TitleGroup + GroupHeader
+2. GroupTop + GroupHeader
+3. BodyGroup + GroupHeader
+
+Tests avec border_type: :fancy
+==============================
+
+Cas N° 1 : GroupTop suivi de GroupHeader
+[in Group    from           pos:GroupTop     (224)] => ╭─────────────────────────┬─────────────────────────╮
+[in Group    from                            (238)] => │         Numbers         :           Text          │
+[in Header   from Group     pos:GroupHeader  (198)] => ├−−−−−−−−−−−−┬−−−−−−−−−−−−┼−−−−−−−−−−−−┬−−−−−−−−−−−−┤
+[in Header   from Group                      (240)] => │      itself:      Double:Boolean     :String      │
+[in Body     from Header    pos:HeaderBody   (201)] => ├------------┼------------┼------------┼------------┤
+[in Body     from Header                     (242)] => │           1:           2:false       :1           │
+[in Body     from Body                       (242)] => │           2:           4:true        :22          │
+[in Body     from Body                       (242)] => │           3:           6:false       :333         │
+[in Body     from Body      pos:BodyBottom   (253)] => ╰────────────┴────────────┴────────────┴────────────╯
+
+Cas N° 2 : TitleGroup suivi de GroupHeader
+[in Title    from           pos:TitleTop     (224)] => ╭───────────────────────────────────────────────────╮
+[in Title    from                            (234)] => │                      My Title                     │
+[in Group    from Title     pos:TitleGroup   (201)] => ├─────────────────────────┬─────────────────────────┤
+[in Group    from Title                      (238)] => │         Numbers         :           Text          │
+[in Header   from Group     pos:GroupHeader  (198)] => ├−−−−−−−−−−−−┬−−−−−−−−−−−−┼−−−−−−−−−−−−┬−−−−−−−−−−−−┤
+[in Header   from Group                      (240)] => │      itself:      Double:Boolean     :String      │
+[in Body     from Header    pos:HeaderBody   (201)] => ├------------┼------------┼------------┼------------┤
+[in Body     from Header                     (242)] => │           1:           2:false       :1           │
+[in Body     from Body                       (242)] => │           2:           4:true        :22          │
+[in Body     from Body                       (242)] => │           3:           6:false       :333         │
+[in Body     from Body      pos:BodyBottom   (253)] => ╰────────────┴────────────┴────────────┴────────────╯
+
+Cas N° 3 : TitleGroup suivi de GroupHeader, puis BodyGroup suivi de GroupHeader
+[in Title    from           pos:TitleTop     (224)] => ╭───────────────────────────────────────────────────╮
+[in Title    from                            (234)] => │                      My Title                     │
+[in Group    from Title     pos:TitleGroup   (201)] => ├─────────────────────────┬─────────────────────────┤
+[in Group    from Title                      (238)] => │         Numbers         :           Text          │
+[in Header   from Group     pos:GroupHeader  (198)] => ├−−−−−−−−−−−−┬−−−−−−−−−−−−┼−−−−−−−−−−−−┬−−−−−−−−−−−−┤
+[in Header   from Group                      (240)] => │      itself:      Double:Boolean     :String      │
+[in Body     from Header    pos:HeaderBody   (201)] => ├------------┼------------┼------------┼------------┤
+[in Body     from Header                     (242)] => │           1:           2:false       :1           │
+[in Body     from Body                       (242)] => │           2:           4:true        :22          │
+[in Group    from Body      pos:BodyGroup    (201)] => ├−−−−−−−−−−−−┴−−−−−−−−−−−−┼−−−−−−−−−−−−┴−−−−−−−−−−−−┤
+[in Group    from Body                       (238)] => │         Numbers         :           Text          │
+[in Header   from Group     pos:GroupHeader  (198)] => ├−−−−−−−−−−−−┬−−−−−−−−−−−−┼−−−−−−−−−−−−┬−−−−−−−−−−−−┤
+[in Header   from Group                      (240)] => │      itself:      Double:Boolean     :String      │
+[in Body     from Header    pos:HeaderBody   (201)] => ├------------┼------------┼------------┼------------┤
+[in Body     from Header                     (242)] => │           3:           6:false       :333         │
+[in Body     from Body      pos:BodyBottom   (253)] => ╰────────────┴────────────┴────────────┴────────────╯
+
+
+Tests avec border_type = "EEEEEEEEEEEE----"
+===========================================
+
+Cas N° 1 : Ok, mais sans intérêt, le texte peut être collé
+[in Group    from           pos:GroupTop     (224)] => ------------------------------------------------
+[in Group    from                            (238)] =>          Numbers                  Text          
+[in Header   from Group     pos:GroupHeader  (198)] => ------------------------------------------------
+[in Header   from Group                      (240)] =>       itself      DoubleBoolean     String      
+[in Body     from Header    pos:HeaderBody   (201)] => ------------------------------------------------
+[in Body     from Header                     (242)] =>            1           2false       1           
+[in Body     from Body                       (242)] =>            2           4true        22          
+[in Body     from Body                       (242)] =>            3           6false       333         
+[in Body     from Body      pos:BodyBottom   (253)] => ------------------------------------------------
+
+Cas N° 2 : Ok, mais sans intérêt, le texte peut être collé
+[in Title    from           pos:TitleTop     (224)] => ------------------------------------------------
+[in Title    from                            (234)] =>                     My Title                    
+[in Group    from Title     pos:TitleGroup   (201)] => ------------------------------------------------
+[in Group    from Title                      (238)] =>          Numbers                  Text          
+[in Header   from Group     pos:GroupHeader  (198)] => ------------------------------------------------
+[in Header   from Group                      (240)] =>       itself      DoubleBoolean     String      
+[in Body     from Header    pos:HeaderBody   (201)] => ------------------------------------------------
+[in Body     from Header                     (242)] =>            1           2false       1           
+[in Body     from Body                       (242)] =>            2           4true        22          
+[in Body     from Body                       (242)] =>            3           6false       333         
+[in Body     from Body      pos:BodyBottom   (253)] => ------------------------------------------------
+
+Cas N° 3 : Ok, mais sans intérêt, le texte peut être collé
+[in Group    from           pos:GroupTop     (224)] => ------------------------------------------------
+[in Group    from                            (238)] =>          Numbers                  Text          
+[in Header   from Group     pos:GroupHeader  (198)] => ------------------------------------------------
+[in Header   from Group                      (240)] =>       itself      DoubleBoolean     String      
+[in Body     from Header    pos:HeaderBody   (201)] => ------------------------------------------------
+[in Body     from Header                     (242)] =>            1           2false       1           
+[in Body     from Body                       (242)] =>            2           4true        22          
+[in Group    from Body      pos:BodyGroup    (201)] => ------------------------------------------------
+[in Group    from Body                       (238)] =>          Numbers                  Text          
+[in Header   from Group     pos:GroupHeader  (198)] => ------------------------------------------------
+[in Header   from Group                      (240)] =>       itself      DoubleBoolean     String      
+[in Body     from Header    pos:HeaderBody   (201)] => ------------------------------------------------
+[in Body     from Header                     (242)] =>            3           6false       333         
+[in Body     from Body      pos:BodyBottom   (253)] => ------------------------------------------------
+
+
+Tests avec border_type = "ESEESEESEESE----"
+===========================================
+
+Cas N° 1 : Ok
+[in Group    from           pos:GroupTop     (224)] => ------------------------- -------------------------
+[in Group    from                            (238)] =>          Numbers                     Text          
+[in Header   from Group     pos:GroupHeader  (198)] => ------------ ------------ ------------ ------------
+[in Header   from Group                      (240)] =>       itself       Double Boolean      String      
+[in Body     from Header    pos:HeaderBody   (201)] => ------------ ------------ ------------ ------------
+[in Body     from Header                     (242)] =>            1            2 false        1           
+[in Body     from Body                       (242)] =>            2            4 true         22          
+[in Body     from Body                       (242)] =>            3            6 false        333         
+[in Body     from Body      pos:BodyBottom   (253)] => ------------ ------------ ------------ ------------
+
+Cas N° 2 : Ok
+[in Title    from           pos:TitleTop     (224)] => ---------------------------------------------------
+[in Title    from                            (234)] =>                       My Title                     
+[in Group    from Title     pos:TitleGroup   (201)] => ------------------------- -------------------------
+[in Group    from Title                      (238)] =>          Numbers                     Text          
+[in Header   from Group     pos:GroupHeader  (198)] => ------------ ------------ ------------ ------------
+[in Header   from Group                      (240)] =>       itself       Double Boolean      String      
+[in Body     from Header    pos:HeaderBody   (201)] => ------------ ------------ ------------ ------------
+[in Body     from Header                     (242)] =>            1            2 false        1           
+[in Body     from Body                       (242)] =>            2            4 true         22          
+[in Body     from Body                       (242)] =>            3            6 false        333         
+[in Body     from Body      pos:BodyBottom   (253)] => ------------ ------------ ------------ ------------
+
+Cas N° 3 : Ok
+[in Group    from           pos:GroupTop     (224)] => ------------------------- -------------------------
+[in Group    from                            (238)] =>          Numbers                     Text          
+[in Header   from Group     pos:GroupHeader  (198)] => ------------ ------------ ------------ ------------
+[in Header   from Group                      (240)] =>       itself       Double Boolean      String      
+[in Body     from Header    pos:HeaderBody   (201)] => ------------ ------------ ------------ ------------
+[in Body     from Header                     (242)] =>            1            2 false        1           
+[in Body     from Body                       (242)] =>            2            4 true         22          
+[in Group    from Body      pos:BodyGroup    (201)] => ------------ ------------ ------------ ------------
+[in Group    from Body                       (238)] =>          Numbers                     Text          
+[in Header   from Group     pos:GroupHeader  (198)] => ------------ ------------ ------------ ------------
+[in Header   from Group                      (240)] =>       itself       Double Boolean      String      
+[in Body     from Header    pos:HeaderBody   (201)] => ------------ ------------ ------------ ------------
+[in Body     from Header                     (242)] =>            3            6 false        333         
+[in Body     from Body      pos:BodyBottom   (253)] => ------------ ------------ ------------ ------------
+
+
+Tests avec border_type = "EDEEDEEDEEDE----"
+===========================================
+
+Cas N° 1 : GroupTop Ko, RowGroup Ko
+[in Group    from           pos:GroupTop     (224)] => -------------------------  -------------------------
+[in Group    from                            (238)] =>                   Numbers  Text                     
+[in Header   from Group     pos:GroupHeader  (198)] => ------------  ------------  ------------  ------------
+[in Header   from Group                      (240)] =>       itself        Double  Boolean       String      
+[in Body     from Header    pos:HeaderBody   (201)] => ------------  ------------  ------------  ------------
+[in Body     from Header                     (242)] =>            1             2  false         1           
+[in Body     from Body                       (242)] =>            2             4  true          22          
+[in Body     from Body                       (242)] =>            3             6  false         333         
+[in Body     from Body      pos:BodyBottom   (253)] => ------------  ------------  ------------  ------------
+
+Cas N° 2 : TitleTop Ko, TitleGroup Ko, GroupTop Ko, RowTitle Ko, RowGroup Ko
+[in Title    from           pos:TitleTop     (224)] => ---------------------------------------------------
+[in Title    from                            (234)] =>                       My Title                     
+[in Group    from Title     pos:TitleGroup   (201)] => -------------------------  -------------------------
+[in Group    from Title                      (238)] =>          Numbers                      Text          
+[in Header   from Group     pos:GroupHeader  (198)] => ------------  ------------  ------------  ------------
+[in Header   from Group                      (240)] =>       itself        Double  Boolean       String      
+[in Body     from Header    pos:HeaderBody   (201)] => ------------  ------------  ------------  ------------
+[in Body     from Header                     (242)] =>            1             2  false         1           
+[in Body     from Body                       (242)] =>            2             4  true          22          
+[in Body     from Body                       (242)] =>            3             6  false         333         
+[in Body     from Body      pos:BodyBottom   (253)] => ------------  ------------  ------------  ------------
+
+
+Cas N° 3 :  GroupTop Ko, RowTitle Ko, RowGroup Ko
+[in Group    from           pos:GroupTop     (224)] => -------------------------  -------------------------
+[in Group    from                            (238)] =>          Numbers                      Text          
+[in Header   from Group     pos:GroupHeader  (198)] => ------------  ------------  ------------  ------------
+[in Header   from Group                      (240)] =>       itself        Double  Boolean       String      
+[in Body     from Header    pos:HeaderBody   (201)] => ------------  ------------  ------------  ------------
+[in Body     from Header                     (242)] =>            1             2  false         1           
+[in Body     from Body                       (242)] =>            2             4  true          22          
+[in Group    from Body      pos:BodyGroup    (201)] => ------------  ------------  ------------  ------------
+[in Group    from Body                       (238)] =>          Numbers                      Text          
+[in Header   from Group     pos:GroupHeader  (198)] => ------------  ------------  ------------  ------------
+[in Header   from Group                      (240)] =>       itself        Double  Boolean       String      
+[in Body     from Header    pos:HeaderBody   (201)] => ------------  ------------  ------------  ------------
+[in Body     from Header                     (242)] =>            3             6  false         333         
+[in Body     from Body      pos:BodyBottom   (253)] => ------------  ------------  ------------  ------------
