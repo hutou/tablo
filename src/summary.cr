@@ -3,9 +3,9 @@ require "./table"
 
 module Tablo
   class Summary(T, U, V)
-    private getter data_series = {} of LabelType => Enumerable(CellType)
-    private getter proc_results = {} of LabelType => Array(StrNum?)
-    private getter summary_sources = [] of Array(StrNum?)
+    private getter data_series = {} of LabelType => Array(CellType)
+    private getter proc_results = {} of LabelType => Array(CellType)
+    private getter summary_sources = [] of Array(CellType)
     private getter body_alignments = {} of LabelType => Justify
     private getter header_alignments = {} of LabelType => Justify
     private getter body_formatters = {} of LabelType => DataCellFormatter
@@ -32,7 +32,7 @@ module Tablo
     private def initialize_arrays
       summary_def.each do |label, _|
         data_series[label] = [] of CellType
-        proc_results[label] = [] of StrNum?
+        proc_results[label] = [] of CellType
       end
     end
 
@@ -44,7 +44,10 @@ module Tablo
       table.sources.each_with_index do |source, row_index|
         # for each column used in summary
         summary_def.each do |label, _|
-          data_series[label] = table.column_registry[label].body_cell_value(source, row_index: row_index)
+          # p! typeof(table.column_registry[label].body_cell_value(source, row_index: row_index).as(CellType))
+          p! typeof(data_series[label])
+          # data_series[label] << 1
+          data_series[label] << table.column_registry[label].body_cell_value(source, row_index: row_index).as(CellType)
           # case value
           # when Int
           #   data_series[label] << value.as(Int).to_i32
@@ -101,7 +104,7 @@ module Tablo
       # puts all summary results them in colum/row matrix for output
       loop do
         ok = false
-        summary_source = Array.new(table.column_registry.size, nil.as(StrNum?))
+        summary_source = Array.new(table.column_registry.size, nil.as(CellType))
         table.column_registry.each_with_index do |(label, column), column_index|
           if proc_results.has_key?(label) && !proc_results[label].empty?
             summary_source[column_index] = proc_results[label].shift

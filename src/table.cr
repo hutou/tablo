@@ -30,7 +30,7 @@ module Tablo
     protected getter group_registry = {} of LabelType => TextCell
     protected getter groups = [] of Range(Int32, Int32)
     protected property row_count : Int32 = 0
-    protected property summary_table : Table(Array(Float64 | Int32 | String | Nil))? = nil
+    protected property summary_table : Table(Array(CellType))? = nil
     protected property name : Symbol = :main
 
     # Table parameters

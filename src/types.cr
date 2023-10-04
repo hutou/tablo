@@ -282,15 +282,18 @@ module Tablo
   end
 
   # TODO Define all proper aliases here
-  alias Num = Float64 | Int32
-  alias StrNum = Num | String
-
   # alias Num = Float64 | Int32
-  alias NumCol = Array(Num?)
-  alias NumCols = Hash(LabelType, NumCol)
+  # alias StrNum = Num | String
 
-  alias SummaryCols = Proc(Array(Enumerable(CellType)), CellType)
-  alias SummaryCol = Proc(Enumerable(CellType), CellType)
+  alias Num = Float64 | Int32
+  # alias NumCol = Array(Num?)
+  # alias NumCols = Hash(LabelType, NumCol)
+
+  alias ColumnValues = Array(CellType)
+  alias ColumnsValues = Hash(LabelType, ColumnValues)
+
+  alias SummaryCols = Proc(Array(Array(CellType)), CellType)
+  alias SummaryCol = Proc(Array(CellType), CellType)
 
   # alias SummaryCols = Proc(Array(Enumerable(CellType)), Float64) |
   #                     Proc(Array(Enumerable(CellType)), Int32) |
