@@ -119,7 +119,7 @@ module Tablo
                 if proc_results[column_label].has_key?(row)
                   raise "Duplicate key"
                 else
-                  proc_results[column_label][row] = proc.as(SummaryCols).call(data_series)
+                  proc_results[column_label][row] = proc.call(data_series)
                   p proc_results
                 end
               when SummaryCol
@@ -130,7 +130,7 @@ module Tablo
                 if proc_results[column_label].has_key?(row)
                   raise "Duplicate key"
                 else
-                  proc_results[column_label][row] = proc.as(SummaryCol).call((data_series)[column_label])
+                  proc_results[column_label][row] = proc.call((data_series)[column_label])
                   p proc_results
                 end
               else

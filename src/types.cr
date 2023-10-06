@@ -4,51 +4,51 @@ module Tablo::CellType
   # def render_cell(io : IO)
   #   to_s(io)
   # end
-  def int?(klass)
-    p! klass
-    if klass.class.in?(Int8, Int16, Int32, Int64, Int128, UInt8, UInt16, UInt32, UInt64, UInt128)
-      x = true
-    else
-      x = false
-    end
-    p! "klass:#{klass} : (#{klass.class}) -> x:#{x}"
-    x
-  end
+  # def int?(klass)
+  #   p! klass
+  #   if klass.class.in?(Int8, Int16, Int32, Int64, Int128, UInt8, UInt16, UInt32, UInt64, UInt128)
+  #     x = true
+  #   else
+  #     x = false
+  #   end
+  #   p! "klass:#{klass} : (#{klass.class}) -> x:#{x}"
+  #   x
+  # end
 
-  def float?(klass)
-    p! klass
-    if klass.class.in?(Float32, Float64)
-      x = true
-    else
-      x = false
-    end
-    p! "klass:#{klass} : (#{klass.class}) -> x:#{x}"
-    x
-  end
+  # def float?(klass)
+  #   p! klass
+  #   if klass.class.in?(Float32, Float64)
+  #     x = true
+  #   else
+  #     x = false
+  #   end
+  #   p! "klass:#{klass} : (#{klass.class}) -> x:#{x}"
+  #   x
+  # end
 
-  def number?(klass)
-    if int?(klass) || float?(klass)
-      x = true
-    else
-      x = false
-    end
-    p! "klass:#{klass} : (#{klass.class}) -> x:#{x}"
-    x
-  end
+  # def number?(klass)
+  #   if int?(klass) || float?(klass)
+  #     x = true
+  #   else
+  #     x = false
+  #   end
+  #   p! "klass:#{klass} : (#{klass.class}) -> x:#{x}"
+  #   x
+  # end
 
-  def string?(klass)
-    klass.class == String
-  end
+  # def string?(klass)
+  #   klass.class == String
+  # end
 
-  def symbol?(klass)
-    klass.class == Symbol
-  end
+  # def symbol?(klass)
+  #   klass.class == Symbol
+  # end
 
-  def nil_?(klass)
-    klass.class == Nil
-  end
+  # def nil_?(klass)
+  #   klass.class == Nil
+  # end
 
-  extend self
+  # extend self
 end
 
 # :nodoc:
