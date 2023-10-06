@@ -4,6 +4,51 @@ module Tablo::CellType
   # def render_cell(io : IO)
   #   to_s(io)
   # end
+  def int?(klass)
+    p! klass
+    if klass.class.in?(Int8, Int16, Int32, Int64, Int128, UInt8, UInt16, UInt32, UInt64, UInt128)
+      x = true
+    else
+      x = false
+    end
+    p! "klass:#{klass} : (#{klass.class}) -> x:#{x}"
+    x
+  end
+
+  def float?(klass)
+    p! klass
+    if klass.class.in?(Float32, Float64)
+      x = true
+    else
+      x = false
+    end
+    p! "klass:#{klass} : (#{klass.class}) -> x:#{x}"
+    x
+  end
+
+  def number?(klass)
+    if int?(klass) || float?(klass)
+      x = true
+    else
+      x = false
+    end
+    p! "klass:#{klass} : (#{klass.class}) -> x:#{x}"
+    x
+  end
+
+  def string?(klass)
+    klass.class == String
+  end
+
+  def symbol?(klass)
+    klass.class == Symbol
+  end
+
+  def nil_?(klass)
+    klass.class == Nil
+  end
+
+  extend self
 end
 
 # :nodoc:
@@ -27,6 +72,7 @@ end
 include_celltype
 
 module Tablo
+  extend Tablo::CellType
   NEWLINE                       = /\r\n|\n|\r/
   DEFAULT_STYLER                = ->(s : String) { s }
   DEFAULT_DATA_DEPENDENT_STYLER = ->(_c : CellType, s : String) { s }
@@ -292,8 +338,16 @@ module Tablo
   alias ColumnValues = Array(CellType)
   alias ColumnsValues = Hash(LabelType, ColumnValues)
 
-  alias SummaryCols = Proc(Array(Array(CellType)), CellType)
-  alias SummaryCol = Proc(Array(CellType), CellType)
+  # alias SummaryCols = Proc(Hash(LabelType, Array(CellType)), CellType)
+  alias SummaryCols = Proc(ColumnsValues, CellType)
+  alias SummaryColsRow = {Int32, SummaryCols}
+
+  alias SummaryCol = Proc(ColumnValues, CellType)
+  alias SummaryColRow = {Int32, SummaryCol}
+
+  alias SummaryProcs = Array(SummaryColRow | SummaryColsRow) |
+                       Array(SummaryColRow) |
+                       Array(SummaryColsRow)
 
   # alias SummaryCols = Proc(Array(Enumerable(CellType)), Float64) |
   #                     Proc(Array(Enumerable(CellType)), Int32) |

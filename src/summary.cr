@@ -4,7 +4,9 @@ require "./table"
 module Tablo
   class Summary(T, U, V)
     private getter data_series = {} of LabelType => Array(CellType)
-    private getter proc_results = {} of LabelType => Array(CellType)
+    # private getter proc_results = {} of LabelType => Array(CellType)
+    # private getter proc_results = {} of LabelType => Hash(Int32, Array(CellType))
+    private getter proc_results = {} of LabelType => Hash(Int32, CellType)
     private getter summary_sources = [] of Array(CellType)
     private getter body_alignments = {} of LabelType => Justify
     private getter header_alignments = {} of LabelType => Justify
@@ -17,6 +19,7 @@ module Tablo
     private getter table
 
     def initialize(@table : Table(T), @summary_def : U, @summary_options : V)
+      pp! typeof(@summary_def)
     end
 
     # Returns nil
@@ -32,7 +35,7 @@ module Tablo
     private def initialize_arrays
       summary_def.each do |label, _|
         data_series[label] = [] of CellType
-        proc_results[label] = [] of CellType
+        proc_results[label] = Hash(Int32, CellType).new
       end
     end
 
@@ -45,7 +48,7 @@ module Tablo
         # for each column used in summary
         summary_def.each do |label, _|
           # p! typeof(table.column_registry[label].body_cell_value(source, row_index: row_index).as(CellType))
-          p! typeof(data_series[label])
+          # p! typeof(data_series[label])
           # data_series[label] << 1
           data_series[label] << table.column_registry[label].body_cell_value(source, row_index: row_index).as(CellType)
           # case value
@@ -86,11 +89,234 @@ module Tablo
             body_formatters[column_label] = value
           when {:body_styler, DataCellStyler}
             body_stylers[column_label] = value
-          when {_, SummaryCols}
-            proc_results[column_label] << value.call(data_series)
-          when {_, SummaryCol}
-            proc_results[column_label] << value.call(data_series[column_label])
+            # when {:proc1, SummaryColRow}
+            #   p! "coucou 1 !"
+            #   row = value[0].as(Int32)
+            #   proc = (value[1]).as(SummaryCols)
+            #   p! typeof(row)
+            #   p! typeof(proc)
+            #   proc_results[column_label][row] = proc.call(data_series)
+            #   p! proc_results
+            #   # proc_results[column_label][row] << 33.as(CellType)
+          when {:proc, SummaryProcs}
+            p "Ça match !"
+            pp! SummaryProcs
+            p ""
+            value.as(Array).each do |rowproc|
+              p! "toto!"
+              p! typeof(rowproc)
+              p! rowproc.class
+              row = rowproc[0]
+              proc = rowproc[1]
+              p! proc
+              p! proc.class
+              case proc
+              when SummaryCols
+                p! "coucou cols !"
+                # row = rowproc[0]
+                # proc = rowproc[1].class
+
+                if proc_results[column_label].has_key?(row)
+                  raise "Duplicate key"
+                else
+                  proc_results[column_label][row] = proc.as(SummaryCols).call(data_series)
+                  p proc_results
+                end
+              when SummaryCol
+                p! "coucou col !"
+                # row = rowproc[0]
+                # proc = rowproc[1]
+
+                if proc_results[column_label].has_key?(row)
+                  raise "Duplicate key"
+                else
+                  proc_results[column_label][row] = proc.as(SummaryCol).call((data_series)[column_label])
+                  p proc_results
+                end
+              else
+                p! "NO MATCH !!!"
+              end
+            end
           else
+            p "Ça ne match pas !"
+            p! SummaryProcs
+            # if key == :proc
+            # value.as(Array(SummaryColsRow)).each do |rowproc|
+            # value.as(Array).each do |rowproc|
+            #   p! "toto!"
+            #   p! typeof(rowproc)
+            #   p! rowproc.class
+            #   if rowproc.class == SummaryColsRow
+            #     p! "coucou 1 !"
+            #     row = rowproc[0]
+            #     proc = rowproc[1]
+
+            #     if proc_results[column_label].has_key?(row)
+            #       raise "Duplicate key"
+            #     else
+            #       proc_results[column_label][row] = proc.call(data_series)
+            #     end
+            #     p! proc_results
+            #     # elsif rowproc.is_a?(SummaryColRow)
+            #     #   p! "coucou 2 !"
+            #     #   row = rowproc[0]
+            #     #   proc = rowproc[1]
+
+            #     #   if proc_results[column_label].has_key?(row)
+            #     #     raise "Duplicate key"
+            #     #   else
+            #     #     proc_results[column_label][row] = proc.call(data_series[column_label])
+            #     #   end
+            #   end
+            # end
+            # else
+            raise InvalidValue.new("Invalid summary definition key <#{key}>")
+          end
+          # when {:proc, SummaryColsRow}
+          #   p! "coucou 2 !"
+          #   row = value[0].as(Int32)
+          #   proc = (value[1]).as(SummaryCols)
+          #   p! typeof(row)
+          #   p! typeof(proc)
+          #   proc_results[column_label][row] = proc.call(data_series)
+          #   p! proc_results
+          #   # proc_results[column_label][row] << 33.as(CellType)
+          # else
+          #   # p! typeof(key)
+          #   # p! value[0]
+          #   # p! typeof(value[0])
+          #   # p! typeof(value[1])
+          #   raise InvalidValue.new("Invalid summary definition key <#{key}>")
+          # end
+        end
+      end
+    end
+
+    private def new_populate_parameters
+      summary_def.each do |column_label, column_def|
+        # column_defs is a hash of named tuples for a given columns,
+        # it may have several summary data lines  (=several procs)
+        column_def.each do |key, value|
+          case {key, value}
+          when {:header, String}
+            headers[column_label] = value
+          when {:header_alignment, Justify}
+            header_alignments[column_label] = value
+          when {:header_formatter, DataCellFormatter}
+            header_formatters[column_label] = value
+          when {:header_styler, DataCellStyler}
+            headers_styler[column_label] = value
+          when {:body_alignment, Justify}
+            body_alignments[column_label] = value
+          when {:body_formatter, DataCellFormatter}
+            body_formatters[column_label] = value
+          when {:body_styler, DataCellStyler}
+            body_stylers[column_label] = value
+            # when {:proc1, SummaryColRow}
+            #   p! "coucou 1 !"
+            #   row = value[0].as(Int32)
+            #   proc = (value[1]).as(SummaryCols)
+            #   p! typeof(row)
+            #   p! typeof(proc)
+            #   proc_results[column_label][row] = proc.call(data_series)
+            #   p! proc_results
+            #   # proc_results[column_label][row] << 33.as(CellType)
+          else
+            if key == :proc
+              # value.as(Array(SummaryColsRow)).each do |rowproc|
+              value.as(Array).each do |rowproc|
+                p! "toto!"
+                p! typeof(rowproc)
+                p! rowproc.class
+                if rowproc.class == SummaryColsRow
+                  p! "coucou 1 !"
+                  row = rowproc[0]
+                  proc = rowproc[1]
+
+                  if proc_results[column_label].has_key?(row)
+                    raise "Duplicate key"
+                  else
+                    proc_results[column_label][row] = proc.call(data_series)
+                  end
+                  p! proc_results
+                  # elsif rowproc.is_a?(SummaryColRow)
+                  #   p! "coucou 2 !"
+                  #   row = rowproc[0]
+                  #   proc = rowproc[1]
+
+                  #   if proc_results[column_label].has_key?(row)
+                  #     raise "Duplicate key"
+                  #   else
+                  #     proc_results[column_label][row] = proc.call(data_series[column_label])
+                  #   end
+                end
+              end
+            else
+              raise InvalidValue.new("Invalid summary definition key <#{key}>")
+            end
+          end
+          # when {:proc, SummaryColsRow}
+          #   p! "coucou 2 !"
+          #   row = value[0].as(Int32)
+          #   proc = (value[1]).as(SummaryCols)
+          #   p! typeof(row)
+          #   p! typeof(proc)
+          #   proc_results[column_label][row] = proc.call(data_series)
+          #   p! proc_results
+          #   # proc_results[column_label][row] << 33.as(CellType)
+          # else
+          #   # p! typeof(key)
+          #   # p! value[0]
+          #   # p! typeof(value[0])
+          #   # p! typeof(value[1])
+          #   raise InvalidValue.new("Invalid summary definition key <#{key}>")
+          # end
+        end
+      end
+    end
+
+    private def old_populate_parameters
+      summary_def.each do |column_label, column_def|
+        # column_defs is a hash of named tuples for a given columns,
+        # it may have several summary data lines  (=several procs)
+        column_def.each do |key, value|
+          case {key, value}
+          when {:header, String}
+            headers[column_label] = value
+          when {:header_alignment, Justify}
+            header_alignments[column_label] = value
+          when {:header_formatter, DataCellFormatter}
+            header_formatters[column_label] = value
+          when {:header_styler, DataCellStyler}
+            headers_styler[column_label] = value
+          when {:body_alignment, Justify}
+            body_alignments[column_label] = value
+          when {:body_formatter, DataCellFormatter}
+            body_formatters[column_label] = value
+          when {:body_styler, DataCellStyler}
+            body_stylers[column_label] = value
+          when {:proc, SummaryColRow}
+            # when {:proc, Tuple(Int32, Proc(Array(CellType), CellType))}
+            row = value[0].as(Int32)
+            proc = (value[1]).as(SummaryCol)
+            p! typeof(row)
+            p! typeof(proc)
+            proc_results[column_label][row] = proc.call(data_series[column_label])
+            p! proc_results
+            # proc_results[column_label][row] = 42.as(CellType)
+          when {:proc, SummaryColsRow}
+            row = value[0].as(Int32)
+            proc = (value[1]).as(SummaryCols)
+            p! typeof(row)
+            p! typeof(proc)
+            proc_results[column_label][row] = proc.call(data_series)
+            p! proc_results
+            # proc_results[column_label][row] << 33.as(CellType)
+          else
+            p! typeof(key)
+            p! value[0]
+            p! typeof(value[0])
+            p! typeof(value[1])
             raise InvalidValue.new("Invalid summary definition key <#{key}>")
           end
         end
@@ -102,13 +328,18 @@ module Tablo
     # Returns nil
     private def calculate_sources
       # puts all summary results them in colum/row matrix for output
+      row = 0
       loop do
         ok = false
         summary_source = Array.new(table.column_registry.size, nil.as(CellType))
         table.column_registry.each_with_index do |(label, column), column_index|
-          if proc_results.has_key?(label) && !proc_results[label].empty?
-            summary_source[column_index] = proc_results[label].shift
-            ok = true
+          if proc_results.has_key?(label)
+            proc_results[label].each do |k, v|
+              if k == row
+                summary_source[column_index] = proc_results[label][k]
+                ok = true
+              end
+            end
           end
         end
         if ok
@@ -116,6 +347,7 @@ module Tablo
         else
           break
         end
+        row += 1
       end
     end
 
