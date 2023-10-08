@@ -331,41 +331,27 @@ module Tablo
   # alias Num = Float64 | Int32
   # alias StrNum = Num | String
 
-  alias Num = Float64 | Int32
+  # alias Num = Float64 | Int32
   # alias NumCol = Array(Num?)
   # alias NumCols = Hash(LabelType, NumCol)
 
-  alias ColumnValues = Array(CellType)
-  alias ColumnsValues = Hash(LabelType, ColumnValues)
+  # alias ColumnValues = Array(CellType)
+  # alias ColumnsValues = Hash(LabelType, ColumnValues)
 
-  # alias SummaryCols = Proc(Hash(LabelType, Array(CellType)), CellType)
-  alias SummaryCols = Proc(ColumnsValues, CellType)
-  alias SummaryColsRow = {Int32, SummaryCols}
+  # # alias SummaryCols = Proc(Hash(LabelType, Array(CellType)), CellType)
+  # alias SummaryCols = Proc(ColumnsValues, CellType)
+  # alias SummaryColsRow = {Int32, SummaryCols}
 
-  alias SummaryCol = Proc(ColumnValues, CellType)
-  alias SummaryColRow = {Int32, SummaryCol}
+  # alias SummaryCol = Proc(ColumnValues, CellType)
+  # alias SummaryColRow = {Int32, SummaryCol}
 
-  alias SummaryProcs = Array(SummaryColRow | SummaryColsRow) |
-                       Array(SummaryColRow) |
-                       Array(SummaryColsRow)
-
-  # alias SummaryCols = Proc(Array(Enumerable(CellType)), Float64) |
-  #                     Proc(Array(Enumerable(CellType)), Int32) |
-  #                     Proc(Array(Enumerable(CellType)), String) |
-  #                     Proc(Array(Enumerable(CellType)), Nil)
-  # alias SummaryCol = Proc(Enumerable(CellType), Float64) |
-  #                    Proc(Enumerable(CellType), Int32) |
-  #                    Proc(Enumerable(CellType), String) |
-  #                    Proc(Enumerable(CellType), Nil)
-
-  # alias SummaryNumCols = Proc(NumCols, Float64) |
-  #                        Proc(NumCols, Int32) |
-  #                        Proc(NumCols, String) |
-  #                        Proc(NumCols, Nil)
-  # alias SummaryNumCol = Proc(NumCol, Float64) |
-  #                       Proc(NumCol, Int32) |
-  #                       Proc(NumCol, String) |
-  #                       Proc(NumCol, Nil)
+  # alias SummaryProcs = Array(SummaryColRow | SummaryColsRow) |
+  #                      Array(SummaryColRow) |
+  #                      Array(SummaryColsRow)
+  # alias SummaryProcs = Array({Int32, Proc(Array(CellType), CellType)} |
+  #                            {Int32, Proc(Hash(LabelType, Array(CellType)), CellType)}) |
+  #                      Array({Int32, Proc(Array(CellType), CellType)}) |
+  #                      Array({Int32, Proc(Hash(LabelType, Array(CellType)), CellType)})
 
   # Tablo Exceptions hierarchy
   #
@@ -378,6 +364,9 @@ module Tablo
   end
 
   class DuplicateLabel < TabloException
+  end
+
+  class DuplicateRow < TabloException
   end
 
   class LabelNotFound < TabloException
