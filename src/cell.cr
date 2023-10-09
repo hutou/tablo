@@ -96,8 +96,8 @@ module Tablo
     getter formatter, styler
     property width
     # Instance variables used for memoization, dynamically initialized later
-    property formatted_value : String? = nil
-    property rendered_subcells : Array(String)? = nil
+    property memoized_formatted_content : String? = nil
+    property memoized_rendered_subcells : Array(String)? = nil
 
     abstract def apply_formatter
     abstract def apply_styler(content : String, line_index : Int32)
@@ -109,19 +109,15 @@ module Tablo
     # This method is the entry point for all cell computations
     # (formatting, aligning and styling !)
     def line_count
-      memoized_rendered_subcells.size
+      rendered_subcells.size
     end
 
     # Saves the calculated array of subcells and returns it
     #
     # subcells contains the final content of a cell, possibly multiline,
     # ready for output
-    private def memoized_rendered_subcells
-      if rendered_subcells.nil?
-        self.rendered_subcells = render_subcells
-      else
-        rendered_subcells.as(Array(String))
-      end
+    private def rendered_subcells
+      self.memoized_rendered_subcells ||= render_subcells
     end
 
     # For a given Cell, calculate the formatted, aligned and styled subcells
@@ -135,7 +131,7 @@ module Tablo
     private def render_subcells
       subcells = [] of String
       line_index = 0
-      memoized_formatted_value.split(NEWLINE).flat_map do |line|
+      formatted_content.split(NEWLINE).flat_map do |line|
         if line =~ /^\s*$/
           # Allows for blank lines, but use an EMPTY one
           parsed_subcell = [""]
@@ -157,12 +153,8 @@ module Tablo
 
     # Returns the formatted value of the Cell, after applying the formatter
     # for this Column (but without applying any wrapping or the styler).
-    def memoized_formatted_value
-      if formatted_value.nil?
-        self.formatted_value = apply_formatter
-      else
-        formatted_value.as(String)
-      end
+    def formatted_content
+      self.memoized_formatted_content ||= apply_formatter
     end
 
     # returns an array of formatted and styled subcells, ready to print,
@@ -182,7 +174,7 @@ module Tablo
         else
           rpad = padding(right_padding)
         end
-        inner = subcell_index < line_count ? memoized_rendered_subcells[
+        inner = subcell_index < line_count ? rendered_subcells[
           subcell_index] : padding(width)
         "#{padding(left_padding)}#{inner}#{rpad}"
       end
@@ -246,8 +238,8 @@ module Tablo
     end
 
     # needed for group width recalculation
-    def reset_rendered_subcells
-      self.rendered_subcells = nil
+    def reset_memoized_rendered_subcells
+      self.memoized_rendered_subcells = nil
     end
 
     private def apply_formatter

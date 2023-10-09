@@ -56,8 +56,9 @@ puts table.summary
 # end
 puts
 table.each do |row|
-  row.each { |cell| puts cell.value }                    # 1, false, true...2, true, false...3, false, true
-  row.each { |cell| puts cell.memoized_formatted_value } # 1, false, true...2, true, false...3, false, true
+  puts
+  row.each { |cell| puts cell.value }             # 1, false, true...2, true, false...3, false, true
+  row.each { |cell| puts cell.formatted_content } # 1, false, true...2, true, false...3, false, true
   # puts row.to_h["triple"].value       # false...true...false
   p! row.to_h
   p! row.to_h["triple"] # false...true...false

@@ -561,7 +561,7 @@ module Tablo
       (cells = @group_registry.map { |_, v| v }).each do |c|
         # group cells need to be zapped (ie set to nil) so that
         # group width can be recomputed properly
-        c.reset_rendered_subcells
+        c.reset_memoized_rendered_subcells
       end
       format_row(cells, @header_wrap)
     end
@@ -780,9 +780,9 @@ module Tablo
           if row_index == 0
             # if first row, create a DataCell for Header
             header_cell = column.header_cell(body_cell)
-            column.width = wrapped_width(header_cell.memoized_formatted_value)
+            column.width = wrapped_width(header_cell.formatted_content)
           end
-          body_cell_width = wrapped_width(body_cell.memoized_formatted_value)
+          body_cell_width = wrapped_width(body_cell.formatted_content)
           column.width = ([column.width, body_cell_width].max)
         end
       end
