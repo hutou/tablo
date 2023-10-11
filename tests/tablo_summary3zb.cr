@@ -46,24 +46,15 @@ table = Tablo::Table.new([1, "abc", 2, 3, 4, "つのだ☆HIRO", 5, 37],
 end
 
 ts = table.summary({
-    "A" => {
-      header:           "Somme\nMoyenne\nCount",
-      header_formatter: ->(c : Tablo::CellType) { c.to_s.capitalize },
-      body_formatter:   ->(c : Tablo::CellType, r : Tablo::CellData) { c.nil? ? "N/A" : r.row_index == 2 ? "%d" % c : "%.2f" % c },
-      body_styler:      ->(c : Tablo::CellType, r : Tablo::CellData, s : String) {
-        color = [:blue, :red, :yellow][r.row_index]?
-        color.nil? ? s : s.colorize(color).to_s
-      },
-      body_alignment: Tablo::Justify::Right,
-<<<<<<< HEAD
-    body_1:         ->(ary : Tablo::NumCol) { ary.compact.sum },
-    body_2:         ->(ary : Tablo::NumCol) { ary.compact.sum / ary.size },
-      body_3:         ->(ary : Tablo::NumCol) { ary.size },
+  "A" => {
+    header:           "Somme\nMoyenne\nCount",
+    header_formatter: ->(c : Tablo::CellType) { c.to_s.capitalize },
+    body_formatter:   ->(c : Tablo::CellType, r : Tablo::CellData) { c.nil? ? "N/A" : r.row_index == 2 ? "%d" % c : "%.2f" % c },
+    body_styler:      ->(c : Tablo::CellType, r : Tablo::CellData, s : String) {
+      color = [:blue, :red, :yellow][r.row_index]?
+      color.nil? ? s : s.colorize(color).to_s
     },
-    "B" => {header: "Somme",
-            body_styler: ->(c : Tablo::CellType, s : String) { s.colorize(:blue).to_s },
-          proc: ->(ary : Tablo::NumCol) { ary.compact.sum.to_i },
-=======
+    body_alignment: Tablo::Justify::Right,
     proc:           [
       {1, ->(ary : Array(Tablo::CellType)) { (ary.select(&.is_a?(Number))
         .map &.as(Number)).sum.as(Tablo::CellType) }},
@@ -74,47 +65,36 @@ ts = table.summary({
       {3, ->(ary : Array(Tablo::CellType)) { (ary.select(&.is_a?(Number))
         .map &.as(Number)).size.as(Tablo::CellType) }},
     ],
-    },
-    "B" => {header: "Somme",
+  },
+  "B" => {header: "Somme",
           body_styler: ->(_c : Tablo::CellType, s : String) { s.colorize(:blue).to_s },
           proc: [
             {1, ->(ary : Array(Tablo::CellType)) { (ary.select(&.is_a?(Number))
               .map &.as(Number)).sum.to_i.as(Tablo::CellType) }},
           ],
->>>>>>> summary
+  },
+  # "C" => [
+  #   {proc: ->(ary : Tablo::NumCol) { ary.sum.to_i }},
+  #   {header_styler: ->(c : Tablo::CellType, s : String) { s.colorize(:light_red).to_s }},
+  #   {body_styler: ->(c : Tablo::CellType, s : String, r : Tablo::CellData, l : Int32) {
+  #     r.row_index == 1 ? s.colorize(:blue).to_s : s.colorize(:light_red).to_s
+  #   }},
+  #   {proc: ->(ary : Tablo::NumCol) { ary.size > 0 ? (ary.sum/ary.size).to_s : "NA" }},
+  #   {body_alignment: Tablo::Justify::Left},
+  # ],
+  "C" => {
+    header_styler: ->(c : Tablo::CellType, s : String) { s.colorize(:light_red).to_s },
+    body_styler:   ->(c : Tablo::CellType, r : Tablo::CellData, s : String, l : Int32) {
+      r.row_index == 1 ? s.colorize(:blue).to_s : s.colorize(:light_red).to_s
     },
-    # "C" => [
-    #   {proc: ->(ary : Tablo::NumCol) { ary.sum.to_i }},
-    #   {header_styler: ->(c : Tablo::CellType, s : String) { s.colorize(:light_red).to_s }},
-    #   {body_styler: ->(c : Tablo::CellType, s : String, r : Tablo::CellData, l : Int32) {
-    #     r.row_index == 1 ? s.colorize(:blue).to_s : s.colorize(:light_red).to_s
-    #   }},
-    #   {proc: ->(ary : Tablo::NumCol) { ary.size > 0 ? (ary.sum/ary.size).to_s : "NA" }},
-    #   {body_alignment: Tablo::Justify::Left},
-    # ],
-    "C" => {
-      header_styler: ->(c : Tablo::CellType, s : String) { s.colorize(:light_red).to_s },
-      body_styler:   ->(c : Tablo::CellType, r : Tablo::CellData, s : String, l : Int32) {
-        r.row_index == 1 ? s.colorize(:blue).to_s : s.colorize(:light_red).to_s
-      },
-      body_formatter: ->(c : Tablo::CellType, r : Tablo::CellData) {
-        case r.row_index
-        when 0 then "%d" % c
-        when 1 then c.nil? ? "N/A" : "%.2f" % c
-        else        ""
-        end
-      },
-      body_alignment: Tablo::Justify::Left,
-<<<<<<< HEAD
-    proc1:          ->(ary : Tablo::NumCol) { ary.compact.sum.to_i },
-    proc2:          ->(ary : Tablo::NumCol) { ar = ary.compact; ar.size > 0 ? (ar.sum/ar.size).to_s : "NA" },
+    body_formatter: ->(c : Tablo::CellType, r : Tablo::CellData) {
+      case r.row_index
+      when 0 then "%d" % c
+      when 1 then c.nil? ? "N/A" : "%.2f" % c
+      else        ""
+      end
     },
-    "D" => {
-      body_alignment: Tablo::Justify::Left,
-      proc1:          ->(ary : Tablo::NumCol) { "<-- Somme" },
-      proc2:          ->(ary : Tablo::NumCol) { "<-- Moyenne" },
-
-=======
+    body_alignment: Tablo::Justify::Left,
     proc:           [
       {1, ->(ary : Array(Tablo::CellType)) { (ary.select(&.is_a?(Number))
         .map &.as(Number)).sum.to_i.as(Tablo::CellType) }},
@@ -122,28 +102,27 @@ ts = table.summary({
         .map &.as(Number)
       (ar.size > 0 ? ar.sum / ar.size : "ND").as(Tablo::CellType) }},
     ],
-    },
-    "D" => {
-      body_alignment: Tablo::Justify::Left,
+  },
+  "D" => {
+    body_alignment: Tablo::Justify::Left,
     proc:           [
       {1, ->(ary : Array(Tablo::CellType)) { "<-- Somme".as(Tablo::CellType) }},
       {2, ->(ary : Array(Tablo::CellType)) { "<-- Moyenne".as(Tablo::CellType) }},
     ],
->>>>>>> summary
-    },
   },
-    subtitle: Tablo::SubTitle.new("Sub Summary", frame: Tablo::Frame.new),
-    title: Tablo::Title.new("Summary", frame: Tablo::Frame.new),
-    header_frequency: 0,
-    omit_last_rule: false,
-    body_alignment: Tablo::Justify::Center,
-    row_divider_frequency: 1,
-    # masked_headers: true,
-    # border_type: Tablo::BorderName::Ascii,
-    header_formatter: ->(c : Tablo::CellType) { c.to_s.upcase },
-    header_styler: ->(c : Tablo::CellType, s : String) { s.colorize(:yellow).to_s },
-    body_styler: ->(c : Tablo::CellType, s : String) { s.colorize(:green).to_s }
-  )
+},
+  subtitle: Tablo::SubTitle.new("Sub Summary", frame: Tablo::Frame.new),
+  title: Tablo::Title.new("Summary", frame: Tablo::Frame.new),
+  header_frequency: 0,
+  omit_last_rule: false,
+  body_alignment: Tablo::Justify::Center,
+  row_divider_frequency: 1,
+  # masked_headers: true,
+  # border_type: Tablo::BorderName::Ascii,
+  header_formatter: ->(c : Tablo::CellType) { c.to_s.upcase },
+  header_styler: ->(c : Tablo::CellType, s : String) { s.colorize(:yellow).to_s },
+  body_styler: ->(c : Tablo::CellType, s : String) { s.colorize(:green).to_s }
+)
 
 puts table
 puts table.summary
