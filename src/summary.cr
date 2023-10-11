@@ -3,9 +3,11 @@ require "./table"
 
 module Tablo
   class Summary(T, U, V)
-    private getter data_series = {} of LabelType => NumCol
-    private getter proc_results = {} of LabelType => Array(StrNum?)
-    private getter summary_sources = [] of Array(StrNum?)
+    private getter data_series = {} of LabelType => Array(CellType)
+    # private getter proc_results = {} of LabelType => Array(CellType)
+    # private getter proc_results = {} of LabelType => Hash(Int32, Array(CellType))
+    private getter proc_results = {} of LabelType => Hash(Int32, CellType)
+    private property summary_sources = [] of Array(CellType)
     private getter body_alignments = {} of LabelType => Justify
     private getter header_alignments = {} of LabelType => Justify
     private getter body_formatters = {} of LabelType => DataCellFormatter
@@ -31,8 +33,8 @@ module Tablo
     # Returns nil
     private def initialize_arrays
       summary_def.each do |label, _|
-        data_series[label] = [] of Num?
-        proc_results[label] = [] of StrNum?
+        data_series[label] = [] of CellType
+        proc_results[label] = Hash(Int32, CellType).new
       end
     end
 
@@ -44,17 +46,8 @@ module Tablo
       table.sources.each_with_index do |source, row_index|
         # for each column used in summary
         summary_def.each do |label, _|
-          value = table.column_registry[label].body_cell_value(source, row_index: row_index)
-          case value
-          when Int
-            data_series[label] << value.as(Int).to_i32
-          when Float
-            data_series[label] << value.as(Float).to_f64
-          else
-            # All other values must be set to nil, not ignored, in order to
-            # keep source data rows in sync.
-            data_series[label] << nil
-          end
+          data_series[label] << table.column_registry[label].body_cell_value(source,
+            row_index: row_index).as(CellType)
         end
       end
     end
@@ -83,10 +76,72 @@ module Tablo
             body_formatters[column_label] = value
           when {:body_styler, DataCellStyler}
             body_stylers[column_label] = value
-          when {_, SummaryNumCols}
-            proc_results[column_label] << value.call(data_series)
-          when {_, SummaryNumCol}
-            proc_results[column_label] << value.call(data_series[column_label])
+          when {:proc,
+                Array({Int32, Proc(Array(CellType), CellType)} |
+                      {Int32, Proc(Hash(LabelType, Array(CellType)), CellType)}) |
+                  Array({Int32, Proc(Array(CellType), CellType)}) |
+                  Array({Int32, Proc(Hash(LabelType, Array(CellType)), CellType)})}
+            value.as(Array).each do |rowproc|
+              row = rowproc[0]
+              if proc_results[column_label].has_key?(row)
+                raise DuplicateRow.new "Summary: Row <#{row}> has already been " \
+                                       "used for column <#{column_label}>"
+              end
+              proc = rowproc[1]
+              case proc
+              when Proc(Hash(LabelType, Array(CellType)), CellType)
+                proc_results[column_label][row] = proc.call(data_series)
+              when Proc(Array(CellType), CellType)
+                proc_results[column_label][row] = proc.call((data_series)[column_label])
+              end
+            end
+          else
+            raise InvalidValue.new("Invalid summary definition key <#{key}>")
+          end
+        end
+      end
+    end
+
+    private def old_populate_parameters
+      summary_def.each do |column_label, column_def|
+        # column_defs is a hash of named tuples for a given columns,
+        # it may have several summary data lines  (=several procs)
+        column_def.each do |key, value|
+          case {key, value}
+          when {:header, String}
+            headers[column_label] = value
+          when {:header_alignment, Justify}
+            header_alignments[column_label] = value
+          when {:header_formatter, DataCellFormatter}
+            header_formatters[column_label] = value
+          when {:header_styler, DataCellStyler}
+            headers_styler[column_label] = value
+          when {:body_alignment, Justify}
+            body_alignments[column_label] = value
+          when {:body_formatter, DataCellFormatter}
+            body_formatters[column_label] = value
+          when {:body_styler, DataCellStyler}
+            body_stylers[column_label] = value
+          when {:proc, SummaryProcs}
+            value.as(Array).each do |rowproc|
+              row = rowproc[0]
+              proc = rowproc[1]
+              case proc
+              when SummaryCols
+                if proc_results[column_label].has_key?(row)
+                  raise "Duplicate key"
+                else
+                  proc_results[column_label][row] = proc.call(data_series)
+                end
+              when SummaryCol
+                if proc_results[column_label].has_key?(row)
+                  raise "Duplicate key"
+                else
+                  proc_results[column_label][row] = proc.call((data_series)[column_label])
+                end
+              else
+              end
+            end
           else
             raise InvalidValue.new("Invalid summary definition key <#{key}>")
           end
@@ -99,21 +154,39 @@ module Tablo
     # Returns nil
     private def calculate_sources
       # puts all summary results them in colum/row matrix for output
-      loop do
-        ok = false
-        summary_source = Array.new(table.column_registry.size, nil.as(StrNum?))
-        table.column_registry.each_with_index do |(label, column), column_index|
-          if proc_results.has_key?(label) && !proc_results[label].empty?
-            summary_source[column_index] = proc_results[label].shift
-            ok = true
+      # Sort results by row, column
+      summary_source = Array.new(table.column_registry.size, nil.as(CellType))
+      trios = [] of {row: Int32, column: Int32, value: CellType}
+      # Browse columns in table :main
+      table.column_registry.each_with_index do |(label, column), column_index|
+        # Is there a summary for this column ?
+        if proc_results.has_key?(label)
+          # yes, for each pair, create a trio, adding column_index
+          proc_results[label].each do |row, value|
+            trios << {row: row, column: column_index, value: value}
           end
         end
-        if ok
-          summary_sources << summary_source
+      end
+      # sort trios in place on row
+      trios.sort! { |a, b| a[:row].as(Int32) <=> b[:row].as(Int32) }
+      # and feed summary_sources
+      old_row = 0
+      trios.each_with_index do |trio, row_index|
+        if row_index == 0
+          summary_source[trio[:column].as(Int32)] = trio[:value]
+          old_row = trio[:row]
         else
-          break
+          if trio[:row] == old_row
+            summary_source[trio[:column].as(Int32)] = trio[:value]
+          else
+            self.summary_sources << summary_source
+            summary_source = Array.new(table.column_registry.size, nil.as(CellType))
+            summary_source[trio[:column].as(Int32)] = trio[:value]
+            old_row = trio[:row]
+          end
         end
       end
+      self.summary_sources << summary_source unless summary_source.compact.empty?
     end
 
     # Returns the summary table

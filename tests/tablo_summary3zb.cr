@@ -55,6 +55,7 @@ ts = table.summary({
         color.nil? ? s : s.colorize(color).to_s
       },
       body_alignment: Tablo::Justify::Right,
+<<<<<<< HEAD
     body_1:         ->(ary : Tablo::NumCol) { ary.compact.sum },
     body_2:         ->(ary : Tablo::NumCol) { ary.compact.sum / ary.size },
       body_3:         ->(ary : Tablo::NumCol) { ary.size },
@@ -62,6 +63,25 @@ ts = table.summary({
     "B" => {header: "Somme",
             body_styler: ->(c : Tablo::CellType, s : String) { s.colorize(:blue).to_s },
           proc: ->(ary : Tablo::NumCol) { ary.compact.sum.to_i },
+=======
+    proc:           [
+      {1, ->(ary : Array(Tablo::CellType)) { (ary.select(&.is_a?(Number))
+        .map &.as(Number)).sum.as(Tablo::CellType) }},
+      {2, ->(ary : Array(Tablo::CellType)) {
+        ar = ary.select(&.is_a?(Number)).map &.as(Number)
+        (ar.size > 0 ? ar.sum / ar.size : "ND").as(Tablo::CellType)
+      }},
+      {3, ->(ary : Array(Tablo::CellType)) { (ary.select(&.is_a?(Number))
+        .map &.as(Number)).size.as(Tablo::CellType) }},
+    ],
+    },
+    "B" => {header: "Somme",
+          body_styler: ->(_c : Tablo::CellType, s : String) { s.colorize(:blue).to_s },
+          proc: [
+            {1, ->(ary : Array(Tablo::CellType)) { (ary.select(&.is_a?(Number))
+              .map &.as(Number)).sum.to_i.as(Tablo::CellType) }},
+          ],
+>>>>>>> summary
     },
     # "C" => [
     #   {proc: ->(ary : Tablo::NumCol) { ary.sum.to_i }},
@@ -85,6 +105,7 @@ ts = table.summary({
         end
       },
       body_alignment: Tablo::Justify::Left,
+<<<<<<< HEAD
     proc1:          ->(ary : Tablo::NumCol) { ary.compact.sum.to_i },
     proc2:          ->(ary : Tablo::NumCol) { ar = ary.compact; ar.size > 0 ? (ar.sum/ar.size).to_s : "NA" },
     },
@@ -93,6 +114,22 @@ ts = table.summary({
       proc1:          ->(ary : Tablo::NumCol) { "<-- Somme" },
       proc2:          ->(ary : Tablo::NumCol) { "<-- Moyenne" },
 
+=======
+    proc:           [
+      {1, ->(ary : Array(Tablo::CellType)) { (ary.select(&.is_a?(Number))
+        .map &.as(Number)).sum.to_i.as(Tablo::CellType) }},
+      {2, ->(ary : Array(Tablo::CellType)) { ar = ary.select(&.is_a?(Number))
+        .map &.as(Number)
+      (ar.size > 0 ? ar.sum / ar.size : "ND").as(Tablo::CellType) }},
+    ],
+    },
+    "D" => {
+      body_alignment: Tablo::Justify::Left,
+    proc:           [
+      {1, ->(ary : Array(Tablo::CellType)) { "<-- Somme".as(Tablo::CellType) }},
+      {2, ->(ary : Array(Tablo::CellType)) { "<-- Moyenne".as(Tablo::CellType) }},
+    ],
+>>>>>>> summary
     },
   },
     subtitle: Tablo::SubTitle.new("Sub Summary", frame: Tablo::Frame.new),

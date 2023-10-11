@@ -303,7 +303,7 @@ module Tablo
         end
       when :summary
         # Okay, we are done, clear transition_data for next runs
-        close_table
+        close_table unless table.omit_last_rule?
       end
     end
 
