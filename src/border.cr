@@ -77,12 +77,16 @@ module Tablo
   # for colorized output, either by using ANSI sequences or "colorize" module
   # (default: no style)
   struct Border
-    getter top_left : String, top_mid : String, top_right : String
-    getter mid_left : String, mid_mid : String, mid_right : String
-    getter bottom_left : String, bottom_mid : String, bottom_right : String
-    getter vdiv_left : String, vdiv_mid : String, vdiv_right : String
-    getter hdiv_tbs : String, hdiv_grp : String, hdiv_hdr : String
-    getter hdiv_bdy : String, styler, bordername
+    protected property top_left : String, top_mid : String, top_right : String
+    protected property mid_left : String, mid_mid : String, mid_right : String
+    protected property bottom_left : String, bottom_mid : String, bottom_right : String
+    protected property vdiv_left : String, vdiv_mid : String, vdiv_right : String
+    protected property hdiv_tbs : String, hdiv_grp : String, hdiv_hdr : String
+    protected property hdiv_bdy : String
+
+    getter border_string : String, styler
+
+    protected class_property border_string = ""
 
     # Border predefined strings, enabled by name, described in `enum BorderName`
     PREDEFINED_BORDERS = {
@@ -95,28 +99,34 @@ module Tablo
       BorderName::Blank         => "EEEEEEEEEEEEEEEE",
     }
 
-    # Secondary constructor, defined by a hash of predefined strings of connectors
-    # Border is defined by an enum referring to a predefined hash of connectors
-    def self.new(bd : BorderName, styler : BorderStyler = DEFAULT_STYLER)
-      new(PREDEFINED_BORDERS[bd], styler, bd)
-    end
+    # Primary constructor, defined by a string or by a hash of predefined strings
+    # of connectors
+    # Returns a Border type
+    def initialize(border_type : String | BorderName = Config.border_type,
+                   @styler : BorderStyler = Config.border_styler,
+                   alter : Array(Tuple(Int32, String))? = nil)
+      case border_type
+      when Tablo::BorderName
+        @border_string = PREDEFINED_BORDERS[border_type]
+      else
+        @border_string = border_type.as(String)
+      end
+      raise InvalidConnectorString.new "Invalid border definition <#{@border_string}>" \
+                                       "(size != 16)" unless @border_string.size == 16
+      # Now, we have a border string, save attributes as class properties
+      @@border_string = @border_string
+      @@styler = @styler
 
-    # Primary constructor
-    def initialize(s : String = "EEEEEEEEEEEEEEEEEE",
-                   @styler : BorderStyler = DEFAULT_STYLER,
-                   @bordername : BorderName? = nil)
-      raise InvalidConnectorString.new "Invalid style definition (size != 16)" unless s.size == 16
-      ars = s.split("").map { |e|
+      # A change already ???
+      @border_string = @@border_string = Border.alter(alter).border_string unless alter.nil?
+
+      ars = @border_string.split("").map { |e|
         case e
         when "E"
           ""
         when "S"
           " "
-          # TODO double or triple mid vertical eparator not ready yet !
-          # when "D"
-          #   "  "
-          # when "T"
-          #   "   "
+          # TODO double ("D") or triple ("T") mid vertical separator not ready yet !
         else
           e
         end
@@ -129,11 +139,35 @@ module Tablo
       @hdiv_bdy = ars[15]
     end
 
+    # Class method to alter border string and styler
+    # # returns a new Border
+    def self.alter(alter : Array(Tuple(Int32, String))? = nil, styler : BorderStyler? = nil)
+      if @@border_string.nil?
+        raise InvalidConnectorString.new "No border string defined yet"
+      end
+      newborder = oldborder = @@border_string
+      unless alter.nil?
+        alter.each do |t|
+          unless t[0].in?(0..15)
+            raise InvalidConnectorString.new "Position in border definition string " \
+                                             "must be in range 0..15"
+          end
+          newborder = oldborder.as(String)[0..t[0] - 1] + t[1]
+          if newborder.size < 16
+            newborder = newborder + oldborder.as(String)[t[0] + t[1].size..-1]
+            oldborder = newborder
+          end
+        end
+      end
+      newstyler = styler.nil? ? @@styler : styler
+      new(newborder.as(String), newstyler.as(BorderStyler))
+    end
+
     # renders a horizontal rule, depending on its position
     protected def horizontal_rule(column_widths, position = Position::Bottom, groups = nil)
       left, middle, right, segment, altmiddle = connectors(position)
       segments = column_widths.map { |width| segment * width }
-      left = right = middle = "" if segments.all?(&.empty?)
+      left = right = middle = altmiddle = "" if segments.all?(&.empty?)
       str = if groups.nil?
               segments.join(vdiv_mid.empty? ? "" : middle)
             else
@@ -185,32 +219,8 @@ module Tablo
       end
     end
 
-    # returns the border definition string
-    private def to_s(io : IO)
-      ar = [top_left, top_mid, top_right, mid_left, mid_mid, mid_right,
-            bottom_left, bottom_mid, bottom_right, vdiv_left, vdiv_mid,
-            vdiv_right, hdiv_tbs, hdiv_grp, hdiv_hdr, hdiv_bdy]
-      # io << ar.map { |e| e == "" ? "E" : e }.join
-      io << ar.map { |e|
-        case e
-        when ""
-          "E"
-        when " "
-          "S"
-          # TODO double or triple mid vertical eparator not ready yet !
-          # when "  "
-          #   "D"
-          # when "   "
-          #   "T"
-        else
-          e
-        end
-      }.join
-    end
-
     # returns a styled connector, if not empty and styling allowed
     private def style(s)
-      # # debug!(Util.styler_allowed)
       styler && !s.empty? && Util.styler_allowed ? styler.call(s) : s
     end
   end

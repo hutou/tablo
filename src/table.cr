@@ -36,11 +36,10 @@ module Tablo
     # Table parameters
     getter sources
     private setter sources
-    property title, subtitle, footer
+    property title, subtitle, footer, border
     protected getter group_alignment, group_formatter, group_styler
     protected getter header_alignment, header_formatter, header_styler
     protected getter body_alignment, body_formatter, body_styler
-    protected getter border, border_type, border_styler
     protected getter left_padding, right_padding, padding_character
     protected getter width, truncation_indicator
     protected getter header_frequency, row_divider_frequency
@@ -74,8 +73,7 @@ module Tablo
         @body_formatter : DataCellFormatter = Config.body_formatter,
         @body_styler : DataCellStyler = Config.body_styler,
         #
-        @border_type : BorderType = Config.border_type,
-        @border_styler : BorderStyler = Config.border_styler,
+        @border : Border = Config.border,
         #
         @left_padding : Int32 = Config.left_padding,
         @right_padding : Int32 = Config.right_padding,
@@ -97,7 +95,6 @@ module Tablo
         @omit_last_rule : Bool = Config.omit_last_rule?)
         {% end %}
 
-        @border = Border.new(border_type, border_styler)
         self.row_count = sources.size
         {% if block_given == true %}
           yield self
@@ -844,13 +841,14 @@ module Tablo
         body_formatter:   @body_formatter,
         header_styler:    @header_styler,
         body_styler:      @body_styler,
-        border_styler:    @border_styler,
+        # border_styler:    @border_styler,
         # padding
         left_padding:  @left_padding,
         right_padding: @right_padding,
         width:         @width,
         # miscellaneous
-        border_type:          @border_type, # (border)
+        # border_type:          @border_type, # (border)
+        border:               @border,
         header_frequency:     @header_frequency,
         truncation_indicator: @truncation_indicator,
         body_wrap:            @body_wrap,

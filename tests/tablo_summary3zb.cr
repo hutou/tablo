@@ -18,7 +18,8 @@ table = Tablo::Table.new([1, "abc", 2, 3, 4, "つのだ☆HIRO", 5, 37],
   footer: Tablo::Footer.new("My beautiful footer", frame: Tablo::Frame.new(0, 1), page_break: true),
   #   bordered: true, detached: false, page_break: true),
   # border_type: "╭┬╮├┼┤╰┴╯│:│TGHBM",
-  border_type: Tablo::BorderName::Fancy,
+  # border: Tablo::Border.new(Tablo::BorderName::Fancy),
+  border: Tablo::Border.new(:fancy, styler: ->(s : String) { s.colorize(:yellow).to_s }),
   group_formatter: ->(c : Tablo::CellType) { c.as(String).downcase },
   # border_type: Tablo::BorderName::Ascii,
   # border_type: "+++++++++|:|=---",
@@ -126,6 +127,8 @@ ts = table.summary({
 
 puts table
 puts table.summary
+puts table.transpose
+puts table.summary.as(Tablo::Table(Array(Tablo::CellType))).transpose
 exit
 
 # print "\n---------\n\n"

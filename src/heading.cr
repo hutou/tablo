@@ -58,9 +58,9 @@ module Tablo
     def initialize(@value : CellType? = nil, *,
                    @frame : Frame? = nil,
                    @repeated : Bool = false,
-                   @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
-                   @formatter : TextCellFormatter = DEFAULT_FORMATTER,
-                   @styler : TextCellStyler = DEFAULT_STYLER)
+                   @alignment : Justify = Config.heading_alignment,
+                   @formatter : TextCellFormatter = Config.heading_formatter,
+                   @styler : TextCellStyler = Config.heading_styler)
       check_value
     end
   end
@@ -71,9 +71,9 @@ module Tablo
 
     def initialize(@value : CellType? = nil, *,
                    @frame : Frame? = nil,
-                   @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
-                   @formatter : TextCellFormatter = DEFAULT_FORMATTER,
-                   @styler : TextCellStyler = DEFAULT_STYLER)
+                   @alignment : Justify = Config.heading_alignment,
+                   @formatter : TextCellFormatter = Config.heading_formatter,
+                   @styler : TextCellStyler = Config.heading_styler)
       check_value
     end
   end
@@ -86,9 +86,9 @@ module Tablo
     def initialize(@value : CellType? = nil, *,
                    @frame : Frame? = nil,
                    @page_break : Bool = false,
-                   @alignment : Justify = DEFAULT_HEADING_ALIGNMENT,
-                   @formatter : TextCellFormatter = DEFAULT_FORMATTER,
-                   @styler : TextCellStyler = DEFAULT_STYLER)
+                   @alignment : Justify = Config.heading_alignment,
+                   @formatter : TextCellFormatter = Config.heading_formatter,
+                   @styler : TextCellStyler = Config.heading_styler)
       check_value
     end
   end

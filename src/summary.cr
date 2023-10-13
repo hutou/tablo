@@ -4,8 +4,6 @@ require "./table"
 module Tablo
   class Summary(T, U, V)
     private getter data_series = {} of LabelType => Array(CellType)
-    # private getter proc_results = {} of LabelType => Array(CellType)
-    # private getter proc_results = {} of LabelType => Hash(Int32, Array(CellType))
     private getter proc_results = {} of LabelType => Hash(Int32, CellType)
     private property summary_sources = [] of Array(CellType)
     private getter body_alignments = {} of LabelType => Justify
@@ -102,53 +100,6 @@ module Tablo
       end
     end
 
-    private def old_populate_parameters
-      summary_def.each do |column_label, column_def|
-        # column_defs is a hash of named tuples for a given columns,
-        # it may have several summary data lines  (=several procs)
-        column_def.each do |key, value|
-          case {key, value}
-          when {:header, String}
-            headers[column_label] = value
-          when {:header_alignment, Justify}
-            header_alignments[column_label] = value
-          when {:header_formatter, DataCellFormatter}
-            header_formatters[column_label] = value
-          when {:header_styler, DataCellStyler}
-            headers_styler[column_label] = value
-          when {:body_alignment, Justify}
-            body_alignments[column_label] = value
-          when {:body_formatter, DataCellFormatter}
-            body_formatters[column_label] = value
-          when {:body_styler, DataCellStyler}
-            body_stylers[column_label] = value
-          when {:proc, SummaryProcs}
-            value.as(Array).each do |rowproc|
-              row = rowproc[0]
-              proc = rowproc[1]
-              case proc
-              when SummaryCols
-                if proc_results[column_label].has_key?(row)
-                  raise "Duplicate key"
-                else
-                  proc_results[column_label][row] = proc.call(data_series)
-                end
-              when SummaryCol
-                if proc_results[column_label].has_key?(row)
-                  raise "Duplicate key"
-                else
-                  proc_results[column_label][row] = proc.call((data_series)[column_label])
-                end
-              else
-              end
-            end
-          else
-            raise InvalidValue.new("Invalid summary definition key <#{key}>")
-          end
-        end
-      end
-    end
-
     # Reformat results computed by summary functions to summary_table expected
     # sources format
     # Returns nil
@@ -203,8 +154,7 @@ module Tablo
       # tables, they should be used for summary. However, they can be overriden
       # by summary_options when merging both named tuples.
       default_parameters = {
-        border_type:   table.border_type,
-        border_styler: table.border_styler,
+        border: table.border,
 
         # groups are *not* used in summary table
 

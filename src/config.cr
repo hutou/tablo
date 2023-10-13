@@ -1,5 +1,6 @@
 require "./types"
 require "./heading"
+require "./border"
 
 module Tablo
   # The `Config` module define global properties.
@@ -42,6 +43,14 @@ module Tablo
     class_property subtitle : SubTitle = SubTitle.new
     class_property footer : Footer = Footer.new
     #
+    class_property border : Border = Border.new
+    class_property border_type : String | BorderName = BorderName::Ascii
+    class_property border_styler : BorderStyler = DEFAULT_STYLER
+    #
+    class_property heading_alignment : Justify = DEFAULT_HEADING_ALIGNMENT
+    class_property heading_formatter : TextCellFormatter = DEFAULT_FORMATTER
+    class_property heading_styler : TextCellStyler = DEFAULT_STYLER
+    #
     class_property group_alignment : Justify = DEFAULT_HEADING_ALIGNMENT
     class_property group_formatter : TextCellFormatter = DEFAULT_FORMATTER
     class_property group_styler : TextCellStyler = DEFAULT_STYLER
@@ -53,9 +62,6 @@ module Tablo
     class_property body_alignment : Justify? = nil
     class_property body_formatter : DataCellFormatter = DEFAULT_FORMATTER
     class_property body_styler : DataCellStyler = DEFAULT_DATA_DEPENDENT_STYLER
-    #
-    class_property border_type : String | BorderName = BorderName::Ascii
-    class_property border_styler : BorderStyler = DEFAULT_STYLER
     #
     class_property left_padding : Int32 = 1
     class_property right_padding : Int32 = 1
