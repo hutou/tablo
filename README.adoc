@@ -1,152 +1,164 @@
-:source-highlighter: highlight.js
-:highlightjs-languages: crystal
-:toc: 
-:toclevels: 4 
-:icons: font 
+//:source-highlighter: highlight.js
+//:highlightjs-languages: crystal
+:source-highlighter: pygments
+//:source-highlighter: rouge
+:pygments-style: lightbulb
+//::rouge-style: gruvbox-light
+//:rouge-style: monokai_sublime
+//:rouge-style: desert
+:toc:
+:toclevels: 4
+:icons: font
 :imagesdir: docs/assets/images
 
 == History
 
-Tablo is a port of [Matt Harvey's
-Tabulo](https://github.com/matt-harvey/tabulo) Ruby gem to the Crystal
-Language.
+Tablo is a port of https://github.com/matt-harvey/tabulo[Matt Harvey's Tabulo]
+Ruby gem to the Crystal Language.
 
-The first version of Tablo (v0.10.1) was released on November 30, 2021,
-in the context of learning the Crystal language, which explains its
-relative limitations compared to Tabulo v2.7, the current version
-at that time, subject of the software port.
+The first version of Tablo (v0.10.1) was released on November 30, 2021, in the
+context of learning the Crystal language, which explains its relative
+limitations compared to Tabulo v2.7, the current version at that time.
 
 So this version of Tablo (v1.0) is a complete rewrite of the library.
 
-Compared to the first version, it offers extended capabilities,
-sometimes at the cost of a modified syntax. It also offers new features,
-such as the ability to add a Summary table, powered by user-defined
-functions (such as sum, mean, etc.), the ability to process any
-Enumerable data, as well as elaborate layout possibilities: grouped
-columns, different types of headers (title, subtitle, footer), linked or
-detached border lines, etc.
+Compared to the first version, it offers extended capabilities, sometimes at
+the cost of a modified syntax. It also offers new features, such as the
+ability to add a Summary table, powered by user-defined functions (such as
+sum, mean, etc.), the ability to process any Enumerable data, as well as
+elaborate layout possibilities: grouped columns, different types of headers
+(title, subtitle, footer), linked or detached border lines, etc.
 
 While overall, Tablo remains, in terms of its functionalities, broadly
-comparable, with a few exceptions, to the Tabulo v3.0 version of Matt
-Harvey, the source code, meanwhile, has been deeply redesigned.
-
-// {empty} +
+comparable, with a few exceptions, to the Tabulo v3.0 version of Matt Harvey,
+the source code, meanwhile, has been deeply redesigned.
 
 == Features
 
-- Presents a DRY API that is column-based, not row-based, meaning header and body rows are automatically in sync
-- Lets you set fixed column widths, then either wrap or truncate the overflow
-- Alternatively, “pack” the table so that columns are auto-sized to their contents
-- Cell alignment is configurable, but has helpful content-based defaults (numbers right, strings left)
-- Tabulate any Enumerable: the underlying collection need not be an array
-- Step through your table a row at a time, printing as you go, without waiting for the underlying collection to load. In other words, have a streaming interface for free.
-- Add optional title, subtitle and footer to your table
-- The header row can be repeated at arbitrary intervals
-- Newlines within cell content are correctly handled
-- Multibyte Unicode characters are correctly handled (needs the "uniwidth" library)
-- Option to preserve whole words when wrapping content
-- Apply colors and other styling to table content and borders, without breaking the table
-- Easily transpose the table, so that rows are swapped with columns
-- Choose from several border configurations, including predefined ones such as Markdown, Ascii (default), and user-defined ones.
-- Adjacent columns can be capped by a group header
-- A summary table can be added to apply user-defined functions to numeric values of a column
+* Presents a DRY API that is column-based, not row-based, meaning header and
+  body rows are automatically in sync
+* Lets you set fixed column widths, then either wrap or truncate the overflow
+* Alternatively, “pack” the table so that columns are auto-sized to their
+  contents
+* Cell alignment is configurable, but has helpful content-based defaults
+  (numbers right, strings left)
+* Tabulate any Enumerable: the underlying collection need not be an array
+* Step through your table a row at a time, printing as you go, without waiting
+  for the underlying collection to load. In other words, have a streaming
+  interface for free.
+* Add optional title, subtitle and footer to your table
+* The header row can be repeated at arbitrary intervals
+* Newlines within cell content are correctly handled
+* Multibyte Unicode characters are correctly handled (needs the "uniwidth"
+  library)
+* Option to preserve whole words when wrapping content
+* Apply colors and other styling to table content and borders, without
+  breaking the table
+* Easily transpose the table, so that rows are swapped with columns
+* Choose from several border configurations, including predefined ones such as
+  Markdown, Ascii (default), and user-defined ones.
+* Adjacent columns can be capped by a group header
+* A summary table can be added to apply user-defined functions to numeric
+  values of a column
 
-// {empty} +
+== Installation and use
 
-
-== Installation
-
-1. Add the dependency to your shard.yml:
-[literal]
- dependencies:
-   tablo:
-     gitlab: hutou/tablo
-2. Run `shards install`
-3. And insert the line
+. Add the dependency to your shard.yml:
++
+----
+dependencies:
+    tablo:
+        gitlab: hutou/tablo
+----
+. Run `shards install`
+. And insert the line
 
 [source,crystal]
-----
 require "tablo"
-----
-at the beginnning of your app.
 
-:toc: 
-:toclevels: 4 
+at the beginnning of your app.
 
 == Tutorial
 
-In this tutorial, we'll start with a very simple example, which we'll build on as we go along to gradually discover all the possibilities offered by the Tablo library. 
+In this tutorial, we'll start with a very simple example, which we'll build on
+as we go along to gradually discover all the possibilities offered by the
+Tablo library.
 
 Here's a first look at how to use Tablo to lay out a simple table of integers.
 
-[source,crystal]
+//[source,crystal]
+[%linenums,crystal]
 ----
 require "tablo"
 
 table = Tablo::Table.new([1, 2, 3]) do |t|
-    t.add_column("itself", &.itself)
-    t.add_column(2, header: "Double") {|n| n * 2}
-    t.add_column(:column_3, header: "String") {|n| n.even?.to_s}
+  t.add_column("itself", &.itself)
+  t.add_column(2, header: "Double") { |n| n * 2 }
+  t.add_column(:column_3, header: "String") { |n| ('@'.ord + n).chr.to_s * n }  
 end
+
 puts table
 ----
 
 or
 
-[source,crystal]
+[%linenums,crystal]
 ----
 require "tablo"
 
 table = Tablo::Table.new([1, 2, 3])
 table.add_column("itself", &.itself)
 table.add_column(2, header: "Double") {|n| n * 2}
-table.add_column(:column_3, header: "String") {|n| n.even?.to_s}
+table.add_column(:column_3, header: "String") { |n| ('@'.ord + n).chr.to_s * n }  
+
 puts table
 ----
 
-[literal]
-+--------------+--------------+--------------+
-|       itself |       Double | String       |
-+--------------+--------------+--------------+
-|            1 |            2 | false        |
-|            2 |            4 | true         |
-|            3 |            6 | false        |
-+--------------+--------------+--------------+
+output:
 
-A great deal of information can already be extracted from this simple example. Let's list them:
+ +--------------+--------------+--------------+
+ |       itself |       Double | String       |
+ +--------------+--------------+--------------+
+ |            1 |            2 | A            |
+ |            2 |            4 | BB           |
+ |            3 |            6 | CCC          |
+ +--------------+--------------+--------------+
 
-- The only parameter required to create the table is the data source (the array of integers), but to produce a result, you obviously need to add columns
+A great deal of information can already be extracted from this simple example.
+Let's list them:
 
-- Any number of columns can be defined, each requiring an identifier and a Proc to extract the data from each row of the source, and, if necessary, modify its type and value
-
-- The column identifier can be of type String, Integer or Symbol. By default, the column header takes the value of the identifier, unless the optional `header` parameter is used
-
-- Columns are the same width
-
-- We see two types of row: header and body. 
-
-- Number columns are aligned to the right, and text columns to the left, for both headers and body.
-
-- Default borders use the classic `Ascii` type 
-
-Now, let's look at borders
+* The only parameter required to create the table is the data source (the
+ array of integers), but to produce a result, you obviously need to add
+ columns.
+* Any number of columns can be defined, each requiring an identifier and
+ a proc for extracting data from the source and, if necessary, modifying
+ its type and value.
+* The column identifier can be of type `String`, `Integer` or `Symbol`. By default,
+ the column header takes the value of the identifier, unless the optional
+ `header` parameter is used.
+* Columns are the same width. 
+* We can see two types of row: header and body.  
+* Columns of numbers are aligned to the right, and columns of text  to the left, for
+ both headers and body.
+* Default borders use the classic `Ascii` type.
 
 === Borders
 
-Each border type is defined by a string of exactly 16 characters, which are
+Each border type is defined by a string of exactly 16 characters, which is
 then converted into 16 strings of up to 1 character each.  The definition
 string can contain any character, but two of them have a special meaning:
-after conversion, the uppercase E is replaced by an empty string, and the
-uppercase S character is replaced by a space (a simple space may also be used, of course). +
+during conversion, the uppercase E is replaced by an empty string, and the
+uppercase S character is replaced by a space (a simple space may also be used,
+of course). + 
 _Please note that using the capital E character may cause alignment
- difficulties._
+difficulties._
 
 The first 9 characters define the junction or intersection of horizontal and
-vertical lines.
+vertical border lines.
 
-[cols="1,5"]
+[%autowidth]
 |===
-|Index | Description 
+|Index | Description
 
 | 0 | Top left corner
 | 1 | Top middle junction
@@ -159,92 +171,93 @@ vertical lines.
 | 8 | Bottom right corner
 |===
 
-The next three characters define vertical separators in data rows
+The next three characters define vertical separators in data rows.
 
-[cols="1,5"]
+[%autowidth]
 |===
-|Index | Description 
+|Index | Description
 
 | 9  | Left vertical separator
 | 10 | Middle vertical separator
 | 11 | Right vertical separator
-
 |===
 
 And finally, the last four characters define the different types of horizontal
 border, depending on the type of data row or types of adjacent data rows (Row
-type will be the subject of the next section)
+type will be the subject of the next section).
 
-[cols="1,5"]
+[%autowidth]
 |===
-|Index | Description 
+|Index | Description
 
-| 12 | Title, subtitle, footer  
-| 13 | Group 
-| 14 | Header 
-| 15 | Body 
-
+| 12 | Title, subtitle, footer
+| 13 | Group
+| 14 | Header
+| 15 | Body
 |===
 
 To change a table's border type, simply assign the desired definition to the
-`border_type` parameter when initializing the table.  This can be done in two
-ways, either by assigning the 16-character string directly to `border_type`,
-or by assigning the name of one of the 7 predefined borders :
+`border` parameter when initializing the table.  This can be done in two ways,
+either by assigning the 16-character string directly, or by assigning the name
+of one of the 7 predefined borders :
 
+[%autowidth]
+|===
+|`BorderName::Ascii` |`"\++++\++++\+++++\|\|\|----"`
+|`BorderName::ReducedAscii`  | `"ESEESEESEESE----"`
+|`BorderName::Modern`        | `"┌┬┐├┼┤└┴┘│││────"`
+|`BorderName::ReducedModern` | `"ESEESEESEESE────"`
+|`BorderName::Markdown`      | `"\_\__\|\|\|\___\|\|\|\__-_"`
+|`BorderName::Fancy`         | `"╭┬╮├┼┤╰┴╯│:│─−-⋅"`
+|`BorderName::Blank`         | `"EEEEEEEEEEEEEEEE"`
+|===
 
-[Literal]
-----
-BorderName::Ascii         = "+++++++++|||----"
-BorderName::ReducedAscii  = "ESEESEESEESE----"
-BorderName::Modern        = "┌┬┐├┼┤└┴┘│││────"
-BorderName::ReducedModern = "ESEESEESEESE────"
-BorderName::Markdown      = "___|||___|||__-_"
-BorderName::Fancy         = "╭┬╮├┼┤╰┴╯│:│─−-⋅"
-BorderName::Blank         = "EEEEEEEEEEEEEEEE"
-----
+So, for example, to set the `ReducedAscii` border type, I can either:
 
-So, for example, to set `border_type` to `BorderName::ReducedAscii`, I can either :
+* use the predefined border name (`Tablo::BorderName::ReducedAscii` or
+`:reduced_ascii`):
 
-use the predefined border name
-[source,crystal]
+[%linenums,crystal,start=3]
 ----
-table = Tablo::Table.new([1, 2, 3]
-  border_type: Tablo::BorderName::ReducedAscii) do |t|
-----
-
-or use its definition string
-[source,crystal]
-----
-table = Tablo::Table.new([1, 2, 3]
-  border_type: "ESEESEESEESE----") do |t|
+table = Tablo::Table.new([1, 2, 3],
+  border: Tablo::Border.new(:reduced_ascii)) do |t|
 ----
 
+or 
 
-[literal]
--------------- -------------- --------------
-       itself         Double   String       
--------------- -------------- --------------
-            1              2   false        
-            2              4   true         
-            3              6   false        
--------------- -------------- --------------
+* use its definition string:
 
+[%linenums,crystal,start=3]
+----
+table = Tablo::Table.new([1, 2, 3],
+  border: Tablo::Border.new("ESEESEESEESE----")) do |t|
+----
+
+Output:
+
+ -------------- -------------- --------------
+        itself         Double   String       
+ -------------- -------------- --------------
+             1              2   A            
+             2              4   BB           
+             3              6   CCC          
+ -------------- -------------- --------------
 
 === Row types
 
 ==== Header and Body
-The Header and Body data row types form the basis of table formatting. Other types
-can be optionally added to establish the final layout: the Group row type and
-Heading row types (Title, SubTitle and Footer).
+The Header and Body data row types form the basis of table formatting. Other
+types can be optionally added to establish the final layout: the Group row
+type and Heading row types (Title, SubTitle and Footer).
 
 ==== Group
 Adjacent columns can share a common header, above the column headers
-themselves. This common header constitute a Group row type.
+themselves. This common header constitutes a Group row type.
 
 To create a Group row, simply define a common header after each set of
-adjacent columns to be grouped.  
+adjacent columns to be grouped.
 
-[source,crystal]
+[%linenums,crystal]
 ----
 require "tablo"
 
@@ -252,45 +265,49 @@ table = Tablo::Table.new([1, 2, 3]) do |t|
   t.add_column("itself", &.itself)
   t.add_column(2, header: "Double") {|n| n * 2}
   t.add_group("Numbers")
-  t.add_column(:column_3, header: "String") {|n| n.even?.to_s}
+  t.add_column(:column_3, header: "String") { |n| ('@'.ord + n).chr.to_s * n }  
   t.add_group("Text")
 end
+
 puts table
 ----
 
-[literal]
-+-----------------------------+--------------+
-|           Numbers           |     Text     |
-+--------------+--------------+--------------+
-|       itself |       Double | String       |
-+--------------+--------------+--------------+
-|            1 |            2 | false        |
-|            2 |            4 | true         |
-|            3 |            6 | false        |
-+--------------+--------------+--------------+
+output:
+
+ +-----------------------------+--------------+
+ |           Numbers           |     Text     |
+ +--------------+--------------+--------------+
+ |       itself |       Double | String       |
+ +--------------+--------------+--------------+
+ |            1 |            2 | A            |
+ |            2 |            4 | BB           |
+ |            3 |            6 | CCC          |
+ +--------------+--------------+--------------+
 
 By default, Group headers are centered, but their alignment can be modified
 globally at table initialization time with the `group_alignment` parameter,
 or locally for a given group with the `alignment` parameter.
 
-[source,crystal]
+[%linenums,crystal,start=3]
 ----
 table = Tablo::Table.new([1, 2, 3],
-  group_alignment: Tablo::Justify::Left) do |t|
+        group_alignment: Tablo::Justify::Left) do |t|
 ----
- 
-[literal]
-| Numbers                     | Text         |
 
-or 
+Output:
 
-[source,crystal]
+ | Numbers                     | Text         |
+
+or
+
+[%linenums,crystal,start=8]
 ----
 t.add_group("Text", alignment: Tablo::Justify::Left)
 ----
- 
-[literal]
-|           Numbers           | Text         |
+
+Output:
+
+ |           Numbers           | Text         |
 
 Note that the group header can be empty, and that an empty group header is
 automatically created if the last column group is not specified.
@@ -298,33 +315,34 @@ automatically created if the last column group is not specified.
 Group and header are intimately linked and only separated by a horizontal
 line. For custom rendering, this line can be omitted by setting the Table
 `omit_group_header_rule` parameter to `true`.
-[source,crystal]
+
+[%linenums,crystal]
 ----
 require "tablo"
 
 table = Tablo::Table.new([1, 2, 3],
-  omit_group_header_rule: true) do |t|
-  t.add_column("itself", &.itself)
-  t.add_column(2, header: "Double") {|n| n * 2}
-  t.add_group("Numbers")
-  t.add_column(:column_3, header: "Boolean") {|n| n.even?.to_s}
-    t.add_column(:column_4, header: "String") {|n| n.to_s * n}
-  t.add_group("Text")
+        omit_group_header_rule: true) do |t|
+    t.add_column("itself", &.itself)
+    t.add_column(2, header: "Double") {|n| n * 2}
+    t.add_group("Numbers")
+    t.add_column(:column_3, header: "String") { |n| ('@'.ord + n).chr.to_s * n }  
+    t.add_column(:column_4, header: "Boolean") {|n| n.even?}
+    t.add_group("Other data types")
 end
-puts table.pack
+
+puts table
 ----
 
-[literal]
-----
-+-----------------+------------------+
-|     Numbers     |       Text       |
-| itself | Double | Boolean | String |
-+--------+--------+---------+--------+
-|      1 |      2 | false   | 1      |
-|      2 |      4 | true    | 22     |
-|      3 |      6 | false   | 333    |
-+--------+--------+---------+--------+
-----
+Output:
+
+ +-----------------------------+-----------------------------+
+ |           Numbers           |       Other data types      |
+ |       itself |       Double | String       |    Boolean   |
+ +--------------+--------------+--------------+--------------+
+ |            1 |            2 | A            |     false    |
+ |            2 |            4 | BB           |     true     |
+ |            3 |            6 | CCC          |     false    |
+ +--------------+--------------+--------------+--------------+
 
 ==== Headings
 
@@ -338,23 +356,25 @@ displayed.
 To display a title (or subtitle or footer), simply specify its value when
 initializing the table.
 
-[source,crystal]
+[%linenums,crystal,start=3]
 ----
 table = Tablo::Table.new([1, 2, 3],
-  title: Tablo::Title.new("Numbers and text")) do |t|                       
+        title: Tablo::Title.new("Data types alignment")) do |t|
 ----
 
-[literal]
-               Numbers and text               
-+-----------------------------+--------------+
-|           Numbers           | Text         |
-+--------------+--------------+--------------+
-|       itself |       Double | String       |
-+--------------+--------------+--------------+
-|            1 |            2 | false        |
-|            2 |            4 | true         |
-|            3 |            6 | false        |
-+--------------+--------------+--------------+
+Output:
+
+                      Data types alignment                    
+ +-----------------------------+-----------------------------+
+ |           Numbers           |       Other data types      |
+ +--------------+--------------+--------------+--------------+
+ |       itself |       Double | String       |    Boolean   |
+ +--------------+--------------+--------------+--------------+
+ |            1 |            2 | A            |     false    |
+ |            2 |            4 | BB           |     true     |
+ |            3 |            6 | CCC          |     false    |
+ +--------------+--------------+--------------+--------------+
+
 
 These elements can also be framed, possibly with line breaks before and after
 (defined in the `Frame` struct initializer as `line_breaks_before` and
@@ -364,40 +384,41 @@ The number of line breaks between adjacent elements is equal to the highest
 value between the current element's `line_breaks_after` and the next element's
 `line_breaks_before`.
 
-[source,crystal]
+[%linenums,crystal,start=3]
 ----
 table = Tablo::Table.new([1, 2, 3],
-  title: Tablo::Title.new("Numbers and text", 
+  title: Tablo::Title.new("Data types alignment",
     frame: Tablo::Frame.new(line_breaks_before: 0, line_breaks_after: 2))) do |t|
 ----
 
-[literal]
-----
-+--------------------------------------------+
-|              Numbers and text              |
-+--------------------------------------------+
- 
-+-----------------------------+--------------+
-|           Numbers           |     Text     |
-+--------------+--------------+--------------+
-|       itself |       Double | String       |
-+--------------+--------------+--------------+
-|            1 |            2 | false        |
-|            2 |            4 | true         |
-|            3 |            6 | false        |
-+--------------+--------------+--------------+
-----
-    
+Output:
 
-In summary, we have 6 types of data rows : 
-
+----
++-----------------------------------------------------------+
+|                    Data types alignment                   |
++-----------------------------------------------------------+
  
-[cols="1,2"]
++-----------------------------+-----------------------------+
+|           Numbers           |       Other data types      |
++--------------+--------------+--------------+--------------+
+|       itself |       Double | String       |    Boolean   |
++--------------+--------------+--------------+--------------+
+|            1 |            2 | A            |     false    |
+|            2 |            4 | BB           |     true     |
+|            3 |            6 | CCC          |     false    |
++--------------+--------------+--------------+--------------+
+----
+
+
+In summary, we have 6 types of data rows :
+
+
+[%autowidth]
 |===
-| Type | Description 
+| Type | Description
 
-| Header  | Always displayed, unless `header_frequency:` is `nil` or
-`masked_headers:` is `true`
+| Header  | Always displayed, unless `header_frequency:` is `nil` +
+or `masked_headers:` is `true`
 | Body    | Always displayed
 | Group   | Optional
 | Title   | Optional
@@ -406,159 +427,157 @@ In summary, we have 6 types of data rows :
 
 |===
 
-=== Rules 
+=== Rules
 
 Between the different types of rows, there are also different types of
 separator lines, whose format varies according to the types of rows they
-separate.  
+separate.
 
-In the case of framed rows, for example, there may be a single separating
-line, making the rows linked, or on the contrary, there may first be a closing
-line for the top row, possibly followed by line breaks before the opening line
-of the bottom row.  
+In the case of framed rows, for example, there may be a single dividing line,
+making the rows linked, or on the contrary, there may first be a closing line
+for the top row, possibly followed by line breaks before the opening line of
+the bottom row.
 
 These horizontal rules are formatted by the `horizontal_rule` method of class
 Border.
 
 === Display frequency and repeated title
 
-An important parameter in table initialization is `header_frequency:` 
+An important parameter in table initialization is `header_frequency:`
 
-- By default, it is set to 0, i.e. rows of data other than body are displayed
+* By default, it is set to 0, i.e. rows of data other than body are displayed
 only once, at the beginning for titles and headers, at the end for the footer.
 
-[source,crystal]
+[%linenums,crystal,start=3]
 ----
-require "tablo"
-
 table = Tablo::Table.new([1, 2, 3],
-  header_frequency: 0,
-  title: Tablo::Title.new("Numbers and text", frame: Tablo::Frame.new(0, 2)),
-  subtitle: Tablo::SubTitle.new("No booleans"),
-  footer: Tablo::Footer.new("End of page")) do |t|
-  t.add_column("itself", &.itself)
-  t.add_column(2, header: "Double") { |n| n * 2 }
-  t.add_group("Numbers")
-  t.add_column(:column_3, header: "String") { |n| n.even?.to_s }
-  t.add_group("Text", alignment: Tablo::Justify::Left)
-end
-puts table
+        header_frequency: 0,
+        title: Tablo::Title.new("Data types alignment", frame: Tablo::Frame.new(0, 2)),
+        subtitle: Tablo::SubTitle.new("Only Booleans are centered by default"),
+        footer: Tablo::Footer.new("End of page")) do |t|
 ----
 
-[literal]
+Output:
+
 ----
-+--------------------------------------------+
-|              Numbers and text              |
-+--------------------------------------------+
++-----------------------------------------------------------+
+|                    Data types alignment                   |
++-----------------------------------------------------------+
  
-                  No booleans                 
-+-----------------------------+--------------+
-|           Numbers           | Text         |
-+--------------+--------------+--------------+
-|       itself |       Double | String       |
-+--------------+--------------+--------------+
-|            1 |            2 | false        |
-|            2 |            4 | true         |
-|            3 |            6 | false        |
-+--------------+--------------+--------------+
-                  End of page                 
+            Only Booleans are centered by default            
++-----------------------------+-----------------------------+
+|           Numbers           |       Other data types      |
++--------------+--------------+--------------+--------------+
+|       itself |       Double | String       |    Boolean   |
++--------------+--------------+--------------+--------------+
+|            1 |            2 | A            |     false    |
+|            2 |            4 | BB           |     true     |
+|            3 |            6 | CCC          |     false    |
++--------------+--------------+--------------+--------------+
+                         End of page 
 ----
 
-- If set to `nil`, only body rows are displayed.
+* If set to `nil`, only body rows are displayed.
 
-[source,crystal]
+[%linenums,crystal,start=3]
 ----
-header_frequency: nil,
-----
-
-[literal]
-+--------------+--------------+--------------+
-|            1 |            2 | false        |
-|            2 |            4 | true         |
-|            3 |            6 | false        |
-+--------------+--------------+--------------+
-
-- If set to `n` (positive), group or column headers are repeated every `n` rows, as
-are footers, but titles and subtitles are not repeated.
-
-[source,crystal]
-----
-header_frequency: 2,
+table = Tablo::Table.new([1, 2, 3],
+        header_frequency: nil,
 ----
 
-[literal]
+Output:
+
+ +--------------+--------------+--------------+--------------+
+ |            1 |            2 | A            |     false    |
+ |            2 |            4 | BB           |     true     |
+ |            3 |            6 | CCC          |     false    |
+ +--------------+--------------+--------------+--------------+
+
+- If set to `n` (positive), group or column headers are repeated every `n`
+rows, as are footers, but titles and subtitles are not repeated.
+
+[%linenums,crystal,start=3]
 ----
-+--------------------------------------------+
-|              Numbers and text              |
-+--------------------------------------------+
+table = Tablo::Table.new([1, 2, 3],
+        header_frequency: 2,
+----
+
+output:
+
+----
++-----------------------------------------------------------+
+|                    Data types alignment                   |
++-----------------------------------------------------------+
  
-                  No booleans                 
-+-----------------------------+--------------+
-|           Numbers           | Text         |
-+--------------+--------------+--------------+
-|       itself |       Double | String       |
-+--------------+--------------+--------------+
-|            1 |            2 | false        |
-|            2 |            4 | true         |
-+--------------+--------------+--------------+
-                  End of page                 
-+-----------------------------+--------------+
-|           Numbers           | Text         |
-+--------------+--------------+--------------+
-|       itself |       Double | String       |
-+--------------+--------------+--------------+
-|            3 |            6 | false        |
-|              |              |              |
-+--------------+--------------+--------------+
-                  End of page    
+            Only Booleans are centered by default            
++-----------------------------+-----------------------------+
+|           Numbers           |       Other data types      |
++--------------+--------------+--------------+--------------+
+|       itself |       Double | String       |    Boolean   |
++--------------+--------------+--------------+--------------+
+|            1 |            2 | A            |     false    |
+|            2 |            4 | BB           |     true     |
++--------------+--------------+--------------+--------------+
+                         End of page                         
++-----------------------------+-----------------------------+
+|           Numbers           |       Other data types      |
++--------------+--------------+--------------+--------------+
+|       itself |       Double | String       |    Boolean   |
++--------------+--------------+--------------+--------------+
+|            3 |            6 | CCC          |     false    |
+|              |              |              |              |
++--------------+--------------+--------------+--------------+
+                         End of page 
 ----
 
 However, if the title `repeated` parameter is set to `true`, we obtain title and
 subtitle repetition.
 
-[source,crystal]
+[%linenums,crystal,start=3]
 ----
-header_frequency: 2,
-title: Tablo::Title.new("Numbers and text", frame: Tablo::Frame.new(0, 2),
-  repeated: true),
+table = Tablo::Table.new([1, 2, 3],
+        header_frequency: 2,
+        title: Tablo::Title.new("Data types alignment", frame: Tablo::Frame.new(0, 2),
+            repeated: true),
 ----
 
-[literal]
+output:
+
 ----
-+--------------------------------------------+
-|              Numbers and text              |
-+--------------------------------------------+
++-----------------------------------------------------------+
+|                    Data types alignment                   |
++-----------------------------------------------------------+
  
-                  No booleans                 
-+-----------------------------+--------------+
-|           Numbers           | Text         |
-+--------------+--------------+--------------+
-|       itself |       Double | String       |
-+--------------+--------------+--------------+
-|            1 |            2 | false        |
-|            2 |            4 | true         |
-+--------------+--------------+--------------+
-                  End of page                 
-+--------------------------------------------+
-|              Numbers and text              |
-+--------------------------------------------+
+            Only Booleans are centered by default            
++-----------------------------+-----------------------------+
+|           Numbers           |       Other data types      |
++--------------+--------------+--------------+--------------+
+|       itself |       Double | String       |    Boolean   |
++--------------+--------------+--------------+--------------+
+|            1 |            2 | A            |     false    |
+|            2 |            4 | BB           |     true     |
++--------------+--------------+--------------+--------------+
+                         End of page                         
++-----------------------------------------------------------+
+|                    Data types alignment                   |
++-----------------------------------------------------------+
  
-                  No booleans                 
-+-----------------------------+--------------+
-|           Numbers           | Text         |
-+--------------+--------------+--------------+
-|       itself |       Double | String       |
-+--------------+--------------+--------------+
-|            3 |            6 | false        |
-|              |              |              |
-+--------------+--------------+--------------+
-                  End of page                 
+            Only Booleans are centered by default            
++-----------------------------+-----------------------------+
+|           Numbers           |       Other data types      |
++--------------+--------------+--------------+--------------+
+|       itself |       Double | String       |    Boolean   |
++--------------+--------------+--------------+--------------+
+|            3 |            6 | CCC          |     false    |
+|              |              |              |              |
++--------------+--------------+--------------+--------------+
+                         End of page 
 ----
 
 === Extracting, Formatting and Styling
-    
+
 At the heart of Tablo's operation lies the Cell, a data structure containing
-all the elements required for display. 
+all the elements required for display.
 
 A cell, whether fed by data extracted from the source or directly from the
 code, can span several lines. Even if it initially occupies a single line,
@@ -567,77 +586,80 @@ lines.
 
 You can limit the number of lines displayed by using the `header_wrap` or
 `body_wrap` parameters when initializing the table (These 2 parameters are
-global to the table, and cannot be set on individual columns). If the cell
-content cannot be displayed due to this restriction, a special character
+global to the table, and cannot be set on individual columns). If the whole
+cell content cannot be displayed due to this restriction, a special character
 (tilde by default) is inserted in the right-hand padding area of the last line
 of the cell (unless right padding is set to 0 for the column).
 
-Note here the use of the `row_divider_frequency` parameter to separate body rows
+Note here the use of the `row_divider_frequency` parameter to separate body
+rows
 
-[source,crystal]
+[%linenums,crystal]
 ----
 require "tablo"
 
 table = Tablo::Table.new(["abc", "def\nghi\njkl\nmno\npqr", "xyz"],
+  border: Tablo::Border.new("+++++++++|||---."),
   header_wrap: 2,
   body_wrap: 3,
-  row_divider_frequency: 1
-) do |t|
+  row_divider_frequency: 1) do |t|
   t.add_column("A\nfour\nlines\ncell", &.itself)
 end
+
 puts table
 ----
 
-[literal]
-----
-+--------------+
-| A            |
-| four        ~|
-+--------------+
-| abc          |
-+--------------+
-| def          |
-| ghi          |
-| jkl         ~|
-+--------------+
-| xyz          |
-+--------------+
-----
+output:
+
+ +--------------+
+ | A            |
+ | four        ~|
+ +--------------+
+ | abc          |
+ +..............+
+ | def          |
+ | ghi          |
+ | jkl         ~|
+ +..............+
+ | xyz          |
+ +--------------+
 
 In addition, to have greater control over the line break, we can use the
-`wrap_mode` parameter to choose between `Rune` (~`Char`) line break and `Word`
-line break when cutting a line.
+`wrap_mode` parameter to choose between `Rune` (Roughly equivalent to
+a character) and `Word` when cutting a line.
 
 To use Tablo with non-Romanic languages, it is mandatory to use the
 `naqviz/uni_char_width` shard so that the width of each grapheme is correctly
 managed, without impacting alignment.
 
-
 To do this, you need to:
 
-1. Add the dependency to your shard.yml:
-[literal]
- dependencies:
-   tablo:
-     gitlab: hutou/tablo
-   uniwidth:
-     github: naqvis/uni_char_width
-2. Run `shards install`
-3. And insert the lines
+. Add the dependencies to your shard.yml:
++
+[source,yaml]
+----
+dependencies:
+    tablo:
+        gitlab: hutou/tablo
+    uniwidth:
+        github: naqvis/uni_char_width
+----
+
+. Run `shards install`
+. And insert the lines
 
 [source,crystal]
-----
 require "tablo"
 require "uniwidth"
-----
-at the beginnning of your app.
 
-  
+at the beginning of your app.
+
+
 ==== Extracting
 
-The Cell `value` attribute contains the raw data.
+The cell `value` attribute contains the raw data.
 
-If directly given as argument to Headings or Group, the Cell is a `TextCell`
+If directly given as argument to Headings or Group, the cell is a `TextCell`
 as it is not related to source data.
 
 If extracted from the source (body rows), the cell is of type `DataCell`, and
@@ -646,77 +668,76 @@ type of body `value` for alignment).
 
 The `cell_data` attribute, specific to the `DataCell` type, provides access to
 the cell's coordinates (`row_index` and `column_index`), as well as the
-`body_value`.  This information is used to activate conditional formatting
-and styling.
+`body_value`.  This information is used to activate conditional formatting and
+styling.
 
 [source,crystal]
-----
 struct CellData
-  getter body_value, row_index, column_index
-
-  def initialize(@body_value : CellType, @row_index : Int32, @column_index : Int32)
-  end
+getter body_value, row_index, column_index
+    def initialize(@body_value : CellType, @row_index : Int32, @column_index : Int32)
+    end
 end
-----
-
 
 The type of `value` is `Tablo::CellType`, which is simply defined as an empty
 module restriction type:
 
 [source,crystal]
-----
 module Tablo::CellType
 end
-----
 
 This module is already included in all Crystal main scalar types. To
 use a (non or less used) scalar type or a user defined class or struct, it is
-mandatory to include it by reopening the class or struct. 
+mandatory to include it by reopening the class or struct.
 
-For example, to allow a Cell value to contain an array, we could do :
+For example, to allow a cell value to contain an array, we could do :
 
 [source,crystal]
-----
 class Array
-  include Tablo::CellType
+    include Tablo::CellType
 end
+
+For example: 
+
+[%linenums,crystal]
+----
+require "tablo"
 
 table = Tablo::Table.new([[1, 2], [3, 4]]) do |t|
   t.add_column("itself") { |n| n }
 end
+
 puts table
 ----
 
-[literal]
-----
-+--------------+
-| itself       |
-+--------------+
-| [1, 2]       |
-| [3, 4]       |
-+--------------+
-----
+output:
+
+ +--------------+
+ | itself       |
+ +--------------+
+ | [1, 2]       |
+ | [3, 4]       |
+ +--------------+
 
 ==== Formatting
 
-Formatting consists in applying a transformation to the raw data (the
-`value`) to obtain a character string ready to be displayed. The simplest
-transformation (which is also the one applied by default) is simply a call to the
-`to_s` method.
+Formatting consists in applying a transformation to the raw data (the `value`)
+to obtain a character string ready to be displayed. The simplest
+transformation (which is also the one applied by default) is simply a call to
+the `to_s` method.
 
-Using a Proc `formatter` allows you to customize formatting in a variety of
+Using a proc `formatter` allows you to customize formatting in a variety of
 ways, from using `sprintf` formatting strings for numeric values to various
-`String` methods for text  and specific `Tablo::Util` methods for both.
+`String` methods for text and specific `Tablo::Util` methods for both.
 
-A formatter Proc can take four forms : the first two apply equally to TextCell
+A formatter proc can take four forms : the first two apply equally to TextCell
 and DataCell and are applied unconditionally on `value`.
 
-The first form expects one parameter (`value`) and the second two `value` and
+The first form expects one parameter (`value`) and the second two: `value` and
 `width` (column width).
- 
-Here is an example of the first form: 
 
-[source,crystal]
+Here is an example of the first form:
+
+[%linenums,crystal]
 ----
 require "tablo"
 
@@ -725,31 +746,32 @@ table = Tablo::Table.new([1, 2, 3]) do |t|
   t.add_column(2, header: "Double") { |n| n * 2 }
   t.add_column(3, header: "Float",
     header_formatter: ->(value : Tablo::CellType) { value.as(String).upcase },
-    body_formatter: ->(value : Tablo::CellType) {"%.3f" % value.as(Float)}) { |n| n ** 0.5 } 
+    body_formatter: ->(value : Tablo::CellType) {
+      "%.3f" % value.as(Float)
+    }) { |n| n ** 0.5 }
 end
+
 puts table
 ----
 
+output:
 
-[literal]
-----
-+--------------+--------------+--------------+
-|       itself |       Double |        FLOAT |   <1>
-+--------------+--------------+--------------+
-|            1 |            2 |        1.000 |
-|            2 |            4 |        1.414 |
-|            3 |            6 |        1.732 |
-+--------------+--------------+--------------+
-----
+ +--------------+--------------+--------------+
+ |       itself |       Double |        FLOAT |   <1>
+ +--------------+--------------+--------------+
+ |            1 |            2 |        1.000 |
+ |            2 |            4 |        1.414 |
+ |            3 |            6 |        1.732 |
+ +--------------+--------------+--------------+
 
 <1> Note that the FLOAT column is aligned to the right, as its alignment is
 governed by the type of `value`, which is a float.
 
 
-If the formatting were done directly at the data extraction level, `value` would
-be of type `String` and column would be aligned to the left. 
+If the formatting were done directly at the data extraction level, `value`
+would be of type `String` and column would be aligned to the left.
 
-[source,crystal]
+[%linenums,crystal]
 ----
 require "tablo"
 
@@ -761,24 +783,24 @@ table = Tablo::Table.new([1, 2, 3]) do |t|
     "%.3f" % (n ** 0.5)
   }
 end
+
 puts table
 ----
 
-[literal]
-----
-+--------------+--------------+--------------+
-|       itself |       Double | FLOAT        |
-+--------------+--------------+--------------+
-|            1 |            2 | 1.000        |
-|            2 |            4 | 1.414        |
-|            3 |            6 | 1.732        |
-+--------------+--------------+--------------+
-----
+output:
+
+ +--------------+--------------+--------------+
+ |       itself |       Double | FLOAT        |
+ +--------------+--------------+--------------+
+ |            1 |            2 | 1.000        |
+ |            2 |            4 | 1.414        |
+ |            3 |            6 | 1.732        |
+ +--------------+--------------+--------------+
 
 To illustrate the 2nd form, we will use the `Tablo::Util.stretch` method,
 which can be useful on groups or headings.
 
-[source,crystal]
+[%linenums,crystal]
 ----
 require "tablo"
 
@@ -787,25 +809,27 @@ table = Tablo::Table.new([1, 2, 3]) do |t|
   t.add_column(2, header: "Double") { |n| n * 2 }
   t.add_group("Numbers",
     formatter: ->(value : Tablo::CellType, width : Int32) {
-      Tablo::Util.stretch(value.as(String), width, ' ') })
-  t.add_column(:column_3, header: "String") { |n| n.even?.to_s }
-  t.add_group("Text")
+      Tablo::Util.stretch(value.as(String), width, ' ')
+    })
+  t.add_column(:column_3, header: "String") { |n| ('@'.ord + n).chr.to_s * n }
+  t.add_column(:column_4, header: "Boolean") { |n| n.even? }
+  t.add_group("Other data types")
 end
+
 puts table
 ----
 
-[Literal]
-----
-+-----------------------------+--------------+
-|  N   u   m   b   e   r   s  |     Text     |
-+--------------+--------------+--------------+
-|       itself |       Double | String       |
-+--------------+--------------+--------------+
-|            1 |            2 | false        |
-|            2 |            4 | true         |
-|            3 |            6 | false        |
-+--------------+--------------+--------------+
-----
+output:
+
+ +-----------------------------+-----------------------------+
+ |  N   u   m   b   e   r   s  |       Other data types      |
+ +--------------+--------------+--------------+--------------+
+ |       itself |       Double | String       |    Boolean   |
+ +--------------+--------------+--------------+--------------+
+ |            1 |            2 | A            |     false    |
+ |            2 |            4 | BB           |     true     |
+ |            3 |            6 | CCC          |     false    |
+ +--------------+--------------+--------------+--------------+
 
 Form 3 and form 4 apply only on DataCell cell types, as they use the
 `cell_data` parameter to conditionnally format the `value`.
@@ -813,11 +837,11 @@ Form 3 and form 4 apply only on DataCell cell types, as they use the
 Here is an exemple of form 3 with another method from `Tablo::Util`, which use
 the `column_index` as formatting condition.
 
-[source,crystal]
+[%linenums,crystal]
 ----
 require "tablo"
 
-table = Tablo::Table.new([0.0, 1.470001, 2.234, 5.78707],
+table = Tablo::Table.new([-30.00001, -3.14159, 0.0, 1.470001, 5.78707, 10.0],
   body_formatter: ->(value : Tablo::CellType, cell_data : Tablo::CellData) {
     case cell_data.column_index
     when 1 then Tablo::Util.dot_align(value.as(Float), 4, Tablo::Util::DotAlign::Empty)
@@ -828,51 +852,49 @@ table = Tablo::Table.new([0.0, 1.470001, 2.234, 5.78707],
     end
   }) do |t|
   t.add_column("itself", &.itself)
-  t.add_column("dot_align\nEmpty", &.itself)
-  t.add_column("dot_align\nBlank", &.itself)
-  t.add_column("dot_align\nDot", &.itself)
-  t.add_column("dot_align\nDotZero", &.itself)
+  t.add_column("1 - Empty", &.itself)
+  t.add_column("2 - Blank", &.itself)
+  t.add_column("3 - Dot", &.itself)
+  t.add_column("4 - DotZero", &.itself)
 end
+
 puts table
 ----
 
-[literal]
-----
-+--------------+--------------+--------------+--------------+--------------+
-|       itself |    dot_align |    dot_align |    dot_align |    dot_align |
-|              |        Empty |        Blank |          Dot |      DotZero |
-+--------------+--------------+--------------+--------------+--------------+
-|          0.0 |              |       0      |       0.     |       0.0    |
-|     1.470001 |       1.47   |       1.47   |       1.47   |       1.47   |
-|        2.234 |       2.234  |       2.234  |       2.234  |       2.234  |
-|      5.78707 |       5.7871 |       5.7871 |       5.7871 |       5.7871 |
-+--------------+--------------+--------------+--------------+--------------+
-----
+output:
+
+ +--------------+--------------+--------------+--------------+--------------+
+ |       itself |    1 - Empty |    2 - Blank |      3 - Dot |  4 - DotZero |
+ +--------------+--------------+--------------+--------------+--------------+
+ |    -30.00001 |     -30      |     -30      |     -30.     |     -30.0    |
+ |     -3.14159 |      -3.1416 |      -3.1416 |      -3.1416 |      -3.1416 |
+ |          0.0 |              |       0      |       0.     |       0.0    |
+ |     1.470001 |       1.47   |       1.47   |       1.47   |       1.47   |
+ |      5.78707 |       5.7871 |       5.7871 |       5.7871 |       5.7871 |
+ |         10.0 |      10      |      10      |      10.     |      10.0    |
+ +--------------+--------------+--------------+--------------+--------------+
+ 
 Incidentally, this last example displays all the formatting possibilities of
 the `Tablo::Util.dot_align` method.
 
-Compared to the third form, form 4 also allows the use of the width value. +
+Compared to the third form, form 4 also allows the use of the width value.  + 
 Its usefulness seems less obvious, however.
 
 Overview of the 4 different forms of formatter procs:
 
-[cols="1,5"]
+[%autowidth]
 |===
-| Forms of formatter procs | Parameter and types, in order 
+| Forms of formatter procs | Parameter and types, in order
 
 | 1st form | `value` : `Tablo::CellType` +
- used by: `TextCell` or `DataCell` 
-
+used by: `TextCell` or `DataCell`
 | 2nd form | `value` : `Tablo::CellType`, `width` : `Int32` +
- used by: `TextCell` or `DataCell` 
-
+used by: `TextCell` or `DataCell`
 | 3rd form | `value` : `Tablo::CellType`, `cell_data` : `Tablo::CellData` +
- used by: `DataCell` 
-
-| 4th form | `value` : `Tablo::CellType`, `cell_data` : `Tablo::CellData`, 
-`width` : `Int32` +
- used by: `DataCell` 
-
+used by: `DataCell`
+| 4th form | `value` : `Tablo::CellType`, `cell_data` : `Tablo::CellData`,
+`width` : `Int32` + 
+used by: `DataCell`
 |===
 
 
@@ -882,60 +904,64 @@ When it comes to terminal styling, the possibilities are limited, especially
 as they depend on the terminal's capabilities. There are therefore
 2 complementary ways of proceeding:
 
-- play with the mode (underlined, bold, italic...)
-- use color
+* play with the mode (underlined, bold, italic...) 
+* use color
 
 This can be done using ANSI code sequences, or preferably, using the
 `colorize` module of the standard library.
 
 In this section, we'll be using color, altered characters and graphic borders
-with the Fancy border type. Output will therefore be presented as SVG images, so as
-to guarantee perfect rendering, whatever the medium used for display. 
+with the Fancy border type. Output will therefore be presented as SVG images,
+so as to guarantee perfect rendering, whatever the medium used for display.
 
-For styling, there are 5 forms of Procs.
+For styling, there are 5 forms of procs.
 
-The first uses only (formatted) content as a parameter, and therefore does not
+The first uses only the (formatted) content as a parameter, and therefore does not
 allow conditional styling.
 
 Let's look at a simple example, with yellow borders and blue headers.
 
-[source,crystal]
+[%linenums,crystal]
 ----
 require "tablo"
 require "colorize"
 
 table = Tablo::Table.new([1, 2, 3],
-  border_type: Tablo::BorderName::Fancy,
-  border_styler: ->(border_char : String) {border_char.colorize(:yellow).to_s},
-  header_styler: ->(content : String) {content.colorize(:blue).to_s} ) do |t|
+  border: Tablo::Border.new(:fancy, styler: ->(border_char : String) {
+    border_char.colorize(:yellow).to_s
+  }),
+  header_styler: ->(content : String) { content.colorize(:blue).to_s }) do |t|
   t.add_column("itself", &.itself)
   t.add_column(2, header: "Double") { |n| n * 2 }
-  t.add_column(:column_3, header: "String") { |n| n.even?.to_s }
+  t.add_column(:column_3, header: "String") { |n| ('@'.ord + n).chr.to_s * n }
+  t.add_column(:column_4, header: "Boolean") { |n| n.even? }
 end
+
 puts table
 ----
 
-image:styling_first_form.svg[width="460",caption="Styling
+image:styling_first_form.svg[width="560",caption="Styling
 first form:"]
 
 Cool! Let's do now some conditional styling, painting in bold green all values
-greater than 2 in all numeric columns and underlining "true" `String` values in third
-column: this is the third form of styling.
+greater than 2 in all numeric columns and underlining the `true` boolean value
+in fourth column: this is the third form of styling.
 
 Just add, at the table level before `header_styler`, the following lines :
-[source,crystal]
+
+[%linenums,crystal,start=8]
 ----
-  body_styler: ->(value : Tablo::CellType, content : String) {
-    case value
-    when Int32
-      value > 2 ? content.colorize.fore(:green).mode(:bold).to_s : content
-    else
-      value == "true" ? content.colorize.mode(:underline).to_s : content
-    end
-  },
+body_styler: ->(value : Tablo::CellType, content : String) {
+  case value
+  when Int32
+    value > 2 ? content.colorize.fore(:green).mode(:bold).to_s : content
+  else
+    value == true ? content.colorize.mode(:underline).to_s : content
+  end
+},
 ----
 
-image:styling_third_form.svg[width="460",caption="Styling
+image:styling_third_form.svg[width="560",caption="Styling
 third form:"]
 
 Let's end with a final example, with a black-and-white look: how do you
@@ -944,8 +970,7 @@ to make them easier to read?
 
 This would be the 4th form.
 
-
-[source,crystal]
+[%linenums,crystal]
 ----
 require "tablo"
 require "colorize"
@@ -953,50 +978,50 @@ require "colorize"
 table = Tablo::Table.new([1, 2, 3, 4, 5],
   title: Tablo::Title.new("My black and white fancy table", frame: Tablo::Frame.new),
   footer: Tablo::Footer.new("End of data", frame: Tablo::Frame.new),
-  border_type: Tablo::BorderName::Fancy,
-  border_styler: ->(border_char : String) {border_char.colorize(:light_gray).to_s},
-  body_styler: ->(value : Tablo::CellType, cell_data : Tablo::CellData, content : String) {
-    if cell_data.row_index.even? 
-      "\e[3m" + content.colorize(:light_gray).to_s + "\e[0m"  <1>
+  border: Tablo::Border.new(:fancy, ->(border_char : String) {
+    border_char.colorize(:light_gray).to_s
+  }),
+  body_styler: ->(_value : Tablo::CellType, cell_data : Tablo::CellData, content : String) {
+    if cell_data.row_index.even?
+      "\e[3m" + content.colorize(:light_gray).to_s + "\e[0m" <1>
     else
       content.colorize.fore(:dark_gray).mode(:bold).to_s
-    end },
-  header_styler: ->(content : String) {content.colorize.mode(:bold).to_s} ) do |t|
+    end
+  },
+  header_styler: ->(content : String) { content.colorize.mode(:bold).to_s }) do |t|
   t.add_column("itself", &.itself)
   t.add_column(2, header: "Double") { |n| n * 2 }
-  t.add_column(:column_3, header: "String") { |n| n.even?.to_s }
+  t.add_column(:column_3, header: "String") { |n| ('@'.ord + n).chr.to_s * n }
+  t.add_column(:column_4, header: "Boolean") { |n| n.even? }
 end
+
 puts table
 ----
 
 <1> From version 1.10 onwards, Crystal does support italic mode, and the use
 of ANSI sequences is given here simply as an example.
 
-image:styling_fourth_form.svg[width="460",caption="Styling
+image:styling_fourth_form.svg[width="560",caption="Styling
 fourth form:"]
 
 Overview of the 5 different forms of styler procs:
 
-[cols="1,5"]
+[%autowidth]
 |===
-| Forms of styler procs | Parameter and types, in order 
+| Forms of styler procs | Parameter and types, in order
 
 | 1st form | `(formatted) content` : `String` +
- used by: `Border`, `TextCell` or `DataCell`
-
+used by: `Border`, `TextCell` or `DataCell`
 | 2nd form | `(formatted) content` : `String`, `line_index` :  `Int32` +
- used by: `TextCell`
-
+used by: `TextCell`
 | 3rd form | `value` : `Tablo::CellType`, `(formatted) content` : `String` +
- used by: `DataCell`
-
-| 4th form | `value` : `Tablo::CellType`, `cell_data` : `Tablo::CellData`, 
+used by: `DataCell`
+| 4th form | `value` : `Tablo::CellType`, `cell_data` : `Tablo::CellData`,
 `(formatted) content` : `String` +
- used by: `DataCell`
-
-| 5th form | `value` : `Tablo::CellType`, `cell_data` : `Tablo::CellData`, 
+used by: `DataCell`
+| 5th form | `value` : `Tablo::CellType`, `cell_data` : `Tablo::CellData`,
 `(formatted) content` : `String`, `line_index` : `Int32` +
- used by: `DataCell`
+used by: `DataCell`
 |===
 
 
@@ -1004,51 +1029,53 @@ Overview of the 5 different forms of styler procs:
 
 In the previous examples, the notion of column width was used. For a better
 understanding, the diagram below highlights the structure of a column.
-                   
-image:column_layout.svg[width="460"]
+
+image:column_layout.svg[width="560"]
 
 As we saw at the start of this tutorial, by default, all columns have the same
-width, i.e. 12 characters.  
+width, i.e. 12 characters.
 
 Of course, this value can be modified globally when initializing the table, or
 individually when defining columns.  The same applies to left and right
-padding, as well as to the padding character (a space, by default). 
+padding, as well as to the padding character (a space, by default).
 
 The border width is 1 character maximum, but can be 0 (i.e. no border) if the
 letter E is used in the border definition string.
 
 The `pack` method is a welcome aid to table formatting. It accepts
-3 parameters, all optional: 
+3 parameters, all optional:
 
-- `width`: total width required for the formatted table. If no `width` is
-  given and if the value of parameter `Config.terminal_capped_width` is true,
-  the value of `width` is read from the size of the terminal, otherwise its
-  value is `nil` and in that case, only `starting_widths == AutoSized` has an
-  effect.
+* `width`: total width required for the formatted table. If no `width` is
+given and if the value of parameter `Config.terminal_capped_width` is true,
+the value of `width` is read from the size of the terminal, otherwise its
+value is `nil` and in that case, only `starting_widths == AutoSized` has an
+effect.
 
-- `starting_widths` : column widths taken as starting point for resizing, possible 
-  values are :
-  * `Current` : resizing starts from columns current width
-  * `Initial` : current values are reset to their initial values, at column
-    definition time
-  * `AutoSized` : current values are set to their 'best fit' values, ie they are
-    automatically adapted to their largest content
+* `starting_widths` : column widths taken as starting point for resizing,
+ possible values are :
 
-- `except`: column or array of columns excluded from being resized, 
-  identified by their label
-  
+** `Current` : resizing starts from columns current width
+
+** `Initial` : current values are reset to their initial values, at column
+definition time
+
+** `AutoSized` : current values are set to their 'best fit' values, ie they
+are automatically adapted to their largest content
+
+* `except`: column or array of columns excluded from being resized,
+identified by their label
+
 The following examples will illustrate the behaviour of the different
 parameters values, starting from the 'standard' one, with all column widths to
 their default value : 12 characters.
 
-[source,crystal]
+[%linenums,crystal]
 ----
 require "tablo"
 
 data = [
   [1, "Box", "Orange", "Elephant", "Mont St Michel"],
 ]
-
 table = Tablo::Table.new(data) do |t|
   t.add_column("Primes") { |n| n[0].as(Int32) }
   t.add_column(2, header: "Things") { |n| n[1].as(String) }
@@ -1057,55 +1084,46 @@ table = Tablo::Table.new(data) do |t|
   t.add_column("Famous\nSites") { |n| n[4].as(String) }
 end
 
-puts "puts table"
 puts table
 puts "table width = #{table.total_table_width}"
 ----
 
-Table standard output, from default width values, without any packing
+Table standard output, using default width values, without any packing:
 
-[literal]
-----
-puts table
-+--------------+--------------+--------------+--------------+--------------+
-|       Primes | Things       | Fruits       | Animals      | Famous       |
-|              |              |              |              | Sites        |
-+--------------+--------------+--------------+--------------+--------------+
-|            1 | Box          | Orange       | Elephant     | Mont St      |
-|              |              |              |              | Michel       |
-+--------------+--------------+--------------+--------------+--------------+
-table width = 76
-----
+ puts table
+ +--------------+--------------+--------------+--------------+--------------+
+ |       Primes | Things       | Fruits       | Animals      | Famous       |
+ |              |              |              |              | Sites        |
+ +--------------+--------------+--------------+--------------+--------------+
+ |            1 | Box          | Orange       | Elephant     | Mont St      |
+ |              |              |              |              | Michel       |
+ +--------------+--------------+--------------+--------------+--------------+
+ table width = 76
 
 Using default `pack` parameters (ie: none !), we get an optimal packing
 
-[literal]
-----
-puts table.pack
-+--------+--------+--------+----------+----------------+
-| Primes | Things | Fruits | Animals  | Famous         |
-|        |        |        |          | Sites          |
-+--------+--------+--------+----------+----------------+
-|      1 | Box    | Orange | Elephant | Mont St Michel |
-+--------+--------+--------+----------+----------------+
-table width = 56
-----
+ puts table.pack
+ +--------+--------+--------+----------+----------------+
+ | Primes | Things | Fruits | Animals  | Famous         |
+ |        |        |        |          | Sites          |
+ +--------+--------+--------+----------+----------------+
+ |      1 | Box    | Orange | Elephant | Mont St Michel |
+ +--------+--------+--------+----------+----------------+
+ table width = 56
 
 But using `pack` with same table width (56) on initial widths values gives
-a significantly poorer result 
+a significantly poorer result
 
-[literal]
-----
-puts table.pack(56, starting_widths: Tablo::StartingWidths::Initial)
-+----------+----------+----------+----------+----------+
-|   Primes | Things   | Fruits   | Animals  | Famous   |
-|          |          |          |          | Sites    |
-+----------+----------+----------+----------+----------+
-|        1 | Box      | Orange   | Elephant | Mont St  |
-|          |          |          |          | Michel   |
-+----------+----------+----------+----------+----------+
-table width = 56
-----
+ 
+ puts table.pack(56, starting_widths: Tablo::StartingWidths::Initial)
+ +----------+----------+----------+----------+----------+
+ |   Primes | Things   | Fruits   | Animals  | Famous   |
+ |          |          |          |          | Sites    |
+ +----------+----------+----------+----------+----------+
+ |        1 | Box      | Orange   | Elephant | Mont St  |
+ |          |          |          |          | Michel   |
+ +----------+----------+----------+----------+----------+
+ table width = 56
 
 This is due to the way Tablo reduces or increases column size. See the
 description of the algorithm in the API section for `Table.pack`.
@@ -1114,167 +1132,368 @@ Using the `width` parameter, any table width can be obtained, by reducing or
 increasing the width of each column progressively to reach the desired table
 width
 
-[literal]
-----
-puts table.pack(30)
-+-----+-----+-----+-----+----+
-| Pri | Thi | Fru | Ani | Fa |
-| mes | ngs | its | mal | mo |
-|     |     |     | s   | us |
-|     |     |     |     | Si |
-|     |     |     |     | te |
-|     |     |     |     | s  |
-+-----+-----+-----+-----+----+
-|   1 | Box | Ora | Ele | Mo |
-|     |     | nge | pha | nt |
-|     |     |     | nt  | St |
-|     |     |     |     | Mi |
-|     |     |     |     | ch |
-|     |     |     |     | el |
-+-----+-----+-----+-----+----+
-table width = 30
-----
+ puts table.pack(30)
+ +-----+-----+-----+-----+----+
+ | Pri | Thi | Fru | Ani | Fa |
+ | mes | ngs | its | mal | mo |
+ |     |     |     | s   | us |
+ |     |     |     |     | Si |
+ |     |     |     |     | te |
+ |     |     |     |     | s  |
+ +-----+-----+-----+-----+----+
+ |   1 | Box | Ora | Ele | Mo |
+ |     |     | nge | pha | nt |
+ |     |     |     | nt  | St |
+ |     |     |     |     | Mi |
+ |     |     |     |     | ch |
+ |     |     |     |     | el |
+ +-----+-----+-----+-----+----+
+ table width = 30
 
-or 
+or
 
-[literal]
-----
-puts table.pack(90)
-+----------------+-----------------+-----------------+-----------------+-----------------+
-|         Primes | Things          | Fruits          | Animals         | Famous          |
-|                |                 |                 |                 | Sites           |
-+----------------+-----------------+-----------------+-----------------+-----------------+
-|              1 | Box             | Orange          | Elephant        | Mont St Michel  |
-+----------------+-----------------+-----------------+-----------------+-----------------+
-table width = 90
-----
+ puts table.pack(90)
+ +----------------+-----------------+-----------------+-----------------+-----------------+
+ |         Primes | Things          | Fruits          | Animals         | Famous          |
+ |                |                 |                 |                 | Sites           |
+ +----------------+-----------------+-----------------+-----------------+-----------------+
+ |              1 | Box             | Orange          | Elephant        | Mont St Michel  |
+ +----------------+-----------------+-----------------+-----------------+-----------------+
+ table width = 90
+
 
 There is, however, a limit to the reduction: each column must be able to
 accommodate at least one character. Here, we're asking for a table width of
 15, but the minimum size to respect this rule is 21!
 
-[literal]
-----
-puts table.pack(15)
-+---+---+---+---+---+
-| P | T | F | A | F |
-| r | h | r | n | a |
-| i | i | u | i | m |
-| m | n | i | m | o |
-| e | g | t | a | u |
-| s | s | s | l | s |
-|   |   |   | s | S |
-|   |   |   |   | i |
-|   |   |   |   | t |
-|   |   |   |   | e |
-|   |   |   |   | s |
-+---+---+---+---+---+
-| 1 | B | O | E | M |
-|   | o | r | l | o |
-|   | x | a | e | n |
-|   |   | n | p | t |
-|   |   | g | h | S |
-|   |   | e | a | t |
-|   |   |   | n | M |
-|   |   |   | t | i |
-|   |   |   |   | c |
-|   |   |   |   | h |
-|   |   |   |   | e |
-|   |   |   |   | l |
-+---+---+---+---+---+
-table width = 21
-----
 
-If, with the parameter `starting_widths == Startingwidths::AutoSized` by default 
-(set by `Config.starting_widths`), the `pack` method automatically adapts the width of
-columns to their largest content (body or header) before resizing, this
-requires you to go through the entire source dataset, which can be costly in
-terms of performance in some cases.  
+ puts table.pack(15)
+ +---+---+---+---+---+
+ | P | T | F | A | F |
+ | r | h | r | n | a |
+ | i | i | u | i | m |
+ | m | n | i | m | o |
+ | e | g | t | a | u |
+ | s | s | s | l | s |
+ |   |   |   | s | S |
+ |   |   |   |   | i |
+ |   |   |   |   | t |
+ |   |   |   |   | e |
+ |   |   |   |   | s |
+ +---+---+---+---+---+
+ | 1 | B | O | E | M |
+ |   | o | r | l | o |
+ |   | x | a | e | n |
+ |   |   | n | p | t |
+ |   |   | g | h | S |
+ |   |   | e | a | t |
+ |   |   |   | n | M |
+ |   |   |   | t | i |
+ |   |   |   |   | c |
+ |   |   |   |   | h |
+ |   |   |   |   | e |
+ |   |   |   |   | l |
+ +---+---+---+---+---+
+ table width = 21
+
+If, with the parameter `starting_widths == Startingwidths::AutoSized` by
+default (set by `Config.starting_widths`), the `pack` method automatically
+adapts the width of columns to their largest content (body or header) before
+resizing, this requires you to go through the entire source dataset, which can
+be costly in terms of performance in some cases.
 
 This behavior can be avoided, but possibly with a loss of quality, by changing
 the value of `starting_widths` to `Current` or `Initial`. In this case,
 however, a value for `width` must be supplied, either directly or by reading
-the terminal size, otherwise `pack` will become a non-operation.  
+the terminal size, otherwise `pack` will become a non-operation.
 
 Finally, using the `except` parameter, you can temporarily freeze the size of
 one or more columns at their current value, so that they are excluded from
 resizing.
 
-[literal]
-----
-puts table.pack(80,except: [2, :fruits])
-+-------------------+--------+--------+-------------------+--------------------+
-|            Primes | Things | Fruits | Animals           | Famous             |
-|                   |        |        |                   | Sites              |
-+-------------------+--------+--------+-------------------+--------------------+
-|                 1 | Box    | Orange | Elephant          | Mont St Michel     |
-+-------------------+--------+--------+-------------------+--------------------+
-table width = 80
-----
 
-Note that when a column is created using the `add_column` method, the width
-is stored in 2 different attributes: the current value and the initial value
-(never subsequently modified).  
+ table.pack
+ puts table.pack(80,except: [2, :fruits])
+ +-------------------+--------+--------+-------------------+--------------------+
+ |            Primes | Things | Fruits | Animals           | Famous             |
+ |                   |        |        |                   | Sites              |
+ +-------------------+--------+--------+-------------------+--------------------+
+ |                 1 | Box    | Orange | Elephant          | Mont St Michel     |
+ +-------------------+--------+--------+-------------------+--------------------+
+table width = 80
+
+Note that when a column is created using the `add_column` method, the width is
+stored in 2 different attributes: the current value and the initial value
+(never subsequently modified).
 
 The `pack` method simply modifies the current column width value, and the
 `to_s` method then takes care of the layout, and we can save the table in its
 output layout in a string with :
 
 [source,crystal]
-----
 formatted_table = table.to_s
-----
 
-It is therefore equivalent to writing :
+It is therefore equivalent to write :
 
 [source,crystal]
-----
 table.pack
 puts table
-----
-and
+
+or
+
 [source,crystal]
-----
 puts table.pack
-----
 
 To sum up:
 
-[cols="1,2"]
+[autowidth]
 |===
-| Type of call | - Results (with `StartingWidths::AutoSized` as default)
+| Type of call | Results (with `StartingWidths::AutoSized` as default and no columns excluded)
 
-| `table.pack` | - Automatically adapts columns to their largest content +
-- Modifies current values of column width
-
-| `table.pack(40)` | - Automatically adapts columns to their largest content +
-- Modifies current values of column width +
-- Reduces or increases column widths to meet total table size requirements 
-
-| `table.pack(starting_widths: StartingWidths::Current`) | - No-op 
-
-| `table.pack(40, starting_widths: StartingWidths::Current`) | 
-- Reduces or increases column widths to meet total table size requirements 
-
-| `table.pack(starting_widths: StartingWidths::Initial`) | - Only resets current
-column values to their initial values, no packing is done
-
-| `table.pack(40, starting_widths: StartingWidths::Initial`) | - Resets current
-column values to their initial values +  
-- Reduces or increases column widths to meet total table size requirements 
-
+| `table.pack` a|
+* Automatically adapts columns to their largest content 
+* Modifies current values of column width
+| `table.pack(40)` a| 
+* Automatically adapts columns to their largest content +
+* Modifies current values of column width +
+* Reduces or increases column widths to meet total table size requirements
+| `table.pack(starting_widths: StartingWidths::Current`) a| 
+* No-op
+| `table.pack(40, starting_widths: StartingWidths::Current`) a|
+* Reduces or increases column widths to meet total table size requirements
+| `table.pack(starting_widths: StartingWidths::Initial`) a| 
+* Only resets current column values to their initial values, no packing is done
+| `table.pack(40, starting_widths: StartingWidths::Initial`) a| 
+* Resets current column values to their initial values 
+* Reduces or increases column widths to meet total table size requirements
 |===
 
 === Summary
-The `summary` method allows you to perform calculations on the numerical data
-in the table, for example to obtain totals, averages, etc. Calculations are
-performed column by column, separately, so it is not possible to perform
-a calculation on the detailed data of 2 or more columns at the same time.
-However, this limitation does not apply to aggregated values, and it is
-perfectly possible, for example, to add the total of 2 different columns.
 
-=== Transpose
-&&&&&&&&&&&&&&&&&&&& to be continued &&&&&&&&&&&&&&&&&&&&&&
+The Tablo library offers a very basic yet useful summary method.
+This method must be considered as *_experimental_* however, as it obviously needs 
+improvement. So, its usage may change in the future. 
+
+At present, it can be used to perform calculations on individual columns of data,
+and, often at the cost of some code duplication, to perform calculations between columns.
+Clearly not a DRY API! 
+
+Here's an example of how it works now and what it can do for you:
+
+[%linenums,crystal]
+----
+require "tablo"
+
+record Entry, product : String, price : Int32
+invoice = [
+  Entry.new("Laptop", 98000),
+  Entry.new("Printer", 15499),
+  Entry.new("Router", 9900),
+  Entry.new("Accessories", 6450),
+]
+
+tbl = Tablo::Table.new(invoice,
+  omit_last_rule: true,
+  title: Tablo::Title.new("Invoice")) do |t|
+  t.add_column("Product",
+    &.product)
+  t.add_column("Price",
+    body_formatter: ->(value : Tablo::CellType) {
+      "%.2f" % (value.as(Int32) / 100)
+    }, &.price)
+  t.add_column(:tax, header: "Tax (20%)",
+    body_formatter: ->(value : Tablo::CellType) {
+      "%.2f" % (value.as(Int32) / 100)
+    }) { |n| n.price * 20 // 100 }
+end
+
+tbl.summary(
+  {
+    "Product" => {
+      proc: [
+        {1, ->(_ary : Array(Tablo::CellType)) {
+          "Total excl.".as(Tablo::CellType)
+        }},
+        {2, ->(_ary : Array(Tablo::CellType)) {
+          "VAT (Total)".as(Tablo::CellType)
+        }},
+        {3, ->(_ary : Array(Tablo::CellType)) {
+          "Total incl.".as(Tablo::CellType)
+        }},
+      ],
+    },
+    "Price" => {
+      body_formatter: ->(value : Tablo::CellType) {
+        value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
+      },
+      proc: [
+        {1, ->(ary : Array(Tablo::CellType)) {
+          (ary.map &.as(Int32)).sum.as(Tablo::CellType)
+        }},
+        {3, ->(ary : Hash(Tablo::LabelType, Array(Tablo::CellType))) {
+          sum_price = (ary["Price"].map &.as(Int32)).sum
+          sum_tax = (ary[:tax].map &.as(Int32)).sum
+          (sum_price + sum_tax).as(Tablo::CellType)
+        }},
+      ],
+    },
+    :tax => {
+      body_formatter: ->(value : Tablo::CellType) {
+        value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
+      },
+      proc: {2, ->(ary : Array(Tablo::CellType)) {
+        (ary.map &.as(Int32)).sum.as(Tablo::CellType)
+      }},
+    },
+  }, masked_headers: true
+)
+
+puts tbl
+puts tbl.summary
+----
+
+Output:
+
+                     Invoice                   
+ +--------------+--------------+--------------+
+ | Product      |        Price |    Tax (20%) |
+ +--------------+--------------+--------------+
+ | Laptop       |       980.00 |       196.00 |
+ | Printer      |       154.99 |        30.99 |
+ | Router       |        99.00 |        19.80 |
+ | Accessories  |        64.50 |        12.90 |
+ +--------------+--------------+--------------+
+ | Total excl.  |      1298.49 |              |
+ | VAT (Total)  |              |       259.69 |
+ | Total incl.  |      1558.18 |              |
+ +--------------+--------------+--------------+
+
+Let's take a closer look at the source code.  
+
+The first part - the creation of the main table - calls for no particular
+comment (except perhaps the use of a more realistic data source than the
+previous arrays of integers!)
+
+Calling the Summary method, with its 2 parameters, creates a new Table
+instance, and calling the same method without arguments returns this same
+instance, ready to be displayed.
+
+The first parameter (`summary_def`) defines all the calculations to be performed
+on the data, as well as their layout.
+
+The type of `summary_def` is : Hash(LabelType, NamedTuple(...)). The hash key is
+therefore a column identifier (`LabelType` is an alias of `String | Symbol
+| Int32`).
+
+The NamedTuple may have up to 8 entries :
+
+[%autowidth]
+|===
+| Hash key | Type of hash value
+
+| `header` | String
+| `header_alignment` | Justify
+| `header_formatter` | DataCellFormatter
+| `header_styler` | DataCellStyler
+| `body_alignment` | Justify
+| `body_formatter` | DataCellFormatter
+| `body_styler`| DataCellStyler
+| `proc` | SummaryProcs
+|===
+
+The latter - `SummaryProcs`- is a tad complex and can take several forms.
+Basically, it is a tuple of 2 elements : 
+
+* An Int32, which indicates the position (line) of the proc result in the column
+* A proc or an array of procs, which performs the calculation and expects
+ as parameter either an `Array(CellType)` or a `Hash(LabelType,
+ Array(CellType))` 
+
+The second parameter (`options`) ...
+
+Outch!
+
+Looking again at the source code, we see that :
+
+* The :tax column has 2 entries, of type Tuple:
+
+** `body_formatter:` and its associated proc which performs the conversion from
+cents to currency units, and checks that the cell is not nil (this is
+necessary, as of the 3 summary lines, the 1st and 3rd are not fed).
+
+** `proc:` a tuple defined by the number of the summary line to be fed, and the proc
+performing the calculation. The latter takes as parameter a `CellType` array
+(the "Tax (20%)" data column), converts it to an array of integers before
+summing and converting the result to `CellType`. 
+
+////
+A summary table can be created from the data in the main table. It will have
+the same number of columns, and one or more functions can be applied to each
+of these columns, particularly for numerical values: statistical functions
+(sum, average, maximum, etc.) or any other type of calculation.
+
+Let's take a simple example to illustrate the syntax involved.
+[source,crystal]
+----
+require "tablo"
+
+table = Tablo::Table.new([1, 2, 3]) do |t|
+t.add_column("itself", &.itself)
+t.add_column(2, header: "Double") { |n| n * 2 }
+t.add_column(:column_3, header: "String") { |n| n.even?.to_s }
+end
+puts table
+
+table.summary(
+        {
+        2 => {
+header: "Sum",
+proc:   {1, ->(ary : Tablo::SourcesCurrentColumn) {
+(ary.select(&.is_a?(Number))
+ .map &.as(Number)).sum.as(Tablo::CellType)
+}},
+},
+})
+puts table.summary
+----
+
+[literal]
+----
++--------------+--------------+--------------+
+|       itself |       Double | String       |
++--------------+--------------+--------------+
+|            1 |            2 | false        |
+|            2 |            4 | true         |
+|            3 |            6 | false        |
++--------------+--------------+--------------+
++--------------+--------------+--------------+
+|              |          Sum |              |
++--------------+--------------+--------------+
+|              |         12.0 |              |
++--------------+--------------+--------------+
+----
+
+The first parameter expected by the summary method is a hash, and its type is
+`Hash(LabelType, NamedTuple(...))`. The named tuple allowed keys are :
+
+- `header`
+- `header_alignment`
+- `header_formatter`
+- `header_styler`
+- `body_alignment`
+- `body_formatter`
+- `body_styler`
+- `proc`
+
+typeof(summary_def) # => Hash(Int32, NamedTuple(header: String, proc: Tuple(Int32, Proc(Array(Tablo::CellType), Tablo::CellType))))
+
+////
+
+////
+    === Transpose
+    &&&&&&&&&&&&&&&&&&&& to be continued &&&&&&&&&&&&&&&&&&&&&&
+
+////
 
 == Complete API
 
@@ -1285,66 +1504,73 @@ named parameters if required.
 Most of the parameters defined when initializing a table are taken over by
 default, if appropriate, when creating columns.
 
-Tablo features a column-based rather than row-based API, which means
-that header and body lines are automatically synchronized. 
+Tablo features a column-based rather than row-based API, which means that
+header and body lines are automatically synchronized.
 
 At the heart of Tablo's operation lies the cell, a data structure containing
 all the elements required for display. There are 2 different types of cell:
 
-- Those containing source or source-dependent data, the DataCell type (for Header and Body rows)
-- Text cells, the TextCell type (for Group and Headings)
+* Those containing source or source-dependent data, the DataCell type (for Header and Body rows)
+
+* Text cells, the TextCell type (for Group and Headings)
 
 They differ mainly in 2 exclusive attribute types:
 
-- RowType for TextCell cells
+* RowType for TextCell cells
 
-- CellData for DataCell cells
+* CellData for DataCell cells
 
 Both have the `value` attribute, which contains the raw data extracted from
 source. Its type is `Tablo::CellType`
 
-=== class Table 
+=== class Table
 
 The Table class is Tablo's main class.  Its initialization defines the main
 parameters governing the overall operation of the Tablo library, in particular
-the data source and column definitions. 
+the data source and column definitions.
 
 ==== Method `initialize`
 
 Returns an instance of `Table(T)`
 
-[cols="1,2"]
+[%autowidth]
 |===
 | Used constants | Default value
 
 | `DEFAULT_HEADING_ALIGNMENT` |  `Justify::Center`
-
-|  `DEFAULT_FORMATTER` |  `-&gt;(c : CellType) { c.to_s }` 
-
-|  `DEFAULT_STYLER` | `-&gt;(s : String) { s }`   
-
+| `DEFAULT_FORMATTER` |  `-&gt;(c : CellType) { c.to_s }`
+| `DEFAULT_STYLER` | `-&gt;(s : String) { s }`
 | `DEFAULT_DATA_DEPENDENT_STYLER` | `-&gt;(_c : CellType, s : String) { s }`
 |===
 
-[cols="1,2,3"]
+[%autowidth]
+//[cols="1,2,3"]
 |===
 | Parameters | Type and default value | Comments
 
-3+^| _Mandatory positional parameter_ 
+3+^| _Mandatory positional parameter_
 
 |`sources` |  `Enumerable(T)` | Can be any Enumerable data type +
-_(`Range` is currently (Crystal 1.9.2) not correctly supported in this context: use `Range.to_a` instead)_
-3+^| _Optional named parameters, with default values_ 
+_(`Range` is currently (Crystal 1.9.2) not correctly supported in this 
+context: use `Range.to_a` instead)_
+
+3+^| _Optional named parameters, with default values_
+
 | `title`, `subtitle`, `footer` | `Title`, `SubTitle` and `Footer`,
-respectively initialized by `Title.new`, `SubTitle.new` and `Footer.new`
-| Initializing these classes without any argument set their value to `nil`, 
-so there is nothing to display 
+  respectively initialized by `Title.new`, `SubTitle.new` and `Footer.new`
+| Initializing these classes without any argument set their value to `nil`,
+  so there is nothing to display
 
-| `group_alignment` | `Justify` = `DEFAULT_HEADING_ALIGNMENT` |   
+| `border` | `Border` = `Config.border` | Default `Config.border` sets border
+type to `BorderName::Ascii`. Other `BorderName` are `ReducedAscii`, `Modern`,
+`ReducedModern`, `Markdown`, `Fancy` and `Blank`.  Border type may also be
+initialized directly by a string of 16 characters
 
-| `group_formatter` | `TextCellFormatter` = `DEFAULT_FORMATTER` |   
+| `group_alignment` | `Justify` = `DEFAULT_HEADING_ALIGNMENT` |
 
-| `group_styler` | `TextCellStyler` = `DEFAULT_STYLER` |    
+| `group_formatter` | `TextCellFormatter` = `DEFAULT_FORMATTER` |
+
+| `group_styler` | `TextCellStyler` = `DEFAULT_STYLER` |
 
 | `header_alignment` | `Justify? = nil` | With `nil` as default, alignment
 depends on the type of the related body cell value
@@ -1354,51 +1580,43 @@ depends on the type of the related body cell value
 | `header_styler` | `DataCellStyler` = `DEFAULT_DATA_DEPENDENT_STYLER` |
 
 | `body_alignment` | `Justify?` = `nil` |  With `nil` as default, alignment
-depends on the type of the body cell value 
+depends on the type of the body cell value
 
 | `body_formatter` | `DataCellFormatter` = `DEFAULT_FORMATTER` |
 
 | `body_styler` | `DataCellStyler` = `DEFAULT_DATA_DEPENDENT_STYLER` |
 
-| `border_type` |  `BorderType` = `BorderName::Ascii` a| 
-* Other `BorderName` are `ReducedAscii`, `Modern`, `ReducedModern`, `Markdown`, 
-  `Fancy` and `Blank`         
-* `border_type` may also be initialized directly by a string of 16 characters
-
-| `border_styler` | `BorderStyler` = `DEFAULT_STYLER` |
-
 | `left_padding` | `Int32` = `1` |  Permitted range of values
-governed by `Config.padding_width_range` in the `check_padding`  method
+    governed by `Config.padding_width_range` in the `check_padding`  method
 (raises `InvalidValue` runtime exception if value not in range)
 
-| `right_padding` | `Int32` = `1` |  Permitted range of values
-governed by `Config.padding_width_range` in the `check_padding`  method
-(raises `InvalidValue` runtime exception if value not in range)
+| `right_padding` | `Int32` = `1` |  Permitted range of values governed by
+`Config.padding_width_range` in the `check_padding`  method (raises
+`InvalidValue` runtime exception if value not in range)
 
 | `padding_character` | `String` = `" "` |  The `check_padding_character`
-auxiliairy method ensures the `padding_character` string size is only one, raises an
-`InvalidValue` runtime exception otherwise     
+auxiliairy method ensures the `padding_character` string size is only one,
+raises an `InvalidValue` runtime exception otherwise
 
 | `truncation_indicator`| `String` = `"~"` |  The `check_truncation_indicator`
-auxiliairy method ensures the `truncation_indicator` string size is only one, raises an
-`InvalidValue` runtime exception otherwise
+auxiliairy method ensures the `truncation_indicator` string size is only one,
+raises an `InvalidValue` runtime exception otherwise
 
 | `width` | `Int32` = `12` | Global width value for columns.
-
 Permitted range of values governed by `Config.column_width_range` in the
 `check_width` auxiliary  method (raises `InvalidValue` runtime exception
-unless value in range)        
+unless value in range)
 
 | `header_frequency` | `Int32?` = `0` a|
 * If set to `0`, rows of data other than body are displayed
 only once, at the beginning for titles and headers, at the end for the footer.
-* If set to `n` (positive), group or column headers are repeated every `n` rows, as
-are footers, but titles and subtitles are not repeated (unless
-`title_repeated` parameter below is set to `true`)
-* If set to `nil`, only body rows are displayed. 
+* If set to `n` (positive), group or column headers are repeated every `n`
+rows, as are footers, but titles and subtitles are not repeated (unless
+title `repeated` attribute is set to `true`)
+* If set to `nil`, only body rows are displayed.
 
-Permitted range of values governed by `Config.header_frequency_range` in
-the `check_header_frequency` auxiliary method (raises `InvalidValue` runtime
+Permitted range of values governed by `Config.header_frequency_range` in the
+`check_header_frequency` auxiliary method (raises `InvalidValue` runtime
 exception unless value in range or `nil`)
 
 | `row_divider_frequency` | `Int32?` = `nil` |  Permitted range of values
@@ -1406,127 +1624,135 @@ governed by `Config.row_divider_frequency_range` in the
 `check_row_divider_frequency` auxiliary  method (raises `InvalidValue` runtime
 exception unless value in range or `nil`)
 
-| `wrap_mode` |  `WrapMode` = `WrapMode::Word` a|
-`WrapMode` enum defines 2 modes :
+| `wrap_mode` |  `WrapMode` = `WrapMode::Word` a| `WrapMode` enum defines
+2 modes :
 
 * `Rune` : long lines can be cut between characters (graphemes)
 * `Word` : long lines can be cut between words only
 
-| `header_wrap` | `Int32?` = `nil` |  Permitted range of values
-governed by `Config.header_wrap_range` in the
-`check_header_wrap` auxiliary  method (raises `InvalidValue` runtime
-exception unless value in range or `nil`)        
+| `header_wrap` | `Int32?` = `nil` |  Permitted range of values governed by
+`Config.header_wrap_range` in the `check_header_wrap` auxiliary  method
+(raises `InvalidValue` runtime exception unless value in range or `nil`)
 
-| `body_wrap` | `Int32?` = `nil` |  Permitted range of values
-governed by `Config.body_wrap_range` in the
-`check_body_wrap` auxiliary  method (raises `InvalidValue` runtime
-exception unless value in range or `nil`)
+| `body_wrap` | `Int32?` = `nil` |  Permitted range of values governed by
+`Config.body_wrap_range` in the `check_body_wrap` auxiliary  method (raises
+`InvalidValue` runtime exception unless value in range or `nil`)
 
-| `masked_headers`| `Bool` = `false` |  If `true`, groups and column headers are
-not displayed (this does not prevent display of title, subtitle and footer)
+| `masked_headers`| `Bool` = `false` |  If `true`, groups and column headers
+are not displayed (this does not prevent display of title, subtitle and
+footer)
 
-| `omit_group_header_rule` | `Bool` = `false` | If `true`, the rule between Group
-and Header rows is not displayed. This is useful for headers custom rendering.
+| `omit_group_header_rule` | `Bool` = `false` | If `true`, the rule between
+Group and Header rows is not displayed. This is useful for headers custom
+rendering.
 
-| `omit_last_rule` | `Bool` = `false` | If `true`, the closing rule of table 
-is not displayed. This is useful for custom rendering (and notably for Summary 
-table linking)
+| `omit_last_rule` | `Bool` = `false` | If `true`, the closing rule of table
+is not displayed. This is useful for custom rendering (and notably for Detail
+and Summary tables joining)
 |===
+
 
 ==== Method `add_column`
 
 Returns an instance of `Column(T)`
 
-[cols="1,2,3"]
+[%autowidth]
 |===
 | Parameters | Type and default value | Comments
 
-3+^| _Mandatory positional parameter_ 
+3+^| _Mandatory positional parameter_
 
-|`label` |  `LabelType` | The label identifies the column (`LabelType` is an alias of `Int32 \| Symbol \| String`)
+|`label` |  `LabelType` | The label identifies the column (`LabelType` is an
+alias of `Int32 \| Symbol \| String`)
 
-3+^| _Optional named parameters, with default values_ 
+3+^| _Optional named parameters, with default values_
 
 | `header` | `String` = `label.to_s` | Can be an empty string
 
 | `header_alignment` | `Justify?` = `header_alignment` | By default, inherits
 from table `header_alignment` initializer
 
-| `header_formatter` | `DataCellFormatter` = `header_formatter` |   By default, inherits
-from table `header_formatter` initializer                                   
+| `header_formatter` | `DataCellFormatter` = `header_formatter` |   By
+default, inherits from table `header_formatter` initializer
 
-| `header_styler` | `DataCellStyler` = `header_styler` |   By default, inherits
-from table `header_styler` initializer                                                
+| `header_styler` | `DataCellStyler` = `header_styler` |   By default,
+inherits from table `header_styler` initializer
 
-| `body_alignment` | `Justify?` = `body_alignment` | By default, inherits
-from table  `body_alignment` initializer
+| `body_alignment` | `Justify?` = `body_alignment` | By default, inherits from
+table  `body_alignment` initializer
 
-| `body_formatter` | `DataCellFormatter` = `body_formatter` |   By default, inherits
-from table `body_formatter` initializer                                    
+| `body_formatter` | `DataCellFormatter` = `body_formatter` |   By default,
+inherits from table `body_formatter` initializer
 
 | `body_styler` | `DataCellStyler` = `body_styler` |   By default, inherits
-from table `body_styler` initializer                                               
+from table `body_styler` initializer
 
-| `left_padding` | `Int32` = `left_padding` |   By default, inherits
-from table `left_padding` initializer                  
+| `left_padding` | `Int32` = `left_padding` |   By default, inherits from
+table `left_padding` initializer
 
-| `right_padding` | `Int32` = `right_padding` | By default, inherits
-from table `right_padding` initializer            
+| `right_padding` | `Int32` = `right_padding` | By default, inherits from
+table `right_padding` initializer
 
-| `padding_character` | `String` = `padding_character` |   By default, inherits
-from table `padding_character` initializer          
+| `padding_character` | `String` = `padding_character` |   By default,
+inherits from table `padding_character` initializer
 
-| `width` | `Int32`  = `width` |  By default, inherits
-from table `width` initializer                  
+| `width` | `Int32`  = `width` |  By default, inherits from table `width`
+initializer
 
-| `truncation_indicator` | `String` = `truncation_indicator` | By default, inherits
-from table `truncation_indicator` initializer                  
+| `truncation_indicator` | `String` = `truncation_indicator` | By default,
+inherits from table `truncation_indicator` initializer
 
-| `wrap_mode` | `WrapMode` = `wrap_mode` |  By default, inherits
-from table `wrap_mode` initializer                  
+| `wrap_mode` | `WrapMode` = `wrap_mode` |  By default, inherits from table
+`wrap_mode` initializer
 
 | `&extractor` | `(T \| Int32) -&gt; CellType` |  Captured block for
 extracting data from source
 |===
 
-==== Method `add_group` 
+==== Method `add_group`
 
 Returns an instance of `TextCell`
 
-[cols="1,2,3"]
+[%autowidth]
 |===
 | Parameters | Type and default value | Comments
 
-3+^| _Mandatory positional parameter_ 
+3+^| _Mandatory positional parameter_
 
 |`label` |  `LabelType` | The label identifies the group.
 
-3+^| _Optional named parameters, with default values_ 
+3+^| _Optional named parameters, with default values_
 
 | `header` | `String` = `label.to_s` | Can be an empty string
-| `alignment` | `Justify` = `group_alignment` |  By default, inherits
-from table `group_alignment` initializer                 
+
+| `alignment` | `Justify` = `group_alignment` |  By default, inherits from
+table `group_alignment` initializer
+
 | `formatter` | `TextCellFormatter` = `group_formatter` | By default, inherits
-from table `group_formatter` initializer                            
-| `styler` | `TextCellFormatter` = `group_styler` |  By default, inherits
-from table `group_styler` initializer                   
+from table `group_formatter` initializer
+
+| `styler` | `TextCellFormatter` = `group_styler` |  By default, inherits from
+table `group_styler` initializer
+
 | `padding_character` | `String` = `padding_character` |  By default, inherits
-from table `padding_character` initializer                   
-| `truncation_indicator`  | `String`  = `truncation_indicator` | By default, inherits
-from table `truncation_indicator` initializer                   
-| `wrap_mode` | `WrapMode` = `wrap_mode` | By default, inherits
-from table `wrap_mode` initializer                     
+from table `padding_character` initializer
+
+| `truncation_indicator`  | `String`  = `truncation_indicator` | By default,
+inherits from table `truncation_indicator` initializer
+
+| `wrap_mode` | `WrapMode` = `wrap_mode` | By default, inherits from table
+`wrap_mode` initializer
 |===
 
 ==== Method `reset_sources`
 Replaces existing data source with a new one and returns it +
 _(This could be seen as a hack to do some special form of pagination !)_
 
-[cols="1,2,3"]
+[%autowidth]
 |===
 | Parameters | Type and default value | Comments
 
-3+^| _Mandatory positional parameter_ 
+3+^| _Mandatory positional parameter_
 
 | `src` | `Enumerable(T)` | The new data source must also be an `Enumerable(T)`
 |===
@@ -1535,172 +1761,182 @@ _(This could be seen as a hack to do some special form of pagination !)_
 
 Returns the table as a formatted string
 
-==== Method `each`
+////
+    ==== Method `each`
 
-Returns successive formatted rows, with all corresponding headers and footers, 
-according to the parameters defined.
+    Returns successive formatted rows, with all corresponding headers and footers,
+    according to the parameters defined.
 
-In fact,
-[source,crystal]
-----
-table.each do |r|
-  puts r
-end
-----
-is the same as
+    In fact,
+    [source,crystal]
+    ----
+    table.each do |r|
+    puts r
+    end
+    ----
+    is the same as
 
-[source,crystal]
-----
-puts table
-----
+    [source,crystal]
+    ----
+    puts table
+    ----
 
-==== Method `pack`
+    ==== Method `pack`
 
-Returns `self` (the current Table instance) after modifying its column widths
-
-
-[cols="1,2,3"]
-|===
-| Parameters | Type and default value | Comments
-
-3+^| _All named parameters are optional, with default values_ 
+    Returns `self` (the current Table instance) after modifying its column widths
 
 
-| `width`   |   `Int32?` = `nil` |  The requested total table width.
+    [cols="1,2,3"]
+    |===
+    | Parameters | Type and default value | Comments
 
-If `width` is `nil` and `Config.terminal_capped_width`
-is `true` (and output not redirected), `width` finally takes the value of the terminal size.
+    3+^| _All named parameters are optional, with default values_
 
-| `starting_widths`   |   `StartingWidths = Config.starting_widths` a| `Starting_widths` 
-allows you to specify the starting point for resizing :
+
+    | `width`   |   `Int32?` = `nil` |  The requested total table width.
+
+    If `width` is `nil` and `Config.terminal_capped_width` is `true` (and output
+            not redirected), `width` finally takes the value of the terminal size.
+
+    | `starting_widths`   |   `StartingWidths = Config.starting_widths` a|
+    `Starting_widths` allows you to specify the starting point for resizing :
 
 * either from the current column width value (`StartingWidths::Current`)
- 
+
 * or from its initial value (`StartingWidths::Initial`)
 
 or ignore it and directly perform optimized resizing (`StartingWidths::AutoSized`)
 
-| `except`   |   `Except?` = `nil` | Column identifier or array of column identifiers to be excluded from packing (`Except` is an alias of `LabelType \| Array(LabelType)`) 
-|===
+    | `except`   |   `Except?` = `nil` | Column identifier or array of column
+    identifiers to be excluded from packing (`Except` is an alias of `LabelType \|
+            Array(LabelType)`)
+    |===
 
-===== Description of the packing algorithm
-The resizing algorithm is actually quite simple.
+    ===== Description of the packing algorithm
+    The resizing algorithm is actually quite simple.
 
-if the final value of the  `width` parameter is not `nil`, it first compares
-the table's current width with the requested width, to determine whether this
-is a reduction or an increase in size. Then, depending on the case, either the
-widest column is reduced, or the narrowest increased, in steps of 1, until the
-requested table width is reached.
+    if the final value of the  `width` parameter is not `nil`, it first compares
+    the table's current width with the requested width, to determine whether this
+    is a reduction or an increase in size. Then, depending on the case, either the
+    widest column is reduced, or the narrowest increased, in steps of 1, until the
+    requested table width is reached.
 
-This explains why the final result of resizing depends on the starting column
-widths.
+    This explains why the final result of resizing depends on the starting column
+    widths.
 
-==== Method `summary`
+    ==== Method `summary`
 
-==== Method `horizontal_rule`
+    ==== Method `horizontal_rule`
 
-==== Method `transpose`
+    ==== Method `transpose`
 
-==== Method `total_table_width`
-
-
-=== abstract class Heading : concrete classes Title, SubTitle and Footer
-
-`Title`, `SubTitle` and `Footer` structs are inherited from the `Heading` abstract struct. 
-
-==== abstract struct Heading
-
-===== Method `framed?`
-
-Returns `true` if `Title`, `SubTitle` or `Footer` contents are framed, `false` otherwise.
-
-==== struct Frame
-The `Frame` struct is used to add a frame to `Title`, `SubTitle` or `Footer`.
-
-===== Method `initialize`
-
-Returns an instance of `Frame`
-
-[cols="1,2,3"]
-|===
-| Parameters | Type and default value | Comments
-| `line_breaks_before` |  `Int32` = 0 | The count of line breaks to emit before displaying framed contents 
-| `line_breaks_after` |  `Int32` = 0 | The count of line breaks to emit after displaying framed contents 
-|===
-
-The effective count of line breaks is the maximum value of `line_breaks_before` and `line_breaks_after` for adjacent rows.
-
-==== struct Title
-
-Attributes `value`, `frame`, `alignment` and `repeated` are declared as properties, and can be modified
-after initialization
-
-===== Method `initialize`
-
-Returns an instance of `Title`
-
-[cols="1,2,3"]
-|===
-| Parameters | Type and default value | Comments
-| `value` |  `CellType?` = `nil` | The title contents (may not be an empty string). 
-No display if `nil`
-| `frame` | `Frame?` = `nil` | Defines a frame around title contents. If `nil`, no frame.
-| `repeated` | `Bool` = `false` | If `true`, force title (and subtitle) to
-be repeated at header frequency 
-| `alignment` | `Justify` =  `DEFAULT_HEADING_ALIGNMENT` |
-| `formatter` | `TextCellFormatter` = `DEFAULT_FORMATTER` |
-| `styler` | `TextCellStyler` = `DEFAULT_STYLER` |
-|===
+    ==== Method `total_table_width`
 
 
-==== struct SubTitle
+    === abstract class Heading : concrete classes Title, SubTitle and Footer
 
-Attributes `value`, `frame` and `alignment` are declared as properties, and can be modified
-after initialization
+                                 `Title`, `SubTitle` and `Footer` structs are inherited from the `Heading`
+                                 abstract struct.
 
-===== Method `initialize`
+                                 ==== abstract struct Heading
 
-Returns an instance of `SubTitle`
+                                 ===== Method `framed?`
 
-[cols="1,2,3"]
-|===
-| Parameters | Type and default value | Comments
-| `value` |  `CellType?` = `nil` | The title contents (may not be an empty string). 
-No display if `nil`
-| `frame` | `Frame?` = `nil` | Defines a frame around title contents
-| `alignment` | `Justify` =  `DEFAULT_HEADING_ALIGNMENT` |
-| `formatter` | `TextCellFormatter` = `DEFAULT_FORMATTER` |
-| `styler` | `TextCellStyler` = `DEFAULT_STYLER` |
-|===
+                                 Returns `true` if `Title`, `SubTitle` or `Footer` contents are framed, `false`
+                                 otherwise.
 
-==== struct Footer
+                                 ==== struct Frame
+                                 The `Frame` struct is used to add a frame to `Title`, `SubTitle` or `Footer`.
 
-Attributes `value`, `frame`, `alignment` and `page_break` are declared as properties, and can be modifiedafter initialization
+                                 ===== Method `initialize`
 
-===== Method `initialize`
+                                 Returns an instance of `Frame`
 
-Returns an instance of `Footer`
+                                 [cols="1,2,3"]
+                                 |===
+                                 | Parameters | Type and default value | Comments
+                                 | `line_breaks_before` |  `Int32` = 0 | The count of line breaks to emit
+                                 before displaying framed contents
+                                 | `line_breaks_after` |  `Int32` = 0 | The count of line breaks to emit after
+                                 displaying framed contents
+                                 |===
 
-[cols="1,2,3"]
-|===
-| Parameters | Type and default value | Comments
-| `value` |  `CellType?` = `nil` | The title contents (may not be an empty string). 
-No display if `nil`
-| `frame` | `Frame?` = `nil` | Defines a frame around title contents
-| `page_break` | `Bool` = `false` |  If `true`, emit a page break
-after footer
-| `alignment` | `Justify` =  `DEFAULT_HEADING_ALIGNMENT` |
-| `formatter` | `TextCellFormatter` = `DEFAULT_FORMATTER` |
-| `styler` | `TextCellStyler` = `DEFAULT_STYLER` |
-|===
+                                 The effective count of line breaks is the maximum value of
+                                 `line_breaks_before` and `line_breaks_after` for adjacent rows.
 
-////
-== Overview
+                                 ==== struct Title
+
+                                 Attributes `value`, `frame`, `alignment` and `repeated` are declared as
+                                 properties, and can be modified after initialization
+
+                                 ===== Method `initialize`
+
+                                 Returns an instance of `Title`
+
+                                 [cols="1,2,3"]
+                                 |===
+                                 | Parameters | Type and default value | Comments
+                                 | `value` |  `CellType?` = `nil` | The title contents (may not be an empty string).
+                                 No display if `nil`
+                                 | `frame` | `Frame?` = `nil` | Defines a frame around title contents. If
+                                 `nil`, no frame.
+                                 | `repeated` | `Bool` = `false` | If `true`, force title (and subtitle) to
+                                 be repeated at header frequency
+                                 | `alignment` | `Justify` =  `DEFAULT_HEADING_ALIGNMENT` |
+                                 | `formatter` | `TextCellFormatter` = `DEFAULT_FORMATTER` |
+                                 | `styler` | `TextCellStyler` = `DEFAULT_STYLER` |
+                                 |===
 
 
-To give you a taste of both the richness of the layout, here's an example that's somewhat contrived, but interesting to study.
+                                 ==== struct SubTitle
 
-image::docs/assets/images/overview.svg[width="400",caption="Figure 8:"]
+                                 Attributes `value`, `frame` and `alignment` are declared as properties, and
+                                 can be modified after initialization
+
+                                 ===== Method `initialize`
+
+                                 Returns an instance of `SubTitle`
+
+                                 [cols="1,2,3"]
+                                 |===
+                                 | Parameters | Type and default value | Comments
+                                 | `value` |  `CellType?` = `nil` | The title contents (may not be an empty string).
+                                 No display if `nil`
+                                 | `frame` | `Frame?` = `nil` | Defines a frame around title contents
+                                 | `alignment` | `Justify` =  `DEFAULT_HEADING_ALIGNMENT` |
+                                 | `formatter` | `TextCellFormatter` = `DEFAULT_FORMATTER` |
+                                 | `styler` | `TextCellStyler` = `DEFAULT_STYLER` |
+                                 |===
+
+                                 ==== struct Footer
+
+                                 Attributes `value`, `frame`, `alignment` and `page_break` are declared as
+                                 properties, and can be modifiedafter initialization
+
+                                 ===== Method `initialize`
+
+                                 Returns an instance of `Footer`
+
+                                 [cols="1,2,3"]
+                                 |===
+                                 | Parameters | Type and default value | Comments
+                                 | `value` |  `CellType?` = `nil` | The title contents (may not be an empty string).
+                                 No display if `nil`
+                                 | `frame` | `Frame?` = `nil` | Defines a frame around title contents
+                                 | `page_break` | `Bool` = `false` |  If `true`, emit a page break
+                                 after footer
+                                 | `alignment` | `Justify` =  `DEFAULT_HEADING_ALIGNMENT` |
+                                 | `formatter` | `TextCellFormatter` = `DEFAULT_FORMATTER` |
+                                 | `styler` | `TextCellStyler` = `DEFAULT_STYLER` |
+                                 |===
+
+                                 ////
+                                 == Overview
+
+
+                                 To give you a taste of both the richness of the layout, here's an example that's somewhat contrived, but interesting to study.
+
+                                 image::docs/assets/images/overview.svg[width="400",caption="Figure 8:"]
 
 {empty} +
 
