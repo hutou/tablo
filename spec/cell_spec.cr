@@ -35,7 +35,7 @@ describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
             truncation_indicator: "~", wrap_mode: Tablo::WrapMode::Word, width: 12)
           it "correctly apply the formatter" do
             bodycell.line_count
-            bodycell.@formatted_value.should eq("   3.14")
+            bodycell.formatted_content.should eq("   3.14")
           end
         end
         describe "#calculate_subcells" do
@@ -49,9 +49,9 @@ describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
           it "correctly returns an array of formatted and styled subcells" do
             bodycell.line_count
             if Tablo::Util.styler_allowed
-              bodycell.@rendered_subcells.should eq(["     \e[31m   3.14\e[0m"])
+              bodycell.rendered_subcells.should eq(["     \e[31m   3.14\e[0m"])
             else
-              bodycell.@rendered_subcells.should eq(["        3.14"])
+              bodycell.rendered_subcells.should eq(["        3.14"])
             end
           end
         end
@@ -84,7 +84,7 @@ describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
             expected_result = "THIS IS A VERY LONG AND MULTILINE HEADER " \
                               "FOR TESTING FORMATTING, STYLING AND ALIGNMENT"
             headercell.line_count
-            headercell.@formatted_value.should eq(expected_result)
+            headercell.formatted_content.should eq(expected_result)
           end
         end
         describe "#calculate_subcells" do
@@ -110,7 +110,7 @@ describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
                                  "alignment   "]
             end
             headercell.line_count
-            headercell.@rendered_subcells.should eq(expected_result)
+            headercell.rendered_subcells.should eq(expected_result)
           end
 
           it "correctly returns an array of formatted and styled subcells, " \
@@ -139,7 +139,7 @@ describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
                                  "  alignment "]
             end
             headercell.line_count
-            headercell.@rendered_subcells.should eq(expected_result)
+            headercell.rendered_subcells.should eq(expected_result)
           end
 
           it "correctly returns an array of formatted and styled subcells, " \
@@ -181,7 +181,7 @@ describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
                                  "e n t       "]
             end
             headercell.line_count
-            headercell.@rendered_subcells.should eq(expected_result)
+            headercell.rendered_subcells.should eq(expected_result)
           end
         end
       end

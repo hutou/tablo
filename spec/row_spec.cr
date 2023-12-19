@@ -1,7 +1,11 @@
 require "./spec_helper"
 
 describe Tablo::Row do
+  # define border type for all tests
+  # Tablo::Config.border_type = Tablo::BorderName::Ascii
+
   table = Tablo::Table.new([["A", "B"], ["C", "D"], ["E", "F"], ["G", "H"], ["I", "J"]],
+    border: Tablo::Border.new(Tablo::BorderName::Ascii),
     header_frequency: 0) do |t|
     t.add_column("N") { |n| n[0] }
     t.add_column("Double") { |n| n[0] * 2 }

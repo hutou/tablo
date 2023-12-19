@@ -16,7 +16,7 @@ describe Tablo::Border do
         Tablo::BorderName::Fancy         => "╭┬╮├┼┤╰┴╯│:│─−-⋅",
         Tablo::BorderName::Blank         => "EEEEEEEEEEEEEEEE",
       }.each do |k, v|
-        Tablo::Border.new(k).to_s.should eq(v)
+        Tablo::Border.new(k).border_string.should eq(v)
       end
     end
     it "correctly creates a border from a string of 15 chars" do
