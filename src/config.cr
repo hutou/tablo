@@ -18,7 +18,7 @@ module Tablo
     # - `true` : table width is capped to terminal size
     # - `false` : terminal size is ignored
     class_property? terminal_capped_width : Bool = false
-    class_property? pack_autosize : Bool = true
+    # class_property? pack_autosize : Bool = true
     class_property starting_widths : StartingWidths = StartingWidths::AutoSized
 
     #
@@ -43,7 +43,6 @@ module Tablo
     class_property subtitle : SubTitle = SubTitle.new
     class_property footer : Footer = Footer.new
     #
-    class_property border : Border = Border.new
     class_property border_type : String | BorderName = BorderName::Ascii
     class_property border_styler : BorderStyler = DEFAULT_STYLER
     #

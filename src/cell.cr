@@ -116,7 +116,7 @@ module Tablo
     #
     # subcells contains the final content of a cell, possibly multiline,
     # ready for output
-    private def rendered_subcells
+    def rendered_subcells
       self.memoized_rendered_subcells ||= render_subcells
     end
 

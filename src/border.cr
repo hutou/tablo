@@ -104,7 +104,7 @@ module Tablo
     # Returns a Border type
     def initialize(border_type : String | BorderName = Config.border_type,
                    @styler : BorderStyler = Config.border_styler,
-                   alter : Array(Tuple(Int32, String))? = nil)
+                   alter : (Tuple(Int32, String) | Array(Tuple(Int32, String)))? = nil)
       case border_type
       when Tablo::BorderName
         @border_string = PREDEFINED_BORDERS[border_type]
@@ -141,13 +141,14 @@ module Tablo
 
     # Class method to alter border string and styler
     # # returns a new Border
-    def self.alter(alter : Array(Tuple(Int32, String))? = nil, styler : BorderStyler? = nil)
+    def self.alter(alter : (Tuple(Int32, String) | Array(Tuple(Int32, String)))? = nil,
+                   styler : BorderStyler? = nil)
       if @@border_string.nil?
         raise InvalidConnectorString.new "No border string defined yet"
       end
       newborder = oldborder = @@border_string
       unless alter.nil?
-        alter.each do |t|
+        (alter.is_a?(Array) ? alter : [alter]).each do |t|
           unless t[0].in?(0..15)
             raise InvalidConnectorString.new "Position in border definition string " \
                                              "must be in range 0..15"
@@ -164,7 +165,7 @@ module Tablo
     end
 
     # renders a horizontal rule, depending on its position
-    protected def horizontal_rule(column_widths, position = Position::Bottom, groups = nil)
+    def horizontal_rule(column_widths, position = Position::Bottom, groups = nil)
       left, middle, right, segment, altmiddle = connectors(position)
       segments = column_widths.map { |width| segment * width }
       left = right = middle = altmiddle = "" if segments.all?(&.empty?)
