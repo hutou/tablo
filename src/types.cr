@@ -327,31 +327,19 @@ module Tablo
     Right
   end
 
-  # TODO Define all proper aliases here
-  # alias Num = Float64 | Int32
-  # alias StrNum = Num | String
+  # Summary: all proper aliases defined here
 
-  # alias Num = Float64 | Int32
-  # alias NumCol = Array(Num?)
-  # alias NumCols = Hash(LabelType, NumCol)
+  alias SourcesCurrentColumn = Array(CellType)
+  alias SourcesAllColumns = Hash(LabelType, Array(CellType))
+  alias SummaryProcCurrent = Proc(SourcesCurrentColumn, CellType)
+  alias SummaryProcAll = Proc(SourcesAllColumns, CellType)
 
-  # alias ColumnValues = Array(CellType)
-  # alias ColumnsValues = Hash(LabelType, ColumnValues)
+  alias SummaryLineProcCurrent = {Int32, SummaryProcCurrent}
+  alias SummaryLineProcAll = {Int32, SummaryProcAll}
+  alias SummaryLineProcBoth = SummaryLineProcCurrent | SummaryLineProcAll
 
-  # # alias SummaryCols = Proc(Hash(LabelType, Array(CellType)), CellType)
-  # alias SummaryCols = Proc(ColumnsValues, CellType)
-  # alias SummaryColsRow = {Int32, SummaryCols}
-
-  # alias SummaryCol = Proc(ColumnValues, CellType)
-  # alias SummaryColRow = {Int32, SummaryCol}
-
-  # alias SummaryProcs = Array(SummaryColRow | SummaryColsRow) |
-  #                      Array(SummaryColRow) |
-  #                      Array(SummaryColsRow)
-  # alias SummaryProcs = Array({Int32, Proc(Array(CellType), CellType)} |
-  #                            {Int32, Proc(Hash(LabelType, Array(CellType)), CellType)}) |
-  #                      Array({Int32, Proc(Array(CellType), CellType)}) |
-  #                      Array({Int32, Proc(Hash(LabelType, Array(CellType)), CellType)})
+  alias SummaryProcs = SummaryLineProcCurrent | SummaryLineProcAll | Array(SummaryLineProcCurrent) |
+                       Array(SummaryLineProcAll) | Array(SummaryLineProcBoth)
 
   # Tablo Exceptions hierarchy
   #

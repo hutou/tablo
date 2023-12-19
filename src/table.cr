@@ -10,6 +10,8 @@ require "./heading"
 require "./summary"
 
 module Tablo
+  alias SummaryTable = Table(Array(CellType))
+
   class Table(T)
     include Enumerable(Row(T))
     # Class properties to manage row types framing and summary table linking
@@ -26,11 +28,13 @@ module Tablo
     #
     #
 
-    protected getter column_registry = {} of LabelType => Column(T)
+    getter column_registry = {} of LabelType => Column(T)
     protected getter group_registry = {} of LabelType => TextCell
     protected getter groups = [] of Range(Int32, Int32)
     protected property row_count : Int32 = 0
-    protected property summary_table : Table(Array(CellType))? = nil
+
+    protected property summary_table : SummaryTable? = nil
+    # protected property summary_table : Table(Array(CellType))? = nil
     protected property name : Symbol = :main
 
     # Table parameters
@@ -61,6 +65,8 @@ module Tablo
         @subtitle : SubTitle = Config.subtitle,
         @footer : Footer = Config.footer,
         #
+        @border : Border = Border.new(Config.border_type, Config.border_styler),
+        #
         @group_alignment : Justify = Config.group_alignment,
         @group_formatter : TextCellFormatter = Config.group_formatter,
         @group_styler : TextCellStyler = Config.group_styler,
@@ -72,8 +78,6 @@ module Tablo
         @body_alignment : Justify? = Config.body_alignment,
         @body_formatter : DataCellFormatter = Config.body_formatter,
         @body_styler : DataCellStyler = Config.body_styler,
-        #
-        @border : Border = Config.border,
         #
         @left_padding : Int32 = Config.left_padding,
         @right_padding : Int32 = Config.right_padding,
@@ -758,10 +762,9 @@ module Tablo
           expand(required_width, except)
         end
       end
-      # Here we need also to update widths of summary, if it exists
-      # TODO To be studied
-      # update_summary_widths
-      update_group_widths
+      # Here we need also to update widths of summary and groups
+      update_summary_widths unless self.name == :summary
+      update_group_widths unless groups.empty?
       self
     end
 
@@ -831,7 +834,91 @@ module Tablo
     #
     #
 
+    def transpose(opts)
+      transpose **opts
+    end
+
     def transpose(**opts)
+      # Attributes *not* listed below are initialized to their default Table values
+      # In principle, they are all listed except unused group attributes
+      inherited_attributes = {
+        title:    title,
+        subtitle: subtitle,
+        footer:   footer,
+        border:   border,
+        # Groups are ignored in transpose
+        # Header
+        header_alignment: header_alignment,
+        header_formatter: header_formatter,
+        header_styler:    header_styler,
+        # Body
+        body_alignment: body_alignment,
+        body_formatter: body_formatter,
+        body_styler:    body_styler,
+        # padding
+        left_padding:         left_padding,
+        right_padding:        right_padding,
+        padding_character:    padding_character,
+        truncation_indicator: truncation_indicator,
+        width:                width,
+        # miscellaneous
+        header_frequency:      header_frequency,
+        row_divider_frequency: row_divider_frequency,
+        wrap_mode:             wrap_mode,
+        header_wrap:           header_wrap,
+        body_wrap:             body_wrap,
+        #
+        masked_headers: masked_headers?,
+        omit_last_rule: omit_last_rule?,
+      }
+
+      default_extra_opts = {
+        field_names_body_alignment:   nil,
+        field_names_header:           "ZZZ",
+        field_names_header_alignment: nil, # Justify::Left,
+        field_names_width:            1,
+        headers:                      "3AAA#",
+      }
+      if opts.nil?
+        initializer_opts = inherited_attributes
+        extra_opts = default_extra_opts
+      else
+        initializer_opts = Util.update(inherited_attributes, from: opts)
+        extra_opts = Util.update(default_extra_opts, from: opts)
+      end
+
+      fields = column_registry.values
+
+      table = Table.new(fields, **initializer_opts) do |t|
+        # table = Table.new(fields, **opts) do |t|
+        width_opt = extra_opts[:field_names_width]
+        field_names_width = width_opt.nil? ? fields.map { |f| f.header.size }.max : width_opt
+        # field_names_body_styler = fields.map { |f| f.body_styler }
+        t.add_column(:dummy,
+          body_alignment: extra_opts[:field_names_body_alignment],
+          header_alignment: extra_opts[:field_names_header_alignment],
+          header: extra_opts[:field_names_header],
+          width: field_names_width, &.header)
+        @sources.each_with_index do |source, i|
+          header = extra_opts[:headers]
+          header = if header.nil?
+                     source.to_s
+                   else
+                     "#{header}##{i}"
+                   end
+          t.add_column(i,
+            body_alignment: extra_opts[:field_names_body_alignment],
+            header_alignment: extra_opts[:field_names_header_alignment],
+            header: header
+          ) do |original_column|
+            original_column.body_cell_value(source, row_index: i)
+          end
+        end
+      end
+      table
+    end
+
+    def original_transpose(**opts)
       default_opts = {
         title: @title,
         # align
@@ -974,7 +1061,7 @@ module Tablo
     #
     #
 
-    def zzz_update_summary_widths
+    def update_summary_widths
       unless (st = summary_table).nil?
         widths = @column_registry.map { |k, v| v.width }
         st.column_registry.each_with_index do |(k, v), i|
