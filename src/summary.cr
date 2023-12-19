@@ -17,6 +17,7 @@ module Tablo
     private getter table
 
     def initialize(@table : Table(T), @summary_def : U, @summary_options : V)
+      debug! typeof(@summary_def)
     end
 
     # Returns nil
@@ -74,12 +75,8 @@ module Tablo
             body_formatters[column_label] = value
           when {:body_styler, DataCellStyler}
             body_stylers[column_label] = value
-          when {:proc,
-                Array({Int32, Proc(Array(CellType), CellType)} |
-                      {Int32, Proc(Hash(LabelType, Array(CellType)), CellType)}) |
-                  Array({Int32, Proc(Array(CellType), CellType)}) |
-                  Array({Int32, Proc(Hash(LabelType, Array(CellType)), CellType)})}
-            value.as(Array).each do |rowproc|
+          when {:proc, SummaryProcs}
+            (value.is_a?(Array) ? value : [value]).each do |rowproc|
               row = rowproc[0]
               if proc_results[column_label].has_key?(row)
                 raise DuplicateRow.new "Summary: Row <#{row}> has already been " \
@@ -87,9 +84,9 @@ module Tablo
               end
               proc = rowproc[1]
               case proc
-              when Proc(Hash(LabelType, Array(CellType)), CellType)
+              when SummaryProcAll
                 proc_results[column_label][row] = proc.call(data_series)
-              when Proc(Array(CellType), CellType)
+              when SummaryProcCurrent
                 proc_results[column_label][row] = proc.call((data_series)[column_label])
               end
             end
