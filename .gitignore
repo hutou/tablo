@@ -5,3 +5,12 @@
 /playground
 
 Session.vim
+
+# Exceptions
+
+!/docs/assets/images/column_layout.svg
+!/docs/assets/images/styling_first_form.svg
+!/docs/assets/images/styling_fourth_form.svg
+!/docs/assets/images/styling_third_form.svg
+!/docs/tutorial/
+!/docs/API/
