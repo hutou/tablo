@@ -9,7 +9,7 @@
 :toc:
 :toclevels: 4
 :icons: font
-:imagesdir: docs/assets/images
+:imagesdir: ./images
 
 == History
 
@@ -940,7 +940,7 @@ end
 puts table
 ----
 
-image:styling_first_form.svg[width="560",caption="Styling
+image:styling_first_form.svg[width="460",caption="Styling
 first form:"]
 
 Cool! Let's do now some conditional styling, painting in bold green all values
@@ -961,7 +961,7 @@ body_styler: ->(value : Tablo::CellType, content : String) {
 },
 ----
 
-image:styling_third_form.svg[width="560",caption="Styling
+image:styling_third_form.svg[width="460",caption="Styling
 third form:"]
 
 Let's end with a final example, with a black-and-white look: how do you
@@ -1001,7 +1001,7 @@ puts table
 <1> From version 1.10 onwards, Crystal does support italic mode, and the use
 of ANSI sequences is given here simply as an example.
 
-image:styling_fourth_form.svg[width="560",caption="Styling
+image:styling_fourth_form.svg[width="460",caption="Styling
 fourth form:"]
 
 Overview of the 5 different forms of styler procs:
@@ -1030,7 +1030,7 @@ used by: `DataCell`
 In the previous examples, the notion of column width was used. For a better
 understanding, the diagram below highlights the structure of a column.
 
-image:column_layout.svg[width="560"]
+image:column_layout.svg[width="460"]
 
 As we saw at the start of this tutorial, by default, all columns have the same
 width, i.e. 12 characters.
