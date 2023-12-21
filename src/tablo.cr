@@ -1,7 +1,5 @@
-require "./table.cr"
-require "./column.cr"
+require "./table"
 
 module Tablo
-  VERSION = "0.10.1"
-  extend self
+  VERSION = "0.99.0"
 end

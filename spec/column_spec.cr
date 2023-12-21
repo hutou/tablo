@@ -1,42 +1,59 @@
 require "./spec_helper"
 
 describe Tablo::Column do
-  column = Tablo::Column.new(
-    header: "N",
-    width: 10,
-    align_header: Tablo::Justify::Left,
-    align_body: Tablo::Justify::Left,
-    formatter: ->(n : Tablo::CellType) { "%.2f" % n.as(Int32) },
-    styler: ->(n : Tablo::CellType) { n.to_s },
-    extractor: ->(n : Array(Tablo::CellType)) { n[0].as(Tablo::CellType) })
+  column = Tablo::Column(Int32).new(
+    header: "Double",
+    header_alignment: Tablo::Justify::Right,
+    header_styler: ->(_c : Tablo::CellType, s : String) { s },
+    body_alignment: Tablo::Justify::Right,
+    body_styler: ->(_c : Tablo::CellType, s : String) { s },
+    #
+    left_padding: 3,
+    right_padding: 5,
+    padding_character: " ",
+    width: 13,
+    #
+    header_formatter: ->(c : Tablo::CellType) { c.to_s },
+    body_formatter: ->(c : Tablo::CellType) { c.to_s },
+    truncation_indicator: "~",
+    wrap_mode: Tablo::WrapMode::Word,
+    extractor: ->(n : Int32, _irow : Int32) { n.as(Tablo::CellType) },
+    index: 2)
 
   describe "#initialize" do
     it "create a Column" do
-      column.should be_a(Tablo::Column)
+      column.should be_a(Tablo::Column(Int32))
     end
   end
 
-  describe "#header_subcells" do
-    it "returns an array of strings representing the components of the header cell" do
-      column.header_subcells.should eq(["N         "])
+  source = 17
+  bodycell = column.body_cell(source, 0, 0)
+  describe "#body_cell" do
+    it "instanciates a cell of type DataCell" do
+      bodycell.should be_a(Tablo::DataCell)
+    end
+    it "correctly retrieves cell value from extractor call on source" do
+      bodycell.value.should eq(17)
+      column.body_cell_value(source, 0).should eq(17)
     end
   end
-
-  describe "#body_subcells" do
-    it "returns an array of strings representing the components of the body cell" do
-      column.body_subcells([3].map &.as(Tablo::CellType)).should eq(["3.00      "])
+  headercell = column.header_cell(bodycell)
+  describe "#header_cell" do
+    it "instanciates a cell of type DataCell" do
+      headercell.should be_a(Tablo::DataCell)
+    end
+    it "correctly retrieves cell value from header field" do
+      headercell.value.should eq("Double")
     end
   end
-
-  describe "#formatted_cell_content" do
-    it "returns the formatted content for this column, without internal padding" do
-      column.formatted_cell_content([3].map &.as(Tablo::CellType)).should eq("3.00")
+  describe ".padded_width" do
+    it "correctly returns padded width" do
+      column.padded_width.should eq(21)
     end
   end
-
-  describe "#body_cell_value" do
-    it "returns the underlying value in this column for the passed source item" do
-      column.body_cell_value([3].map &.as(Tablo::CellType)).should eq(3)
+  describe ".total_padding" do
+    it "correctly returns total_padding" do
+      column.total_padding.should eq(8)
     end
   end
 end
