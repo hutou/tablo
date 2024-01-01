@@ -1,6 +1,4 @@
-# Tutorial
-
-[switch to API](API.md)
+# Tutorial [switch to API](API.md)
 
 [<img src="images/logo.png" alt="Logo" width=700/>](README.md)
 
