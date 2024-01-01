@@ -1,5 +1,7 @@
 # Tablo API
 
+###### [switch to Tutorial](tutorial.md)
+
 [<img src="images/logo.png" alt="Logo" width=700/>](README.md)
 
 ## Table of contents
