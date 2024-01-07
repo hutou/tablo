@@ -86,6 +86,9 @@ module Tablo
     end
   end
 
+  alias Numbers = Int8 | Int16 | Int32 | Int64 | Int128 |
+                  UInt8 | UInt16 | UInt32 | UInt64 | UInt128 |
+                  Float32 | Float64
   # BorderName define allowed keys to access predefined connectors string.
   enum BorderName
     Ascii
