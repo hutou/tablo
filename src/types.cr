@@ -329,21 +329,35 @@ module Tablo
 
   # Summary: all proper aliases defined here
 
-  alias SourcesCurrentColumn = Array(CellType)
-  alias SourcesAllColumns = Hash(LabelType, Array(CellType))
-  alias SummaryProcCurrent = Proc(SourcesCurrentColumn, CellType)
-  alias SummaryProcAll = Proc(SourcesAllColumns, CellType)
+  # alias SourcesCurrentColumn = Array(CellType)
+  # alias SourcesAllColumns = Hash(LabelType, Array(CellType))
+  # alias SummaryProcCurrent = Proc(SourcesCurrentColumn, CellType)
+  # alias SummaryProcAll = Proc(SourcesAllColumns, CellType)
 
-  alias SummaryLineProcCurrent = {Int32, SummaryProcCurrent}
-  alias SummaryLineProcAll = {Int32, SummaryProcAll}
-  alias SummaryLineProcBoth = SummaryLineProcCurrent | SummaryLineProcAll
+  # alias SummaryLineProcCurrent = {Int32, SummaryProcCurrent}
+  # alias SummaryLineProcAll = {Int32, SummaryProcAll}
+  # alias SummaryLineProcBoth = SummaryLineProcCurrent | SummaryLineProcAll
 
-  alias SummaryProcs = SummaryLineProcCurrent | SummaryLineProcAll | Array(SummaryLineProcCurrent) |
-                       Array(SummaryLineProcAll) | Array(SummaryLineProcBoth)
+  # alias SummaryProcs = SummaryLineProcCurrent | SummaryLineProcAll | Array(SummaryLineProcCurrent) |
+  #                      Array(SummaryLineProcAll) | Array(SummaryLineProcBoth)
+
+  alias SummaryProcs = {Int32, Proc(Array(CellType), CellType)} |
+                       {Int32, Proc(Hash(LabelType, Array(CellType)), CellType)} |
+                       Array({Int32, Proc(Array(CellType), CellType)}) |
+                       Array({Int32, Proc(Hash(LabelType, Array(CellType)), CellType)}) |
+                       Array({Int32, Proc(Array(CellType), CellType)} |
+                             {Int32, Proc(Hash(LabelType, Array(CellType)), CellType)})
 
   # Tablo Exceptions hierarchy
   #
   # Parent class
+
+  enum Aggregate
+    Count
+    Min
+    Max
+    Sum
+  end
 
   class TabloException < Exception
   end

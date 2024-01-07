@@ -1192,18 +1192,16 @@ To sum up:
 
 [:top:](#tutorial) [:arrow_up:](#packing) [:arrow_down:](#transpose)
 
-The Tablo library offers a very basic yet useful summary method.
-This method must be considered as _*experimental*_ however, as it obviously needs
-improvement. So, its usage may change in the future.
+The Tablo library offers a basic yet useful summary method.
 
-At present, it can be used to perform calculations on individual columns of data,
-and, often at the cost of some code duplication, to perform calculations between columns.
-Clearly not a DRY API!
+At present, it can be used to perform calculations on individual columns of data
+and between columns.
 
 Here's an example of how it works now and what it can do for you:
 
 ```crystal
 require "tablo"
+require "debug"
 
 record Entry, product : String, price : Int32
 invoice = [
@@ -1228,44 +1226,46 @@ tbl = Tablo::Table.new(invoice,
     }) { |n| (n.price * 0.2).to_i }
 end
 
-tbl.summary(
-  {
-    "Product" => {
-      proc: [
-        {1, ->(_ary : Array(Tablo::CellType)) {
-          "Total excl.".as(Tablo::CellType)
-          "VAT (Total)".as(Tablo::CellType)
-        }},
-        {3, ->(_ary : Array(Tablo::CellType)) {
-          "Total incl.".as(Tablo::CellType)
-        }},
-      ],
+summary_def = {
+  "Product" => {
+    proc: [
+      {1, ->(_ary : Array(Tablo::CellType)) {
+        "Total excl.".as(Tablo::CellType)
+        "VAT (Total)".as(Tablo::CellType)
+      }},
+      {3, ->(_ary : Array(Tablo::CellType)) {
+        "Total incl.".as(Tablo::CellType)
+      }},
+    ],
+  },
+  :tax => {
+    body_formatter: ->(value : Tablo::CellType) {
+      value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
     },
-    "Price" => {
-      body_formatter: ->(value : Tablo::CellType) {
-        value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
-      },
-      proc: [
-        {1, ->(ary : Array(Tablo::CellType)) {
-          (ary.map &.as(Int32)).sum.as(Tablo::CellType)
-        }},
-        {3, ->(ary : Hash(Tablo::LabelType, Array(Tablo::CellType))) {
-          sum_price = (ary["Price"].map &.as(Int32)).sum
-          sum_tax = (ary[:tax].map &.as(Int32)).sum
-          (sum_price + sum_tax).as(Tablo::CellType)
-        }},
-      ],
+    proc: {2, ->(ary : Array(Tablo::CellType)) {
+      Tablo::Summary.keep(:sum_tax, (ary.map &.as(Int32)).sum.as(Tablo::CellType))
+    }},
+  },
+  "Price" => {
+    body_formatter: ->(value : Tablo::CellType) {
+      value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
     },
-    :tax => {
-      body_formatter: ->(value : Tablo::CellType) {
-        value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
-      },
-      proc: {2, ->(ary : Array(Tablo::CellType)) {
+    proc: [
+      {1, ->(ary : Array(Tablo::CellType)) {
         (ary.map &.as(Int32)).sum.as(Tablo::CellType)
       }},
-    },
-  }, masked_headers: true
-)
+      {3, ->(ary : Hash(Tablo::LabelType, Array(Tablo::CellType))) {
+        sum_price = (ary["Price"].map &.as(Int32)).sum
+        sum_tax = Tablo::Summary.use(:sum_tax).as(Int32)
+        (sum_price + sum_tax).as(Tablo::CellType)
+      }},
+    ],
+  },
+}
+
+summary_options = {masked_headers: true}
+
+tbl.summary(summary_def, **summary_options)
 
 puts tbl
 puts tbl.summary
@@ -1306,7 +1306,7 @@ The type of `summary_def` is : `Hash(LabelType, NamedTuple(...))`. The hash key 
 therefore a column identifier (`LabelType` is an alias of `String | Symbol
 | Int32`).
 
-The `NamedTuple` may have up to 8 entries :
+The `NamedTuple` may have up to 8 entries, all optional except `proc`
 
 | Hash key           | Type of hash value  |
 | :----------------- | :------------------ |
@@ -1318,6 +1318,32 @@ The `NamedTuple` may have up to 8 entries :
 | `body_formatter`   | `DataCellFormatter` |
 | `body_styler`      | `DataCellStyler`    |
 | `proc`             | `SummaryProcs`      |
+
+- `header` default value is the empty string
+- the next 6 entries default values are inherited from Table
+  initializers of same name
+- `proc` is a bit complex and has no default value. Its value type is
+  `SummaryProcs`, an alias whose definition is :
+
+  ```
+  alias SourcesCurrentColumn = Array(CellType)
+  alias SourcesAllColumns = Hash(LabelType, Array(CellType))
+  alias SummaryProcCurrent = Proc(SourcesCurrentColumn, CellType)
+  alias SummaryProcAll = Proc(SourcesAllColumns, CellType)
+
+  alias SummaryLineProcCurrent = {Int32, SummaryProcCurrent}
+  alias SummaryLineProcAll = {Int32, SummaryProcAll}
+  alias SummaryLineProcBoth = SummaryLineProcCurrent | SummaryLineProcAll
+
+  alias SummaryProcs = {Int32, Proc(Array(CellType), CellType)} |
+                     {Int32, Proc(Hash(LabelType, Array(CellType)), CellType)} |
+                     Array({Int32, Proc(Array(CellType), CellType)}) |
+                     Array({Int32, Proc(Hash(LabelType, Array(CellType)), CellType)}) |
+                     Array({Int32, Proc(Array(CellType), CellType)} |
+                         {Int32, Proc(Hash(LabelType, Array(CellType)), CellType)})
+  alias SummaryProcAll = Proc(Hash(LabelType, Array(CellType)), CellType)
+  alias SummaryProcCurrent = Proc(Array(CellType), CellType)
+  ```
 
 The latter - `SummaryProcs`- is a tad complex and can take several forms.
 Basically, it is a tuple of 2 elements :

@@ -11,7 +11,7 @@ module Tablo
     @initial_width : Int32 = 0
 
     # :nodoc:
-    getter header, index
+    getter header, index, extractor
 
     # :nodoc:
     protected getter left_padding, right_padding, padding_character, truncation_indicator

@@ -505,6 +505,10 @@ module Tablo
       self.summary_table = Summary.new(self, summary_def, summary_options).run
     end
 
+    def summary(summary_def, summary_options)
+      self.summary_table = Summary.new(self, summary_def, summary_options).run
+    end
+
     # Returns a previously defined summary table
     def summary
       summary_table
@@ -1055,6 +1059,15 @@ module Tablo
     private def join_lines(lines)
       # TODO what if Windows \n\r ?
       lines.join("\n")
+    end
+
+    def source_column(column_id)
+      column_data = [] of CellType
+      extractor = column_registry[column_id].extractor
+      sources.each_with_index do |source, index|
+        column_data << extractor.call(source, index)
+      end
+      column_data
     end
 
     # -------------- unused, old or obsolete mrthods --------------------------------
