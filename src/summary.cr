@@ -326,16 +326,94 @@ module Tablo
 
     # Returns the summary table
     def run
-      summary_table = Table.new(summary_sources)
+      # summary_table = Table.new(summary_sources)
       compute_aggregations(aggregations)
       compute_user_aggregations(user_aggregations)
-      p! Summary.aggr_results
-      p! typeof(Summary.aggr_results)
-      p! Summary.proc_results
-      p! typeof(Summary.proc_results)
+      # p! Summary.aggr_results
+      # p! typeof(Summary.aggr_results)
+      # p! Summary.proc_results
+      # p! typeof(Summary.proc_results)
       # reduce
       check_keys
-      p! summary_layout
+      # p! summary_layout
+      #
+      # calculate row count
+      arow = [] of Int32
+      irow = {} of Int32 => Int32
+      icol = {} of LabelType => Int32
+      row_count = 0
+      summary_layout.each_with_index do |(k, v), i|
+        # p! k, v
+        icol[k] = i
+        v.each do |k1, v1|
+          # p! k1, v1
+          # row_count = [row_count, k1.as(Int32)].max
+          arow << k1
+        end
+      end
+      # p! icol
+      # p! arow
+      # arow.sort!.uniq!
+      # p! arow
+      # row_count = arow.size
+      # p! row_count
+      # irow = (0..arow.size - 1).to_a
+      # p! irow
+      arow.sort!.uniq!.each_with_index do |row, index|
+        # p! row, index
+        irow[row] = index
+      end
+      # p! irow
+
+      # Create array of n columns by p rows of type CellType? = nil
+      summary_sources = [] of Array(CellType)
+      irow.size.times do
+        summary_sources << Array.new(table.column_registry.size, nil.as(CellType))
+      end
+      # p! summary_sources
+      # debugger
+      summary_layout.each do |k, v|
+        v.each do |k1, v1|
+          # p! k, icol[k]
+          # p! k1, irow[k1]
+          # p! summary_layout[k][k1][:value]
+          # p! typeof(summary_layout[k][k1][:value])
+          # ## Process value (check if exists !)
+          if summary_layout[k][k1].has_key?(:value)
+            val = summary_layout[k][k1][:value]
+            # case summary_layout[k][k1][:value]
+            case val
+            in Proc(CellType)
+              # puts "in Proc(CellType)"
+              # p! summary_layout[k][k1][:value].class
+              value = (summary_layout[k][k1][:value].as(Proc(CellType)).call).as(CellType)
+            in CellType
+              # puts "in CellType"
+              # p! summary_layout[k][k1][:value].class
+              value = summary_layout[k][k1][:value].as(CellType)
+            end
+            summary_sources[irow[k1]][icol[k]] = value # summary_layout[k][k1][:value].as(CellType)
+          else
+            raise "A value is mandatory"
+          end
+        end
+      end
+
+      # summary_sources[0][1] = summary_layout["Product"][1][:value].as(Tablo::CellType)
+      # summary_sources[0][2] = summary_layout["Price"][9][:value].as(Proc(Tablo::CellType)).call.as(Tablo::CellType)
+      # summary_sources[1][2] = summary_layout[:tax][2][:value].as(Proc(Tablo::CellType)).call.as(Tablo::CellType)
+      # puts
+      # p! typeof(summary_layout["Price"][:value])
+      # if summary_layout["Price"][:row].as(Int32) == 1
+      #   p! summary_layout["Price"][:value].as(Proc(Tablo::CellType)).call
+      # end
+      p! Tablo::Summary.aggr_results
+      # p! Tablo::Summary.use(:tax, :sum)
+      # summary_sources[2][2] = summary_layout["Price"][:value].as(Proc(Tablo::CellType)).call.as(Tablo::CellType)
+      p! summary_sources
+      summary_sources.each do |source|
+        p! source
+      end
       return
       # initialize_arrays
       # calculate_data_series
