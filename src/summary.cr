@@ -3,21 +3,35 @@ require "./table"
 require "big"
 
 module Tablo
-  class Summary(T, V)
-    private getter data_series = {} of LabelType => Array(CellType)
-    private getter proc_results = {} of LabelType => Hash(Int32, CellType)
+  class Summary(T, HC, HR, BC, BR, O)
+    # private getter data_series = {} of LabelType => Array(CellType)
+    # private getter proc_results = {} of LabelType => Hash(Int32, CellType)
     private property summary_sources = [] of Array(CellType)
-    private getter body_alignments = {} of LabelType => Justify
-    private getter header_alignments = {} of LabelType => Justify
-    private getter body_formatters = {} of LabelType => DataCellFormatter
-    private getter header_formatters = {} of LabelType => DataCellFormatter
-    private getter body_stylers = {} of LabelType => DataCellStyler
-    private getter headers_styler = {} of LabelType => DataCellStyler
+    # private getter body_alignments = {} of LabelType => Justify
+    # private getter header_alignments = {} of LabelType => Justify
+    # private getter body_formatters = {} of LabelType => DataCellFormatter
+    # private getter header_formatters = {} of LabelType => DataCellFormatter
+    # private getter body_stylers = {} of LabelType => DataCellStyler
+    # private getter headers_styler = {} of LabelType => DataCellStyler
     private getter headers = {} of LabelType => String
-    private getter summary_options
+    private getter summary_options, options
     private getter table
 
-    private getter aggregations, user_aggregations, summary_layout
+    private getter header_values = {} of LabelType => CellType
+    private getter header_alignments = {} of LabelType => Justify
+    private getter header_formatters = {} of LabelType => DataCellFormatter
+    private getter header_stylers = {} of LabelType => DataCellStyler
+
+    private getter body_values = {} of LabelType => Hash(Int32, CellType | Proc(CellType))
+    # private getter body_alignments = {} of LabelType => Hash(Int32, Justify)
+    # private getter body_formatters = {} of LabelType => Hash(Int32, DataCellFormatter)
+    # private getter body_stylers = {} of LabelType => Hash(Int32, DataCellStyler)
+    private getter body_alignments = {} of LabelType => Justify
+    private getter body_formatters = {} of LabelType => DataCellFormatter
+    private getter body_stylers = {} of LabelType => DataCellStyler
+
+    private getter aggregations, user_aggregations, header_column, header_row,
+      body_column, body_row, options
 
     class_property aggr_results = {} of LabelType => Hash(Aggregate, Numbers)
     class_property proc_results = {} of Symbol => Numbers
@@ -43,10 +57,14 @@ module Tablo
     end
 
     def initialize(@table : Table(T),
-                   @summary_layout : V,
                    @aggregations : Hash(LabelType, Array(Aggregate))?,
                    @user_aggregations : Hash(Symbol, Proc(Table(T), Numbers) |
-                                                     Proc(Enumerable(T), Numbers))?)
+                                                     Proc(Enumerable(T), Numbers))?,
+                   @header_column : HC,
+                   @header_row : HR,
+                   @body_column : BC,
+                   @body_row : BR,
+                   @options : O)
     end
 
     def compute_user_aggregations(user_aggregations)
@@ -127,7 +145,8 @@ module Tablo
     end
 
     private def check_keys
-      missing = summary_layout.keys - table.column_registry.keys
+      missing = header_column.keys + header_row.keys +
+                body_column.keys + body_row.keys - table.column_registry.keys
       unless missing.empty?
         raise LabelNotFound.new "Label #{missing.first} does not exist"
       end
@@ -287,139 +306,267 @@ module Tablo
     # Reformat results computed by summary functions to summary_table expected
     # sources format
     # Returns nil
-    private def calculate_sources
-      # puts all summary results them in colum/row matrix for output
-      # Sort results by row, column
-      summary_source = Array.new(table.column_registry.size, nil.as(CellType))
-      trios = [] of {row: Int32, column: Int32, value: CellType}
-      # Browse columns in table :main
-      table.column_registry.each_with_index do |(label, column), column_index|
-        # Is there a summary for this column ?
-        if proc_results.has_key?(label)
-          # yes, for each pair, create a trio, adding column_index
-          proc_results[label].each do |row, value|
-            trios << {row: row, column: column_index, value: value}
-          end
-        end
-      end
-      # sort trios in place on row
-      trios.sort! { |a, b| a[:row].as(Int32) <=> b[:row].as(Int32) }
-      # and feed summary_sources
-      old_row = 0
-      trios.each_with_index do |trio, row_index|
-        if row_index == 0
-          summary_source[trio[:column].as(Int32)] = trio[:value]
-          old_row = trio[:row]
-        else
-          if trio[:row] == old_row
-            summary_source[trio[:column].as(Int32)] = trio[:value]
-          else
-            self.summary_sources << summary_source
-            summary_source = Array.new(table.column_registry.size, nil.as(CellType))
-            summary_source[trio[:column].as(Int32)] = trio[:value]
-            old_row = trio[:row]
-          end
-        end
-      end
-      self.summary_sources << summary_source unless summary_source.compact.empty?
-    end
+    # private def calculate_sources
+    #   # puts all summary results them in colum/row matrix for output
+    #   # Sort results by row, column
+    #   summary_source = Array.new(table.column_registry.size, nil.as(CellType))
+    #   trios = [] of {row: Int32, column: Int32, value: CellType}
+    #   # Browse columns in table :main
+    #   table.column_registry.each_with_index do |(label, column), column_index|
+    #     # Is there a summary for this column ?
+    #     if proc_results.has_key?(label)
+    #       # yes, for each pair, create a trio, adding column_index
+    #       proc_results[label].each do |row, value|
+    #         trios << {row: row, column: column_index, value: value}
+    #       end
+    #     end
+    #   end
+    #   # sort trios in place on row
+    #   trios.sort! { |a, b| a[:row].as(Int32) <=> b[:row].as(Int32) }
+    #   # and feed summary_sources
+    #   old_row = 0
+    #   trios.each_with_index do |trio, row_index|
+    #     if row_index == 0
+    #       summary_source[trio[:column].as(Int32)] = trio[:value]
+    #       old_row = trio[:row]
+    #     else
+    #       if trio[:row] == old_row
+    #         summary_source[trio[:column].as(Int32)] = trio[:value]
+    #       else
+    #         self.summary_sources << summary_source
+    #         summary_source = Array.new(table.column_registry.size, nil.as(CellType))
+    #         summary_source[trio[:column].as(Int32)] = trio[:value]
+    #         old_row = trio[:row]
+    #       end
+    #     end
+    #   end
+    #   self.summary_sources << summary_source unless summary_source.compact.empty?
+    # end
 
     # Returns the summary table
     def run
-      # summary_table = Table.new(summary_sources)
+      # check columns keys
+      check_keys
+
+      # Process aggregations
       compute_aggregations(aggregations)
       compute_user_aggregations(user_aggregations)
-      # p! Summary.aggr_results
-      # p! typeof(Summary.aggr_results)
-      # p! Summary.proc_results
-      # p! typeof(Summary.proc_results)
-      # reduce
-      check_keys
-      # p! summary_layout
-      #
-      # calculate row count
-      arow = [] of Int32
-      irow = {} of Int32 => Int32
-      icol = {} of LabelType => Int32
-      row_count = 0
-      summary_layout.each_with_index do |(k, v), i|
-        # p! k, v
-        icol[k] = i
-        v.each do |k1, v1|
-          # p! k1, v1
-          # row_count = [row_count, k1.as(Int32)].max
-          arow << k1
-        end
-      end
-      # p! icol
-      # p! arow
-      # arow.sort!.uniq!
-      # p! arow
-      # row_count = arow.size
-      # p! row_count
-      # irow = (0..arow.size - 1).to_a
-      # p! irow
-      arow.sort!.uniq!.each_with_index do |row, index|
-        # p! row, index
-        irow[row] = index
-      end
-      # p! irow
 
-      # Create array of n columns by p rows of type CellType? = nil
-      summary_sources = [] of Array(CellType)
-      irow.size.times do
-        summary_sources << Array.new(table.column_registry.size, nil.as(CellType))
-      end
-      # p! summary_sources
-      # debugger
-      summary_layout.each do |k, v|
-        v.each do |k1, v1|
-          # p! k, icol[k]
-          # p! k1, irow[k1]
-          # p! summary_layout[k][k1][:value]
-          # p! typeof(summary_layout[k][k1][:value])
-          # ## Process value (check if exists !)
-          if summary_layout[k][k1].has_key?(:value)
-            val = summary_layout[k][k1][:value]
-            # case summary_layout[k][k1][:value]
-            case val
-            in Proc(CellType)
-              # puts "in Proc(CellType)"
-              # p! summary_layout[k][k1][:value].class
-              value = (summary_layout[k][k1][:value].as(Proc(CellType)).call).as(CellType)
-            in CellType
-              # puts "in CellType"
-              # p! summary_layout[k][k1][:value].class
-              value = summary_layout[k][k1][:value].as(CellType)
-            end
-            summary_sources[irow[k1]][icol[k]] = value # summary_layout[k][k1][:value].as(CellType)
+      # process header_column
+      header_column.each do |column_label, header_attributes|
+        # p! column_label, header_attributes
+        header_attributes.each do |attribute, value|
+          case {attribute, value}
+          when {:alignment, Justify}
+            header_alignments[column_label] = value.as(Justify)
+          when {:formatter, DataCellFormatter}
+            header_formatters[column_label] = value.as(DataCellFormatter)
+          when {:styler, DataCellStyler}
+            header_stylers[column_label] = value.as(DataCellStyler)
           else
-            raise "A value is mandatory"
+            raise "Bad Summary headers definition !"
           end
         end
       end
+      p! header_alignments
+      p! header_formatters
+      p! header_stylers
+      puts
 
-      # summary_sources[0][1] = summary_layout["Product"][1][:value].as(Tablo::CellType)
-      # summary_sources[0][2] = summary_layout["Price"][9][:value].as(Proc(Tablo::CellType)).call.as(Tablo::CellType)
-      # summary_sources[1][2] = summary_layout[:tax][2][:value].as(Proc(Tablo::CellType)).call.as(Tablo::CellType)
-      # puts
-      # p! typeof(summary_layout["Price"][:value])
-      # if summary_layout["Price"][:row].as(Int32) == 1
-      #   p! summary_layout["Price"][:value].as(Proc(Tablo::CellType)).call
-      # end
-      p! Tablo::Summary.aggr_results
-      # p! Tablo::Summary.use(:tax, :sum)
-      # summary_sources[2][2] = summary_layout["Price"][:value].as(Proc(Tablo::CellType)).call.as(Tablo::CellType)
-      p! summary_sources
-      summary_sources.each do |source|
-        p! source
+      # process header_row
+      header_row.each do |column_label, value|
+        # p! column_label, value
+        header_values[column_label] = value.as(CellType)
       end
-      return
-      # initialize_arrays
-      # calculate_data_series
-      # populate_parameters
-      calculate_sources
+      p! header_values
+      puts
 
+      # process body_column
+      body_column.each do |column_label, body_attributes|
+        # p! column_label, body_attributes
+        body_attributes.each do |attribute, value|
+          case {attribute, value}
+          when {:alignment, Justify}
+            body_alignments[column_label] = value.as(Justify)
+          when {:formatter, DataCellFormatter}
+            body_formatters[column_label] = value.as(DataCellFormatter)
+          when {:styler, DataCellStyler}
+            body_stylers[column_label] = value.as(DataCellStyler)
+          else
+            raise "Bad Summary bodys definition !"
+          end
+        end
+      end
+      p! body_alignments
+      p! body_formatters
+      p! body_stylers
+      puts
+
+      # body_row = {
+      #   "Product" => {
+      #     1 => "Total excl.".as(Tablo::CellType),
+      #     3 => "Total incl.".as(Tablo::CellType),
+      #   },
+      #   :tax => {
+      #     2 => ->{ Tablo::Summary.use(:tax, Tablo::Aggregate::Sum).as(Tablo::CellType) },
+      #   },
+      defined_rows = [] of Int32
+      body_row.each do |column_label, rows|
+        p! column_label, rows
+        rows.each do |row|
+          p! row
+          row_num = row[0]
+          row_value = row[1]
+          defined_rows << row_num
+          unless body_values.has_key?(column_label)
+            body_values[column_label] = {} of Int32 => CellType | Proc(CellType)
+          end
+          case row_value
+          when Proc(CellType)
+            body_values[column_label][row_num] = row_value.call.as(CellType)
+          when CellType
+            body_values[column_label][row_num] = row_value.as(CellType)
+          end
+        end
+        # body_values[column_label] = value.as(CellType)
+      end
+      p! body_values
+      puts
+      # return
+      ##
+      # defined_rows = [] of Int32
+      # summary_bodies.each do |column_label, body|
+      #  # initialize hashes
+      #  body_values[column_label] = {} of Int32 => CellType
+      #  p! column_label, body
+      #  body.each do |attribute, attribute_value|
+      #    puts
+      #    p! attribute, attribute_value
+      #    case {attribute, attribute_value}
+      #    when {:alignment, Justify}
+      #      body_alignments[column_label] = attribute_value.as(Justify)
+      #    when {:formatter, DataCellFormatter}
+      #      body_formatters[column_label] = attribute_value.as(DataCellFormatter)
+      #    when {:styler, DataCellStyler}
+      #      body_stylers[column_label] = attribute_value.as(DataCellStyler)
+      #    else
+      #      case attribute
+      #      when :rows
+      #        p! "inside value"
+      #        p! attribute_value
+      #        p! typeof(attribute_value)
+      #        # p! attribute_value[0]
+      #        # attribute_value.each do |row|
+      #        #   case row
+      #        #   when Hash(Int32, NamedTuple(value: Proc(CellType)))
+      #        #     p! row
+      #        #   when Hash(Int32, NamedTuple(value: CellType))
+      #        #     p! row
+      #        #   else
+      #        #   end
+      #        # end
+      #      else
+      #        raise "error : unknown attribute"
+      #      end
+      #    end
+      #  end
+      #  # body_alignments[column_label] = {} of Int32 => Justify
+      #  # body_formatters[column_label] = {} of Int32 => DataCellFormatter
+      #  # body_stylers[column_label] = {} of Int32 => DataCellStyler
+      #  # p! column_label, body_rows
+      #  # body_rows.each do |row, body_attributes|
+      #  #   p! row, body_attributes
+      #  #   # defined_rows << row
+      #  #   body_attributes.each do |attribute, value|
+      #  #     p! attribute, value
+      #  #     case {attribute, value}
+      #  #     when {:alignment, Justify}
+      #  #       body_alignments[column_label] = value.as(Justify)
+      #  #     when {:formatter, DataCellFormatter}
+      #  #       body_formatters[column_label] = value.as(DataCellFormatter)
+      #  #     when {:styler, DataCellStyler}
+      #  #       body_stylers[column_label] = value.as(DataCellStyler)
+      #  #     else
+      #  #       case attribute
+      #  #       when :value
+      #  #         p! value
+      #  #         p! typeof(value)
+      #  #       else
+      #  #         raise "error : unknown attribute"
+      #  #       end
+      #  #       # when {:value, Proc(CellType)}
+      #  #       #   body_values[column_label][row] = (value.as(Proc(CellType)).call).as(CellType)
+      #  #       # when {:value, CellType}
+      #  #       #   body_values[column_label][row] = value.as(CellType)
+      #  #     end
+      #  #   end
+      #  # end
+      # end
+      # return
+      # summary_bodies.each do |column_label, body_rows|
+      #   # initialize hashes
+      #   body_values[column_label] = {} of Int32 => CellType
+      #   body_alignments[column_label] = {} of Int32 => Justify
+      #   body_formatters[column_label] = {} of Int32 => DataCellFormatter
+      #   body_stylers[column_label] = {} of Int32 => DataCellStyler
+      #   # p! column_label, body_rows
+      #   body_rows.each do |row, body_attributes|
+      #     # p! row, body_attributes
+      #     defined_rows << row
+      #     body_attributes.each do |attribute, value|
+      #       # p! attribute, value
+      #       case {attribute, value}
+      #       when {:value, Proc(CellType)}
+      #         body_values[column_label][row] = (value.as(Proc(CellType)).call).as(CellType)
+      #       when {:value, CellType}
+      #         body_values[column_label][row] = value.as(CellType)
+      #       when {:alignment, Justify}
+      #         body_alignments[column_label][row] = value.as(Justify)
+      #       when {:formatter, DataCellFormatter}
+      #         body_formatters[column_label][row] = value.as(DataCellFormatter)
+      #       when {:styler, DataCellStyler}
+      #         body_stylers[column_label][row] = value.as(DataCellStyler)
+      #       end
+      #     end
+      #   end
+      # end
+      # p! body_values
+      # p! body_alignments
+      # p! body_formatters
+      # p! body_stylers
+      #
+      # calculate rows and columns
+      row_number = {} of Int32 => Int32
+      defined_rows.sort!.uniq!.each_with_index do |row, index|
+        row_number[row] = index
+      end
+      column_number = {} of LabelType => Int32
+      table.column_registry.keys.each_with_index do |column_label, column_index|
+        column_number[column_label] = column_index
+      end
+      p! column_number
+      p! row_number
+
+      # Create an array of n columns by p rows of type CellType? = nil
+      summary_sources = [] of Array(CellType)
+      row_number.size.times do
+        summary_sources << Array.new(table.column_registry.size, nil.as(CellType))
+      end
+      p! summary_sources
+
+      # and fills it with body_values
+      body_values.each do |column_label, body_rows|
+        p! column_label, body_rows
+        body_rows.each do |body_row|
+          row = body_row[0]
+          value = body_row[1]
+          summary_sources[row_number[row]][column_number[column_label]] = value.as(CellType)
+        end
+      end
+      p! summary_sources
+      p! typeof(summary_sources)
+      p! summary_sources[0][2].class
+      # return
       # default_parameters NamedTuple contains parameters copied from the current
       # (main) table instance, which may be default values or given arguments to the
       # Table#initialize method. To ensure optimal styling between :main and :sumary
@@ -442,7 +589,7 @@ module Tablo
       # Here we use the stdlib NamedTuple.merge method, which ensures
       # all summary_options elements will be added to initializers, possibly
       # updating those of default_parameters
-      initializers = default_parameters.merge(summary_options)
+      initializers = default_parameters.merge(options)
 
       # So, in short, :summary_table is initialized by :
       # 1) For the table itself, the initializers variable contents
@@ -451,16 +598,20 @@ module Tablo
       # (the last 5 in add_column) which are read from the :main table columns.
 
       summary_table = Table.new(summary_sources, **initializers)
+      p! summary_table.body_alignment
       # summary_table has no column defined yet,
       # so we use main table for looping over columns
       table.column_registry.each_with_index do |(label, column), column_index|
-        header = headers[label]? || "" # label.to_s
+        header = (header_values[label]? || "").as(String) # label.to_s
         header_alignment = header_alignments[label]? || summary_table.header_alignment
         header_formatter = header_formatters[label]? || summary_table.header_formatter
-        header_styler = headers_styler[label]? || summary_table.header_styler
+        header_styler = header_stylers[label]? || summary_table.header_styler
         body_alignment = body_alignments[label]? || summary_table.body_alignment
+        # body_alignment = summary_table.body_alignment
         body_formatter = body_formatters[label]? || summary_table.body_formatter
-        body_styler = body_stylers[label]? || summary_table.body_styler
+        # body_formatter = summary_table.body_formatter
+        # body_styler = body_stylers[label]? || summary_table.body_styler
+        body_styler = summary_table.body_styler
         summary_table.add_column(label: label,
           header: header,
           header_alignment: header_alignment,

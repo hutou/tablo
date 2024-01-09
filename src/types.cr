@@ -299,6 +299,11 @@ module Tablo
     Footer
   end
 
+  enum SummaryRow
+    Header
+    Body
+  end
+
   # :nodoc:
   # Rows position
   enum Position
