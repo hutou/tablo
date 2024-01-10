@@ -390,4 +390,7 @@ module Tablo
 
   class IncompatibleValue < TabloException
   end
+
+  class InvalidSummaryDefinition < TabloException
+  end
 end

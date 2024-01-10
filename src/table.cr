@@ -509,15 +509,14 @@ module Tablo
     #   self.summary_table = Summary.new(self, summary_def, summary_options).run
     # end
 
-    def summary(table,
-                aggregations,
+    def summary(aggregations,
                 user_aggregations,
                 header_column,
                 header_row,
                 body_column,
                 body_row,
                 options)
-      self.summary_table = Summary.new(table,
+      self.summary_table = Summary.new(self,
         aggregations,
         user_aggregations,
         header_column,
