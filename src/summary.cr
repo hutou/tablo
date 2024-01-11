@@ -188,10 +188,16 @@ module Tablo
       # process body_row
       defined_rows = [] of Int32
       body_row.each do |column_label, rows|
+        colrow = [] of Int32
         rows.each do |row|
           row_num = row[0]
           row_value = row[1]
-          defined_rows << row_num
+          if colrow.index(row_num).nil?
+            defined_rows << row_num
+            colrow << row_num
+          else
+            raise DuplicateSummaryColumnRow.new("Summary: body definition conflict (row/col already used).")
+          end
           unless body_values.has_key?(column_label)
             body_values[column_label] = {} of Int32 => CellType | Proc(CellType)
           end
@@ -203,13 +209,14 @@ module Tablo
           end
         end
       end
-      row_number = {} of Int32 => Int32
-      defined_rows.sort!.uniq!.each_with_index do |row, index|
-        row_number[row] = index
-      end
       column_number = {} of LabelType => Int32
       table.column_registry.keys.each_with_index do |column_label, column_index|
         column_number[column_label] = column_index
+      end
+
+      row_number = {} of Int32 => Int32
+      defined_rows.sort!.uniq!.each_with_index do |row, index|
+        row_number[row] = index
       end
 
       # Create an array of n columns by p rows of type CellType? = nil
@@ -223,12 +230,6 @@ module Tablo
         body_rows.each do |body_row|
           row = body_row[0]
           value = body_row[1]
-          # TODO
-          # TODO check for conflict (cell already used !!!)
-          # TODO
-          unless summary_sources[row_number[row]][column_number[column_label]].nil?
-            # raise ...
-          end
           summary_sources[row_number[row]][column_number[column_label]] = value.as(CellType)
         end
       end

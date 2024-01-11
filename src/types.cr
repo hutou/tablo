@@ -393,4 +393,7 @@ module Tablo
 
   class InvalidSummaryDefinition < TabloException
   end
+
+  class DuplicateSummaryColumnRow < TabloException
+  end
 end
