@@ -204,6 +204,11 @@ module Tablo
   # value, cell_data, content
   # value, content
 
+  alias CellStyler = Proc(CellType, CellData, String, Int32, String) |
+                     Proc(CellType, CellData, String, String) |
+                     Proc(CellType, String, String) |
+                     Proc(String, Int32, String) |
+                     Proc(String, String)
   # ---------- TextCellFormatter --------------------------------------------------
   #
   #

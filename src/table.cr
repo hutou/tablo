@@ -501,30 +501,30 @@ module Tablo
     #  footer                 |       idem
     #  ```
     # Returns the summary table
-    # def summary(summary_def, **summary_options)
-    #   self.summary_table = Summary.new(self, summary_def, summary_options).run
-    # end
-
-    # def summary(summary_def, summary_options)
-    #   self.summary_table = Summary.new(self, summary_def, summary_options).run
-    # end
-
-    def summary(aggregations,
-                user_aggregations,
-                header_column,
-                header_row,
-                body_column,
-                body_row,
-                options)
-      self.summary_table = Summary.new(self,
-        aggregations,
-        user_aggregations,
-        header_column,
-        header_row,
-        body_column,
-        body_row,
-        options).run
+    def summary(summary_def, **summary_options)
+      self.summary_table = Summary.new(self, summary_def, summary_options).run
     end
+
+    def summary(summary_def, summary_options)
+      self.summary_table = Summary.new(self, summary_def, summary_options).run
+    end
+
+    # def summary(aggregations,
+    #             user_aggregations,
+    #             header_column,
+    #             header_row,
+    #             body_column,
+    #             body_row,
+    #             options)
+    #   self.summary_table = Summary.new(self,
+    #     aggregations,
+    #     user_aggregations,
+    #     header_column,
+    #     header_row,
+    #     body_column,
+    #     body_row,
+    #     options).run
+    # end
 
     # def summary(summary_def, summary_options)
     #   self.summary_table = Summary.new(self, summary_def, summary_options).run
