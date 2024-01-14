@@ -19,7 +19,7 @@ module Tablo
     private getter body_stylers = {} of LabelType => DataCellStyler
 
     protected class_property aggr_results = {} of LabelType => Hash(Aggregate, CellType)
-    protected class_property proc_results = {} of Symbol => CellType
+    protected class_property proc_results = {} of Symbol | String => CellType
 
     # OLD
     # protected property summary_sources = [] of Array(CellType)
@@ -97,7 +97,7 @@ module Tablo
           build_aggregation(summary_def_value)
           # debug! Summary.aggr_results
         when :user_aggregations
-          # build_user_aggregations(summary_def_value)
+          build_user_aggregations(summary_def_value)
         when :body_row
           # summary_def_value = summary_def_value.as(Array(Tuple(String, Array(Tuple(Int32, Proc(Tablo::CellType) | Tablo::CellType)))))
           # |
@@ -201,16 +201,19 @@ module Tablo
     end
 
     def build_user_aggregations(user_aggregations)
-      # p! user_aggregations
-      # return if user_aggregations.nil? || user_aggregations.empty?
-      # user_aggregations.each do |key, proc|
-      #   case proc
-      #   in Proc(Table(T), CellType)
-      #     Summary.keep(key, proc.call(table)).as(CellType)
-      #   in Proc(Enumerable(T), CellType)
-      #     Summary.keep(key, proc.call(table.sources)).as(CellType)
-      #   end
-      # end
+      debug! user_aggregations
+      return if user_aggregations.nil? || user_aggregations.empty?
+      user_aggregations.each do |key, proc|
+        case proc
+        when Proc(Table(T), CellType)
+          Summary.keep(key, proc.call(table)).as(CellType)
+        when Proc(Enumerable(T), CellType)
+          Summary.keep(key, proc.call(table.sources)).as(CellType)
+        else
+          raise InvalidSummaryDefinition.new(
+            "Summary: invalid user_aggregations definition <#{key}>")
+        end
+      end
     end
 
     def build_header_row(header_row)
@@ -227,7 +230,7 @@ module Tablo
       end
     end
 
-    def build_body_row(body_row)
+    def build_body_row_namedtuple(body_row)
       column_number = {} of LabelType => Int32
       table.column_registry.keys.each_with_index do |column_label, column_index|
         column_number[column_label] = column_index
@@ -302,11 +305,90 @@ module Tablo
       # debug! summary_sources
     end
 
+    def build_body_row(body_row)
+      column_number = {} of LabelType => Int32
+      table.column_registry.keys.each_with_index do |column_label, column_index|
+        column_number[column_label] = column_index
+      end
+      # debug! column_number
+
+      # process body_row
+      # debug! body_row
+      defined_rows = [] of Int32
+      body_row.each do |column_label, rows|
+        # debug! rows
+        colrow = [] of Int32
+        case rows
+        when Hash(Int32, CellType | Proc(CellType)),
+             Hash(Int32, Proc(CellType)),
+             Hash(Int32, CellType)
+          # when Array(Tuple(Int32, CellType | Proc(CellType))),
+          #      Array(Tuple(Int32, Proc(CellType))),
+          #      Array(Tuple(Int32, CellType))
+          # debug! rows
+          # return
+          rows.each do |row_num, row_value|
+            # debug! row
+            # row_num = row[0]
+            if colrow.index(row_num).nil?
+              defined_rows << row_num
+              colrow << row_num
+            else
+              raise DuplicateSummaryColumnRow.new(
+                "Summary: body definition conflict (row/col already used).")
+            end
+            # debug! defined_rows
+            # row_value = row[1]
+            # debug! row_value
+            case row_value
+            when CellType
+              # debug! row_value
+              unless body_values.has_key?(column_label)
+                body_values[column_label] = {} of Int32 => CellType | Proc(CellType)
+              end
+              body_values[column_label][row_num] = row_value.as(CellType)
+            when Proc(CellType)
+              # debug! row_value
+              unless body_values.has_key?(column_label)
+                body_values[column_label] = {} of Int32 => CellType | Proc(CellType)
+              end
+              body_values[column_label][row_num] = row_value.call.as(CellType)
+            end
+            # debug! body_values
+          end
+        else
+          raise InvalidSummaryDefinition.new(
+            "Summary: invalid body row definition <#{rows}>")
+        end
+      end
+
+      # Compact rows
+      row_number = {} of Int32 => Int32
+      defined_rows.sort!.uniq!.each_with_index do |row, index|
+        row_number[row] = index
+      end
+
+      # Create an array of n columns by p rows of type CellType? = nil
+      row_number.size.times do
+        summary_sources << Array.new(table.column_registry.size, nil.as(CellType))
+      end
+
+      # and fills it with body_values
+      body_values.each do |column_label, body_rows|
+        body_rows.each do |body_row|
+          row = body_row[0]
+          value = body_row[1]
+          summary_sources[row_number[row]][column_number[column_label]] = value.as(CellType)
+        end
+      end
+      # debug! summary_sources
+    end
+
     def build_header_body_column(header_body_column, rowtype)
-      debug! header_body_column
+      # debug! header_body_column
       header_body_column.each do |column_label, columns|
-        debug! "\n"
-        debug! columns
+        # debug! "\n"
+        # debug! columns
         case columns
         when Hash(Symbol, Tablo::Justify), # alignment
         # Formatters
@@ -420,8 +502,8 @@ module Tablo
              Hash(Symbol, Tablo::Justify | Proc(CellType, String) |
                           Proc(String, String))
           columns.each do |k, v|
-            debug! k
-            debug! v
+            # debug! k
+            # debug! v
             case v
             when Justify
               if rowtype == "body"
