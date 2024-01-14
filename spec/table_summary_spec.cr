@@ -30,62 +30,13 @@ def context_table
   end
 end
 
-# def summary_def_minimal
-#   summary_def = {
-#     body_row: {
-#       "Integer" => {
-#         # {1, ->{ Tablo::Summary.use("Integer", Tablo::Aggregate::Sum).as(Tablo::CellType)}}
-#         {1, "Literal value 1".as(Tablo::CellType)},
-#         {2, "Literal value 2".as(Tablo::CellType)},
-#       },
-#     },
-#     aggregation: NamedTuple.new,
-#   }
-# end
-
-def get_summary_definition_namedtuple
-  summary_definition = {
-    aggregation: [
-      {"Integer", [Tablo::Aggregate::Count]},
-      {"Float", [Tablo::Aggregate::Sum]},
-    ], #
-    # user_aggregation: [ ],
-    # header_column: [ ],
-    header_row: [
-      {"Integer", "Entier".as(Tablo::CellType)},
-      {"Float", "Réel".as(Tablo::CellType)},
-      {"Bool", "Booléen".as(Tablo::CellType)},
-    ],
-    body_column: [
-      {"Integer", [{alignment: Tablo::Justify::Left}]},
-      {"Float", [{alignment: Tablo::Justify::Left},
-                 {formatter: ->(value : Tablo::CellType) { value.to_s.upcase }}]},
-      {"Bool", [{formatter: ->(value : Tablo::CellType) { value.to_s.upcase }}]},
-    ],
-    body_row: [
-      {"Integer", [
-        {1, "Literal value 1".as(Tablo::CellType)},
-        {2, "Literal value 2".as(Tablo::CellType)},
-        {3, ->{ Tablo::Summary.use("Float", Tablo::Aggregate::Sum).as(Tablo::CellType) }},
-      ]},
-      {"Float", [
-        {1, ->{ Tablo::Summary.use("Float", Tablo::Aggregate::Sum).as(Tablo::CellType) }},
-      ]},
-      {"Bool", [
-        {1, "Bool literal value".as(Tablo::CellType)},
-        # {2, ->{ 42.as(Int32) }},
-      ]},
-    ],
-  }
-end
-
 def get_summary_definition
   summary_definition = {
     :aggregation => {
       "Integer" => [Tablo::Aggregate::Count],
       "Float"   => [Tablo::Aggregate::Sum],
     }, #
-    :user_aggregations => {
+    :user_aggregation => {
       :user_source => ->(sources : Enumerable(Array(Int32 | Float64 | Bool | String))) {
         42.as(Tablo::CellType)
       },
