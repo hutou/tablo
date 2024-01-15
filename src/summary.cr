@@ -4,7 +4,6 @@ require "big"
 
 module Tablo
   class Summary(T, U, V)
-    # NEW
     getter summary_definition, summary_options, table
     property summary_sources = [] of Array(CellType)
 
@@ -25,23 +24,6 @@ module Tablo
       Header
       Body
     end
-
-    # OLD
-    # protected property summary_sources = [] of Array(CellType)
-    # private getter table
-
-    # private getter header_values = {} of LabelType => CellType
-    # private getter header_alignments = {} of LabelType => Justify
-    # private getter header_formatters = {} of LabelType => DataCellFormatter
-    # private getter header_stylers = {} of LabelType => DataCellStyler
-
-    # private getter body_values = {} of LabelType => Hash(Int32, CellType | Proc(CellType))
-    # private getter body_alignments = {} of LabelType => Justify
-    # private getter body_formatters = {} of LabelType => DataCellFormatter
-    # private getter body_stylers = {} of LabelType => DataCellStyler
-
-    # private getter aggregations, user_aggregations, header_column, header_row,
-    #   body_column, body_row, options
 
     def self.keep(key_column, key_aggregate, value)
       # # create first hash key if necessary
@@ -65,79 +47,64 @@ module Tablo
 
     def initialize(@table : Table(T),
                    @summary_definition : U,
-                   @summary_options : V) # forall U, V
+                   @summary_options : V)
     end
 
     def build_summary
-      # Important : summary_def keys are processed by order of insertion
-      # so, because of possible dependencies, some definitions *must* come first
-      body_row_key = false
-      # *VERY IMPORTANT*
-      summary_def = summary_definition
-      # debug! summary_def
-      # if summary_def.has_key?(:aggregation)
-      #   p! typeof(summary_def[:aggregation])
-      #   p! summary_def[:aggregation]
-      #   build_aggregation(summary_def[:aggregation])
-      # end
+      # Important : summary_definition keys must be processed by order of priority
+      # :aggregation and :user_aggregation first, other keys next
 
-      # if summary_def.has_key?(:body_row)
-      #   p! typeof(summary_def[:body_row])
-      #   p! summary_def[:body_row]
-      # end
+      summary_definition_keys = summary_definition.keys
 
-      # np! summary_def
-      summary_def.each do |summary_def_key, summary_def_value|
-        case summary_def_key
-        when :aggregation
-          # aggregation value is an array of tuples
-          # aggregation: [
-          #   {"Integer", [Tablo::Aggregate::Count]},
-          #   {"Float", [Tablo::Aggregate::Sum]},
-          # ],
+      if summary_definition.has_key?(:aggregation)
+        build_aggregation(summary_definition[:aggregation])
+        summary_definition_keys -= [:aggregation]
+      end
 
-          # p! typeof(summary_def_value)
-          # p! summary_def_value
-          build_aggregation(summary_def_value)
-          # debug! Summary.aggr_results
-        when :user_aggregation
-          build_user_aggregation(summary_def_value)
-        when :body_row
-          # summary_def_value = summary_def_value.as(Array(Tuple(String, Array(Tuple(Int32, Proc(Tablo::CellType) | Tablo::CellType)))))
-          # |
-          #                       Array(Tuple(Int32, Proc(Tablo::CellType))))))
-          # summary_def_value = summary_def_value.as(Array(Tuple(String, Array(Tuple(Int32, Proc(Tablo::CellType) | Tablo::CellType)))))
-          # summary_def_value = summary_def_value.as(
-          #   Array(Tuple(String, Array(Tuple(Int32, Proc(Tablo::CellType) | Tablo::CellType)) |
-          #                       Array(Tuple(Int32, Proc(Tablo::CellType))) |
-          #                       Array(Tuple(Int32, Tablo::CellType)))))
-          # debug! summary_def_value
-          body_row_key = true # body_row *must* be defined !
-          build_body_row(summary_def_value)
-        when :body_column
-          build_header_body_column(summary_def_value, HeaderOrBody::Body)
-        when :header_row
-          build_header_row(summary_def_value)
-        when :header_column
-          build_header_body_column(summary_def_value, HeaderOrBody::Header)
-        else
-          raise "Invalid summary key!"
-        end
+      if summary_definition.has_key?(:user_aggregation)
+        build_user_aggregation(summary_definition[:user_aggregation])
+        summary_definition_keys -= [:user_aggregation]
+      end
+
+      if summary_definition.has_key?(:header_column)
+        build_header_body_column(summary_definition[:header_column], HeaderOrBody::Header)
+        summary_definition_keys -= [:header_column]
+      end
+
+      if summary_definition.has_key?(:header_row)
+        build_header_row(summary_definition[:header_row])
+        summary_definition_keys -= [:header_row]
+      end
+
+      if summary_definition.has_key?(:body_column)
+        build_header_body_column(summary_definition[:body_column], HeaderOrBody::Body)
+        summary_definition_keys -= [:body_column]
+      end
+
+      body_row_key = false # body_row *must* be defined !
+      if summary_definition.has_key?(:body_row)
+        body_row_key = true
+        build_body_row(summary_definition[:body_row])
+        summary_definition_keys -= [:body_row]
       end
 
       unless body_row_key
-        raise "Mandatory key !"
+        raise InvalidSummaryDefinition.new(
+          "Summary: invalid definition (:body_row key missing)")
+      end
+      unless summary_definition_keys.empty?
+        raise InvalidSummaryDefinition.new(
+          "Summary: invalid definition key(s) <#{summary_definition_keys.join(", ")}>")
       end
     end
 
-    def build_aggregation(aggregation_def)
-      return if aggregation_def.nil? || aggregation_def.empty?
+    def build_aggregation(aggregation)
       running_sum = {} of LabelType => Numbers
       running_min = {} of LabelType => Numbers
       running_max = {} of LabelType => Numbers
       running_count = {} of LabelType => Numbers
       column_aggregates = {} of LabelType => Array(Aggregate)
-      aggregation_def.each do |column_id, aggregates|
+      aggregation.each do |column_id, aggregates|
         # debug! column_id
         # debug! aggregates
         case {column_id, aggregates}
@@ -147,8 +114,6 @@ module Tablo
           raise "Error on aggregates"
         end
       end
-      # debug! typeof(column_aggregates)
-      # debug! column_aggregates
       table.sources.each_with_index do |source, index|
         column_aggregates.each do |column_id, aggregates|
           column = table.column_registry[column_id]
@@ -204,10 +169,10 @@ module Tablo
       end
     end
 
-    def build_user_aggregation(user_aggregation_def)
-      debug! user_aggregation_def
-      return if user_aggregation_def.nil? || user_aggregation_def.empty?
-      user_aggregation_def.each do |key, proc|
+    def build_user_aggregation(user_aggregation)
+      debug! user_aggregation
+      return if user_aggregation.nil? || user_aggregation.empty?
+      user_aggregation.each do |key, proc|
         case proc
         when Proc(Table(T), CellType)
           Summary.keep(key, proc.call(table)).as(CellType)
@@ -234,106 +199,19 @@ module Tablo
       end
     end
 
-    def build_body_row_namedtuple(body_row)
-      column_number = {} of LabelType => Int32
-      table.column_registry.keys.each_with_index do |column_label, column_index|
-        column_number[column_label] = column_index
-      end
-      # debug! column_number
-
-      # process body_row
-      # debug! body_row
-      defined_rows = [] of Int32
-      body_row.each do |column_label, rows|
-        # debug! rows
-        colrow = [] of Int32
-        case rows
-        when Array(Tuple(Int32, CellType | Proc(CellType))),
-             Array(Tuple(Int32, Proc(CellType))),
-             Array(Tuple(Int32, CellType))
-          # debug! rows
-          rows.each do |row|
-            # debug! row
-            row_num = row[0]
-            if colrow.index(row_num).nil?
-              defined_rows << row_num
-              colrow << row_num
-            else
-              raise DuplicateSummaryColumnRow.new(
-                "Summary: body definition conflict (row/col already used).")
-            end
-            # debug! defined_rows
-            row_value = row[1]
-            # debug! row_value
-            case row_value
-            when CellType
-              # debug! row_value
-              unless body_values.has_key?(column_label)
-                body_values[column_label] = {} of Int32 => CellType | Proc(CellType)
-              end
-              body_values[column_label][row_num] = row_value.as(CellType)
-            when Proc(CellType)
-              # debug! row_value
-              unless body_values.has_key?(column_label)
-                body_values[column_label] = {} of Int32 => CellType | Proc(CellType)
-              end
-              body_values[column_label][row_num] = row_value.call.as(CellType)
-            end
-            # debug! body_values
-          end
-        else
-          raise InvalidSummaryDefinition.new(
-            "Summary: invalid body row definition <#{rows}>")
-        end
-      end
-
-      # Compact rows
-      row_number = {} of Int32 => Int32
-      defined_rows.sort!.uniq!.each_with_index do |row, index|
-        row_number[row] = index
-      end
-
-      # Create an array of n columns by p rows of type CellType? = nil
-      row_number.size.times do
-        summary_sources << Array.new(table.column_registry.size, nil.as(CellType))
-      end
-
-      # and fills it with body_values
-      body_values.each do |column_label, body_rows|
-        body_rows.each do |body_row|
-          row = body_row[0]
-          value = body_row[1]
-          summary_sources[row_number[row]][column_number[column_label]] = value.as(CellType)
-        end
-      end
-      # debug! summary_sources
-    end
-
     def build_body_row(body_row)
       column_number = {} of LabelType => Int32
       table.column_registry.keys.each_with_index do |column_label, column_index|
         column_number[column_label] = column_index
       end
-      # debug! column_number
-
-      # process body_row
-      # debug! body_row
       defined_rows = [] of Int32
       body_row.each do |column_label, rows|
-        # debug! rows
         colrow = [] of Int32
         case rows
         when Hash(Int32, CellType | Proc(CellType)),
              Hash(Int32, Proc(CellType)),
              Hash(Int32, CellType)
-          # when Array(Tuple(Int32, CellType | Proc(CellType))),
-          #      Array(Tuple(Int32, Proc(CellType))),
-          #      Array(Tuple(Int32, CellType))
-          # debug! rows
-          # return
           rows.each do |row_num, row_value|
-            # debug! row
-            # row_num = row[0]
             if colrow.index(row_num).nil?
               defined_rows << row_num
               colrow << row_num
@@ -341,24 +219,18 @@ module Tablo
               raise DuplicateSummaryColumnRow.new(
                 "Summary: body definition conflict (row/col already used).")
             end
-            # debug! defined_rows
-            # row_value = row[1]
-            # debug! row_value
             case row_value
             when CellType
-              # debug! row_value
               unless body_values.has_key?(column_label)
                 body_values[column_label] = {} of Int32 => CellType | Proc(CellType)
               end
               body_values[column_label][row_num] = row_value.as(CellType)
             when Proc(CellType)
-              # debug! row_value
               unless body_values.has_key?(column_label)
                 body_values[column_label] = {} of Int32 => CellType | Proc(CellType)
               end
               body_values[column_label][row_num] = row_value.call.as(CellType)
             end
-            # debug! body_values
           end
         else
           raise InvalidSummaryDefinition.new(
@@ -366,18 +238,15 @@ module Tablo
         end
       end
 
-      # Compact rows
       row_number = {} of Int32 => Int32
       defined_rows.sort!.uniq!.each_with_index do |row, index|
         row_number[row] = index
       end
 
-      # Create an array of n columns by p rows of type CellType? = nil
       row_number.size.times do
         summary_sources << Array.new(table.column_registry.size, nil.as(CellType))
       end
 
-      # and fills it with body_values
       body_values.each do |column_label, body_rows|
         body_rows.each do |body_row|
           row = body_row[0]
@@ -385,14 +254,10 @@ module Tablo
           summary_sources[row_number[row]][column_number[column_label]] = value.as(CellType)
         end
       end
-      # debug! summary_sources
     end
 
     def build_header_body_column(header_body_column, rowtype)
-      # debug! header_body_column
       header_body_column.each do |column_label, columns|
-        # debug! "\n"
-        # debug! columns
         case columns
         when Hash(Symbol, Tablo::Justify), # alignment
         # Formatters
@@ -506,8 +371,6 @@ module Tablo
              Hash(Symbol, Tablo::Justify | Proc(CellType, String) |
                           Proc(String, String))
           columns.each do |k, v|
-            # debug! k
-            # debug! v
             case {k, v}
             when {:alignment, Justify}
               case rowtype

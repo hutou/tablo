@@ -1,12 +1,5 @@
 require "./spec_helper"
 
-def set_context
-  # Tablo::Config.border_type = Tablo::BorderName::Fancy
-  # Tablo::Config.title = Tablo::Title.new("This a very long text to be displayed as title heading", frame: Tablo::Frame.new)
-  # Tablo::Config.subtitle = Tablo::SubTitle.new("A very simple subtitle", frame: Tablo::Frame.new)
-  # Tablo::Config.footer = Tablo::Footer.new("Do you need a footer?", frame: Tablo::Frame.new)
-end
-
 def context_data
   sources = [
     [2, 3.14, false, "abcd"],
@@ -20,6 +13,7 @@ end
 def context_table
   sources = context_data
   table = Tablo::Table.new(sources,
+    omit_last_rule: true,
     row_divider_frequency: 1) do |t|
     t.add_column("Integer") { |n| n[0] }
     t.add_column("Float") { |n| n[1] }
@@ -32,19 +26,6 @@ end
 
 def get_summary_definition
   summary_definition = {
-    :aggregation => {
-      "Integer" => [Tablo::Aggregate::Count],
-      "Float"   => [Tablo::Aggregate::Sum],
-    }, #
-    :user_aggregation => {
-      :user_source => ->(sources : Enumerable(Array(Int32 | Float64 | Bool | String))) {
-        42.as(Tablo::CellType)
-      },
-      :user_table => ->(tbl : Tablo::Table(Array(Int32 | Float64 | Bool | String))) {
-        (tbl.source_column("Integer").select(&.is_a?(Int32))
-          .map &.as(Int32)).sum.as(Tablo::CellType)
-      },
-    },
     :header_column => {
       "Integer" => {:alignment => Tablo::Justify::Right},
       "Float"   => {:alignment => Tablo::Justify::Left,
@@ -79,27 +60,39 @@ def get_summary_definition
         1 => "Bool literal value".as(Tablo::CellType),
       },
     },
+    :aggregation => {
+      "Integer" => [Tablo::Aggregate::Count],
+      "Float"   => [Tablo::Aggregate::Sum],
+    }, #
+    :user_aggregation => {
+      :user_source => ->(sources : Enumerable(Array(Int32 | Float64 | Bool | String))) {
+        42.as(Tablo::CellType)
+      },
+      :user_table => ->(tbl : Tablo::Table(Array(Int32 | Float64 | Bool | String))) {
+        (tbl.source_column("Integer").select(&.is_a?(Int32))
+          .map &.as(Int32)).sum.as(Tablo::CellType)
+      },
+    },
   }
 end
 
-describe "#{Tablo::Table} -> summary method", tags: "summary" do
-  context "summary_definition" do
-    #   context do
-    tbl = context_table
-    tbl.summary(get_summary_definition)
-    describe "call = table.summary(summary_def, options)" do
-      it "returns valid data", focus: true do
-        sources_array = tbl.summary.as(Tablo::SummaryTable).sources.to_a
-        # debug! sources_array
-        sources_array[0][0].should eq("Literal value 1")
-        sources_array[1][0].should eq("Literal value 2")
-        sources_array[2][0].should eq(12.87)
-        sources_array[0][1].should eq(12.87)
-        sources_array[0][2].should eq("Bool literal value")
-        # puts "\n#{tbl}"
-        # puts tbl.summary
-        puts "\n#{tbl.summary}"
-      end
-    end
+describe "#{Tablo::Table} -> summary definition", tags: "summary" do
+  tbl = context_table
+  tbl.summary(get_summary_definition,
+    {body_styler:   ->(s : String) { s.colorize(:green).to_s },
+     header_styler: ->(s : String) { s.colorize(:blue).mode(:italic).to_s },
+     border:        Tablo::Border.new(Tablo::BorderName::Ascii,
+       styler: ->(s : String) { s.colorize(:yellow).to_s })})
+  it "returns valid data", focus: true do
+    sources_array = tbl.summary.as(Tablo::SummaryTable).sources.to_a
+    # debug! sources_array
+    sources_array[0][0].should eq("Literal value 1")
+    sources_array[1][0].should eq("Literal value 2")
+    sources_array[2][0].should eq(12.87)
+    sources_array[0][1].should eq(12.87)
+    sources_array[0][2].should eq("Bool literal value")
+    puts "\n#{tbl}"
+    puts tbl.summary
+    # puts "\n#{tbl.summary}"
   end
 end
