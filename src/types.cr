@@ -97,6 +97,7 @@ module Tablo
     Markdown
     Modern
     Fancy
+    Empty
     Blank
   end
 

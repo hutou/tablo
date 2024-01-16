@@ -96,7 +96,8 @@ module Tablo
       BorderName::ReducedModern => "E EE EE EE E────",
       BorderName::Markdown      => "   |||   |||  - ",
       BorderName::Fancy         => "╭┬╮├┼┤╰┴╯│:│─−-⋅",
-      BorderName::Blank         => "EEEEEEEEEEEEEEEE",
+      BorderName::Empty         => "EEEEEEEEEEEEEEEE",
+      BorderName::Blank         => "SSSSSSSSSSSSSSSS",
     }
 
     # Primary constructor, defined by a string or by a hash of predefined strings
