@@ -105,8 +105,6 @@ module Tablo
       running_count = {} of LabelType => Numbers
       column_aggregates = {} of LabelType => Array(Aggregate)
       aggregation.each do |column_id, aggregates|
-        # debug! column_id
-        # debug! aggregates
         case {column_id, aggregates}
         when {LabelType, Array(Aggregate)}
           column_aggregates[column_id] = aggregates.as(Array(Aggregate))
@@ -170,7 +168,6 @@ module Tablo
     end
 
     def build_user_aggregation(user_aggregation)
-      debug! user_aggregation
       return if user_aggregation.nil? || user_aggregation.empty?
       user_aggregation.each do |key, proc|
         case proc
@@ -186,9 +183,7 @@ module Tablo
     end
 
     def build_header_row(header_row)
-      # debug! header_row
       header_row.each do |column_label, row|
-        # debug! row
         case row
         when CellType
           header_values[column_label] = row.as(CellType)
@@ -398,6 +393,9 @@ module Tablo
                 "Summary: invalid <#{rowtype}> column definition <#{k}>")
             end
           end
+        else
+          raise InvalidSummaryDefinition.new(
+            "Summary: invalid <#{columns}> column definition for <#{column_label}>")
         end
       end
     end
