@@ -1,82 +1,60 @@
 require "./spec_helper"
 
-# def context_data
-#   sources = [
-#     [2, 3.14, false, "abcd"],
-#     [12, 2.78, false, "xyz"],
-#     [42, 4.21, true, "ijkl"],
-#     [33, 1.41, false, "rst"],
-#     [17, 1.33, true, "uvw"],
-#   ]
-# end
+module Tablo
+  record Aggregation, column : LabelType, aggregates : Array(Aggregate)
 
-# def context_table
-#   sources = context_data
-#   table = Tablo::Table.new(sources,
-#     omit_last_rule: true,
-#     row_divider_frequency: 1) do |t|
-#     t.add_column("Integer") { |n| n[0] }
-#     t.add_column("Float") { |n| n[1] }
-#     t.add_group("Number")
-#     t.add_column("Bool") { |n| n[2] }
-#     t.add_column("String") { |n| n[3] }
-#     t.add_group("Other")
-#   end
-# end
+  record UserAggregation(A), ident : Symbol, proc : Proc(Table(A), CellType)
 
-# def get_summary_definition
-#   summary_definition = {
-#     :header_column => {
-#       "Integer" => {:alignment => Tablo::Justify::Right},
-#       "Float"   => {:alignment => Tablo::Justify::Left,
-#                   :formatter => ->(value : Tablo::CellType) { value.to_s.upcase },
-#                   :styler => ->(s : String) { s.colorize(:yellow).to_s }},
-#       "Bool" => {:formatter => ->(value : Tablo::CellType) { value.to_s.upcase }},
-#     },
-#     :header_row => {
-#       "Integer" => "Entier".as(Tablo::CellType),
-#       "Float"   => "Réel".as(Tablo::CellType),
-#       "Bool"    => "Booléen".as(Tablo::CellType),
-#     },
-#     :body_column => {
-#       "Integer" => {:alignment => Tablo::Justify::Right},
-#       "Float"   => {:alignment => Tablo::Justify::Left,
-#                   :formatter => ->(value : Tablo::CellType) { value.to_s.upcase },
-#                   :styler => ->(s : String) { s.colorize(:red).to_s }},
-#       "Bool" => {:formatter => ->(value : Tablo::CellType) { value.to_s.upcase }},
-#     },
-#     :body_row => {
-#       "Integer" => {
-#         1 => "Literal value 1".as(Tablo::CellType),
-#         2 => "Literal value 2".as(Tablo::CellType),
-#         3 => ->{ Tablo::Summary.use("Float",
-#           Tablo::Aggregate::Sum).as(Tablo::CellType) },
-#       },
-#       "Float" => {
-#         1 => ->{ Tablo::Summary.use("Float",
-#           Tablo::Aggregate::Sum).as(Tablo::CellType) },
-#       },
-#       "Bool" => {
-#         1 => "Bool literal value".as(Tablo::CellType),
-#       },
-#     },
-#     :aggregation => {
-#       "Integer" => [Tablo::Aggregate::Count],
-#       "Float"   => [Tablo::Aggregate::Sum],
-#     }, #
-#     :user_aggregation => {
-#       :user_source => ->(sources : Enumerable(Array(Int32 | Float64 | Bool | String))) {
-#         42.as(Tablo::CellType)
-#       },
-#       :user_table => ->(tbl : Tablo::Table(Array(Int32 | Float64 | Bool | String))) {
-#         (tbl.source_column("Integer").select(&.is_a?(Int32))
-#           .map &.as(Int32)).sum.as(Tablo::CellType)
-#       },
-#     },
-#   }
-# end
+  record HeaderColumn, column : LabelType, alignment : Justify? = nil,
+    formatter : DataCellFormatter? = nil, styler : DataCellStyler? = nil
 
-record Entry, product : String, quantity : Int32?, price : Int32?
+  record BodyColumn, column : LabelType, alignment : Justify? = nil,
+    formatter : DataCellFormatter? = nil, styler : DataCellStyler? = nil
+
+  record HeaderRow, column : LabelType, content : CellType
+
+  record BodyRow, column : LabelType, row : Int32,
+    content : CellType | Proc(CellType)
+end
+
+summary_definition = [
+  Tablo::Aggregation.new("Product", [Tablo::Aggregate::Count]),
+  Tablo::Aggregation.new("Price", [Tablo::Aggregate::Sum]),
+  Tablo::UserAggregation(Entry).new(ident: :user_table, proc: ->(tbl : Tablo::Table(Entry)) { (tbl.source_column("Quantity").select(&.is_a?(Int32)).map &.as(Int32)).sum.as(Tablo::CellType) }),
+  Tablo::UserAggregation(Entry).new(ident: :user_table2, proc: ->(tbl : Tablo::Table(Entry)) { (tbl.source_column("Price").select(&.is_a?(Int32)).map &.as(Int32)).sum.as(Tablo::CellType) }),
+  Tablo::BodyColumn.new("Product", alignment: nil,
+    formatter: ->(value : Tablo::CellType) {
+      value.is_a?(String) ? value : value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
+    },
+    styler: ->(s : String) { s.colorize(:blue).to_s }),
+  Tablo::BodyRow.new("Product", 1, "SubTotal"),
+  Tablo::BodyRow.new("Product", 2, ->{ Tablo::Summary.use("Product", Tablo::Aggregate::Count) }),
+  Tablo::HeaderRow.new(column: "Product", content: "Mon produit"),
+  Tablo::HeaderRow.new(column: "Price", content: "Prix serré"),
+]
+
+record Entry2, recno : String, integer1 : Int32, integer2 : Int32?,
+  float1 : Float64, float2 : Float64?, boolean : Bool?, string : String?
+
+datasource = [
+  Entry2.new("Rec1", 3, 18, 3.14159, 2.789, false, "abc"),
+  Entry2.new("Rec2", 7, 117, 4.21, nil, false, "ijk"),
+  Entry2.new("Rec3", 4, nil, 8.7436, 11.174, true, "ijk"),
+  Entry2.new("Rec4", 12, 93, 1.121, 4.778, false, "ABC"),
+  Entry2.new("Rec5", 8, 42, 7.998, 19.713, true, "xyz"),
+  Entry2.new("Rec6", 1, 33, 1.7398, 12.433, nil, "Def"),
+  Entry2.new("Rec7", 9, 107, 9.221, 22.142, false, "abc"),
+  Entry2.new("Rec8", 6, nil, 3.784, 15.45, true, "Def"),
+  Entry2.new("Rec9", 13, 82, 6.4455, 19.777, true, "ijk"),
+]
+
+struct Entry
+  include Tablo::CellType
+  getter product, quantity, price
+
+  def initialize(@product : String, @quantity : Int32?, @price : Int32?)
+  end
+end
 
 def context_data
   invoice = [
@@ -105,96 +83,15 @@ def context_table
       body_formatter: ->(value : Tablo::CellType) {
         "%.2f" % (value.as(Int32) / 100)
       }) { |n| n.price.nil? || n.quantity.nil? ? nil : (n.price.as(Int32) * n.quantity.as(Int32)) }
+    t.add_column(:entry) { |n| n }
     # add a masked column
   end
 end
 
-#     :aggregation => {
-#       "Integer" => [Tablo::Aggregate::Count],
-#       "Float"   => [Tablo::Aggregate::Sum],
-#     }, #
-def get_summary_definition
-  summary_definition = {
-    :aggregation => {
-      "Product" => [Tablo::Aggregate::Count],
-      :total    => [Tablo::Aggregate::Sum, Tablo::Aggregate::Count,
-                 Tablo::Aggregate::Min, Tablo::Aggregate::Max],
-      "Price" => [Tablo::Aggregate::Sum, Tablo::Aggregate::Count,
-                  Tablo::Aggregate::Min, Tablo::Aggregate::Max],
-    },
-    :user_aggregation => {
-      :user_sum_price_source => ->(invoice : Enumerable(Entry)) { 42.as(Tablo::CellType) },
-      :user_sum_price_column => ->(tbl : Tablo::Table(Entry)) {
-        (tbl.source_column("Price").select(&.is_a?(Int32)).map &.as(Int32)).sum.as(Tablo::CellType)
-      },
-    },
-    # :header_column => {
-    #   "Product" => {
-    #     :alignment => Tablo::Justify::Left,
-    #     :formatter => ->(value : Tablo::CellType) { value.to_s },
-    #   },
-    # :tax => {
-    #   :alignment => Tablo::Justify::Right,
-    #   :styler    => ->(s : String) { s },
-    # },
-    # "Price" => {
-    #   :alignment => Tablo::Justify::Right,
-    # },
-    # },
-    # :header_row => {
-    #   "Product" => "Product\nName",
-    #   # :tax      => "VAT 20%",
-    #   "Price" => "Unit\nPrice",
-    # },
-    :body_column => {
-      "Product" => {
-        :alignment => Tablo::Justify::Left,
-        :formatter => ->(value : Tablo::CellType) { value.to_s },
-        :styler    => ->(s : String) { s.colorize(:yellow).to_s },
-      },
-      "Price" => {
-        :alignment => Tablo::Justify::Right,
-        :styler    => ->(s : String) { s.colorize(:magenta).to_s },
-      },
-      :total => {
-        :alignment => Tablo::Justify::Right,
-        :styler    => ->(s : String) { s.colorize(:blue).to_s },
-        :formatter => ->(value : Tablo::CellType) {
-          value.is_a?(String) ? value : "%.2f" % (value.as(Int32) / 100)
-        },
-      },
-    },
-    :body_row => {
-      "Price" => {
-        1 => "SubTotal".as(Tablo::CellType),
-        2 => "Discount 5%".as(Tablo::CellType),
-        3 => "SubTotal after discount".as(Tablo::CellType),
-        4 => "Tax (rate 20%)".as(Tablo::CellType),
-        5 => "========".as(Tablo::CellType),
-        6 => "Balance due".as(Tablo::CellType),
-      },
-      :total => {
-        1 => ->{ Tablo::Summary.use(:total, Tablo::Aggregate::Sum).as(Tablo::CellType) },
-        2 => ->{ (Tablo::Summary.keep(:discount,
-          (Tablo::Summary.use(:total, Tablo::Aggregate::Sum).as(Int32) * 0.05)
-            .to_i)).as(Tablo::CellType) },
-        3 => ->{ (Tablo::Summary.keep(:total_after_discount,
-          Tablo::Summary.use(:total, Tablo::Aggregate::Sum).as(Int32) -
-          Tablo::Summary.use(:discount).as(Int32))).as(Tablo::CellType) },
-        4 => ->{ (Tablo::Summary.keep(:tax,
-          (Tablo::Summary.use(:total_after_discount).as(Int32) * 0.2)
-            .to_i)).as(Tablo::CellType) },
-        5 => "========".as(Tablo::CellType),
-        6 => ->{ (Tablo::Summary.use(:tax).as(Int32) +
-                  Tablo::Summary.use(:total_after_discount).as(Int32)).as(Tablo::CellType) },
-      },
-    },
-  }
-end
-
 describe "#{Tablo::Table} -> summary definition", tags: "summary" do
   tbl = context_table
-  tbl.summary(get_summary_definition,
+  # tbl.summary(get_summary_definition,
+  tbl.summary(summary_definition,
     {
       masked_headers: true,
       # body_styler:    ->(s : String) { s.colorize(:green).to_s },
@@ -221,4 +118,7 @@ end
 #
 # TODO
 # Border, define a "space" BordefName  (<> Blank)
+# and update tutorial and API accordingly !
+#
+# # in case of summary.pack, update main table column widths
 # TODO
