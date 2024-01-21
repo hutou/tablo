@@ -101,9 +101,41 @@ module Tablo
       running_max = {} of LabelType => Numbers
       running_count = {} of LabelType => Numbers
       column_aggregates = {} of LabelType => Array(Aggregate)
+      duplicates = {} of LabelType => Hash(Aggregate, Int32)
+      debug! aggregations
       aggregations.each do |entry|
         debug! entry
-        column_aggregates[entry.column] = entry.aggregates
+        if entry.column.is_a?(Array)
+          cols = entry.column.as(Array(LabelType))
+        else
+          cols = [entry.column.as(LabelType)].as(Array(LabelType))
+        end
+        debug! cols
+        cols.each do |col|
+          debug! col
+          debug! entry.aggregate
+          if entry.aggregate.is_a?(Array)
+            aggregates = entry.aggregate.as(Array(Aggregate))
+          else
+            aggregates = [entry.aggregate.as(Aggregate)].as(Array(Aggregate))
+          end
+          # entry.aggregates.each do |aggregate|
+          aggregates.each do |aggregate|
+            unless duplicates.has_key?(col)
+              duplicates[col] = {} of Aggregate => Int32
+            end
+            if duplicates[col].has_key?(aggregate)
+              raise DuplicateInSummaryDefinition.new "Duplicate error on aggregations : <#{aggregate}> for <#{col}>"
+            else
+              duplicates[col.as(LabelType)][aggregate] = 1
+            end
+          end
+          column_aggregates[col.as(LabelType)] = aggregates
+          # entry.aggregates.as(Array(Aggregate))
+          # else
+          #   column_aggregates[col.as(LabelType)] = [entry.aggregates.as(Aggregate)].as(Array(Aggregate))
+          # end
+        end
       end
       debug! column_aggregates
       table.sources.each_with_index do |source, index|
@@ -111,36 +143,41 @@ module Tablo
           column = table.column_registry[column_id]
           value = column.extractor.call(source, index)
           next if value.nil?
+
           aggregates.each do |aggregate|
+            #
+            # cols = (entry.column.is_a?(Array) ? entry.column : [entry.column]).as(Array(LabelType))
+            # cols = entry.column.is_a?(Array) ? entry.column : [entry.column]
+            # debug! cols
             case aggregate
-            when Aggregate::Sum
+            in Aggregate::Sum
               if value.is_a?(Number)
-                if index.zero?
-                  running_sum[column_id] = value
-                else
+                if running_sum.has_key?(column_id)
                   running_sum[column_id] += value
+                else
+                  running_sum[column_id] = value
                 end
               end
-            when Aggregate::Count
-              if index.zero?
-                running_count[column_id] = 1
-              else
+            in Aggregate::Count
+              if running_count.has_key?(column_id)
                 running_count[column_id] += 1
+              else
+                running_count[column_id] = 1
               end
-            when Aggregate::Min
+            in Aggregate::Min
               if value.is_a?(Number)
-                if index.zero?
-                  running_min[column_id] = value
-                else
+                if running_min.has_key?(column_id)
                   running_min[column_id] = [running_min[column_id], value].min
+                else
+                  running_min[column_id] = value
                 end
               end
-            when Aggregate::Max
+            in Aggregate::Max
               if value.is_a?(Number)
-                if index.zero?
-                  running_max[column_id] = value
-                else
+                if running_max.has_key?(column_id)
                   running_max[column_id] = [running_max[column_id], value].max
+                else
+                  running_max[column_id] = value
                 end
               end
             end
@@ -209,7 +246,7 @@ module Tablo
           defined_rows << entry.row
           colrow << entry.row
         else
-          raise DuplicateSummaryColumnRow.new(
+          raise DuplicateInSummaryDefinition.new(
             "Summary: body definition conflict (row/col already used).")
         end
         unless body_values.has_key?(entry.column)

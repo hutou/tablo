@@ -1,40 +1,41 @@
 require "./spec_helper"
 
-module Tablo
-  record Aggregation, column : LabelType, aggregates : Array(Aggregate)
-
-  record UserAggregation(A), ident : Symbol, proc : Proc(Table(A), CellType)
-
-  record HeaderColumn, column : LabelType, alignment : Justify? = nil,
-    formatter : DataCellFormatter? = nil, styler : DataCellStyler? = nil
-
-  record BodyColumn, column : LabelType, alignment : Justify? = nil,
-    formatter : DataCellFormatter? = nil, styler : DataCellStyler? = nil
-
-  record HeaderRow, column : LabelType, content : CellType
-
-  record BodyRow, column : LabelType, row : Int32,
-    content : CellType | Proc(CellType)
-end
-
 summary_definition = [
+  # Tablo::Aggregation.new("Product", [Tablo::Aggregate::Count, Tablo::Aggregate::Max]),
+  # Tablo::Aggregation.new("Product", [Tablo::Aggregate::Count, Tablo::Aggregate::Max]),
+  Tablo::Aggregation.new(["Quantity", "Price"].map &.as(Tablo::LabelType),
+    [Tablo::Aggregate::Count, Tablo::Aggregate::Max, Tablo::Aggregate::Sum]),
+  # Tablo::Aggregation.new("Price", [Tablo::Aggregate::Count]),
   Tablo::Aggregation.new("Product", [Tablo::Aggregate::Count]),
-  Tablo::Aggregation.new("Price", [Tablo::Aggregate::Sum]),
-  Tablo::UserAggregation(Entry).new(ident: :user_table, proc: ->(tbl : Tablo::Table(Entry)) { (tbl.source_column("Quantity").select(&.is_a?(Int32)).map &.as(Int32)).sum.as(Tablo::CellType) }),
-  Tablo::UserAggregation(Entry).new(ident: :user_table2, proc: ->(tbl : Tablo::Table(Entry)) { (tbl.source_column("Price").select(&.is_a?(Int32)).map &.as(Int32)).sum.as(Tablo::CellType) }),
+  Tablo::UserAggregation(Entry).new(
+    ident: :user_table, proc: ->(tbl : Tablo::Table(Entry)) {
+    (tbl.sources.select(&.quantity.is_a?(Int32))
+      .map &.quantity.as(Int32)).sum.as(Tablo::CellType)
+  }),
+  Tablo::UserAggregation(Entry).new(
+    ident: :user_table2, proc: ->(tbl : Tablo::Table(Entry)) {
+    (tbl.source_column("Price").select(&.is_a?(Int32))
+      .map &.as(Int32)).sum.as(Tablo::CellType)
+  }),
   Tablo::BodyColumn.new("Product", alignment: nil,
     formatter: ->(value : Tablo::CellType) {
-      value.is_a?(String) ? value : value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
+      value.is_a?(String) ? value : (
+        value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
+      )
     },
     styler: ->(s : String) { s.colorize(:blue).to_s }),
   Tablo::BodyRow.new("Product", 1, "SubTotal"),
-  Tablo::BodyRow.new("Product", 2, ->{ Tablo::Summary.use("Product", Tablo::Aggregate::Count) }),
+  Tablo::BodyRow.new("Product", 2, ->{ Tablo::Summary.use(
+    "Product", Tablo::Aggregate::Count) }),
+  Tablo::BodyRow.new("Quantity", 3, ->{ Tablo::Summary.use(:user_table) }),
   Tablo::HeaderRow.new(column: "Product", content: "Mon produit"),
   Tablo::HeaderRow.new(column: "Price", content: "Prix serré"),
 ]
 
 record Entry2, recno : String, integer1 : Int32, integer2 : Int32?,
-  float1 : Float64, float2 : Float64?, boolean : Bool?, string : String?
+  float1 : Float64, float2 : Float64?, boolean : Bool?, string : String? do
+  include Tablo::CellType
+end
 
 datasource = [
   Entry2.new("Rec1", 3, 18, 3.14159, 2.789, false, "abc"),
@@ -46,6 +47,47 @@ datasource = [
   Entry2.new("Rec7", 9, 107, 9.221, 22.142, false, "abc"),
   Entry2.new("Rec8", 6, nil, 3.784, 15.45, true, "Def"),
   Entry2.new("Rec9", 13, 82, 6.4455, 19.777, true, "ijk"),
+]
+table = Tablo::Table.new(datasource,
+  # omit_last_rule: false,
+  body_formatter: ->(value : Tablo::CellType) { value.nil? ? "<N/D>" : value.to_s },
+  body_styler: ->(s : String) { s == "<N/D>" ? s.colorize(:red).mode(:bold).to_s : s },
+  omit_last_rule: false,
+  # border: Tablo::Border.new(Tablo::BorderName::Fancy),
+  title: Tablo::Title.new("Summary method data")) do |t|
+  t.add_column(:recno, header: "Record\nNumber", &.recno)
+  t.add_column(:integer1, header: "Integer\nSerie 1", &.integer1)
+  t.add_column(:integer2, header: "Integer\nSerie 2", &.integer2)
+  t.add_column(:float1, header: "Float\nSerie 1", &.float1)
+  t.add_column(:float2, header: "Float\nSerie 2", &.float2)
+  t.add_column(:boolean, header: "Boolean\nSerie", &.boolean)
+  t.add_column(:string, header: "String\nSerie", &.string)
+end
+puts table
+
+arcol = [:integer1, :integer2, :float1, :float2, :boolean, :string].map &.as(Tablo::LabelType)
+debug! arcol
+
+summary_definition3 = [
+  Tablo::Aggregation.new([:integer1, :integer2, :float1, :float2, :boolean,
+                          :string].map &.as(Tablo::LabelType),
+    [Tablo::Aggregate::Count, Tablo::Aggregate::Sum]),
+  Tablo::Aggregation.new(:integer1, Tablo::Aggregate::Max),
+]
+
+summary_definition2 = [
+  Tablo::Aggregation.new(:integer1, [Tablo::Aggregate::Count,
+                                     Tablo::Aggregate::Sum]),
+  Tablo::Aggregation.new(:integer2, [Tablo::Aggregate::Count,
+                                     Tablo::Aggregate::Sum]),
+  Tablo::Aggregation.new(:float1, [Tablo::Aggregate::Count,
+                                   Tablo::Aggregate::Sum]),
+  Tablo::Aggregation.new(:float2, [Tablo::Aggregate::Count,
+                                   Tablo::Aggregate::Sum]),
+  Tablo::Aggregation.new(:boolean, [Tablo::Aggregate::Count,
+                                    Tablo::Aggregate::Sum]),
+  Tablo::Aggregation.new(:string, [Tablo::Aggregate::Count,
+                                   Tablo::Aggregate::Sum]),
 ]
 
 struct Entry
@@ -117,8 +159,8 @@ end
 
 #
 # TODO
-# Border, define a "space" BordefName  (<> Blank)
-# and update tutorial and API accordingly !
+# Border, define a "space" BordefName  (<> Blank) : done!
+# and update tutorial and API accordingly !       : TODO
 #
-# # in case of summary.pack, update main table column widths
+# # in case of summary.pack, update main table column widths : TODO
 # TODO

@@ -373,6 +373,21 @@ module Tablo
     Sum
   end
 
+  record Aggregation, column : LabelType | Array(LabelType), aggregate : Aggregate | Array(Aggregate)
+
+  record UserAggregation(S), ident : Symbol, proc : Proc(Table(S), CellType)
+
+  record HeaderColumn, column : LabelType, alignment : Justify? = nil,
+    formatter : DataCellFormatter? = nil, styler : DataCellStyler? = nil
+
+  record BodyColumn, column : LabelType, alignment : Justify? = nil,
+    formatter : DataCellFormatter? = nil, styler : DataCellStyler? = nil
+
+  record HeaderRow, column : LabelType, content : CellType
+
+  record BodyRow, column : LabelType, row : Int32,
+    content : CellType | Proc(CellType)
+
   class TabloException < Exception
   end
 
@@ -400,6 +415,6 @@ module Tablo
   class InvalidSummaryDefinition < TabloException
   end
 
-  class DuplicateSummaryColumnRow < TabloException
+  class DuplicateInSummaryDefinition < TabloException
   end
 end
