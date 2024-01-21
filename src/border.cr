@@ -70,7 +70,8 @@ module Tablo
   # | Markdown      |    |||   |||  -  |
   # | Modern        | ┌┬┐├┼┤└┴┘│││──── |
   # | Fancy         | ╭┬╮├┼┤╰┴╯│:│─−-⋅ |
-  # | Blank         | EEEEEEEEEEEEEEEE |
+  # | Blank         | SSSSSSSSSSSSSSSS |
+  # | Empty         | EEEEEEEEEEEEEEEE |
   # ```
   #
   # A border can be styled by a user defined proc, of type `BorderStyler` allowing
@@ -96,8 +97,8 @@ module Tablo
       BorderName::ReducedModern => "E EE EE EE E────",
       BorderName::Markdown      => "   |||   |||  - ",
       BorderName::Fancy         => "╭┬╮├┼┤╰┴╯│:│─−-⋅",
-      BorderName::Empty         => "EEEEEEEEEEEEEEEE",
       BorderName::Blank         => "SSSSSSSSSSSSSSSS",
+      BorderName::Empty         => "EEEEEEEEEEEEEEEE",
     }
 
     # Primary constructor, defined by a string or by a hash of predefined strings
