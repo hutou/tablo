@@ -53,7 +53,7 @@ module Tablo
       header_rows = [] of HeaderRow
       header_columns = [] of HeaderColumn
       summary_definition.each do |sd|
-        debug! sd
+        # debug! sd
         case sd
         when Aggregation
           aggregations << sd
@@ -87,12 +87,12 @@ module Tablo
       unless header_columns.empty?
         build_header_columns(header_columns)
       end
-      debug! aggregations.size
-      debug! user_aggregations.size
-      debug! body_rows.size
-      debug! body_columns.size
-      debug! header_rows.size
-      debug! header_columns.size
+      # debug! aggregations.size
+      # debug! user_aggregations.size
+      # debug! body_rows.size
+      # debug! body_columns.size
+      # debug! header_rows.size
+      # debug! header_columns.size
     end
 
     def build_aggregations(aggregations)
@@ -101,19 +101,19 @@ module Tablo
       running_max = {} of LabelType => Numbers
       running_count = {} of LabelType => Numbers
       column_aggregates = {} of LabelType => Array(Aggregate)
-      duplicates = {} of LabelType => Hash(Aggregate, Int32)
-      debug! aggregations
+      duplicates = {} of {LabelType, Aggregate} => Int32
+      # debug! aggregations
       aggregations.each do |entry|
-        debug! entry
+        # debug! entry
         if entry.column.is_a?(Array)
           cols = entry.column.as(Array(LabelType))
         else
           cols = [entry.column.as(LabelType)].as(Array(LabelType))
         end
-        debug! cols
+        # debug! cols
         cols.each do |col|
-          debug! col
-          debug! entry.aggregate
+          # debug! col
+          # debug! entry.aggregate
           if entry.aggregate.is_a?(Array)
             aggregates = entry.aggregate.as(Array(Aggregate))
           else
@@ -121,23 +121,16 @@ module Tablo
           end
           # entry.aggregates.each do |aggregate|
           aggregates.each do |aggregate|
-            unless duplicates.has_key?(col)
-              duplicates[col] = {} of Aggregate => Int32
-            end
-            if duplicates[col].has_key?(aggregate)
+            if duplicates.has_key?({col, aggregate})
               raise DuplicateInSummaryDefinition.new "Duplicate error on aggregations : <#{aggregate}> for <#{col}>"
             else
-              duplicates[col.as(LabelType)][aggregate] = 1
+              duplicates[{col.as(LabelType), aggregate}] = 1
             end
           end
           column_aggregates[col.as(LabelType)] = aggregates
-          # entry.aggregates.as(Array(Aggregate))
-          # else
-          #   column_aggregates[col.as(LabelType)] = [entry.aggregates.as(Aggregate)].as(Array(Aggregate))
-          # end
         end
       end
-      debug! column_aggregates
+      # debug! column_aggregates
       table.sources.each_with_index do |source, index|
         column_aggregates.each do |column_id, aggregates|
           column = table.column_registry[column_id]
@@ -196,13 +189,13 @@ module Tablo
       running_max.each do |k, v|
         Summary.keep(k, Aggregate::Max, v).as(CellType)
       end
-      debug! Summary.aggr_results
+      # debug! Summary.aggr_results
     end
 
     def build_user_aggregations(user_aggregations)
-      debug! user_aggregations
+      # debug! user_aggregations
       user_aggregations.each do |entry|
-        debug! entry
+        # debug! entry
         #   debug! entry.proc
         # entry.proc.call(table) # .as(Tablo::Table(CellType)))
         Summary.keep(entry.ident, entry.proc.call(table).as(CellType))
@@ -215,7 +208,7 @@ module Tablo
         # Summary.keep(entry.ident, entry.proc.call(table.as(Tablo::Table(Tablo::CellType))).as(CellType))
       end
       # end
-      debug! Summary.proc_results
+      # debug! Summary.proc_results
       #     Summary.keep(key, proc.call(table.sources)).as(CellType)
       #   else
       #     raise InvalidSummaryDefinition.new(
@@ -228,26 +221,25 @@ module Tablo
       header_rows.each do |entry|
         header_values[entry.column] = entry.content
       end
-      debug! header_values
+      # debug! header_values
     end
 
     def build_body_rows(body_rows)
-      debug! summary_sources
+      # debug! summary_sources
       column_number = {} of LabelType => Int32
       table.column_registry.keys.each_with_index do |column_label, column_index|
         column_number[column_label] = column_index
       end
+      # debug! column_number
       defined_rows = [] of Int32
-      colrow = [] of Int32
+      duplicates = {} of {LabelType, Int32} => Int32
       body_rows.each do |entry|
-        debug! entry
-        row_num = entry.row
-        if colrow.index(entry.row).nil?
-          defined_rows << entry.row
-          colrow << entry.row
-        else
+        if duplicates.has_key?({entry.column, entry.row})
           raise DuplicateInSummaryDefinition.new(
-            "Summary: body definition conflict (row/col already used).")
+            "Summary: duplicate body definition, row<#{entry.row}> for column<#{entry.column}> already used.")
+        else
+          defined_rows << entry.row
+          duplicates[{entry.column, entry.row}] = 1
         end
         unless body_values.has_key?(entry.column)
           body_values[entry.column] = {} of Int32 => CellType | Proc(CellType)
@@ -259,22 +251,22 @@ module Tablo
           body_values[entry.column][entry.row] = entry.content.as(Proc(CellType)).call
         end
       end
-      debug! colrow
-      debug! defined_rows
-      debug! body_values
+      # debug! colrow
+      # debug! defined_rows
+      # debug! body_values
 
       row_number = {} of Int32 => Int32
       defined_rows.sort!.uniq!.each_with_index do |row, index|
         row_number[row] = index
       end
-      debug! row_number
+      # debug! row_number
 
-      debug! summary_sources
+      # debug! summary_sources
       row_number.size.times do |i|
-        debug! i
+        # debug! i
         summary_sources << Array.new(table.column_registry.size, nil.as(CellType))
       end
-      debug! summary_sources
+      # debug! summary_sources
 
       body_values.each do |column_label, body_rows|
         body_rows.each do |body_row|
@@ -283,11 +275,11 @@ module Tablo
           summary_sources[row_number[row]][column_number[column_label]] = value.as(CellType)
         end
       end
-      debug! summary_sources
+      # debug! summary_sources
     end
 
     def build_body_columns(body_columns)
-      debug! body_columns
+      # debug! body_columns
       body_columns.each do |entry|
         column_label = entry.column
         unless entry.alignment.nil?
@@ -300,13 +292,13 @@ module Tablo
           body_stylers[column_label] = entry.styler.as(DataCellStyler)
         end
       end
-      debug! body_alignments
-      debug! body_formatters
-      debug! body_stylers
+      # debug! body_alignments
+      # debug! body_formatters
+      # debug! body_stylers
     end
 
     def build_header_columns(header_columns)
-      debug! header_columns
+      # debug! header_columns
       header_columns.each do |entry|
         column_label = entry.column
         unless entry.alignment.nil?
@@ -319,9 +311,9 @@ module Tablo
           header_stylers[column_label] = entry.styler.as(DataCellStyler)
         end
       end
-      debug! header_alignments
-      debug! header_formatters
-      debug! header_stylers
+      # debug! header_alignments
+      # debug! header_formatters
+      # debug! header_stylers
     end
 
     # Returns the summary table
