@@ -56,6 +56,10 @@ invoice_summary_definition = [
         fc
       end
     }),
+  # for tests on unused types
+  # Tablo::HeaderRow.new("Price", "Here is my header"),
+  # Tablo::HeaderColumn.new("Price", alignment: nil, formatter: nil, styler: nil),
+
   Tablo::BodyRow.new("Price", 1, "SubTotal"),
   Tablo::BodyRow.new("Price", 2, "Discount 5%"),
   Tablo::BodyRow.new("Price", 3, "S/T discount"),
@@ -79,19 +83,29 @@ invoice_summary_definition_1 =
   invoice_summary_definition +
     [Tablo::Aggregation.new(:total, Tablo::Aggregate::Sum)]
 
-invoice_summary_definition_2 =
+invoice_summary_definition_2a =
+  invoice_summary_definition +
+    [Tablo::UserAggregation(InvoiceItem).new(
+      ident: :total_sum, proc: ->(tbl : Tablo::Table(InvoiceItem)) {
+      tbl.sources.select { |n| n.quantity.is_a?(Number) && n.price.is_a?(Number) }
+        .map { |n| n.quantity.as(Number) * n.price.as(Number) }.sum.to_i.as(Tablo::CellType)
+    }
+    )]
+
+invoice_summary_definition_2b =
   invoice_summary_definition +
     [Tablo::UserAggregation(InvoiceItem).new(
       ident: :total_sum, proc: ->(tbl : Tablo::Table(InvoiceItem)) {
       total_sum = 0
       tbl.sources.each do |row|
         unless row.quantity.nil? || row.price.nil?
-          total_sum += row.quantity.as(Int32) * row.price.as(Int32)
+          if row.quantity.is_a?(Number) && row.price.is_a?(Number)
+            total_sum += row.quantity.as(Int32) * row.price.as(Int32)
+          end
         end
       end
       total_sum.as(Tablo::CellType)
     })]
-
 invoice_summary_definition_3 =
   invoice_summary_definition +
     [Tablo::UserAggregation(InvoiceItem).new(
@@ -101,11 +115,13 @@ invoice_summary_definition_3 =
       iter_price = tbl.source_column("Price").each
       loop do
         quantity = iter_quantity.next
-        break if quantity == Iterator::Stop::INSTANCE
         price = iter_price.next
-        break if price == Iterator::Stop::INSTANCE
+        break if quantity == Iterator::Stop::INSTANCE ||
+                 price == Iterator::Stop::INSTANCE
         next if quantity.nil? || price.nil?
-        total_sum += quantity.as(Int32) * price.as(Int32)
+        if quantity.is_a?(Number) && price.is_a?(Number)
+          total_sum += quantity.as(Int32) * price.as(Int32)
+        end
       end
       total_sum.as(Tablo::CellType)
     })]
@@ -120,27 +136,19 @@ invoice_output =
     "│ Router       :            1 :        99.00 :        99.00 │\n" +
     "│ Switch       : N/A          :        45.00 :              │\n" +
     "│ Accessories  :            5 :        64.50 :       322.50 │\n" +
-    "╰──────────────┴──────────────┴──────────────┴──────────────╯\
-             \e[33m \e[0m              \e[33m \e[0m              \e[33m \
-             \e[0m SubTotal     \e[33m \e[0m      \e[1m3671.48\e[0m \e[33m \e[0m\n" +
-    "\e[33m \e[0m              \e[33m \e[0m              \e[33m \
-             \e[0m Discount 5%  \e[33m \e[0m       \e[3m183.57\e[0m \e[33m \e[0m\n" +
-    "\e[33m \e[0m              \e[33m \e[0m              \e[33m \
-             \e[0m S/T discount \e[33m \e[0m      \e[1m3487.91\e[0m \e[33m \e[0m\n" +
-    "\e[33m \e[0m              \e[33m \e[0m              \e[33m \
-             \e[0m Tax (20%)    \e[33m \e[0m       697.58 \e[33m \e[0m\n" +
-    "\e[33m \e[0m              \e[33m \e[0m              \e[33m \
-             \e[0m              \e[33m \e[0m     ======== \e[33m \e[0m\n" +
-    "\e[33m \e[0m              \e[33m \e[0m              \e[33m \
-             \e[0m Balance due  \e[33m \e[0m      \e[1m4185.49\e[0m \e[33m \e[0m"
+    "╰──────────────┴──────────────┴──────────────┴──────────────╯                                SubTotal            \e[1m3671.48\e[0m  \n" +
+    "                                Discount 5%          \e[3m183.57\e[0m  \n" +
+    "                                S/T discount        \e[1m3487.91\e[0m  \n" +
+    "                                Tax (20%)            697.58  \n" +
+    "                                                   ========  \n" +
+    "                                Balance due         \e[1m4185.49\e[0m  "
 
 describe "#{Tablo::Table} -> summary definition using Aggregation", tags: "summary" do
   tbl = invoice
   tbl.summary(invoice_summary_definition_1,
     {
       masked_headers: true,
-      border:         Tablo::Border.new("EEESSSSSSSSSESSS",
-        styler: ->(s : String) { s.colorize(:yellow).to_s }),
+      border:         Tablo::Border.new("EEESSSSSSSSSESSS"),
     })
   it "returns valid data" do
     sources_array = tbl.summary.as(Tablo::SummaryTable).sources.to_a
@@ -152,13 +160,12 @@ describe "#{Tablo::Table} -> summary definition using Aggregation", tags: "summa
   end
 end
 
-describe "#{Tablo::Table} -> summary definition using UserAggregation (with sources)", tags: "summary" do
+describe "#{Tablo::Table} -> summary definition using UserAggregation (with sources - a)", tags: "summary" do
   tbl = invoice
-  tbl.summary(invoice_summary_definition_2,
+  tbl.summary(invoice_summary_definition_2a,
     {
       masked_headers: true,
-      border:         Tablo::Border.new("EEESSSSSSSSSESSS",
-        styler: ->(s : String) { s.colorize(:yellow).to_s }),
+      border:         Tablo::Border.new("EEESSSSSSSSSESSS"),
     })
   it "returns valid data" do
     sources_array = tbl.summary.as(Tablo::SummaryTable).sources.to_a
@@ -171,13 +178,29 @@ describe "#{Tablo::Table} -> summary definition using UserAggregation (with sour
   end
 end
 
+describe "#{Tablo::Table} -> summary definition using UserAggregation (with sources - b)", tags: "summary" do
+  tbl = invoice
+  tbl.summary(invoice_summary_definition_2b,
+    {
+      masked_headers: true,
+      border:         Tablo::Border.new("EEESSSSSSSSSESSS"),
+    })
+  it "returns valid data" do
+    sources_array = tbl.summary.as(Tablo::SummaryTable).sources.to_a
+    {% if flag?(:DEBUG) %}
+      puts "\n#{tbl}"
+      puts "#{tbl.summary.as(Tablo::SummaryTable)}"
+    {% end %}
+
+    (tbl.to_s + tbl.summary.as(Tablo::SummaryTable).to_s).should eq invoice_output
+  end
+end
 describe "#{Tablo::Table} -> summary definition using UserAggregation (with columns)", tags: "summary" do
   tbl = invoice
   tbl.summary(invoice_summary_definition_3,
     {
       masked_headers: true,
-      border:         Tablo::Border.new("EEESSSSSSSSSESSS",
-        styler: ->(s : String) { s.colorize(:yellow).to_s }),
+      border:         Tablo::Border.new("EEESSSSSSSSSESSS"),
     })
   it "returns valid data" do
     sources_array = tbl.summary.as(Tablo::SummaryTable).sources.to_a

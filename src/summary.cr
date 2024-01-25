@@ -218,8 +218,15 @@ module Tablo
     end
 
     def build_header_rows(header_rows)
+      duplicates = {} of LabelType => Int32
       header_rows.each do |entry|
-        header_values[entry.column] = entry.content
+        if duplicates.has_key?(entry.column)
+          raise DuplicateInSummaryDefinition.new(
+            "Summary: duplicate header definition for column<#{entry.column}>")
+        else
+          header_values[entry.column] = entry.content
+          duplicates[entry.column] = 1
+        end
       end
       # debug! header_values
     end
@@ -280,16 +287,22 @@ module Tablo
 
     def build_body_columns(body_columns)
       # debug! body_columns
+      duplicates = {} of LabelType => Int32
       body_columns.each do |entry|
-        column_label = entry.column
-        unless entry.alignment.nil?
-          body_alignments[column_label] = entry.alignment.as(Justify)
-        end
-        unless entry.formatter.nil?
-          body_formatters[column_label] = entry.formatter.as(DataCellFormatter)
-        end
-        unless entry.styler.nil?
-          body_stylers[column_label] = entry.styler.as(DataCellStyler)
+        if duplicates.has_key?(entry.column)
+          raise DuplicateInSummaryDefinition.new(
+            "Summary: duplicate body column definition for column<#{entry.column}>")
+        else
+          duplicates[entry.column] = 1
+          unless entry.alignment.nil?
+            body_alignments[entry.column] = entry.alignment.as(Justify)
+          end
+          unless entry.formatter.nil?
+            body_formatters[entry.column] = entry.formatter.as(DataCellFormatter)
+          end
+          unless entry.styler.nil?
+            body_stylers[entry.column] = entry.styler.as(DataCellStyler)
+          end
         end
       end
       # debug! body_alignments
@@ -299,16 +312,22 @@ module Tablo
 
     def build_header_columns(header_columns)
       # debug! header_columns
+      duplicates = {} of LabelType => Int32
       header_columns.each do |entry|
-        column_label = entry.column
-        unless entry.alignment.nil?
-          header_alignments[column_label] = entry.alignment.as(Justify)
-        end
-        unless entry.formatter.nil?
-          header_formatters[column_label] = entry.formatter.as(DataCellFormatter)
-        end
-        unless entry.styler.nil?
-          header_stylers[column_label] = entry.styler.as(DataCellStyler)
+        if duplicates.has_key?(entry.column)
+          raise DuplicateInSummaryDefinition.new(
+            "Summary: duplicate header column definition for column<#{entry.column}>")
+        else
+          duplicates[entry.column] = 1
+          unless entry.alignment.nil?
+            header_alignments[entry.column] = entry.alignment.as(Justify)
+          end
+          unless entry.formatter.nil?
+            header_formatters[entry.column] = entry.formatter.as(DataCellFormatter)
+          end
+          unless entry.styler.nil?
+            header_stylers[entry.column] = entry.styler.as(DataCellStyler)
+          end
         end
       end
       # debug! header_alignments
