@@ -140,7 +140,7 @@ type will be the subject of the next section).
 To change a table's border type, simply assign the desired definition to the
 `border` parameter when initializing the table. This can be done in two ways,
 either by assigning the 16-character string directly, or by assigning the name
-of one of the 7 predefined borders :
+of one of the predefined borders :
 
 | Border name                 | Border string definition   |
 | :-------------------------- | :------------------------- |
@@ -150,7 +150,8 @@ of one of the 7 predefined borders :
 | `BorderName::ReducedModern` | `"ESEESEESEESE────"`       |
 | `BorderName::Markdown`      | `"___\|\|\|___\|\|\|__-_"` |
 | `BorderName::Fancy`         | `"╭┬╮├┼┤╰┴╯│:│─−-⋅"`       |
-| `BorderName::Blank`         | `"EEEEEEEEEEEEEEEE"`       |
+| `BorderName::Blank`         | `"SSSSSSSSSSSSSSSS"`       |
+| `BorderName::Empty`         | `"EEEEEEEEEEEEEEEE"`       |
 
 So, for example, to set the `ReducedAscii` border type, I can either:
 
@@ -1201,95 +1202,143 @@ Here's an example of how it works now and what it can do for you:
 
 ```crystal
 require "tablo"
-require "debug"
+require "colorize"
 
-record Entry, product : String, price : Int32
+struct InvoiceItem
+  include Tablo::CellType
+  getter product, quantity, price
+
+  def initialize(@product : String, @quantity : Int32?, @price : Int32?)
+  end
+end
+
 invoice = [
-  Entry.new("Laptop", 98000),
-  Entry.new("Printer", 15499),
-  Entry.new("Router", 9900),
-  Entry.new("Accessories", 6450),
+  InvoiceItem.new("Laptop", 3, 98000),
+  InvoiceItem.new("Printer", 2, 15499),
+  InvoiceItem.new("Router", 1, 9900),
+  InvoiceItem.new("Switch", nil, 4500),
+  InvoiceItem.new("Accessories", 5, 6450),
 ]
 
-tbl = Tablo::Table.new(invoice,
-  omit_last_rule: true,
+table = Tablo::Table.new(invoice,
+  omit_last_rule: false,
+  border: Tablo::Border.new(Tablo::BorderName::Fancy),
   title: Tablo::Title.new("Invoice")) do |t|
   t.add_column("Product",
     &.product)
+  t.add_column("Quantity",
+    body_formatter: ->(value : Tablo::CellType) {
+      (value.nil? ? "N/A" : value.to_s)
+    }, &.quantity)
   t.add_column("Price",
     body_formatter: ->(value : Tablo::CellType) {
       "%.2f" % (value.as(Int32) / 100)
     }, &.price)
-  t.add_column(:tax, header: "Tax (20%)",
+  t.add_column(:total, header: "Total",
     body_formatter: ->(value : Tablo::CellType) {
-      "%.2f" % (value.as(Int32) / 100)
-    }) { |n| (n.price * 0.2).to_i }
+      value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
+    }) { |n| n.price.nil? || n.quantity.nil? ? nil : (
+    n.price.as(Int32) * n.quantity.as(Int32)
+  ) }
 end
 
-summary_def = {
-  "Product" => {
-    proc: [
-      {1, ->(_ary : Array(Tablo::CellType)) {
-        "Total excl.".as(Tablo::CellType)
-        "VAT (Total)".as(Tablo::CellType)
-      }},
-      {3, ->(_ary : Array(Tablo::CellType)) {
-        "Total incl.".as(Tablo::CellType)
-      }},
-    ],
-  },
-  :tax => {
-    body_formatter: ->(value : Tablo::CellType) {
-      value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
+invoice_summary_definition = [
+  Tablo::Aggregation.new(:total, Tablo::Aggregate::Sum),
+  Tablo::BodyColumn.new(:total, alignment: Tablo::Justify::Right,
+    formatter: ->(value : Tablo::CellType) {
+      value.is_a?(String) ? value : (
+        value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
+      )
     },
-    proc: {2, ->(ary : Array(Tablo::CellType)) {
-      Tablo::Summary.keep(:sum_tax, (ary.map &.as(Int32)).sum.as(Tablo::CellType))
-    }},
-  },
-  "Price" => {
-    body_formatter: ->(value : Tablo::CellType) {
-      value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
-    },
-    proc: [
-      {1, ->(ary : Array(Tablo::CellType)) {
-        (ary.map &.as(Int32)).sum.as(Tablo::CellType)
-      }},
-      {3, ->(ary : Hash(Tablo::LabelType, Array(Tablo::CellType))) {
-        sum_price = (ary["Price"].map &.as(Int32)).sum
-        sum_tax = Tablo::Summary.use(:sum_tax).as(Int32)
-        (sum_price + sum_tax).as(Tablo::CellType)
-      }},
-    ],
-  },
-}
+    styler: ->(_value : Tablo::CellType, cd : Tablo::CellData, fc : String) {
+      case cd.row_index
+      when 0, 2, 5
+        fc.colorize.mode(:bold).to_s
+      when 1
+        fc.colorize.mode(:italic).to_s
+      else
+        fc
+      end
+    }),
+  Tablo::BodyRow.new("Price", 1, "SubTotal"),
+  Tablo::BodyRow.new("Price", 2, "Discount 5%"),
+  Tablo::BodyRow.new("Price", 3, "S/T discount"),
+  Tablo::BodyRow.new("Price", 4, "Tax (20%)"),
+  Tablo::BodyRow.new("Price", 6, "Balance due"),
+  Tablo::BodyRow.new(:total, 1, ->{ Tablo::Summary.use(:total,
+    Tablo::Aggregate::Sum) }),
+  Tablo::BodyRow.new(:total, 2, ->{ Tablo::Summary.keep(:discount,
+    (Tablo::Summary.use(:total, Tablo::Aggregate::Sum).as(Int32) * 0.05)
+      .to_i).as(Tablo::CellType) }),
+  Tablo::BodyRow.new(:total, 3, ->{ (Tablo::Summary.keep(:total_after_discount,
+    Tablo::Summary.use(:total, Tablo::Aggregate::Sum).as(Int32) -
+    Tablo::Summary.use(:discount).as(Int32))).as(Tablo::CellType) }),
+  Tablo::BodyRow.new(:total, 4, ->{ (Tablo::Summary.keep(:tax,
+    (Tablo::Summary.use(:total_after_discount).as(Int32) * 0.2)
+      .to_i)).as(Tablo::CellType) }),
+  Tablo::BodyRow.new(:total, 5, "========".as(Tablo::CellType)),
+  Tablo::BodyRow.new(:total, 6, ->{ (Tablo::Summary.use(:tax).as(Int32) +
+                                     Tablo::Summary.use(:total_after_discount)
+                                       .as(Int32)).as(Tablo::CellType) }),
+]
 
-summary_options = {masked_headers: true}
+table.summary(invoice_summary_definition,
+  {
+    masked_headers: true,
+    border:         Tablo::Border.new("EEESSSSSSSSSESSS"),
+  })
 
-tbl.summary(summary_def, **summary_options)
-
-puts tbl
-puts tbl.summary
+puts table
+puts table.summary.as(Tablo::SummaryTable)
 ```
 
-Output:
-
-```
-                     Invoice
- +--------------+--------------+--------------+
- | Product      |        Price |    Tax (20%) |
- +--------------+--------------+--------------+
- | Laptop       |       980.00 |       196.00 |
- | Printer      |       154.99 |        30.99 |
- | Router       |        99.00 |        19.80 |
- | Accessories  |        64.50 |        12.90 |
- +--------------+--------------+--------------+
- | Total excl.  |      1298.49 |              |
- | VAT (Total)  |              |       259.69 |
- | Total incl.  |      1558.18 |              |
- +--------------+--------------+--------------+
-```
+<p> <img src="images/summary.svg" width=460> </p>
 
 Let's take a closer look at the source code.
+
+In the last lines of code, you can see two calls to the summary method. The
+first accepts two parameters and is used to define the layout of the summary,
+while the second, without parameters, simply returns the SummaryTable instance
+created, ready for display.
+
+The layout is defined on the basis of several data type instances, grouped together in an array (`summary_definition` in this example):
+
+1. The Aggregation type, defined as follows:
+
+```crystal
+   record Aggregation, column : LabelType | Array(LabelType),
+          aggregate : Aggregate | Array(Aggregate)
+```
+
+- column, of type LabelType, identifies the column on which to perform
+  calculations
+- aggregate is an enum with 4 possible elements: Sum, Count, Min
+  and Max. Several Aggregate instances can be defined, or, if required,
+  combined into a single instance by setting the parameters in an array.
+
+The layout is defined on the basis of several data type instances, grouped together in an array:
+
+1. the Aggregation type is used to define the various aggregation calculations (Sum, Count, Minimum and Maximum) on the table's data columns.
+
+Nil values are ignored, and only numerical values are used for Sum, Minimum and Maximum calculations. Source data is read only once, regardless of the number of columns and aggregates used.
+
+record Aggregation, column : LabelType | Array(LabelType), aggregate : Aggregate | Array(Aggregate)
+
+2. column, of type LabelType, identifies the column on which to perform calculations
+   Aggregate is an enum with 4 possible elements: Sum, Count, Min and Max.
+   Several Aggregate instances can be defined, or, if required, combined into a single instance by setting the parameters in an array.
+
+TODO TODO TODO
+TODO TODO TODO
+TODO TODO TODO
+TODO TODO TODO
+TODO TODO TODO
+TODO TODO TODO
+TODO TODO TODO
+TODO TODO TODO
+
+the BodyRow type
+BodyColumn type
 
 The first part - the creation of the main table - calls for no particular
 comment (except perhaps the use of a more realistic data source than the
@@ -1325,25 +1374,27 @@ The `NamedTuple` may have up to 8 entries, all optional except `proc`
 - `proc` is a bit complex and has no default value. Its value type is
   `SummaryProcs`, an alias whose definition is :
 
-  ```
-  alias SourcesCurrentColumn = Array(CellType)
-  alias SourcesAllColumns = Hash(LabelType, Array(CellType))
-  alias SummaryProcCurrent = Proc(SourcesCurrentColumn, CellType)
-  alias SummaryProcAll = Proc(SourcesAllColumns, CellType)
+```
 
-  alias SummaryLineProcCurrent = {Int32, SummaryProcCurrent}
-  alias SummaryLineProcAll = {Int32, SummaryProcAll}
-  alias SummaryLineProcBoth = SummaryLineProcCurrent | SummaryLineProcAll
+alias SourcesCurrentColumn = Array(CellType)
+alias SourcesAllColumns = Hash(LabelType, Array(CellType))
+alias SummaryProcCurrent = Proc(SourcesCurrentColumn, CellType)
+alias SummaryProcAll = Proc(SourcesAllColumns, CellType)
 
-  alias SummaryProcs = {Int32, Proc(Array(CellType), CellType)} |
-                     {Int32, Proc(Hash(LabelType, Array(CellType)), CellType)} |
-                     Array({Int32, Proc(Array(CellType), CellType)}) |
-                     Array({Int32, Proc(Hash(LabelType, Array(CellType)), CellType)}) |
-                     Array({Int32, Proc(Array(CellType), CellType)} |
-                         {Int32, Proc(Hash(LabelType, Array(CellType)), CellType)})
-  alias SummaryProcAll = Proc(Hash(LabelType, Array(CellType)), CellType)
-  alias SummaryProcCurrent = Proc(Array(CellType), CellType)
-  ```
+alias SummaryLineProcCurrent = {Int32, SummaryProcCurrent}
+alias SummaryLineProcAll = {Int32, SummaryProcAll}
+alias SummaryLineProcBoth = SummaryLineProcCurrent | SummaryLineProcAll
+
+alias SummaryProcs = {Int32, Proc(Array(CellType), CellType)} |
+{Int32, Proc(Hash(LabelType, Array(CellType)), CellType)} |
+Array({Int32, Proc(Array(CellType), CellType)}) |
+Array({Int32, Proc(Hash(LabelType, Array(CellType)), CellType)}) |
+Array({Int32, Proc(Array(CellType), CellType)} |
+{Int32, Proc(Hash(LabelType, Array(CellType)), CellType)})
+alias SummaryProcAll = Proc(Hash(LabelType, Array(CellType)), CellType)
+alias SummaryProcCurrent = Proc(Array(CellType), CellType)
+
+```
 
 The latter - `SummaryProcs`- is a tad complex and can take several forms.
 Basically, it is a tuple of 2 elements :
@@ -1360,15 +1411,19 @@ Outch!
 Looking again at the source code, we see that :
 
 - The `:tax` column has 2 entries, of type `Tuple`:
-  - `body_formatter:` and its associated proc which performs the
-    conversion from cents to currency units, and checks that the cell is
-    not nil (this is necessary, as of the 3 summary lines, the 1st and
-    3rd are not fed).
-  - `proc:` a tuple defined by the number of the summary line to be fed,
-    and the proc performing the calculation. The latter takes as
-    parameter a `CellType` array (the "Tax (20%)" data column), converts
-    it to an array of integers before summing and converting the result
+- `body_formatter:` and its associated proc which performs the
+  conversion from cents to currency units, and checks that the cell is
+  not nil (this is necessary, as of the 3 summary lines, the 1st and
+  3rd are not fed).
+- `proc:` a tuple defined by the number of the summary line to be fed,
+  and the proc performing the calculation. The latter takes as
+  parameter a `CellType` array (the "Tax (20%)" data column), converts
+  it to an array of integers before summing and converting the result
 
 ## Transpose
 
 [:top:](#tutorial) [:arrow_up:](#summary)
+
+```
+
+```

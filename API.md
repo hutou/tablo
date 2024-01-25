@@ -17,7 +17,7 @@
   - [Method pack](#method-pack)
   - [Method summary](#method-summary)
   - [Method transpose](#method-transpose)
-  - [Method horizontal_rule](#horizontal_rule)
+  - [Method horizontal_rule](#method-horizontal_rule)
   - [Method total_table_width](#total_table_width)
 - [Abstract struct Heading](#abstract-struct-heading)
   - [Method framed?](#method-framed)
@@ -393,10 +393,193 @@ widths.
 [:arrow_up:](#method-pack)
 [:arrow_down:](#method-transpose)
 
+The Summary method allows you to perform aggregation calculations on
+detailed data, and define their presentation and formatting. To do this,
+it creates a new Table instance (of type SummaryTable), which inherits
+some of the parameters of the main table. This approach allows you to
+display the 2 tables as if they were a single table, or to display them
+separately.
+
+The summary method is an overloaded method that serves two different purposes:
+
+- The first is to define the various elements making up the summary
+  presentation. It accepts 2 parameters, the first
+  (`summary_definition`) is an array of datatype instances and the
+  second `options` is a `NamedTuple`, containing table creation
+  parameters overriding inherited values. There are 6 (`struct`) types,
+  each of which can define several instances, grouped together in an
+  array, which constitutes the method's first argument. The second
+  argument (`options`), allows you to customize the Summary table, which
+  otherwise inherits from the main table.
+
+- The second is to return an instance of the table thus created, ready for
+  display.
+
+Let's take a look at the contents of the first parameter of the summary
+method, in its defined version. It's an array of data type instances, as
+detailed below:
+
+#### `Aggregation` type
+
+The `Aggregation` type is used to calculate an aggregated value for all
+the data in a column. An aggregated value is of type `Aggregate`, an
+`enum` that can take the values `Sum`, `Count`, `Min` and `Max`. `Nil`
+values are ignored, and for `Sum`, `Min` and `Max` aggregates, only
+numerical data are taken into account. The definition of `struct
+Aggregation` is as follows:
+
+```crystal
+record Aggregation, column : LabelType | Array(LabelType),
+                    aggregate : Aggregate | Array(Aggregate)
+```
+
+and therefore includes 2 parameters :
+
+- The relevant data column(s)
+- The aggregate(s) to be calculated on them
+
+**Whatever the number of defined `Aggregation` instances, the number
+of columns and aggregates in each of them, the dataset is read only
+once (but indirectly through user defined column extractors).**
+
+Here are some sample declarations:
+
+- `Tablo::Aggregation.new("Column one", Tablo:Aggregate::Sum)` to
+  calculate the sum of the numerical data in column "Column one".
+- `Tablo::Aggregation.new(["Column one", "Column two].map
+&.as(Tablo::LabelType), [Tablo:Aggregate::Count,
+Tablo::Aggregate:Max])` to calculate the count of non nil
+  elements and the maximum numerical value of columns "Column one"
+  and "column two".
+
+  In the event of a duplicate `column/aggregate` pair, the `summary`
+  method raises a `DuplicateInSummaryDefinition` exception.
+
+#### `UserAggregation` type
+
+The `UserAggregation` type is used to define custom aggregation
+functions. The user has full control over the data, and is therefore
+responsible for filtering `nil` values, non-numeric values, etc.
+
+The UserAggregation type definition is:
+
+```crystal
+record UserAggregation(S), ident : Symbol,
+                           proc : Proc(Table(S), CellType)
+```
+
+where :
+
+- `ident` is used to name the function to be created
+- `proc` is the source code of the aggregation function itself. This
+  function must receive as parameter a variable of type `Table(S)`
+  where `S` is the data type of the main table, and must return an
+  aggregated value of type `CellType`.
+
+The function can process data in two different ways, either directly
+(using `table.sources`) or indirectly (using
+`table.source_column(colum)`). In the latter case, the use of iterators
+may be necessary if several columns are involved in the calculation.
+
+The following examples illustrate the 2 possible cases, with the aim of
+calculating the same result as that obtained previously using
+Tablo::Aggregate::Sum
+
+First case, using `table.sources`
+
+```crystal
+Tablo::UserAggregation(InvoiceItem).new(
+  ident: :total_sum, proc: ->(tbl : Tablo::Table(InvoiceItem)) {
+  total_sum = 0
+  tbl.sources.each do |row|
+    unless row.quantity.nil? || row.price.nil?
+      if row.quantity.is_a?(Number) && row.price.is_a?(Number)
+        total_sum += row.quantity.as(Int32) * row.price.as(Int32)
+      end
+    end
+  end
+  total_sum.as(Tablo::CellType) })
+```
+
+or
+
+```crystal
+Tablo::UserAggregation(InvoiceItem).new(
+  ident: :total_sum, proc: ->(tbl : Tablo::Table(InvoiceItem)) {
+  tbl.sources.select { |n| n.quantity.is_a?(Number) && n.price.is_a?(Number) }
+    .map { |n| n.quantity.as(Number) * n.price.as(Number) }
+    .sum.to_i.as(Tablo::CellType) })
+```
+
+Second case, using `table.source_column(column)` with 2 columns, and iterators
+
+```crystal
+Tablo::UserAggregation(InvoiceItem).new(
+  ident: :total_sum, proc: ->(tbl : Tablo::Table(InvoiceItem)) {
+  total_sum = 0
+  iter_quantity = tbl.source_column("Quantity").each
+  iter_price = tbl.source_column("Price").each
+  loop do
+    quantity = iter_quantity.next
+    price = iter_price.next
+    break if quantity == Iterator::Stop::INSTANCE ||
+             price == Iterator::Stop::INSTANCE
+    next if quantity.nil? || price.nil?
+    if quantity.is_a?(Number) && price.is_a?(Number)
+      total_sum += quantity.as(Int32) * price.as(Int32)
+    end
+  end
+  total_sum.as(Tablo::CellType) })
+```
+
+It's worth noting that the performance of these different approaches is
+not the same.
+
+**TODO TODO
+TODO TODO
+TODO TODO
+Benchmark needed !
+TODO TODO
+TODO TODO
+TODO TODO**
+
+#### `BodyRow` type
+
+```crystal
+record BodyRow, column : LabelType,
+                row : Int32,
+                content : CellType | Proc(CellType)
+```
+
+#### `HeaderRow` type
+
+```crystal
+record HeaderRow, column : LabelType,
+                  content : CellType
+```
+
+#### `BodyColumn` type
+
+```crystal
+record BodyColumn, column : LabelType,
+                   alignment : Justify? = nil,
+                   formatter : DataCellFormatter? = nil,
+                   styler : DataCellStyler? = nil
+```
+
+#### `HeaderColumn` type
+
+```crystal
+record HeaderColumn, column : LabelType,
+                     alignment : Justify? = nil,
+                     formatter : DataCellFormatter? = nil,
+                     styler : DataCellStyler? = nil
+```
+
 ### Method `transpose`
 
 [:top:](#tablo-api)
-[:arrow_up:](#method-summary)
+[:arrow_up:](#methodp;summary)
 [:arrow_down:](#method-horizontal_rule)
 
 ### Method `horizontal_rule`
@@ -568,3 +751,7 @@ The effective count of line breaks is the maximum value of
 &nbsp;
 
 &nbsp;
+
+```
+
+```
