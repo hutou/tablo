@@ -312,4 +312,39 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
       end
     end
   end
+  context "StartingWidths::AutoSized as default, selecting column" do
+    context do
+      describe %(call = table.pack(only: "long")) do
+        it "correctly adapts columns size to their largest value for header" \
+           " and body, only for column \"long\"" do
+          set_context
+          Tablo::Config.starting_widths = Tablo::StartingWidths::AutoSized
+          table = Tablo::Table.new([["abc", "not so large", "Very long column contents"]]) do |t|
+            t.add_column("short") { |n| n[0] }
+            t.add_column("medium") { |n| n[1] }
+            t.add_group("Short and medium")
+            t.add_column("long") { |n| n[2] }
+            t.add_group("Long")
+          end
+          {% if flag?(:DEBUG) %}
+            puts %(\n#{table.pack(only: "long")})
+          {% end %}
+          output = %q(╭─────────────────────────────────────────────────────────╮
+                      │  This a very long text to be displayed as title heading │
+                      ├─────────────────────────────────────────────────────────┤
+                      │                  A very simple subtitle                 │
+                      ├─────────────────────────────┬───────────────────────────┤
+                      │       Short and medium      :            Long           │
+                      ├−−−−−−−−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−−−−−−−−−−−−−−┤
+                      │ short        : medium       : long                      │
+                      ├--------------┼--------------┼---------------------------┤
+                      │ abc          : not so large : Very long column contents │
+                      ├──────────────┴──────────────┴───────────────────────────┤
+                      │                  Do you need a footer?                  │
+                      ╰─────────────────────────────────────────────────────────╯).gsub(/^ */m, "")
+          table.pack(only: "long").to_s.should eq output
+        end
+      end
+    end
+  end
 end

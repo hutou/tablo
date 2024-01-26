@@ -754,7 +754,43 @@ module Tablo
     # returns the Table itself
     def pack(width : Int32? = nil, *,
              starting_widths : StartingWidths = Config.starting_widths,
-             except : Except? = nil)
+             except : (LabelType | Array(LabelType))) # ? = nil)
+      except = [except] unless except.is_a?(Array)
+      # check if labels in except are valid
+      except.each do |key|
+        unless column_registry.has_key?(key)
+          raise LabelNotFound.new("Pack 'except' error : unknown column label <#{key}>")
+        end
+      end
+      column_labels = column_registry.keys - except
+      columns = column_labels.map { |label| column_registry[label] }
+      packit(width, starting_widths, columns)
+    end
+
+    def pack(width : Int32? = nil, *,
+             starting_widths : StartingWidths = Config.starting_widths,
+             only : (LabelType | Array(LabelType))) # ? = nil)
+      only = [only] unless only.is_a?(Array)
+      # check if labels in only are valid
+      only.each do |key|
+        unless column_registry.has_key?(key)
+          raise LabelNotFound.new("Pack 'only' error : unknown column label <#{key}>")
+        end
+      end
+      columns = only.map { |label| column_registry[label] }
+      packit(width, starting_widths, columns)
+    end
+
+    def pack(width : Int32? = nil, *,
+             starting_widths : StartingWidths = Config.starting_widths)
+      # All columns are selected
+      packit(width, starting_widths, column_list)
+    end
+
+    private def packit(width, starting_widths, columns)
+      # private def packit(width : Int32? = nil, *,
+      #                starting_widths : StartingWidths = Config.starting_widths,
+      #                column_list)
       required_width = case width
                        in Nil
                          if STDOUT.tty? && Config.terminal_capped_width?
@@ -771,33 +807,39 @@ module Tablo
         # no change to current column widths before packing
       in StartingWidths::Initial
         # all columns, 'except' excepted, have their width reset to their initial value
-        column_list(except: except).each do |c|
+        columns.each do |c|
           c.width = c.initial_width
         end
       in StartingWidths::AutoSized # default
         # all columns, 'except' excepted, have their width set to their
         # largest formatted content size --> Implies browsing all source rows
-        autosize_columns(except: except)
+        autosize_columns(columns)
       end
 
       unless required_width.nil?
         if total_table_width > required_width
-          shrink(required_width, except)
+          shrink(required_width, columns)
         else
-          expand(required_width, except)
+          expand(required_width, columns)
         end
       end
       # Here we need also to update widths of summary and groups
-      update_summary_widths unless self.name == :summary
+      # update_summary_widths unless self.name == :summary
+      # update_group_widths unless groups.empty?
+      # debug! self
+      # case self.name
+      # when :main
+      update_summary_widths # unless self.name == :summary
+      # when :summary
+      update_main_widths if self.name == :summary
+      # end
       update_group_widths unless groups.empty?
       self
     end
 
-    # Resets all the column widths so that each column is *just* wide enough to
     # accommodate its header text as well as the formatted content of each cell for
     # the entire collection, together with padding, without wrapping.
-    private def autosize_columns(except = nil)
-      columns = column_list(except: except)
+    private def autosize_columns(columns)
       @sources.each_with_index do |source, row_index|
         columns.each_with_index do |column, column_index|
           # create a DataCell (Body)
@@ -815,40 +857,39 @@ module Tablo
 
     # The shrink auxiliary method reduces column widths, with one character progressively
     # deducted from the width of the widest column until the target width is reached.
-    private def shrink(max_table_width, except)
+    private def shrink(max_table_width, columns)
       border_padding_width = padding_widths_sum + border_widths_sum
-      shrinkable_columns = column_list(except: except)
-      return self if shrinkable_columns.empty?
+      return self if columns.empty?
       # compute minimum width of table (given minimum column content width is 1),
       # and taking into account non-shrinkable columns
-      if except.nil?
-        min_table_width = column_count + border_padding_width
-      else
-        except = [except] unless except.is_a?(Array)
-        unshrinkable_width = except.sum { |label| column_registry[label].width }
-        min_table_width = column_count - except.size +
-                          unshrinkable_width + border_padding_width
-      end
+
+      # Unshrinkable_width is the total with of ignored columns
+      unshrinkable_width = (column_list - columns).sum { |column| column.width }
+      # unshrinkable_width = except.sum { |label| column_registry[label].width }
+
+      min_table_width = columns.size + unshrinkable_width + border_padding_width
       # Table width cannot be less than minimum !
       max_width = [min_table_width, max_table_width].max
       # now, we can proceed, if needed (ie required table width is < than current table width)
       required_reduction = [total_table_width - max_width, 0].max
       required_reduction.times do
-        widest_column = shrinkable_columns.reduce(shrinkable_columns.first) do |widest, column|
+        widest_column = columns.reduce(columns.first) do |widest, column|
           column.width >= widest.width ? column : widest
         end
         widest_column.width -= 1
       end
     end
 
+    # The shrink auxiliary method reduces column widths, with one character progressively
+    # deducted from the width of the widest column until the target width is reached.
+
     # The expand auxiliary method increases column widths, with one character progressively
     # added to the width of the narrowest column until the target width is reached.
-    private def expand(min_table_width, except)
-      expandable_columns = column_list(except: except)
-      return if expandable_columns.empty?
+    private def expand(min_table_width, columns)
+      return if columns.empty?
       required_increase = [min_table_width - total_table_width, 0].max
       required_increase.times do
-        narrowest_column = expandable_columns.reduce(expandable_columns.first) do |narrowest, column|
+        narrowest_column = columns.reduce(columns.first) do |narrowest, column|
           column.width <= narrowest.width ? column : narrowest
         end
         narrowest_column.width += 1
@@ -1041,15 +1082,8 @@ module Tablo
       end
     end
 
-    # Returns an array of Column instances, after possibly filtering on label exceptions
-    private def column_list(except : Except? = nil)
-      if except.nil?
-        column_registry.values
-      else
-        except = [except] unless except.is_a?(Array)
-        column_labels = column_registry.keys - except
-        column_labels.map { |label| column_registry[label] }
-      end
+    private def column_list
+      column_registry.values
     end
 
     # returns the total combined width of vertical border characters
@@ -1091,11 +1125,8 @@ module Tablo
       column_data
     end
 
-    # -------------- unused, old or obsolete mrthods --------------------------------
-    #
-    #
-
     def update_summary_widths
+      # debug! self.summary_table
       unless (st = summary_table).nil?
         widths = @column_registry.map { |k, v| v.width }
         st.column_registry.each_with_index do |(k, v), i|
@@ -1104,110 +1135,16 @@ module Tablo
       end
     end
 
-    def old_pack(width : TableWidth? = GetWidthFrom::Screen, *,
-                 init : PackInit? = PackInit::AutoSize,
-                 except : Except? = nil)
-      case init
-      in Nil
-        # no change to current column widths before packing
-      in PackInit::Reset
-        # all columns, 'except' excepted, have their width reset to their initial value
-        column_list(except: except).each do |c|
-          c.width = c.initial_width
+    def update_main_widths
+      # debug! self
+      # debug! self.name
+      # debug! summary_table
+      unless (mt = self.summary_table).nil?
+        widths = mt.column_registry.map { |k, v| v.width }
+        # debug! widths
+        column_registry.each_with_index do |(k, v), i|
+          v.width = widths[i]
         end
-      in PackInit::AutoSize # default
-        # all columns, 'except' excepted, have their width set to their
-        # largest formatted content size --> Implies browsing all source rows
-        autosize_columns(except: except)
-      end
-
-      max_width = case width
-                  in Nil
-                    nil
-                  in GetWidthFrom
-                    if width == GetWidthFrom::Screen && STDOUT.tty? &&
-                       Config.terminal_capped_width?
-                      Util.get_terminal_lines_and_columns[1]
-                    else
-                      nil
-                    end
-                  in Int32
-                    width
-                  end
-      unless max_width.nil?
-        if max_width < 0
-          if total_table_width > max_width.abs
-            shrink(max_width.abs, except)
-          else
-            expand(max_width.abs, except)
-          end
-        else
-          shrink(max_width, except)
-        end
-      end
-      # Here we need also to update widths of summary, if it exists
-      # TODO To be studied
-      # update_summary_widths
-      update_group_widths
-      self
-    end
-
-    def old2_pack(width : TableWidth? = GetWidthFrom::Screen, *,
-                  starting_widths : StartingWidths = Config.starting_widths,
-                  except : Except? = nil)
-      required_width = case width
-                       in Nil
-                         nil
-                       in GetWidthFrom
-                         if width == GetWidthFrom::Screen && STDOUT.tty? &&
-                            Config.terminal_capped_width?
-                           Util.get_terminal_lines_and_columns[1]
-                         else
-                           nil
-                         end
-                       in Int32
-                         width
-                       end
-
-      case starting_widths
-      in StartingWidths::Current
-        # no change to current column widths before packing
-      in StartingWidths::Initial
-        # all columns, 'except' excepted, have their width reset to their initial value
-        column_list(except: except).each do |c|
-          c.width = c.initial_width
-        end
-      in StartingWidths::AutoSized # default
-        # all columns, 'except' excepted, have their width set to their
-        # largest formatted content size --> Implies browsing all source rows
-        autosize_columns(except: except)
-      end
-
-      unless required_width.nil?
-        if total_table_width > required_width
-          shrink(required_width, except)
-        else
-          expand(required_width, except)
-        end
-      end
-      # Here we need also to update widths of summary, if it exists
-      # TODO To be studied
-      # update_summary_widths
-      update_group_widths
-      self
-    end
-
-    def old_each(&)
-      @sources.each_with_index do |source, index|
-        show_divider = false
-        if !(row_divider_frequency = @row_divider_frequency).nil? &&
-           !row_divider_frequency.zero?
-          show_divider = (index != 0) && (index % row_divider_frequency == 0)
-          if !(header_frequency = @header_frequency).nil? && !header_frequency.zero?
-            show_divider &&= (index % header_frequency != 0)
-          end
-        end
-        yield Row.new(table: self, source: source, divider: show_divider, index: index)
       end
     end
   end
