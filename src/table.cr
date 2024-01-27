@@ -12,7 +12,10 @@ require "./summary"
 module Tablo
   alias SummaryTable = Table(Array(CellType))
 
-  class Table(T)
+  # abstract class ATable
+  # end
+
+  class Table(T) # < ATable
     include Enumerable(Row(T))
     # Class properties to manage row types framing and summary table linking
     # for summary table
@@ -21,8 +24,9 @@ module Tablo
     class_property transition_footer : Footer? = nil
     # class property to manage transition between successive rows issued from data source
     class_property rowtype_memory : RowType? = nil
-
     #
+    # class_property instances = [] of ATable
+    # class_property main_instance : ATable? = nil
     #
     # -------------- Table management attributes ------------------------------------
     #
@@ -35,7 +39,7 @@ module Tablo
 
     protected property summary_table : SummaryTable? = nil
     # protected property summary_table : Table(Array(CellType))? = nil
-    protected property name : Symbol = :main
+    property name : Symbol = :main
 
     # Table parameters
     getter sources
@@ -114,6 +118,8 @@ module Tablo
         check_padding(right_padding)
         check_padding_character(padding_character)
         check_truncation_indicator(truncation_indicator)
+        #@@instances << self if @@instances.empty?
+        # @@main_instance = self if @@main_instance.nil?
       end
     end
 
@@ -439,13 +445,26 @@ module Tablo
       group_width
     end
 
-    private def update_group_widths
+    def update_group_widths
       # unless (gr = group_registry).size.zero?
       unless (gr = group_registry).empty?
         gr.each_with_index do |(_, group), index|
           group.width = group_width(groups[index])
         end
       end
+    end
+
+    def harmonize_widths
+      unless self.summary.nil?
+        iter_main = self.column_registry
+        iter_summary = self.summary.as(Table).column_registry
+        iter = iter_main.zip(iter_summary)
+        iter.each do |(k_m, v_m), (k_s, v_s)|
+          mx = [v_m.width, v_s.width].max
+          v_m.width = v_s.width = mx
+        end
+      end
+      update_group_widths
     end
 
     # -------------- summary --------------------------------------------------------
@@ -503,10 +522,12 @@ module Tablo
     # Returns the summary table
     def summary(summary_def, **summary_options)
       self.summary_table = Summary.new(self, summary_def, summary_options).run
+      # self.class.instances = summary_table.as(ATable)
     end
 
     def summary(summary_def, summary_options)
       self.summary_table = Summary.new(self, summary_def, summary_options).run
+      # self.class.instances = summary_table.as(ATable)
     end
 
     # def summary(aggregations,
@@ -544,6 +565,7 @@ module Tablo
     # If a summary definition is given, insert the resulting table at the end
     # kind of recursive !
     def to_s(io)
+      harmonize_widths
       if !column_registry.empty?
         unless @groups.empty?
           if @groups.last.end != @column_registry.size - 1
@@ -829,11 +851,11 @@ module Tablo
       # debug! self
       # case self.name
       # when :main
-      update_summary_widths # unless self.name == :summary
+      # update_summary_widths # unless self.name == :summary
       # when :summary
-      update_main_widths if self.name == :summary
+      # update_main_widths if self.name == :summary
       # end
-      update_group_widths unless groups.empty?
+      # update_group_widths unless groups.empty?
       self
     end
 
@@ -1125,9 +1147,11 @@ module Tablo
       column_data
     end
 
-    def update_summary_widths
+    def zzz_update_summary_widths
       # debug! self.summary_table
+      puts "coucou 1"
       unless (st = summary_table).nil?
+        puts "coucou 1a #{st.name}"
         widths = @column_registry.map { |k, v| v.width }
         st.column_registry.each_with_index do |(k, v), i|
           v.width = widths[i]
@@ -1135,11 +1159,13 @@ module Tablo
       end
     end
 
-    def update_main_widths
+    def zzz_update_main_widths
+      puts "coucou 2"
       # debug! self
       # debug! self.name
       # debug! summary_table
       unless (mt = self.summary_table).nil?
+        puts "coucou 2aa #{mt.name}"
         widths = mt.column_registry.map { |k, v| v.width }
         # debug! widths
         column_registry.each_with_index do |(k, v), i|

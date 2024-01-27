@@ -404,6 +404,7 @@ module Tablo
         ) { |n| n[column_index] }
       end
       summary_table.name = :summary
+      # Table.summary_table = summary_table
       summary_table
     end
   end
