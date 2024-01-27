@@ -996,10 +996,12 @@ The `pack` method is a welcome aid to table formatting. It accepts
   possible values are :
   - `Current` : resizing starts from columns current width
   - `Initial` : current values are reset to their initial values, at column
-    definition time \* `AutoSized` : current values are set to their 'best fit'
-    values, ie they are automatically adapted to their largest content
-- `except`: column or array of columns excluded from being resized,
-  identified by their label
+    definition time
+  - `AutoSized` : current values are set to their 'best fit'
+    values, _ie_ they are automatically adapted to their largest content
+- `except` or `only` : (array of) column label(s) to be excluded from
+  being resized (`except`), or, on the contrary, to be selected for
+  packing (`only`).
 
 The following examples will illustrate the behaviour of the different
 parameters values, starting from the 'standard' one, with all column widths to
