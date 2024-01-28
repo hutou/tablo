@@ -363,16 +363,18 @@ _All named parameters are optional, with default values_
 
 - `starting_widths`: type is `StartingWidths` <br />
   Default set by `Config.starting_widths` <br />
-  `Starting_widths` allows you to specify the starting point for resizing :
+  `Starting_widths` allows you to specify the starting point for resizing : <br />
 
-  - either from the current column width value (`StartingWidths::Current`)
-  - or from its initial value (`StartingWidths::Initial`)
+  - either from the current column width value (`StartingWidths::Current`) <br />
+  - or from its initial value (`StartingWidths::Initial`) <br />
   - or ignore it and directly perform optimized resizing (`StartingWidths::AutoSized`)
 
-- `except`: type is `Except?` <br />
-  Default value is `nil` <br />
-  `except` is a column identifier or array of column identifiers to be excluded
-  from packing (`Except` is an alias of `LabelType | Array(LabelType)`)
+- `except` or `only` (mutually exclusive named parameters) : (array of) column label(s) <br />
+
+  - to be excluded from resizing (`except` named parameter) <br />
+  - to be selected exclusively for packing (`only` named parameter) <br />
+
+  Default to `nil`
 
 ##### Description of the packing algorithm
 
