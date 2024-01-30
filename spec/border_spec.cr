@@ -14,7 +14,8 @@ describe Tablo::Border do
         Tablo::BorderName::Markdown      => "   |||   |||  - ",
         Tablo::BorderName::Modern        => "┌┬┐├┼┤└┴┘│││────",
         Tablo::BorderName::Fancy         => "╭┬╮├┼┤╰┴╯│:│─−-⋅",
-        Tablo::BorderName::Blank         => "EEEEEEEEEEEEEEEE",
+        Tablo::BorderName::Blank         => "SSSSSSSSSSSSSSSS",
+        Tablo::BorderName::Empty         => "EEEEEEEEEEEEEEEE",
       }.each do |k, v|
         Tablo::Border.new(k).border_string.should eq(v)
       end

@@ -376,7 +376,9 @@ module Tablo
       # or by default, those of :summary table, with the exception of some
       # (the last 5 in add_column) which are read from the :main table columns.
 
+      # save self (which is main)
       summary_table = Table.new(summary_sources, **initializers)
+      # summary_table = table.summary_table.as(Table)
       # summary_table has no column defined yet,
       # so we use main table for looping over columns
       table.column_registry.each_with_index do |(label, column), column_index|
