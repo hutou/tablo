@@ -65,14 +65,6 @@ module Tablo
     # Returns a Hash representation of the `Row`, with column labels acting
     # as keys and the calculated cell values (before formatting) providing the values.
     def to_h
-      h = @table.column_registry.map_with_index do |(label, column), column_index|
-        [label, column.body_cell(@source, row_index: @index, column_index: column_index).value]
-      end.to_h
-      p! h
-      h
-    end
-
-    def ok_to_h
       @table.column_registry.map_with_index do |(label, column), column_index|
         [label, column.body_cell(@source, row_index: @index, column_index: column_index).value]
       end.to_h

@@ -13,21 +13,24 @@ module Tablo
   # rule type and deduce border position to be used (see ROWTYPE_POSITION below).
   #
   # From one instance to the next, the RowGroup class has no memory: the
-  # Table.rowtype_memory class variable is therefore used to ensure the link:
+  # RowGroup.rowtype_memory class variable is therefore used to ensure the link:
   # when a new instance of RowGroup is created, the previous_rowtype instance
-  # variable is initialized by Table.rowtype_memory, and on exit from
+  # variable is initialized by RowGroup.rowtype_memory, and on exit from
   # RowGroup's run method, the current_rowtype instance variable is assigned to
-  # Table.rowtype_memory.
+  # RowGroup.rowtype_memory.
   #
   # Linking conditions between table :main and table :summary is governed by
-  # the class variable Table.transition_footer, where we store the footer of
+  # the class variable RowGroup.transition_footer, where we store the footer of
   # :main or nil, depending of the last rowtype of :main. This info is then
   # use on first row of :summary to properly link or not the two tables.
   class RowGroup(T)
+    class_property transition_footer : Footer? = nil
+    class_property rowtype_memory : RowType? = nil
+
     @rows = [] of String
     # Whenever we enter rowgroup, we retrieve the previous rowtype from
-    # the recorded value in class variable Table.rowtype_memory
-    property previous_rowtype : RowType? = Table.rowtype_memory
+    # the recorded value in class variable RowGroup.rowtype_memory
+    property previous_rowtype : RowType? = RowGroup.rowtype_memory
     # property previous_rowtype : RowType? = Table.previous_rowtype
     property current_rowtype : RowType? = nil
     private getter table, source, row_index, row_divider
@@ -83,7 +86,7 @@ module Tablo
         table.subtitle.framed?
       when RowType::Footer
         if summary_first?
-          Table.transition_footer.as(Footer).framed?
+          RowGroup.transition_footer.as(Footer).framed?
         else
           table.footer.framed?
         end
@@ -256,7 +259,7 @@ module Tablo
         self.rows[-1] += "\f" if table.footer.page_break?
       end
       # Clear Table memory for next table display
-      Table.rowtype_memory = nil
+      RowGroup.rowtype_memory = nil
     end
 
     private def process_last_row
@@ -279,7 +282,7 @@ module Tablo
             else
               # no linking allowed, but we must obey omit_last_rule and
               # not close :main, just prevent linking
-              Table.rowtype_memory = nil
+              RowGroup.rowtype_memory = nil
               # Do not omit formfeed if page_break? == true
               self.rows[-1] += "\f" if table.footer.page_break?
             end
@@ -287,13 +290,13 @@ module Tablo
             # No linking requested, we can close table
             close_table
           end
-          Table.transition_footer = current_rowtype == RowType::Footer ? table.footer : nil
+          RowGroup.transition_footer = current_rowtype == RowType::Footer ? table.footer : nil
         else
           # No way to know if summary would be defined later
           if table.omit_last_rule?
             # We must obey omit_last_rule: we do not close :main
             # but just prevent linking !
-            Table.rowtype_memory = nil
+            RowGroup.rowtype_memory = nil
             # Do not omit formfeed if page_break? == true
             self.rows[-1] += "\f" if table.footer.page_break?
           else
@@ -309,12 +312,12 @@ module Tablo
 
     def run
       if summary_first?
-        if Table.rowtype_memory.nil?
+        if RowGroup.rowtype_memory.nil?
           # :main has been closed, so no previous rowtype !
           self.previous_rowtype = nil
         else
           # Linking allowed
-          self.previous_rowtype = Table.transition_footer.nil? ? RowType::Body : RowType::Footer
+          self.previous_rowtype = RowGroup.transition_footer.nil? ? RowType::Body : RowType::Footer
         end
       end
 
@@ -353,7 +356,7 @@ module Tablo
         process_last_row
       else
         # save current rowtype for next run in current table²
-        Table.rowtype_memory = previous_rowtype
+        RowGroup.rowtype_memory = previous_rowtype
       end
       rows
     end

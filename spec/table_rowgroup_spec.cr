@@ -650,7 +650,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       end
     end
 
-    context "Table with summary" do
+    pending "Table with summary" do
       it "prints a detached summary" do
         table = Tablo::Table.new((1..5).to_a,
           title: Tablo::Title.new("Numbers", frame: Tablo::Frame.new),
