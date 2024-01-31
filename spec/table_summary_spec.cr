@@ -145,7 +145,7 @@ invoice_output =
 
 describe "#{Tablo::Table} -> summary definition using Aggregation", tags: "summary" do
   tbl = invoice
-  tbl.summary(invoice_summary_definition_1,
+  tbl.add_summary(invoice_summary_definition_1,
     {
       masked_headers: true,
       border:         Tablo::Border.new("EEESSSSSSSSSESSS"),
@@ -162,7 +162,7 @@ end
 
 describe "#{Tablo::Table} -> summary definition using UserAggregation (with sources - a)", tags: "summary" do
   tbl = invoice
-  tbl.summary(invoice_summary_definition_2a,
+  tbl.add_summary(invoice_summary_definition_2a,
     {
       masked_headers: true,
       border:         Tablo::Border.new("EEESSSSSSSSSESSS"),
@@ -180,7 +180,7 @@ end
 
 describe "#{Tablo::Table} -> summary definition using UserAggregation (with sources - b)", tags: "summary" do
   tbl = invoice
-  tbl.summary(invoice_summary_definition_2b,
+  tbl.add_summary(invoice_summary_definition_2b,
     {
       masked_headers: true,
       border:         Tablo::Border.new("EEESSSSSSSSSESSS"),
@@ -197,7 +197,7 @@ describe "#{Tablo::Table} -> summary definition using UserAggregation (with sour
 end
 describe "#{Tablo::Table} -> summary definition using UserAggregation (with columns)", tags: "summary" do
   tbl = invoice
-  tbl.summary(invoice_summary_definition_3,
+  tbl.add_summary(invoice_summary_definition_3,
     {
       masked_headers: true,
       border:         Tablo::Border.new("EEESSSSSSSSSESSS"),

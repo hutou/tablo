@@ -269,7 +269,8 @@ module Tablo
         # So :main has been displayed, and we know if a summary has already
         # been defined by testing table.summary_table.nil?, but if not, we do
         # not know for sure if it would be defined later or not
-        if !table.summary_table.nil?
+        # if !table.summary_table.nil?
+        if !table.child.nil?
           # a summary is defined, but do we have to save last row of :main for it
           # is linking possible ?
           if table.omit_last_rule?

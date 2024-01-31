@@ -17,30 +17,17 @@ module Tablo
 
   class Table(T) < ATable
     include Enumerable(Row(T))
-    # Class properties to manage row types framing and summary table linking
-    # for summary table
-    #
-    # Class property to manage transition betwen :main and :summary tables
-    # class_property transition_footer : Footer? = nil
-    # class property to manage transition between successive rows issued from data source
-    # class_property rowtype_memory : RowType? = nil
-    #
-    # class_property instances = [] of ATable
-    # class_property main_instance : ATable? = nil
     #
     # -------------- Table management attributes ------------------------------------
     #
     property parent : ATable? = nil
     property child : ATable? = nil
+    property name : Symbol = :main
 
     getter column_registry = {} of LabelType => Column(T)
     protected getter group_registry = {} of LabelType => TextCell
     protected getter groups = [] of Range(Int32, Int32)
     protected property row_count : Int32 = 0
-
-    protected property summary_table : SummaryTable? = nil
-    # protected property summary_table : Table(Array(CellType))? = nil
-    property name : Symbol = :main
 
     # Table parameters
     getter sources
@@ -287,8 +274,7 @@ module Tablo
     # - reset the summary table to nil
     # - returns the new sources
     def reset_sources(to src : Enumerable(T))
-      # h1 debug! " In reset_sources: self=#{self.object_id.to_s(16)} - name=#{self.name}"
-      self.summary_table = nil
+      self.child = nil
       self.row_count = src.size
       self.sources = src
     end
@@ -436,18 +422,6 @@ module Tablo
 
     private def calc_group_width(column_range)
       cr = (self.name == :main ? self : self.parent.as(ATable)).column_registry
-      # if self.name == :summary
-      #   cr = self.parent.as(ATable).column_registry
-      # else
-      #   cr = self.column_registry
-      # end
-      # columns_keys = column_registry.keys[column_range]
-      # columns = columns_keys.map { |k| column_registry[k] }
-      # columns_keys = cr.keys[column_range]
-      # columns = columns_keys.map { |k| cr[k] }
-      # # columns = cr.map { |k, v| v }.select &.index.in?(column_range)
-      # zzz = cr.values.select &.index.in?(column_range)
-      # p! zzz
       columns = cr.values.select &.index.in?(column_range)
       left_padding = columns.first.left_padding
       right_padding = columns.last.right_padding
@@ -464,19 +438,12 @@ module Tablo
       # Only main is involved (summary has no groups)
       self_main = self.name == :main ? self : self.parent.as(ATable)
       gr = self_main.group_registry
-
-      # p! gr
-      # p! self_main.groups
-      # unless gr.empty?
       gr.each_with_index do |(_, group), index|
-        # p! index
         group.width = calc_group_width(self_main.groups[index])
       end
-      # end
     end
 
-    def harmonize_widths
-      # h1 debug! " In harmonize_widths: self=#{self.object_id.to_s(16)} - name=#{self.name}"
+    private def harmonize_widths
       if self.name == :summary
         iter_main = self.parent.as(ATable).column_registry.each
         iter_summary = self.column_registry.each
@@ -499,128 +466,24 @@ module Tablo
       end
     end
 
-    def old2_harmonize_widths
-      # h1 debug! " In harmonize_widths: self=#{self.object_id.to_s(16)} - name=#{self.name}"
-      update_widths = false
-      if self.name == :summary
-        iter_main = self.parent.as(ATable).column_registry.each
-        iter_summary = self.column_registry.each
-        update_widths = true
-      else
-        iter_main = self.column_registry.each
-        unless self.child.nil?
-          iter_summary = self.child.as(ATable).column_registry.each
-          update_widths = true
-        end
-      end
-      if update_widths
-        iter = iter_main.zip(iter_summary.not_nil!)
-        iter.each do |(k_m, v_m), (k_s, v_s)|
-          mx = [v_m.width, v_s.width].max
-          v_m.width = v_s.width = mx
-        end
-      end
-      update_group_widths
-    end
-
-    def old_harmonize_widths
-      # h1 debug! " In harmonize_widths: self=#{self.object_id.to_s(16)} - name=#{self.name}"
-      if self.name == :summary
-        p! "coucou summary"
-        test = summary
-      else
-        p! "coucou main"
-        test = self.summary
-      end
-      unless test.nil?
-        # unless self.summary.nil?
-        iter_main = self.column_registry
-        iter_summary = self.summary.as(Table).column_registry
-        iter = iter_main.zip(iter_summary)
-        iter.each do |(k_m, v_m), (k_s, v_s)|
-          mx = [v_m.width, v_s.width].max
-          v_m.width = v_s.width = mx
-        end
-      end
-      update_group_widths
-    end
-
     # -------------- summary --------------------------------------------------------
     #
     #
 
-    # The summary method, with two parameters, is used to define a new SummaryTable
-    # by applying user-defined functions to the numerical values of columns,
-    # such as Sum or Average functions.
-    #
-    # **parameters:**
-    #
-    #  - *summary_def*, of type `Hash(LabelType, NamedTuple)` allows you to define
-    #  column content and formatting.
-    #
-    #  Permitted NamedTuple keys and value types are :
-    #   - body_alignment: `Justify`
-    #   - header_alignment: `Justify`
-    #   - header: `String`
-    #   - body_formatter: `DataCellFormatter`
-    #   - header_formatter: `DataCellFormatter`
-    #   - body_styler: `DataCellStyler`
-    #   - header_styler: `DataCellStyler`     \
-    # and
-    #   - any (unique) key: `SummaryNumCol` or `SummaryNumCols`
-    #
-    # for example:
-    # ```
-    # {
-    #   "A" => {
-    #     header:           "Sum",
-    #     header_formatter: ->(c : Tablo::CellType) { c.to_s.downcase },
-    #     body_styler:      ->(c : Tablo::CellType, s : String) { s.colorize(:yellow).to_s },
-    #     proc:             ->(ary : Tablo::NumCol) { ary.sum.to_i },
-    #   },
-    #   "B" => {
-    #     header: "Sum/Avg",
-    #     proc1:  ->(ary : Tablo::NumCol) { ary.sum.to_i },
-    #     proc2:  ->(ary : Tablo::NumCols) { ary["B"].size > 0 ? (ary["B"].sum/ary["B"].size).to_s : "NA" },
-    #   },
-    # }
-    # ```
-    #
-    #  - *summary_options* , of type `Hash(LabelType, NamedTuple)` allows you to
-    #  redefine table initialization parameters. By default, the current parameters
-    #  of the main table are used.
-    #  ```plain
-    #  Parameters             | Default values
-    #  -----------------------+------------------------------
-    #  title                  | default Table value
-    #  subtitle               |       idem
-    #  footer                 |       idem
-    #  footer                 |       idem
-    #  ```
-    # Returns the summary table
-    def summary(summary_def, **summary_options)
-      # h1 debug! " In summary: self=#{self.object_id.to_s(16)} - name=#{self.name}"
-      # set child of main (=summary)
-      self.summary_table = self.child = Summary.new(self, summary_def, summary_options).run
-      # set parent of summary(= current self)
-      self.child.as(SummaryTable).parent = self.as(Table(T))
-      # self.summary_table = self.child.as(SummaryTable)
+    # Returns the newly created summary table and sets its parent
+    def add_summary(summary_def, **summary_options)
+      self.child = Summary.new(self, summary_def, summary_options).run
+      self.child.as(ATable).parent = self.as(ATable)
     end
 
-    def summary(summary_def, summary_options)
-      # h1 debug! " In summary: self=#{self.object_id.to_s(16)} - name=#{self.name}"
-      # set child of main (=summary)
-      self.summary_table = self.child = Summary.new(self, summary_def, summary_options).run
-      # set parent of summary (= current self)
-      self.child.as(SummaryTable).parent = self.as(Table(T))
-      # self.summary_table = self.child.as(SummaryTable)
-      # self.summary_table = Summary.new(self, summary_def, summary_options).run
+    def add_summary(summary_def, summary_options)
+      self.child = Summary.new(self, summary_def, summary_options).run
+      self.child.as(ATable).parent = self.as(ATable)
     end
 
     # Returns a previously defined summary table
     def summary
-      # h1 debug! " In summary(): self=#{self.object_id.to_s(16)} - name=#{self.name}"
-      self.summary_table = self.child.as(SummaryTable)
+      self.child
     end
 
     # :nodoc:
@@ -640,6 +503,7 @@ module Tablo
           end
         end
         rows = map &.to_s
+        # rows = self.map { |row| row.to_s }
         io << join_lines(rows)
       else
         io << ""
@@ -668,7 +532,6 @@ module Tablo
             show_divider &&= (index % hf != 0) if hf > 0
           end
         end
-        # h1 debug! " In each: self=#{self.object_id.to_s(16)} - name=#{self.name}"
         yield Row.new(table: self, source: source, divider: show_divider, index: index)
       end
     end
@@ -878,9 +741,7 @@ module Tablo
     end
 
     private def packit(width, starting_widths, columns)
-      # private def packit(width : Int32? = nil, *,
-      #                starting_widths : StartingWidths = Config.starting_widths,
-      #                column_list)
+      return if columns.empty?
       required_width = case width
                        in Nil
                          if STDOUT.tty? && Config.terminal_capped_width?
@@ -913,18 +774,6 @@ module Tablo
           expand(required_width, columns)
         end
       end
-      # Here we need also to update widths of summary and groups
-      # update_summary_widths unless self.name == :summary
-      # update_group_widths unless groups.empty?
-      # debug! self
-      # case self.name
-      # when :main
-      # update_summary_widths # unless self.name == :summary
-      # when :summary
-      # update_main_widths if self.name == :summary
-      # end
-      # update_group_widths unless groups.empty?
-      # h1 debug! "In packit: self=#{self.object_id.to_s(16)} - name=#{self.name}"
       harmonize_widths
       self
     end
@@ -951,8 +800,6 @@ module Tablo
     # deducted from the width of the widest column until the target width is reached.
     private def shrink(max_table_width, columns)
       border_padding_width = padding_widths_sum + border_widths_sum
-      # h1 debug! " In shrink: self=#{self.object_id.to_s(16)} - name=#{self.name}"
-      return self if columns.empty?
       # compute minimum width of table (given minimum column content width is 1),
       # and taking into account non-shrinkable columns
 
@@ -972,9 +819,6 @@ module Tablo
         widest_column.width -= 1
       end
     end
-
-    # The shrink auxiliary method reduces column widths, with one character progressively
-    # deducted from the width of the widest column until the target width is reached.
 
     # The expand auxiliary method increases column widths, with one character progressively
     # added to the width of the narrowest column until the target width is reached.
@@ -1216,33 +1060,6 @@ module Tablo
         column_data << extractor.call(source, index)
       end
       column_data
-    end
-
-    def zzz_update_summary_widths
-      # debug! self.summary_table
-      puts "coucou 1"
-      unless (st = summary_table).nil?
-        puts "coucou 1a #{st.name}"
-        widths = @column_registry.map { |k, v| v.width }
-        st.column_registry.each_with_index do |(k, v), i|
-          v.width = widths[i]
-        end
-      end
-    end
-
-    def zzz_update_main_widths
-      puts "coucou 2"
-      # debug! self
-      # debug! self.name
-      # debug! summary_table
-      unless (mt = self.summary_table).nil?
-        puts "coucou 2aa #{mt.name}"
-        widths = mt.column_registry.map { |k, v| v.width }
-        # debug! widths
-        column_registry.each_with_index do |(k, v), i|
-          v.width = widths[i]
-        end
-      end
     end
   end
 end
