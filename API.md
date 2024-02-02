@@ -7,6 +7,8 @@
 ## Table of contents
 
 - [Tablo internals](#tablo-internals)
+- [struct Border](#struct-border)
+  - [Method initialize](#border-method-initialize)
 - [class Table](#class-table)
   - [Method initialize](#method-initialize)
   - [Method add_column](#method-add_column)
@@ -34,7 +36,7 @@
 
 [:top:](#tablo-api)
 [:arrow_up:](#table-of-contents)
-[:arrow_down:](#class-table)
+[:arrow_down:](#struct-border)
 
 Table definition is largely based on default values, which can be modified via
 named parameters if required.
@@ -61,11 +63,39 @@ They differ mainly in 2 exclusive attribute types:
 Both have the `value` attribute, which contains the raw data extracted from
 source. Its type is `Tablo::CellType`
 
-## class Table
+## struct Border
 
 [:top:](#tablo-api)
 [:arrow_up:](#tablo-internals)
-[:arrow_down:](#abstract-struct-Heading)
+[:arrow_down:](#class-table)
+[:arrow_lower_right:](#border-method-initialize)
+
+A border can be styled by a user defined proc, of type `BorderStyler` allowing
+for colorized output, either by using ANSI sequences or "colorize" module
+(default: no style)
+
+### Border method `initialize`
+
+[:top:](#tablo-api)
+[:arrow_upper_left:](#struct-border)
+[:arrow_lower_left:](#class-table)
+
+Returns an instance of `Border`
+
+_Optional parameters, with default values_
+
+- `border_type`: type is `String` or `BorderName` <br />
+  Default set by `Config.border_type` <br />
+  (See the [Tutorial](tutorial.md#borders) for details)
+
+- `styler`: type is BorderStyler <br />
+  Default set by `Config.border_styler`
+
+## class Table
+
+[:top:](#tablo-api)
+[:arrow_up:](#struct-border)
+[:arrow_down:](#abstract-struct-heading)
 [:arrow_lower_right:](#method-initialize)
 
 The Table class is Tablo's main class. Its initialization defines the main
