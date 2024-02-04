@@ -1,14 +1,61 @@
 require "./spec_helper"
 
-# Description of tests to be done
-# 1.
+# Redefine protected and private methods for tests
 class Tablo::Cell
   getter content_postformat
   getter subcells
+
+  def formatted_content
+    previous_def
+  end
+
+  def rendered_subcells
+    previous_def
+  end
+
+  def line_count
+    previous_def
+  end
+
+  def rendered_subcells
+    previous_def
+  end
 end
 
 describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
-  context "Specs on TextCell" do
+  context "specs on subcells" do
+  end
+  context "Specs on TextCell, with WrapMode::Rune" do
+    title_cell = Tablo::TextCell.new(
+      value: "This is a rather long line, needed for tests",
+      row_type: Tablo::RowType::Title,
+      left_padding: 1, right_padding: 1, padding_character: " ",
+      alignment: Tablo::Justify::Left,
+      formatter: ->(c : Tablo::CellType) { c.to_s },
+      styler: ->(s : String) { s },
+      truncation_indicator: "~", wrap_mode: Tablo::WrapMode::Rune, width: 12)
+    it "cuts the line at appropriate places" do
+      subcells = title_cell.rendered_subcells
+      subcells.size.should eq(4)
+      subcells[1].should eq("ther long li")
+      subcells[3].should eq("or tests    ")
+    end
+  end
+  context "Specs on TextCell, with WrapMode::Word" do
+    title_cell = Tablo::TextCell.new(
+      value: "This is a rather long line, needed for tests",
+      row_type: Tablo::RowType::Title,
+      left_padding: 1, right_padding: 1, padding_character: " ",
+      alignment: Tablo::Justify::Left,
+      formatter: ->(c : Tablo::CellType) { c.to_s },
+      styler: ->(s : String) { s },
+      truncation_indicator: "~", wrap_mode: Tablo::WrapMode::Word, width: 12)
+    it "cuts the line at appropriate places" do
+      subcells = title_cell.rendered_subcells
+      subcells.size.should eq(5)
+      subcells[1].should eq("rather long ")
+      subcells[3].should eq("needed for  ")
+    end
   end
   context "Specs on DataCell" do
     describe Tablo::DataCell do

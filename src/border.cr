@@ -2,14 +2,15 @@ require "./types"
 require "./config"
 
 module Tablo
-  # Border struct allows to create frames around rows and columns, using ascii
-  # and/or graphic characters (See `Table` for usage)
+  # Each `Border` type is defined by a string of exactly 16 characters, which is
+  # then converted into 16 strings of up to 1 character each. The definition
+  # string can contain any character, but two of them have a special meaning:
+  # during conversion, the uppercase E is replaced by an empty string, and the
+  # uppercase S character is replaced by a space (a simple space may also be used,
+  # of course).
   #
-  # A border is defined by its name (see predefined constants below) or by  a string
-  # of 16 characters, each of them representing a "connector" such as those below,
-  # or the absence of connector if the letter `E` (upcase) is used.
-  #
-  # For example, the string `"E EE EE EE E───"` is how the `ReducedModern` style is defined.
+  # _Please note that using the capital E character may cause alignment
+  # difficulties._
   #
   # Examples of text or graphic connectors:
   # ```
@@ -26,7 +27,7 @@ module Tablo
   # | CONNECTORS_TEXT_CLASSIC        | +++++++++|||---- |
   #
   # ```
-  # Mixed graphic character sets, such as :
+  # Mixed graphic character sets, such as:
   # ```
   # | Name                           | 16 chars string  |
   # | ------------------------------ | ---------------  |
@@ -34,7 +35,11 @@ module Tablo
   # ```
   # are not correctly rendered.
   #
-  # Below is a detailed representation of each position and meaning :
+  # Below is a detailed representation of each position and meaning:
+  #
+  # The first 9 characters define the junction or intersection of horizontal and
+  # vertical border lines.
+  #
   # ```
   # Pos Connector name     Example (using Fancy border name string)
   # --- --------------     ----------------------------------------
@@ -49,18 +54,29 @@ module Tablo
   #  6  bottom_left        "└"
   #  7  bottom_mid         "┴"
   #  8  bottom_right       "┘"
+  # ```
   #
+  # The next three characters define vertical separators in data rows.
+  #
+  # ```
   #  9  vdiv_left          "│"
   # 10  vdiv_mid           ":"
   # 11  vdiv_right         "│"
+  # ```
   #
+  # And finally, the last four characters define the different types of horizontal
+  # border, depending on the type of data row or types of adjacent data rows.
+  #
+  # ```
   # 12  hdiv_tbs           "─"     (title or top or bottom or summary)
   # 13  hdiv_grp           "−"     (group)
   # 14  hdiv_hdr           "-"     (header)
   # 15  hdiv_bdy           "⋅"     (body)
   # ```
   #
-  # Predefined borders are :
+  # Eight predefined borders, of type `BorderName`, can also be used instead of
+  # a definition string.
+  #
   # ```
   # | name          | 16 chars string  |
   # | ------------- | ---------------- |
@@ -74,9 +90,12 @@ module Tablo
   # | Empty         | EEEEEEEEEEEEEEEE |
   # ```
   #
+  # For example, the string `"E EE EE EE E───"` is how the `ReducedModern`
+  # style is defined.
+  #
   # A border can be styled by a user defined proc, of type `BorderStyler` allowing
-  # for colorized output, either by using ANSI sequences or "colorize" module
-  # (default: no style)
+  # for colorized output, either by using ANSI sequences or the "colorize" module
+  # from the stdlib (default: no style).
   struct Border
     protected property top_left : String, top_mid : String, top_right : String
     protected property mid_left : String, mid_mid : String, mid_right : String
@@ -85,11 +104,9 @@ module Tablo
     protected property hdiv_tbs : String, hdiv_grp : String, hdiv_hdr : String
     protected property hdiv_bdy : String
 
-    getter border_string : String, styler
+    private getter border_string, styler
 
-    protected class_property border_string = ""
-
-    # Border predefined strings, enabled by name, described in `enum BorderName`
+    # Border predefined strings, enabled by name, described in `enum BorderName`.
     PREDEFINED_BORDERS = {
       BorderName::Ascii         => "+++++++++|||----",
       BorderName::ReducedAscii  => "E EE EE EE E----",
@@ -102,11 +119,29 @@ module Tablo
     }
 
     # Primary constructor, defined by a string or by a hash of predefined strings
-    # of connectors
-    # Returns a Border type
+    # of connectors and a styler proc. <br />
+    # Returns a Border instance.
+    #
+    # _Optional (named) parameters, with default values_:
+    #
+    # - `border_type`: type is `String` | `BorderName` <br />
+    #   Default value set by `Config.border_type`
+    #
+    # - `styler`: type is `BorderStyler` <br />
+    #   Default value set by `Config.border_styler`
+    #
+    # Examples :
+    # ```
+    # border = Tablo::Border.new(Tablo::BorderName::Fancy,
+    #   styler: ->(s : String) { s.colorize(:yellow).to_s })
+    # ```
+    # or
+    # ```
+    # border = Tablo::Border.new("┌┬┐├┼┤└┴┘│││────",
+    #   styler: ->(s : String) { s.colorize.fore(:blue).mode(:bold).to_s })
+    # ```
     def initialize(border_type : String | BorderName = Config.border_type,
-                   @styler : BorderStyler = Config.border_styler,
-                   alter : (Tuple(Int32, String) | Array(Tuple(Int32, String)))? = nil)
+                   @styler : BorderStyler = Config.border_styler)
       case border_type
       when Tablo::BorderName
         @border_string = PREDEFINED_BORDERS[border_type]
@@ -115,12 +150,6 @@ module Tablo
       end
       raise InvalidConnectorString.new "Invalid border definition <#{@border_string}>" \
                                        "(size != 16)" unless @border_string.size == 16
-      # Now, we have a border string, save attributes as class properties
-      @@border_string = @border_string
-      @@styler = @styler
-
-      # A change already ???
-      @border_string = @@border_string = Border.alter(alter).border_string unless alter.nil?
 
       ars = @border_string.split("").map { |e|
         case e
@@ -141,35 +170,12 @@ module Tablo
       @hdiv_bdy = ars[15]
     end
 
-    # Class method to alter border string and styler
-    # # returns a new Border
-    def self.alter(alter : (Tuple(Int32, String) | Array(Tuple(Int32, String)))? = nil,
-                   styler : BorderStyler? = nil)
-      if @@border_string.nil?
-        raise InvalidConnectorString.new "No border string defined yet"
-      end
-      newborder = oldborder = @@border_string
-      unless alter.nil?
-        (alter.is_a?(Array) ? alter : [alter]).each do |t|
-          unless t[0].in?(0..15)
-            raise InvalidConnectorString.new "Position in border definition string " \
-                                             "must be in range 0..15"
-          end
-          newborder = oldborder.as(String)[0..t[0] - 1] + t[1]
-          if newborder.size < 16
-            newborder = newborder + oldborder.as(String)[t[0] + t[1].size..-1]
-            oldborder = newborder
-          end
-        end
-      end
-      newstyler = styler.nil? ? @@styler : styler
-      new(newborder.as(String), newstyler.as(BorderStyler))
-    end
-
-    # renders a horizontal rule, depending on its position
-    def horizontal_rule(column_widths, position = Position::Bottom, groups = nil)
+    # Renders a horizontal rule, depending on its position.
+    # (cannot be private, because of call from table.cr)
+    protected def horizontal_rule(column_widths, position = Position::Bottom, groups = nil)
       left, middle, right, segment, altmiddle = connectors(position)
       segments = column_widths.map { |width| segment * width }
+      # Purpose of the line below ???  Use case not clear, but doesn't hurt though!
       left = right = middle = altmiddle = "" if segments.all?(&.empty?)
       str = if groups.nil?
               segments.join(vdiv_mid.empty? ? "" : middle)
@@ -187,7 +193,8 @@ module Tablo
       style("#{left}#{str}#{right}")
     end
 
-    # joins element of a row (styled connectors and column contents)
+    # Joins elements of a row (styled connectors and column contents).
+    # (cannot be private, because of call from table.cr)
     protected def join_cell_contents(cells)
       styled_divider_vertical = style(vdiv_mid)
       styled_edge_left = style(vdiv_left)
@@ -195,7 +202,7 @@ module Tablo
       styled_edge_left + cells.join(styled_divider_vertical) + styled_edge_right
     end
 
-    # returns a tuple of 5 connector strings, depending on the row position
+    # Returns a tuple of 5 connector strings, depending on the row position.
     private def connectors(position)
       case position
       # BorderName::Fancy used as example
@@ -222,7 +229,7 @@ module Tablo
       end
     end
 
-    # returns a styled connector, if not empty and styling allowed
+    # Returns a styled connector, if not empty and styling allowed.
     private def style(s)
       styler && !s.empty? && Util.styler_allowed ? styler.call(s) : s
     end

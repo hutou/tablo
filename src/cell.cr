@@ -6,10 +6,12 @@ module Tablo
   #
 
   # Abstract class for subcell formatting, depending on wrap_mode
+  #  Non-Roman characters are also supported if the *naqvis/uni_char_width*
+  #  library is loaded.
   abstract class SubCell
-    include Enumerable(String)
+    # include Enumerable(String)
 
-    getter line, width
+    private getter line, width
 
     abstract def each(& : String ->)
 
@@ -19,9 +21,10 @@ module Tablo
 
   # class helper for rune (~character) string cut
   class RuneSubCell < SubCell
-    def each(&)
+    protected def each(&)
       subcell_width = 0
       subcell = String::Builder.new
+      debug! line
       line.scan(/\X/).each do |matchdata|
         rune = matchdata[0]
         rune_width = rune.size
@@ -45,7 +48,7 @@ module Tablo
 
   # class helper for word string cut
   class WordSubCell < SubCell
-    def each(&)
+    protected def each(&)
       subcell_width = 0
       subcell = String::Builder.new
       # split line on :
@@ -89,15 +92,16 @@ module Tablo
   # Cell is an abstract class representing a single cell inside a Table.
   # Derived concrete cells are : TextCell and DataCell
   abstract class Cell
-    include CellType
     # Common attributes of TextCell and DataCell
-    getter value, left_padding, right_padding, padding_character
-    getter alignment, truncation_indicator, wrap_mode
-    getter formatter, styler
-    property width
+    private getter value
+    #
+    private getter left_padding, right_padding, padding_character
+    private getter alignment, truncation_indicator, wrap_mode
+    private getter formatter, styler
+    protected property width
     # Instance variables used for memoization, dynamically initialized later
-    property memoized_formatted_content : String? = nil
-    property memoized_rendered_subcells : Array(String)? = nil
+    private property memoized_formatted_content : String? = nil
+    private property memoized_rendered_subcells : Array(String)? = nil
 
     abstract def apply_formatter
     abstract def apply_styler(content : String, line_index : Int32)
@@ -108,7 +112,7 @@ module Tablo
     #
     # This method is the entry point for all cell computations
     # (formatting, aligning and styling !)
-    def line_count
+    protected def line_count
       rendered_subcells.size
     end
 
@@ -116,12 +120,13 @@ module Tablo
     #
     # subcells contains the final content of a cell, possibly multiline,
     # ready for output
-    def rendered_subcells
+    protected def rendered_subcells
       self.memoized_rendered_subcells ||= render_subcells
     end
 
     # For a given Cell, calculate the formatted, aligned and styled subcells
     # it contains.
+    #
     # - First, the cell value is formatted
     # - then, the subcells are computed, depending on formatted value size
     # and column width
@@ -153,7 +158,7 @@ module Tablo
 
     # Returns the formatted value of the Cell, after applying the formatter
     # for this Column (but without applying any wrapping or the styler).
-    def formatted_content
+    protected def formatted_content
       self.memoized_formatted_content ||= apply_formatter
     end
 
@@ -163,7 +168,7 @@ module Tablo
     # is > than iheader_wrap or body_wrap.
     #
     # called from table.format_row
-    def padded_truncated_subcells(line_count_max)
+    protected def padded_truncated_subcells(line_count_max)
       truncated = (line_count > line_count_max)
       (0...line_count_max).map do |subcell_index|
         append_truncator = (truncated && !right_padding.zero? &&
@@ -208,6 +213,7 @@ module Tablo
       end
     end
 
+    # Returns the total width of padding
     private def padding(amount)
       padding_character * amount
     end
@@ -219,7 +225,7 @@ module Tablo
 
   # Subclass of Cell for TextCell (Headings, group)
   class TextCell < Cell
-    getter row_type
+    protected getter row_type # called from Table
 
     def initialize(@value : CellType,
                    @row_type : RowType,
@@ -228,7 +234,7 @@ module Tablo
                    @right_padding : Int32,
                    @padding_character : String,
 
-                   @alignment : Justify,
+                   @alignment : Justify?,
                    @styler : TextCellStyler,
 
                    @formatter : TextCellFormatter,
@@ -238,10 +244,11 @@ module Tablo
     end
 
     # needed for group width recalculation
-    def reset_memoized_rendered_subcells
+    protected def reset_memoized_rendered_subcells
       self.memoized_rendered_subcells = nil
     end
 
+    # Format the cell value (type CellType)
     private def apply_formatter
       case f = formatter
       in Proc(CellType, Int32, String)
@@ -251,6 +258,7 @@ module Tablo
       end
     end
 
+    # Style formatted content of cell (type String)
     private def apply_styler(content, line_index)
       return content unless Util.styler_allowed
       case s = styler
@@ -261,6 +269,7 @@ module Tablo
       end
     end
 
+    # Align cell contents
     private def real_alignment
       a = alignment
       a.nil? ? Justify::Center : a
@@ -273,7 +282,7 @@ module Tablo
 
   # Subclass of Cell for DataCell (Header, Body)
   class DataCell < Cell
-    getter cell_data
+    protected getter cell_data # called from Column
 
     def initialize(@value : CellType,
                    @cell_data : CellData,
@@ -291,6 +300,7 @@ module Tablo
                    @width : Int32)
     end
 
+    # Format the cell value (type CellType)
     private def apply_formatter
       case f = formatter
       in Proc(CellType, CellData, Int32, String)
@@ -304,6 +314,7 @@ module Tablo
       end
     end
 
+    # Style formatted content of cell (type String)
     private def apply_styler(content, line_index)
       return content unless Util.styler_allowed
       case s = styler
@@ -318,6 +329,8 @@ module Tablo
       end
     end
 
+    # Align cell contents
+    # (Based on runtime body cell value for header and body)
     private def real_alignment
       a = alignment
       return a unless a.nil?

@@ -1,5 +1,22 @@
 require "./spec_helper"
 
+# Redefine protected and private methods for tests
+module Tablo
+  struct Border
+    def horizontal_rule(column_widths, position = Tablo::Position::Bottom, groups = nil)
+      previous_def
+    end
+
+    def connectors(position)
+      previous_def
+    end
+
+    def border_string
+      previous_def
+    end
+  end
+end
+
 describe Tablo::Border do
   describe "Constructors" do
     border = Tablo::Border.new(Tablo::BorderName::Ascii)
@@ -37,6 +54,8 @@ describe Tablo::Border do
       rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
         position: Tablo::Position::TitleTop, groups: nil)
       rule.should eq("┌────────────────────────────────────────────────────────────┐")
+      border.connectors(Tablo::Position::BodyBody).should eq({"├", "┼", "┤", "─", ""})
+      border.border_string.should eq("┌┬┐├┼┤└┴┘│││────")
       rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
         position: Tablo::Position::TitleBottom, groups: nil)
       rule.should eq("└────────────────────────────────────────────────────────────┘")
