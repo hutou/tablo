@@ -382,7 +382,7 @@ module Tablo
       # summary_table has no column defined yet,
       # so we use main table for looping over columns
       table.column_registry.each_with_index do |(label, column), column_index|
-        header = (header_values[label]? || "").as(String) # label.to_s
+        header = header_values.has_key?(label) ? header_values[label].as(String) : ""
         header_alignment = header_alignments[label]? || summary_table.header_alignment
         header_formatter = header_formatters[label]? || summary_table.header_formatter
         header_styler = header_stylers[label]? || summary_table.header_styler

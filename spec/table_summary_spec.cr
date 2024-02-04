@@ -136,7 +136,8 @@ invoice_output =
     "│ Router       :            1 :        99.00 :        99.00 │\n" +
     "│ Switch       : N/A          :        45.00 :              │\n" +
     "│ Accessories  :            5 :        64.50 :       322.50 │\n" +
-    "╰──────────────┴──────────────┴──────────────┴──────────────╯                                SubTotal            \e[1m3671.48\e[0m  \n" +
+    "╰──────────────┴──────────────┴──────────────┴──────────────╯\n" +
+    "                                SubTotal            \e[1m3671.48\e[0m  \n" +
     "                                Discount 5%          \e[3m183.57\e[0m  \n" +
     "                                S/T discount        \e[1m3487.91\e[0m  \n" +
     "                                Tax (20%)            697.58  \n" +
@@ -148,7 +149,7 @@ describe "#{Tablo::Table} -> summary definition using Aggregation", tags: "summa
   tbl.add_summary(invoice_summary_definition_1,
     {
       masked_headers: true,
-      border:         Tablo::Border.new("EEESSSSSSSSSESSS"),
+      border:         Tablo::Border.new("EEESSSEEESSSESSS"),
     })
   it "returns valid data" do
     sources_array = tbl.summary.as(Tablo::SummaryTable).sources.to_a
@@ -156,7 +157,8 @@ describe "#{Tablo::Table} -> summary definition using Aggregation", tags: "summa
       puts "\n#{tbl}"
       puts "#{tbl.summary.as(Tablo::SummaryTable)}"
     {% end %}
-    (tbl.to_s + tbl.summary.as(Tablo::SummaryTable).to_s).should eq invoice_output
+    (tbl.to_s + "\n" + tbl.summary.as(Tablo::SummaryTable).to_s).should eq invoice_output
+    # puts tbl.to_s + tbl.summary.as(Tablo::SummaryTable).to_s
   end
 end
 
@@ -165,7 +167,7 @@ describe "#{Tablo::Table} -> summary definition using UserAggregation (with sour
   tbl.add_summary(invoice_summary_definition_2a,
     {
       masked_headers: true,
-      border:         Tablo::Border.new("EEESSSSSSSSSESSS"),
+      border:         Tablo::Border.new("EEESSSEEESSSESSS"),
     })
   it "returns valid data" do
     sources_array = tbl.summary.as(Tablo::SummaryTable).sources.to_a
@@ -174,7 +176,7 @@ describe "#{Tablo::Table} -> summary definition using UserAggregation (with sour
       puts "#{tbl.summary.as(Tablo::SummaryTable)}"
     {% end %}
 
-    (tbl.to_s + tbl.summary.as(Tablo::SummaryTable).to_s).should eq invoice_output
+    (tbl.to_s + "\n" + tbl.summary.as(Tablo::SummaryTable).to_s).should eq invoice_output
   end
 end
 
@@ -183,7 +185,7 @@ describe "#{Tablo::Table} -> summary definition using UserAggregation (with sour
   tbl.add_summary(invoice_summary_definition_2b,
     {
       masked_headers: true,
-      border:         Tablo::Border.new("EEESSSSSSSSSESSS"),
+      border:         Tablo::Border.new("EEESSSEEESSSESSS"),
     })
   it "returns valid data" do
     sources_array = tbl.summary.as(Tablo::SummaryTable).sources.to_a
@@ -192,7 +194,7 @@ describe "#{Tablo::Table} -> summary definition using UserAggregation (with sour
       puts "#{tbl.summary.as(Tablo::SummaryTable)}"
     {% end %}
 
-    (tbl.to_s + tbl.summary.as(Tablo::SummaryTable).to_s).should eq invoice_output
+    (tbl.to_s + "\n" + tbl.summary.as(Tablo::SummaryTable).to_s).should eq invoice_output
   end
 end
 describe "#{Tablo::Table} -> summary definition using UserAggregation (with columns)", tags: "summary" do
@@ -200,7 +202,7 @@ describe "#{Tablo::Table} -> summary definition using UserAggregation (with colu
   tbl.add_summary(invoice_summary_definition_3,
     {
       masked_headers: true,
-      border:         Tablo::Border.new("EEESSSSSSSSSESSS"),
+      border:         Tablo::Border.new("EEESSSEEESSSESSS"),
     })
   it "returns valid data" do
     sources_array = tbl.summary.as(Tablo::SummaryTable).sources.to_a
@@ -208,6 +210,6 @@ describe "#{Tablo::Table} -> summary definition using UserAggregation (with colu
       puts "\n#{tbl}"
       puts "#{tbl.summary.as(Tablo::SummaryTable)}"
     {% end %}
-    (tbl.to_s + tbl.summary.as(Tablo::SummaryTable).to_s).should eq invoice_output
+    (tbl.to_s + "\n" + tbl.summary.as(Tablo::SummaryTable).to_s).should eq invoice_output
   end
 end

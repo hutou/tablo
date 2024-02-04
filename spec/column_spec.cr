@@ -1,5 +1,11 @@
 require "./spec_helper"
 
+class Tablo::Cell
+  def value
+    previous_def
+  end
+end
+
 describe Tablo::Column do
   column = Tablo::Column(Int32).new(
     header: "Double",
