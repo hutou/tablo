@@ -93,88 +93,31 @@ A great deal of information can already be extracted from this simple example:
 
 [:top:](#tutorial) [:arrow_up:](#getting-started) [:arrow_down:](#row-types)
 
-Each border type is defined by a string of exactly 16 characters, which is
-then converted into 16 strings of up to 1 character each. The definition
-string can contain any character, but two of them have a special meaning:
-during conversion, the uppercase E is replaced by an empty string, and the
-uppercase S character is replaced by a space (a simple space may also be used,
-of course).
+The Border struct allows to create frames around rows and columns, using
+ascii and/or graphic characters.
 
-_Please note that using the capital E character may cause alignment
-difficulties._
+A set of predefined borders is available, including `Ascii`,
+`ReducedAscii` and `Fancy`, but you can also define your own border
+types (see API for details).
 
-The first 9 characters define the junction or intersection of horizontal and
-vertical border lines.
+Default border type is `Ascii`, but to change a table's border type,
+simply assign the desired definition to the `border` parameter when
+initializing the table. So, for example, to set the `ReducedAscii`
+border type, you can do:
 
-| Index | Description                |
-| :---: | :------------------------- |
-|   0   | Top left corner            |
-|   1   | Top middle junction        |
-|   2   | Top right corner           |
-|   3   | Middle left junction       |
-|   4   | Middle middle intersection |
-|   5   | Middle right junction      |
-|   6   | Bottom left corner         |
-|   7   | Bottom middle junction     |
-|   8   | Bottom right corner        |
+```crystal
+table = Tablo::Table.new([1, 2, 3],
+  border: Tablo::Border.new(Tablo::BorderName::ReducedAscii) do |t|
+```
 
-The next three characters define vertical separators in data rows.
-
-| Index | Description               |
-| :---: | :------------------------ |
-|   9   | Left vertical separator   |
-|  10   | Middle vertical separator |
-|  11   | Right vertical separator  |
-
-And finally, the last four characters define the different types of horizontal
-border, depending on the type of data row or types of adjacent data rows (Row
-type will be the subject of the next section).
-
-| Index | Description             |
-| :---: | :---------------------- |
-|  12   | Title, subtitle, footer |
-|  13   | Group                   |
-|  14   | Header                  |
-|  15   | Body                    |
-
-To change a table's border type, simply assign the desired definition to the
-`border` parameter when initializing the table. This can be done in two ways,
-either by assigning the 16-character string directly, or by assigning the name
-of one of the predefined borders :
-
-| Border name                 | Border string definition   |
-| :-------------------------- | :------------------------- |
-| `BorderName::Ascii`         | `"+++++++++\|\|\|----"`    |
-| `BorderName::ReducedAscii`  | `"ESEESEESEESE----"`       |
-| `BorderName::Modern`        | `"┌┬┐├┼┤└┴┘│││────"`       |
-| `BorderName::ReducedModern` | `"ESEESEESEESE────"`       |
-| `BorderName::Markdown`      | `"___\|\|\|___\|\|\|__-_"` |
-| `BorderName::Fancy`         | `"╭┬╮├┼┤╰┴╯│:│─−-⋅"`       |
-| `BorderName::Blank`         | `"SSSSSSSSSSSSSSSS"`       |
-| `BorderName::Empty`         | `"EEEEEEEEEEEEEEEE"`       |
-
-So, for example, to set the `ReducedAscii` border type, I can either:
-
-- use the predefined border name (`Tablo::BorderName::ReducedAscii` or
-  its symbol equivalent `:reduced_ascii`):
+or even:
 
 ```crystal
 table = Tablo::Table.new([1, 2, 3],
   border: Tablo::Border.new(:reduced_ascii)) do |t|
 ```
 
-or
-
-- use its definition string:
-
-```crystal
-table = Tablo::Table.new([1, 2, 3],
-  border: Tablo::Border.new("ESEESEESEESE----")) do |t|
-```
-
-Output:
-
-```
+```text
 -------------- -------------- --------------
        itself         Double   String
 -------------- -------------- --------------
