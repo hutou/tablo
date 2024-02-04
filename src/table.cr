@@ -15,8 +15,12 @@ module Tablo
   abstract class ATable
   end
 
+  # The Table class is Tablo's main class. Its initialization defines the main
+  # parameters governing the overall operation of the Tablo library, in particular
+  # the data source and column definitions.
   class Table(T) < ATable
     include Enumerable(Row(T))
+
     #
     # -------------- Table management attributes ------------------------------------
     #
@@ -32,7 +36,8 @@ module Tablo
     # Table parameters
     getter sources
     private setter sources
-    property title, subtitle, footer, border
+    property title, subtitle, footer
+    protected getter border
     protected getter group_alignment, group_formatter, group_styler
     protected getter header_alignment, header_formatter, header_styler
     protected getter body_alignment, body_formatter, body_styler
@@ -48,7 +53,7 @@ module Tablo
     #
     #
 
-    # The `initialize` macro generates two `initialize' method, one with block_given = true
+    # The `initialize` macro generates two `initialize' methods, one with block_given = true
     # and one with block_given = false
     macro initialize(block_given)
 
@@ -91,7 +96,6 @@ module Tablo
         @omit_last_rule : Bool = Config.omit_last_rule?)
         {% end %}
 
-# h1 debug! " In initialize: self=#{self.object_id.to_s(16)} - name=#{self.name}"
         self.row_count = sources.size
         {% if block_given == true %}
           yield self
@@ -107,85 +111,139 @@ module Tablo
         check_padding(right_padding)
         check_padding_character(padding_character)
         check_truncation_indicator(truncation_indicator)
-        #@@instances << self if @@instances.empty?
-        # @@main_instance = self if @@main_instance.nil?
       end
     end
 
-    # Primary constructor, without block given. Table constructor has two versions to initialize a new Table instance, depending on whether a block is given or not.
+    # First constructor : Table constructor has two versions to initialize a new Table instance, depending on whether a block is given or not.
     #
-    # Without a block :
+    #  ```text
+    #  Used constants                | Default values
+    #  ----------------------------- | ------------------------------------
+    #  DEFAULT_HEADING_ALIGNMENT     | Justify::Center
+    #  DEFAULT_FORMATTER             | ->(c : CellType) { c.to_s }
+    #  DEFAULT_STYLER                | ->(s : String) { s }
+    #  DEFAULT_DATA_DEPENDENT_STYLER | ->(_c : CellType, s : String) { s }
     # ```
-    # tbl = Tablo::Table.new(...)
-    # tbl.add_column(...)
-    # tbl.add_column(...)
-    # ```
-    # With a block
-    # ```
-    # tbl = Tablo::Table.new(...) do |t|
-    #   t.add_column(...)
-    #   t.add_column(...)
-    # end
-    # ```
-    # **Mandatory parameter:**
     #
-    # - *sources* is the **only (positional) mandatory parameter**. Its type is `Enumerable(T)`,
-    # where `T` is any (union) type. Any `Enumerable` is accepted (Array, Hash, etc.)(*).
-    # For example, `[1, 3.14, "ABC"]` or `{"A" => [1,2], "B" => [3,4]}` or
-    # `[{"A" => [1,2]}, {"B" => [3,4]}]` are valid sources.
+    # _Mandatory parameters:_
     #
-    # (*) Presently (Crystal 1.8.2+), a compiler bug prevents the use of the `Range` type.
-    # Use `to_a` to convert to an array first. See Crystal issue 10518
+    # - `sources`: type is Enumerable(T)<br />
+    #   Can be any Enumerable data type _(`Range` is currently (Crystal 1.9.2) not correctly supported in this context: use `Range.to_a` instead)_
     #
-    # **Optional named parameters:**
+    # _Optional named parameters, with default values_
     #
-    # All parameters below are optional and have commonly used defaults.
+    # - `title`: type is `Title`<br />
+    #   Default set by `Config.title`<br />
+    #   Initializing this class without any argument set its value to `nil`,
+    #   so there is nothing to display
+    # - `subtitle`: type is `SubTitle`<br />
+    #   Default set by `Config.subtitle`<br />
+    #   (Initialization: see `title`)
+    # - `footer`: type is `Footer`<br />
+    #   Default set by `Config.footer`<br />
+    #   (Initialization: see `title`)
+    # - `border`: type is `Border`<br />
+    #   Initalized by `Config.border`, which defaults to `BorderName::Ascii` <br />
+    #   Other `BorderName` are `ReducedAscii`, `Modern`,
+    #   `ReducedModern`, `Markdown`, `Fancy` and `Blank`. <br />
+    #   `border` may also be initialized directly by a string of 16 characters.
+    # - `group_alignment`: type is `Justify`<br />
+    #   Default value is `DEFAULT_HEADING_ALIGNMENT`
+    # - `group_formatter`: type is `TextCellFormatter`<br />
+    #   Default value is `DEFAULT_FORMATTER`
+    # - `group_styler`: type is `TextCellStyler` <br />
+    #   Default value is `DEFAULT_STYLER`
+    # - `header_alignment`: type is `Justify?` <br />
+    #   Default value is `nil` <br />
+    #   (with `nil` as default, alignment
+    #   depends on the type of the related body cell value)
+    # - `header_formatter`: type is `DataCellFormatter` <br />
+    #   Default value is `DEFAULT_FORMATTER`
+    # - `header_styler`: type is `DataCellStyler` <br />
+    #   Defaut value is `DEFAULT_DATA_DEPENDENT_STYLER`
+    # - `body_alignment`: type is `Justify?` <br />
+    #   Default value is `nil` <br />
+    #   (With `nil` as default, alignment depends on the type of its cell value)
+    # - `body_formatter`: type id `DataCellFormatter` <br />
+    #   Default value is `DEFAULT_FORMATTER`
+    # - `body_styler`: type is `DataCellStyler` <br />
+    #   Default value is `DEFAULT_DATA_DEPENDENT_STYLER`
+    # - `left_padding`: type is `Int32`<br />
+    #   Default value is `1` <br />
+    #   Permitted range of values is governed by `Config.padding_width_range` in the `check_padding` method<br />
+    #   (raises `InvalidValue` runtime exception if value not in range)
+    # - `right_padding`: type is `Int32` <br />
+    #   Default value is `1` <br />
+    #   Permitted range of values is governed by `Config.padding_width_range` in the `check_padding` method<br />
+    #   (raises `InvalidValue` runtime exception if value not in range)
+    # - `padding_character`: type is `String`<br />
+    #   Default value is `" "` <br />
+    #   The `check_padding_character` auxiliairy method ensures the `padding_character` string size is only one <br />
+    #   (raises an `InvalidValue` runtime exception otherwise)
+    # - `truncation_indicator`: type is `String` <br />
+    #   Defaut value is `"~"` <br />
+    #   The `check_truncation_indicator` auxiliairy method ensures the `truncation_indicator` string size
+    #   is only one (raises an `InvalidValue` runtime exception otherwise)
+    # - `width`: type is `Int32` <br />
+    #   Default value is `12`<br />
+    #   Permitted range of values is governed by `Config.column_width_range` in the
+    #   `check_width` auxiliary method (raises `InvalidValue` runtime exception
+    #   unless value in range)
     #
-    # - Headings attributes
-    #   - *title*, *subtitle* and *footer* are optional parts of the table layout and
-    #     their type is `Tablo::Heading`. Their default value is `nil` (no display)
+    # - `header_frequency`: type is `Int32?` <br />
+    #   Default value is `0` <br />
+    #   Permitted range of values is governed by `Config.header_frequency_range` in the
+    #   `check_header_frequency` auxiliary method (raises `InvalidValue` runtime exception
+    #   unless value in range or `nil`)
     #
-    # - Group attributes : these are default attributes applied to every group
-    #   header, unless specific values are set at the group level (in the `add_group` method)
-    #   - _group_alignment_ : text justification, of type `Tablo::Justify` (default :center)
-    #   - _group_formatter_ :  a Proc to apply some formatting to the value of the cell (see  `TextCellFormatter`
-    #   - _group_styler_ :  a Proc to apply some style (color) to the formatted cell contents (see  `TextCellStyler`
+    #   - If set to `0`, rows of data other than body are displayed
+    #     only once, at the beginning for titles and headers, at the end for the footer.
+    #   - If set to `n` (positive), group or column headers are repeated every `n`
+    #     rows, as are footers, but titles and subtitles are not repeated (unless
+    #     title `repeated` attribute is set to `true`)
+    #   - If set to `nil`, only body rows are displayed.
     #
-    # - Column header attributes : same logic as for groups
-    #   - _header_alignment_ : default value is `nil`, meaning alignment is determined by the body cell value running type (numbers are right aligned, booleans are centered, others are left aligned)
-    #   - _header_formatter_ : `Tablo::DataCellFormatter`
-    #   - _header_styler_ : `Tablo::DataCellStyler`
+    # - `row_divider_frequency`: type is `Int32?` <br />
+    #   Default value is `nil` <br />
+    #   Permitted range of values is governed by `Config.row_divider_frequency_range` in the
+    #   `check_row_divider_frequency` auxiliary method (raises `InvalidValue` runtime
+    #   exception unless value in range or `nil`)
     #
-    # - Body:
-    #   - *body_alignment*: set alignment for all body cells, default to `nil` (see column header)
-    #   - _body_formatter_ : `Tablo::DataCellFormatter`
-    #   - *body_styler*:  : `Tablo::DataCellStyler`
+    # - `wrap_mode`: type is `WrapMode` <br />
+    #   Default value is `WrapMode::Word`<br />
+    #   The `WrapMode` enum defines 2 modes :
     #
-    # - Border:
-    #   - *border_type*: define table border. Type is `BorderName | String`, default to `BorderName::Ascii`
-    #   - *border_styler*: Proc to style (colorize) border, type is `Tablo::BorderStyler`, default : do nothing
+    #   - `Rune` : long lines can be cut between characters (graphemes)
+    #   - `Word` : long lines can be cut between words only
     #
-    # - Miscellaneaous:
-    #   - *left_padding*: an `Int32`, default to 1
-    #   - *right_padding*: an `Int32`, default to 1
-    #   - *padding_character*: a `String`, default to " " (a space)
-    #   - *width*: an `Int32`, default to 12
-    #   - *truncation_indicator*: A string appended at end of cell content to indicate truncation, default value : "~"
-    #   - *header_frequency*: an `Int32` or `nil`
-    #     - `nil` : no headers at all
-    #     - n == 0 : Headers (including title,...) are automatically displayed before the first row (default)
-    #     - n > 0 : Headers are repeated every n rows
-    #   - *row_divider_frequency* : `nil` or a positive `Int32` n, for inclusion of a row divider rule between body lines every n rows
-    #   - *wrap_mode*: mode of cutting content to fit into cell width (type `Tablo::WrapMode`)
-    #     - Rune : cut line between graphemes
-    #     - Word : cut line between words (default)
-    #   - *header_wrap*: `nil` or a positive `Int32` to set the maximum number of lines a header cell may contains (defaults to `nil` : no limit)
-    #   - *body_wrap*: same as above, for body (raise an `Tablo::InvalidValue` exception if zero or negative values are given to body_wrap or header_wrap)
-    #   - *masked_headers* : `bool` = `false`. keep all headers from being displayed
-    #   - *omit_last_rule* : `bool` = `false`. If `true`, the last closing rule of table is not displayed. This is useful for custom rendering (and notably for table linking)
+    # - `header_wrap`: type is `Int32?` <br />
+    #   Default value is `nil` <br />
+    #   Permitted range of values is governed by
+    #   `Config.header_wrap_range` in the `check_header_wrap` auxiliary method
+    #   (raises `InvalidValue` runtime exception unless value in range or `nil`)
     #
-    # **return value:**
-    # An instance of class Table
+    # - `body_wrap` | `Int32?`<br />
+    #   Default value is `nil` <br />
+    #   Permitted range of values is governed by
+    #   `Config.body_wrap_range` in the `check_body_wrap` auxiliary method (raises
+    #   `InvalidValue` runtime exception unless value in range or `nil`)
+    #
+    # - `masked_headers`: type is `Bool` <br />
+    #   Default value is `false` <br />
+    #   If `true`, groups and column headers are not displayed <br />
+    #   (this does not prevent display of title, subtitle and footer)
+    #
+    # - `omit_group_header_rule`: type is `Bool` <br />
+    #   Default value is `false` <br />
+    #   If `true`, the rule between Group and Header rows is not displayed.
+    #   This is useful for headers custom rendering.
+    #
+    # - `omit_last_rule`: type is `Bool` <br />
+    #   Default value is `false` <br />
+    #   If `true`, the closing rule of table is not displayed.
+    #   This is useful for custom rendering (and notably for Detail and Summary tables joining)
+    #
+    # Returns an instance of `Table(T)`
     initialize(block_given: false)
 
     # Second constructor, with same parameters as the first one, but with a block given
@@ -197,6 +255,9 @@ module Tablo
     #
     #
 
+    # Checks that the parameter setting for `header_frequency` is within the value
+    # range defined in `Config.header_frequency_range` <br />
+    # Raises InvalidValue or returns `nil`
     private def check_header_frequency
       unless (hf = header_frequency).nil?
         unless hf.in?(Config.header_frequency_range)
@@ -206,6 +267,9 @@ module Tablo
       end
     end
 
+    # Checks that the parameter setting for `row_divider_frequency` is within the value
+    # range defined in `Config.row_divider_frequency_range` <br />
+    # Raises InvalidValue or returns `nil`
     private def check_row_divider_frequency
       unless (rdf = row_divider_frequency).nil?
         unless rdf.in?(Config.row_divider_frequency_range)
@@ -215,6 +279,9 @@ module Tablo
       end
     end
 
+    # Checks that the parameter setting for `header_wrap` is `nil` or within the
+    # value range defined in `Config.header_wrap_range` <br />
+    # Raises InvalidValue or returns `nil`
     private def check_header_wrap
       unless (hw = header_wrap).nil?
         unless hw.in?(Config.header_wrap_range)
@@ -224,6 +291,9 @@ module Tablo
       end
     end
 
+    # Checks that the parameter setting for `body_wrap` is `nil` or within the
+    # value range defined in `Config.body_wrap_range` <br />
+    # Raises InvalidValue or returns `nil`
     private def check_body_wrap
       unless (bw = body_wrap).nil?
         unless bw.in?(Config.body_wrap_range)
@@ -269,10 +339,15 @@ module Tablo
     #
     #
 
-    # Changes the sources data used by the table
+    # Returns the sources enumerable
     #
-    # - reset the summary table to nil
-    # - returns the new sources
+    # Replaces existing data source with a new one. <br />
+    # _(This could be seen as a hack to do some special form of pagination !)_
+    #
+    # _Mandatory positional parameter_
+    #
+    # - `src`: type is `Enumerable(T)`
+    #
     def reset_sources(to src : Enumerable(T))
       self.child = nil
       self.row_count = src.size
@@ -296,6 +371,62 @@ module Tablo
     # Table parameters, except *header* which defaults to *label*
     #
     # Returns an instance of class Column(T)
+
+    # ## Method `add_column`
+
+    # Returns an instance of `Column(T)`
+    #
+    # _Mandatory positional parameter:_
+    #
+    # - `label`: type is `LabelType`<br />
+    #   The label identifies the column (`LabelType` is an alias of `Int32 | Symbol | String`)
+    #
+    # _Optional named parameters, with default values_
+    #
+    # - `header`: type is `String` <br />
+    #   Default value is `label.to_s`<br />
+    #   Can be an empty string
+    #
+    # - `header_alignment`: type is `Justify?`<br />
+    #   By default, inherits from table `header_alignment` initializer
+    #
+    # - `header_formatter`: type is `DataCellFormatter` <br />
+    #   By default, inherits from table `header_formatter` initializer
+    #
+    # - `header_styler`: type is `DataCellStyler` <br />
+    #   By default, inherits from table `header_styler` initializer
+    #
+    # - `body_alignment`: type is `Justify?` <br />
+    #   By default, inherits from table `body_alignment` initializer
+    #
+    # - `body_formatter`: type is `DataCellFormatter` <br />
+    #   By default, inherits from table `body_formatter` initializer
+    #
+    # - `body_styler`: type is `DataCellStyler` <br />
+    #   By default, inherits from table `body_styler` initializer
+    #
+    # - `left_padding`: type is `Int32` <br />
+    #   By default, inherits from table `left_padding` initializer
+    #
+    # - `right_padding`: type is `Int32` <br />
+    #   By default, inherits from table `right_padding` initializer
+    #
+    # - `padding_character`: type is `String` <br />
+    #   By default, inherits from table `padding_character` initializer
+    #
+    # - `width`: type is `Int32` <br />
+    #   By default, inherits from table `width` initializer
+    #
+    # - `truncation_indicator`: type is `String` <br />
+    #   By default, inherits from table `truncation_indicator` initializer
+    #
+    # - `wrap_mode`: type is `WrapMode` <br />
+    #   By default, inherits from table `wrap_mode` initializer
+    #
+    # _Captured block_
+    #
+    # - `&extractor`: type is `(T | Int32) -> CellType` <br />
+    #   Captured block for extracting data from source
     def add_column(label : LabelType, *,
                    header = label.to_s,
                    #
@@ -353,18 +484,40 @@ module Tablo
     #
     #
 
-    # Adds a group to the table
+    # Returns an instance of `TextCell`
     #
-    # A group is the set of the last defined columns not attached to a group yet.
+    # Creates a group including all previous columns not already grouped.
+    # After adding the last column, a group is automatically created (with an
+    # empty header) if not explicitly specified.
     #
-    # **Parameters:**
+    # _Mandatory positional parameter_
     #
-    # - *label* is the only (positional) mandatory parameter, of type `LabelType`
+    # - `label`: type is `LabelType` <br />
+    #   The label identifies the group.
     #
-    # All other are optional named parameters, and have default values taken from
-    # Table parameters, except *header* which defaults to *label*
+    # _Optional named parameters, with default values_
     #
-    # Returns an instance of class `TextCell`
+    # - `header`: type is `String` <br />
+    #   Default value id `label.to_s` <br />
+    #   Can be an empty string
+    #
+    # - `alignment`: type is `Justify` <br />
+    #   By default, inherits from table `group_alignment` initializer
+    #
+    # - `formatter`: type is `TextCellFormatter` <br />
+    #   By default, inherits from table `group_formatter` initializer
+    #
+    # - `styler`: type is `TextCellStyler` <br />
+    #   By default, inherits from table `group_styler` initializer
+    #
+    # - `padding_character`: type is `String` <br />
+    #   By default, inherits from table `padding_character` initializer
+    #
+    # - `truncation_indicator`: type is `String` <br />
+    #   By default, inherits from table `truncation_indicator` initializer
+    #
+    # - `wrap_mode`: type is `WrapMode` <br />
+    #   By default, inherits from table `wrap_mode` initializer
     def add_group(label, *,
                   header = label.to_s,
                   alignment = group_alignment,
@@ -486,43 +639,41 @@ module Tablo
       self.child
     end
 
-    # :nodoc:
-    # Dynamically output formatted table
-    #
-    # Here, map applies to self, which is Table, using the each method
-    # below to create rows, formatting them with (Row)to_s and joining all
-    # formatted rows with newline to output the formatted table
-    # If a summary definition is given, insert the resulting table at the end
-    # kind of recursive !
+    # Returns the table as a formatted string
     def to_s(io)
-      # harmonize_widths
+      # Here, map applies to self, which is Table, using the each method
+      # below to create rows, formatting them with (Row)to_s and joining all
+      # formatted rows with newline to output the formatted table.
       if !column_registry.empty?
         unless @groups.empty?
           if @groups.last.end != @column_registry.size - 1
             add_group(:dummy_last_group, header: "")
           end
         end
+        # Line below is equivalent to: rows = self.map { |row| row.to_s }
         rows = map &.to_s
-        # rows = self.map { |row| row.to_s }
         io << join_lines(rows)
       else
         io << ""
       end
     end
 
-    # :nodoc:
-    # Calls the given block once for each {Row} in the table, passing
-    # that {Row} as parameter.
+    # Returns successive formatted rows, with all corresponding headers and footers,
+    # according to the `header_frequency` value.
     #
-    # When printed, the first row will visually include the headers
-    # (depending on the "@header_frquency* value, however).
-    # Iterates on source elements, creating formatted rows dynamically
-    # show_divider is true if
-    # - rdf not nil
-    # - index > 0 (not first row)
-    # - rdf % index == 0
-    # - hf % index != 0 (not matching hf row)
-    # TODO to be checked
+    # In fact,
+    #
+    # ```
+    # table.each do |r|
+    #   puts r
+    # end
+    # ```
+    #
+    # is the same as
+    #
+    # ```
+    # puts table
+    # ```
     def each(&)
       @sources.each_with_index do |source, index|
         show_divider = false
@@ -583,7 +734,7 @@ module Tablo
                         end
       columns = column_list
       # takes into account the possible internal border
-      extra_for_internal_dividers = @border.vdiv_mid.size.zero? ? 0 : 1
+      extra_for_internal_dividers = border.vdiv_mid.size.zero? ? 0 : 1
       heading_cell_width = columns.reduce(0) do |total_width, column|
         total_width + column.padded_width + extra_for_internal_dividers
       end
@@ -624,10 +775,10 @@ module Tablo
           elsif cell.row_type == RowType::Footer && @footer.frame.nil?
             " " + subrow_components.join(" ") + " "
           else
-            @border.join_cell_contents(subrow_components)
+            border.join_cell_contents(subrow_components)
           end
         in DataCell
-          @border.join_cell_contents(subrow_components)
+          border.join_cell_contents(subrow_components)
         end
       end
       join_lines(subrows)
@@ -655,7 +806,7 @@ module Tablo
     def horizontal_rule(position = Position::Bottom, groups = nil)
       # groups = column count per group, eg: [3,1,2,4]
       widths = column_list.map { |column| column.width + column.total_padding }
-      @border.horizontal_rule(widths, position, groups: groups)
+      border.horizontal_rule(widths, position, groups: groups)
     end
 
     private def row_cells(source, index)
@@ -680,6 +831,13 @@ module Tablo
     #
     #
 
+    # `pack` method version 1
+    #
+    # The `pack` method comes in 3 overloaded versions :
+    # - Version 1: all columns are selected for packing
+    # - Version 2: some columns are excluded (`except` parameter)
+    # - Version 3: only certain columns are selected (`only` parameter)
+    #
     # The `pack` method allows for adapting the total width of the table.
     # It accepts 3 parameters, all optional:
     #
@@ -705,6 +863,48 @@ module Tablo
     # their default value : 12 characters.
     #
     # returns the Table itself
+    #
+    # Returns `self` (the current Table instance) after modifying its column widths
+    #
+    # _All named parameters are optional, with default values_
+    #
+    # - `width`: type is `Int32?` <br />
+    #   Default value is `nil` <br />
+    #   `width` is the requested total table width. If `nil` and `Config.terminal_capped_width`
+    #   is `true` (and output not redirected), `width` finally takes the value of the terminal size.
+    #
+    # - `starting_widths`: type is `StartingWidths` <br />
+    #   Default set by `Config.starting_widths` <br />
+    #   `Starting_widths` allows you to specify the starting point for resizing : <br />
+    #
+    #   - either from the current column width value (`StartingWidths::Current`) <br />
+    #   - or from its initial value (`StartingWidths::Initial`) <br />
+    #   - or ignore it and directly perform optimized resizing (`StartingWidths::AutoSized`)
+    #
+    # - `except` or `only` (mutually exclusive named parameters) : (array of) column label(s) <br />
+    #
+    #   - to be excluded from resizing (`except` named parameter) <br />
+    #   - to be selected exclusively for packing (`only` named parameter) <br />
+    #
+    #   Default to `nil`
+    #
+    # **Description of the packing algorithm**<br />
+    #
+    # The resizing algorithm is actually quite simple:<br />
+    # If the final value of the `width` parameter is not `nil`, it first compares
+    # the table's current width with the requested width, to determine whether this
+    # is a reduction or an increase in size. Then, depending on the case, either the
+    # widest column is reduced, or the narrowest increased, in steps of 1, until the
+    # requested table width is reached.<br />
+    # This explains why the final result of resizing depends on the starting column
+    # widths.
+    def pack(width : Int32? = nil, *,
+             starting_widths : StartingWidths = Config.starting_widths)
+      # All columns are selected
+      packit(width, starting_widths, column_list)
+    end
+
+    # `pack` method version 2
     def pack(width : Int32? = nil, *,
              starting_widths : StartingWidths = Config.starting_widths,
              except : (LabelType | Array(LabelType))) # ? = nil)
@@ -720,6 +920,7 @@ module Tablo
       packit(width, starting_widths, columns)
     end
 
+    # `pack` method version 3
     def pack(width : Int32? = nil, *,
              starting_widths : StartingWidths = Config.starting_widths,
              only : (LabelType | Array(LabelType))) # ? = nil)
@@ -732,12 +933,6 @@ module Tablo
       end
       columns = only.map { |label| column_registry[label] }
       packit(width, starting_widths, columns)
-    end
-
-    def pack(width : Int32? = nil, *,
-             starting_widths : StartingWidths = Config.starting_widths)
-      # All columns are selected
-      packit(width, starting_widths, column_list)
     end
 
     private def packit(width, starting_widths, columns)
@@ -938,7 +1133,7 @@ module Tablo
         width:         @width,
         # miscellaneous
         # border_type:          @border_type, # (border)
-        border:               @border,
+        border:               border,
         header_frequency:     @header_frequency,
         truncation_indicator: @truncation_indicator,
         body_wrap:            @body_wrap,
@@ -1026,9 +1221,9 @@ module Tablo
     # returns the total combined width of vertical border characters
     private def border_widths_sum
       # column_count + 1
-      mid = @border.vdiv_mid.empty? ? 0 : column_count - 1
-      left = @border.vdiv_left.empty? ? 0 : 1
-      right = @border.vdiv_right.empty? ? 0 : 1
+      mid = border.vdiv_mid.empty? ? 0 : column_count - 1
+      left = border.vdiv_left.empty? ? 0 : 1
+      right = border.vdiv_right.empty? ? 0 : 1
       left + mid + right
     end
 
