@@ -92,8 +92,7 @@ A great deal of information can already be extracted from this simple example:
 ## Borders
 
 [:top:](#tutorial) [:arrow_up:](#getting-started) [:arrow_down:](#row-types)
-
-The Border struct allows to create frames around rows and columns, using
+The Border structure lets you create frames around rows and columns, using
 ascii and/or graphic characters.
 
 A set of predefined borders is available, including `Ascii`,
