@@ -1,7 +1,30 @@
 require "./spec_helper"
 
+# Redefine protected and private methods for tests
 class Tablo::Cell
   def value
+    previous_def
+  end
+end
+
+class Tablo::Column(T)
+  def header_cell(bodycell)
+    previous_def
+  end
+
+  def body_cell(source, row_index, column_index)
+    previous_def
+  end
+
+  def body_cell_value(source, row_index)
+    previous_def
+  end
+
+  def padded_width
+    previous_def
+  end
+
+  def total_padding
     previous_def
   end
 end
