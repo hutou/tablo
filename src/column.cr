@@ -2,41 +2,29 @@ require "./types"
 require "./cell"
 
 module Tablo
-  # :nodoc:
   # Attributes and methods of this class define the presentation of each column.
-  # This class is instantiated by the method `Table#add_column`
+  # This class is instantiated internally by the method `Table#add_column`
   class Column(T)
-    # :nodoc:
-    property width
-    @initial_width : Int32 = 0
+    protected property width                   # called from Table, Summary
+    protected getter initial_width : Int32 = 0 # called from Table
+    protected getter index                     # called from Table
+    protected getter extractor                 # called from Table, Summary
+    protected getter header                    # called from Table
+    protected getter left_padding              # called from Table, Summary
+    protected getter right_padding             # called from Table, Summary
+    protected getter padding_character         # called from Summary
+    protected getter truncation_indicator      # called from Summary
+
+    private getter header_alignment
+    private getter header_formatter
+    private getter header_styler
+    private getter body_alignment
+    private getter body_formatter
+    private getter body_styler
+    private getter wrap_mode
 
     # :nodoc:
-    getter header, index, extractor
-
-    # :nodoc:
-    protected getter left_padding, right_padding, padding_character, truncation_indicator
-    protected getter header_alignment, body_alignment
-    protected getter body_formatter, header_formatter
-    protected getter body_styler, header_styler
-    protected getter header
-
-    protected getter initial_width
-
-    # -------------- special getters / setters --------------------------------------
-    #
-    #
-
-    # # # :nodoc:
-    # def width
-    #   @width.to_i
-    # end
-
-    # ---------- def initialize -----------------------------------------------------
-    #
-    #
-
-    # :nodoc:
-    # Primary constructor
+    # Column Primary constructor
     #
     # See parameter's definitions at call site : `Table#add_column`
     # where their use if fully explained
@@ -62,66 +50,66 @@ module Tablo
       @initial_width = @width
     end
 
-    # ---------- def header_cell ----------------------------------------------------
-    #
-    #
-
-    # :nodoc:
     # Creates a HeaderCell type cell
-    def header_cell(bodycell)
+    # called from Table
+    # Returns a DataCell
+    protected def header_cell(bodycell)
       DataCell.new(
-        value: @header,
+        value: header,
         cell_data: bodycell.cell_data,
-        left_padding: @left_padding,
-        right_padding: @right_padding,
-        padding_character: @padding_character,
-        alignment: @header_alignment,
-        styler: @header_styler,
-        formatter: @header_formatter,
-        truncation_indicator: @truncation_indicator,
-        wrap_mode: @wrap_mode,
+        left_padding: left_padding,
+        right_padding: right_padding,
+        padding_character: padding_character,
+        alignment: header_alignment,
+        styler: header_styler,
+        formatter: header_formatter,
+        truncation_indicator: truncation_indicator,
+        wrap_mode: wrap_mode,
         width: width,
       )
     end
 
-    # :nodoc:
     # Creates a BodyCell type cell
-    def body_cell(source, row_index, column_index)
+    # called from Table
+    # Returns a DataCell
+    protected def body_cell(source, row_index, column_index)
       value = body_cell_value(source, row_index)
-      cell_data = CellData.new(value, row_index, @index)
+      cell_data = CellData.new(value, row_index, index)
       DataCell.new(
         value: value,
         cell_data: cell_data,
-        left_padding: @left_padding,
-        right_padding: @right_padding,
-        padding_character: @padding_character,
-        alignment: @body_alignment,
-        styler: @body_styler,
-        formatter: @body_formatter,
-        truncation_indicator: @truncation_indicator,
-        wrap_mode: @wrap_mode,
+        left_padding: left_padding,
+        right_padding: right_padding,
+        padding_character: padding_character,
+        alignment: body_alignment,
+        styler: body_styler,
+        formatter: body_formatter,
+        truncation_indicator: truncation_indicator,
+        wrap_mode: wrap_mode,
         width: width,
       )
     end
 
-    # :nodoc:
     # Gets a cell value from source or returns the row index
     # As extractor is declared as (T, Int32) -> CellType, block may have at most
     # 2 parameters, but using only one is valid syntax
     # for source, use first block parameter = add_column(...) {|n| n} or {|n, i| n}
     # for row index, use second block parameter = add_column(...) {|n, i| i}
-    def body_cell_value(source, row_index)
-      @extractor.call(source, row_index)
+    # called from Table
+    protected def body_cell_value(source, row_index)
+      extractor.call(source, row_index)
     end
 
-    # :nodoc:
-    def padded_width
+    # Returns total column width (content width + padding widths)
+    # called from Table
+    protected def padded_width
       width + total_padding
     end
 
-    # :nodoc:
-    def total_padding
-      @left_padding + @right_padding
+    # Returns total column padding
+    # called from Table
+    protected def total_padding
+      left_padding + right_padding
     end
   end
 end

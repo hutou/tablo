@@ -1,24 +1,22 @@
 require "./types"
 
 module Tablo
-  # -------------- class SubCell --------------------------------------------------
-  #
-  #
-
+  # :nodoc:
   # Abstract class for subcell formatting, depending on wrap_mode
   #  Non-Roman characters are also supported if the *naqvis/uni_char_width*
   #  library is loaded.
-  abstract class SubCell
+  private abstract class SubCell
     # include Enumerable(String)
 
     private getter line, width
 
-    abstract def each(& : String ->)
+    private abstract def each(& : String ->)
 
     def initialize(@line : String, @width : Int32)
     end
   end
 
+  # :nodoc:
   # class helper for rune (~character) string cut
   class RuneSubCell < SubCell
     protected def each(&)
@@ -46,6 +44,7 @@ module Tablo
     end
   end
 
+  # :nodoc:
   # class helper for word string cut
   class WordSubCell < SubCell
     protected def each(&)
@@ -89,7 +88,7 @@ module Tablo
   #
   #
 
-  # Cell is an abstract class representing a single cell inside a Table.
+  # Cell is an abstract class representing a single cell inside a Table.<br />
   # Derived concrete cells are : TextCell and DataCell
   abstract class Cell
     # Common attributes of TextCell and DataCell
@@ -103,9 +102,9 @@ module Tablo
     private property memoized_formatted_content : String? = nil
     private property memoized_rendered_subcells : Array(String)? = nil
 
-    abstract def apply_formatter
-    abstract def apply_styler(content : String, line_index : Int32)
-    abstract def real_alignment
+    private abstract def apply_formatter
+    private abstract def apply_styler(content : String, line_index : Int32)
+    private abstract def real_alignment
 
     # returns the number of subcells in a cell
     # ie, the number of lines a cell contains
@@ -225,18 +224,17 @@ module Tablo
 
   # Subclass of Cell for TextCell (Headings, group)
   class TextCell < Cell
-    protected getter row_type # called from Table
+    # called from Table
+    protected getter row_type
 
+    # :nodoc:
     def initialize(@value : CellType,
                    @row_type : RowType,
-
                    @left_padding : Int32,
                    @right_padding : Int32,
                    @padding_character : String,
-
                    @alignment : Justify?,
                    @styler : TextCellStyler,
-
                    @formatter : TextCellFormatter,
                    @truncation_indicator : String,
                    @wrap_mode : WrapMode,
@@ -276,24 +274,19 @@ module Tablo
     end
   end
 
-  # -------------- class DataCell -------------------------------------------------
-  #
-  #
-
   # Subclass of Cell for DataCell (Header, Body)
   class DataCell < Cell
-    protected getter cell_data # called from Column
+    # called from Column
+    protected getter cell_data
 
+    # :nodoc:
     def initialize(@value : CellType,
                    @cell_data : CellData,
-
                    @left_padding : Int32,
                    @right_padding : Int32,
                    @padding_character : String,
-
                    @alignment : Justify?,
                    @styler : DataCellStyler,
-
                    @formatter : DataCellFormatter,
                    @truncation_indicator : String,
                    @wrap_mode : WrapMode,
