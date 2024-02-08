@@ -3,78 +3,196 @@ require "./heading"
 require "./border"
 
 module Tablo
-  # The `Config` module define global properties.
-  # These properties are mutable and are applicable to all Table instantiations
-  # that follow.
+  # The `Config` module define global getters and setters, to be used as default values
+  # for all class instantiation parameters.
   module Config
-    # get/set control table styling when output is redirected to a file.
+    # Tests whether styling is allowed when output is redirected.
     #
-    # - `true` : no styling
-    # - `false` : styling allowed
-    class_property? styler_tty_only : Bool = true
+    # - `true` : styling not allowed
+    # - `false` : styling allowed <br />
+    # (Default `true`)
+    class_getter? styler_tty_only : Bool = true
+    # Allows styling (`false`) or not (`true`) when output is redirected.
+    class_setter styler_tty_only : Bool
 
-    # get/set control table width to be capped by terminal width.
+    # Tests whether terminal size is used as table total width when packing is
+    # called without a specified width.
     #
     # - `true` : table width is capped to terminal size
-    # - `false` : terminal size is ignored
-    class_property? terminal_capped_width : Bool = false
-    # class_property? pack_autosize : Bool = true
-    class_property starting_widths : StartingWidths = StartingWidths::AutoSized
+    # - `false` : terminal size is ignored <br />
+    # (Default `false`)
+    class_getter? terminal_capped_width : Bool = false
+    # Sets the value of `terminal_capped_width` to control table width
+    # (`true`) or not (`false`) when packing if called without a specified width
+    class_setter terminal_capped_width : Bool
+
+    # Returns the value of `StartingWidths`  <br />
+    # (Default `StartingWidths::AutoSized`) <br />
+    # *See `Table#pack` for details*
+    class_getter starting_widths : StartingWidths = StartingWidths::AutoSized
+    # Sets the value of `StartingWidths`
+    class_setter starting_widths : StartingWidths
 
     #
     #
     # -------------- Control values for Table and Column initialize ----------------
     #
-    #
-    class_property padding_width_range : Range(Int32, Int32) = 0..8
-    class_property header_frequency_range : Range(Int32, Int32) = 0..64
-    class_property row_divider_frequency_range : Range(Int32, Int32) = 1..8
-    class_property header_wrap_range : Range(Int32, Int32) = 1..8
-    class_property body_wrap_range : Range(Int32, Int32) = 1..8
-    class_property column_width_range : Range(Int32, Int32) = 1..128
-    class_property line_breaks_range : Range(Int32, Int32) = 0..8
+
+    # Returns the range of allowable values for `left_padding` and
+    # `right_padding` width <br />
+    # Check is done by the `check_padding` private method, when
+    # initializing Table or Column.
+    class_getter padding_width_range : Range(Int32, Int32)
+    # Sets the range of allowable values for padding width. <br />
+    # (Default 0..8)
+    class_setter padding_width_range : Range(Int32, Int32) = 0..8
+
+    # Returns the range of allowable values for Table `header_frequency` <br />
+    class_getter header_frequency_range : Range(Int32, Int32)
+    # Sets the range of allowable values for Table `header_frequency` <br />
+    # (Default 0..64)
+    class_setter header_frequency_range : Range(Int32, Int32) = 0..64
+
+    # Returns the range of allowable values for `row_divider_frequency`  <br />
+    class_getter row_divider_frequency_range : Range(Int32, Int32)
+    # Sets the range of allowable values for `row_divider_frequency`  <br />
+    # (Default 1..8)
+    class_setter row_divider_frequency_range : Range(Int32, Int32) = 1..8
+
+    # Returns the range of allowable values for `header_wrap`  <br />
+    class_getter header_wrap_range : Range(Int32, Int32)
+    # Sets the range of allowable values for `header_wrap`  <br />
+    # (Default 1..8)
+    class_setter header_wrap_range : Range(Int32, Int32) = 1..8
+
+    # Returns the range of allowable values for `body_wrap`  <br />
+    class_getter body_wrap_range : Range(Int32, Int32)
+    # Sets the range of allowable values for `body_wrap`  <br />
+    # (Default 1..8)
+    class_setter body_wrap_range : Range(Int32, Int32) = 1..8
+
+    # Returns the range of allowable values for column `width`  <br />
+    class_getter column_width_range : Range(Int32, Int32)
+    # Sets the range of allowable values for column `width`  <br />
+    # (Default 1..128)
+    class_setter column_width_range : Range(Int32, Int32) = 1..128
+
+    # Returns the range of allowable values for `line_breaks_before` and
+    # `line_breaks_after` attributes in `Frame` struct <br />
+    class_getter line_breaks_range : Range(Int32, Int32)
+    # Sets the range of allowable values for `line_breaks_before` and
+    # `line_breaks_after`  <br />
+    # Default 0..8)
+    class_setter line_breaks_range : Range(Int32, Int32) = 0..8
 
     #
     #
     # -------------- Default values for Table initialize method --------------------
     #
+
+    # Returns the Title struct
+    class_getter title : Title
+    # Creates an instance of Title struct with default parameters  <br />
+    # (Default struct Title has a nil value, so nothing to display)
+    class_setter title : Title = Title.new
+
+    # Returns the SubTitle struct
+    class_getter subtitle : SubTitle
+    # Creates an instance of SubTitle struct with default parameters  <br />
+    # (Default struct SubTitle has a nil value, so nothing to display)
+    class_setter subtitle : SubTitle = SubTitle.new
+
+    # Returns the Footer struct
+    class_getter footer : Footer
+    # Creates an instance of Footer struct with default parameters  <br />
+    # (Default struct Footer has a nil value, so nothing to display)
+    class_setter footer : Footer = Footer.new
+
+    # TODO I'm here! TODO
     #
-    class_property title : Title = Title.new
-    class_property subtitle : SubTitle = SubTitle.new
-    class_property footer : Footer = Footer.new
+    class_getter border_type : String | BorderName
+    class_setter border_type : String | BorderName = BorderName::Ascii
+
+    class_getter border_styler : BorderStyler
+    class_setter border_styler : BorderStyler = DEFAULT_STYLER
+
+    class_getter heading_alignment : Justify
+    class_setter heading_alignment : Justify = DEFAULT_HEADING_ALIGNMENT
+
+    class_getter heading_formatter : TextCellFormatter
+    class_setter heading_formatter : TextCellFormatter = DEFAULT_FORMATTER
+
+    class_getter heading_styler : TextCellStyler
+    class_setter heading_styler : TextCellStyler = DEFAULT_STYLER
+
+    class_getter group_alignment : Justify
+    class_setter group_alignment : Justify = DEFAULT_HEADING_ALIGNMENT
+
+    class_getter group_formatter : TextCellFormatter
+    class_setter group_formatter : TextCellFormatter = DEFAULT_FORMATTER
+
+    class_getter group_styler : TextCellStyler
+    class_setter group_styler : TextCellStyler = DEFAULT_STYLER
+
     #
-    class_property border_type : String | BorderName = BorderName::Ascii
-    class_property border_styler : BorderStyler = DEFAULT_STYLER
+    class_getter header_alignment : Justify?
+    class_setter header_alignment : Justify? = nil
+
+    class_getter header_formatter : DataCellFormatter
+    class_setter header_formatter : DataCellFormatter = DEFAULT_FORMATTER
+
+    class_getter header_styler : DataCellStyler
+    class_setter header_styler : DataCellStyler = DEFAULT_DATA_DEPENDENT_STYLER
+
+    # Returns `.body_alignment`
+    class_getter body_alignment : Justify?
+    # Set default `body_alignment` to `nil` <br />
+    # (Default `nil` => alignment depends on body cell value datatype)
+    class_setter body_alignment : Justify? = nil
+
+    class_getter body_formatter : DataCellFormatter
+    class_setter body_formatter : DataCellFormatter = DEFAULT_FORMATTER
+
+    class_getter body_styler : DataCellStyler
+    class_setter body_styler : DataCellStyler = DEFAULT_DATA_DEPENDENT_STYLER
     #
-    class_property heading_alignment : Justify = DEFAULT_HEADING_ALIGNMENT
-    class_property heading_formatter : TextCellFormatter = DEFAULT_FORMATTER
-    class_property heading_styler : TextCellStyler = DEFAULT_STYLER
+    class_getter left_padding : Int32
+    class_setter left_padding : Int32 = 1
+
+    class_getter right_padding : Int32
+    class_setter right_padding : Int32 = 1
+
+    class_getter padding_character : String
+    class_setter padding_character : String = " "
+
+    class_getter truncation_indicator : String
+    class_setter truncation_indicator : String = "~"
+
+    class_getter width : Int32
+    class_setter width : Int32 = 12
     #
-    class_property group_alignment : Justify = DEFAULT_HEADING_ALIGNMENT
-    class_property group_formatter : TextCellFormatter = DEFAULT_FORMATTER
-    class_property group_styler : TextCellStyler = DEFAULT_STYLER
-    #
-    class_property header_alignment : Justify? = nil
-    class_property header_formatter : DataCellFormatter = DEFAULT_FORMATTER
-    class_property header_styler : DataCellStyler = DEFAULT_DATA_DEPENDENT_STYLER
-    #
-    class_property body_alignment : Justify? = nil
-    class_property body_formatter : DataCellFormatter = DEFAULT_FORMATTER
-    class_property body_styler : DataCellStyler = DEFAULT_DATA_DEPENDENT_STYLER
-    #
-    class_property left_padding : Int32 = 1
-    class_property right_padding : Int32 = 1
-    class_property padding_character : String = " "
-    class_property truncation_indicator : String = "~"
-    class_property width : Int32 = 12
-    #
-    class_property header_frequency : Int32? = 0
-    class_property row_divider_frequency : Int32? = nil
-    class_property wrap_mode : WrapMode = WrapMode::Word
-    class_property header_wrap : Int32? = nil
-    class_property body_wrap : Int32? = nil
-    class_property? masked_headers : Bool = false
-    class_property? omit_group_header_rule : Bool = false
-    class_property? omit_last_rule : Bool = false
+    class_getter header_frequency : Int32?
+    class_setter header_frequency : Int32? = 0
+
+    class_getter row_divider_frequency : Int32?
+    class_setter row_divider_frequency : Int32? = nil
+
+    class_getter wrap_mode : WrapMode
+    class_setter wrap_mode : WrapMode = WrapMode::Word
+
+    class_getter header_wrap : Int32?
+    class_setter header_wrap : Int32? = nil
+
+    class_getter body_wrap : Int32?
+    class_setter body_wrap : Int32? = nil
+
+    class_getter? masked_headers : Bool
+    class_setter masked_headers : Bool = false
+
+    class_getter? omit_group_header_rule : Bool
+    class_setter omit_group_header_rule : Bool = false
+
+    class_getter? omit_last_rule : Bool
+    class_setter omit_last_rule : Bool = false
   end
 end

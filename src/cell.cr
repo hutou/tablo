@@ -22,7 +22,6 @@ module Tablo
     protected def each(&)
       subcell_width = 0
       subcell = String::Builder.new
-      debug! line
       line.scan(/\X/).each do |matchdata|
         rune = matchdata[0]
         rune_width = rune.size
