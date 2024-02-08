@@ -1,8 +1,7 @@
 require "./types"
 
 module Tablo
-  # struct Frame creates a frame around a `Heading` (`Title`,
-  # `SubTitle` or `Footer`)
+  # struct Frame creates a frame around titles, subtitles or footers
   struct Frame
     # Called from RowGroup
     protected getter line_breaks_before, line_breaks_after
@@ -39,7 +38,6 @@ module Tablo
     #
     # If the values of `line_breaks_after` and `line_breaks_before` are both equal
     # to 0, no line break is generated and the 2 frames are joined.
-    #    # TODO I'm here ! TODO
     def initialize(@line_breaks_before : Int32 = 0,
                    @line_breaks_after : Int32 = 0)
       unless line_breaks_before.in?(Config.line_breaks_range) &&
@@ -50,94 +48,147 @@ module Tablo
     end
   end
 
-  # The Heading struct is used to define three table layout elements : the title,
-  # the subtitle and the footer.
-  #
-  # The common parameters between title, subtitle and footer are :
-  # - `value`: type is `CellType?`  <br />
-  #   Default value is `nil` (nothing to display)
-  # - `frame`: type is `Frame?`  <br />
-  #   Default value is `nil` (no frame)
-  #
-  # The parameters co
-  # For each of them, all parameters are optional
-  # (default is `nil` for the `value` parameter, which means no display)
-  #
-  # Spacing between the different row types (see `RowType`) is done by taking
-  # the maximum of the 2 following values (max) :
-  # - *line_breaks_after* of the current row
-  # - *line_breaks_before* of the next row
-  # knowing that spacing (either before or after) of the row types Group, Header
-  # and Body is always 0.
-  #
-  # When both rows (current and next) are framed (row types Group, Header
-  # or Body are always framed), and max is zero, the frames
-  # are joined (proper rendering depends on border type).
-  #
-  # if `max > 0`, `max - 1` empty lines are inserted between current and next rows.
-  abstract struct Heading
+  # struct Title creates a title for the table.
+  struct Title
     # Called from  Table,RowGroup
     protected property value, frame
-
-    # Called from Table
-    # protected getter alignment : Justify, formatter, styler
-
-    # protected getter alignment : Justify = Config.heading_alignment,
-    #   formatter : TextCellFormatter = Config.heading_formatter,
-    #   styler : TextCellStyler = Config.heading_styler
-
-    # Called from  Table,RowGroup
-    # Is the heading framed ?
-    protected def framed?
-      !frame.nil?
-    end
-  end
-
-  struct Title < Heading
-    # Called from RowGroup
-    protected property? repeated
     # Called from Table
     protected getter alignment, formatter, styler
+    # Called from RowGroup
+    protected property? repeated
 
-    # Returns an instance of Title
-    def initialize(@value : CellType? = nil, *,
+    # Returns an instance of Title.
+    #
+    # Example:
+    # ```
+    # Tablo::Table.new((1, 2, 3],
+    #   title: Tablo::Title.new("My title", frame: Tablo::Frame.new(1, 1), repeated: true)
+    # ```
+    #
+    # _All (named) parameters are optional, with default values_
+    #
+    # - `value`: type is `CellType?` <br />
+    #   Default value is `nil` <br />
+    # This is the title's display content.
+    # - `frame`: type is `Frame?` <br />
+    #   Default value is `nil` <br />
+    #   If a Frame instance is created, the title is framed.
+    # - `alignment`: type is `Justify` <br />
+    #   By default, as defined in `Config.heading_alignment` (but this can be
+    #   modified), title content is centered.
+    # - `formatter`:  a Proc whose type is `TextCellFormatter` <br />
+    #   Default value is set by `Config.heading_formatter`
+    # - `styler`:  a Proc whose type is `TextCellStyler` <br />
+    #   Default value is set by `Config.heading_styler`
+    # - `repeated`: type is `Bool` <br />
+    #   Default value is `false` <br />
+    #   This attribute governs the repetition of the title and subtitle when the
+    #   `header_frequency` attribute of `Table` is greater than 0 (if `true`, title and subtitle
+    #   are inserted before the repeated group and header rows).
+    def initialize(@value : CellType? = nil,
                    @frame : Frame? = nil,
                    @alignment : Justify = Config.heading_alignment,
                    @formatter : TextCellFormatter = Config.heading_formatter,
                    @styler : TextCellStyler = Config.heading_styler,
                    @repeated : Bool = false)
-      # check_value
+    end
+
+    protected def framed?
+      !frame.nil?
     end
   end
 
-  struct SubTitle < Heading
+  # struct SubTitle creates a subtitle for the table (**but displayed only  if
+  # a title has also been defined**)
+  struct SubTitle
+    # Called from  Table,RowGroup
+    protected property value, frame
     # Called from Table
     protected getter alignment, formatter, styler
 
     # Returns an instance of SubTitle
-    def initialize(@value : CellType? = nil, *,
+    #
+    # Example:
+    # ```
+    # Tablo::Table.new((1, 2, 3],
+    #   subtitle: Tablo::SubTitle.new("My subtitle", frame: Tablo::Frame.new(1, 1),
+    #     alignment: Tablo::Justify::Left)
+    # ```
+    #
+    # _All (named) parameters are optional, with default values_
+    #
+    # - `value`: type is `CellType?` <br />
+    #   Default value is `nil` <br />
+    # This is the subtitle's display content.
+    # - `frame`: type is `Frame?` <br />
+    #   Default value is `nil` <br />
+    #   If a Frame instance is created, the subtitle is framed.
+    # - `alignment`: type is `Justify` <br />
+    #   By default, as defined in `Config.heading_alignment` (but this can be
+    #   modified), subtitle content is centered.
+    # - `formatter`:  a Proc whose type is `TextCellFormatter` <br />
+    #   Default value is set by `Config.heading_formatter`
+    # - `styler`:  a Proc whose type is `TextCellStyler` <br />
+    #   Default value is set by `Config.heading_styler`
+    def initialize(@value : CellType? = nil,
                    @frame : Frame? = nil,
                    @alignment : Justify = Config.heading_alignment,
                    @formatter : TextCellFormatter = Config.heading_formatter,
                    @styler : TextCellStyler = Config.heading_styler)
-      check_value
+    end
+
+    protected def framed?
+      !frame.nil?
     end
   end
 
-  struct Footer < Heading
-    # Called from RowGroup
-    protected property? page_break
+  struct Footer
+    # Called from  Table,RowGroup
+    protected property value, frame
     # Called from Table
     protected getter alignment, formatter, styler
+    # Called from RowGroup
+    protected property? page_break
 
-    # Returns an instance of Footer
-    def initialize(@value : CellType? = nil, *,
+    # Returns an instance of Footer.
+    #
+    # Example:
+    # ```
+    # Tablo::Table.new((1, 2, 3],
+    #   footer: Tablo::Footer.new("My footer", frame: Tablo::Frame.new(1, 1), page_break: true)
+    # ```
+    #
+    # _All (named) parameters are optional, with default values_
+    #
+    # - `value`: type is `CellType?` <br />
+    #   Default value is `nil` <br />
+    # This is the footer's display content.
+    # - `frame`: type is `Frame?` <br />
+    #   Default value is `nil` <br />
+    #   If a Frame instance is created, the footer is framed.
+    # - `alignment`: type is `Justify` <br />
+    #   By default, as defined in `Config.heading_alignment` (but this can be
+    #   modified), footer content is centered.
+    # - `formatter`:  a Proc whose type is `TextCellFormatter` <br />
+    #   Default value is set by `Config.heading_formatter`
+    # - `styler`:  a Proc whose type is `TextCellStyler` <br />
+    #   Default value is set by `Config.heading_styler`
+    # - `page_break`: type is `Bool` <br />
+    #   Default value is `false` <br />
+    # If true, a page break is inserted after the footer content (or after the
+    # footer frame, but note that in this case, it prevents the join with the
+    # frame that follows when the value of the `omit_last_rule` parameter of
+    # `Table` is `true`).
+    def initialize(@value : CellType? = nil,
                    @frame : Frame? = nil,
                    @alignment : Justify = Config.heading_alignment,
                    @formatter : TextCellFormatter = Config.heading_formatter,
                    @styler : TextCellStyler = Config.heading_styler,
                    @page_break : Bool = false)
-      check_value
+    end
+
+    protected def framed?
+      !frame.nil?
     end
   end
 end
