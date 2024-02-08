@@ -11,9 +11,7 @@ module Tablo
       previous_def
     end
 
-    def border_string
-      previous_def
-    end
+    getter border_string
   end
 end
 

@@ -104,7 +104,7 @@ module Tablo
     protected property hdiv_tbs : String, hdiv_grp : String, hdiv_hdr : String
     protected property hdiv_bdy : String
 
-    private getter border_string, styler
+    private getter styler
 
     # Border predefined strings, enabled by name, described in `enum BorderName`.
     PREDEFINED_BORDERS = {
@@ -140,13 +140,13 @@ module Tablo
     # border = Tablo::Border.new("┌┬┐├┼┤└┴┘│││────",
     #   styler: ->(s : String) { s.colorize.fore(:blue).mode(:bold).to_s })
     # ```
-    def initialize(border_type : String | BorderName = Config.border_type,
+    def initialize(@border_type : String | BorderName = Config.border_type,
                    @styler : BorderStyler = Config.border_styler)
-      case border_type
+      case @border_type
       when Tablo::BorderName
-        @border_string = PREDEFINED_BORDERS[border_type]
+        @border_string = PREDEFINED_BORDERS[@border_type]
       else
-        @border_string = border_type.as(String)
+        @border_string = @border_type.as(String)
       end
       raise InvalidConnectorString.new "Invalid border definition <#{@border_string}>" \
                                        "(size != 16)" unless @border_string.size == 16
