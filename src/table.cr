@@ -706,6 +706,7 @@ module Tablo
       format_row(header_cells, @header_wrap)
     end
 
+    # Called by RowGroup
     protected def rendered_body_row(source, index)
       cells = row_cells(source, index)
       format_row(cells, @body_wrap)
