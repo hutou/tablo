@@ -1,5 +1,9 @@
 require "./spec_helper"
 
+class Tablo::Cell
+  getter value
+end
+
 describe Tablo::Row do
   # define border type for all tests
   # Tablo::Config.border_type = Tablo::BorderName::Ascii

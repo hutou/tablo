@@ -1,5 +1,10 @@
 require "./spec_helper"
 
+# Redefine protected and private methods for tests
+class Tablo::Table(T)
+  getter sources
+end
+
 struct InvoiceItem
   include Tablo::CellType
   getter product, quantity, price
@@ -152,13 +157,13 @@ describe "#{Tablo::Table} -> summary definition using Aggregation", tags: "summa
       border:         Tablo::Border.new("EEESSSEEESSSESSS"),
     })
   it "returns valid data" do
-    sources_array = tbl.summary.as(Tablo::SummaryTable).sources.to_a
+    sources_array = tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).sources.to_a
     {% if flag?(:DEBUG) %}
       puts "\n#{tbl}"
-      puts "#{tbl.summary.as(Tablo::SummaryTable)}"
+      puts "#{tbl.summary.as(Tablo::Table(Array(Tablo::CellType)))}"
     {% end %}
-    (tbl.to_s + "\n" + tbl.summary.as(Tablo::SummaryTable).to_s).should eq invoice_output
-    # puts tbl.to_s + tbl.summary.as(Tablo::SummaryTable).to_s
+    (tbl.to_s + "\n" + tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).to_s).should eq invoice_output
+    # puts tbl.to_s + tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).to_s
   end
 end
 
@@ -170,13 +175,13 @@ describe "#{Tablo::Table} -> summary definition using UserAggregation (with sour
       border:         Tablo::Border.new("EEESSSEEESSSESSS"),
     })
   it "returns valid data" do
-    sources_array = tbl.summary.as(Tablo::SummaryTable).sources.to_a
+    sources_array = tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).sources.to_a
     {% if flag?(:DEBUG) %}
       puts "\n#{tbl}"
-      puts "#{tbl.summary.as(Tablo::SummaryTable)}"
+      puts "#{tbl.summary.as(Tablo::Table(Array(Tablo::CellType)))}"
     {% end %}
 
-    (tbl.to_s + "\n" + tbl.summary.as(Tablo::SummaryTable).to_s).should eq invoice_output
+    (tbl.to_s + "\n" + tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).to_s).should eq invoice_output
   end
 end
 
@@ -188,13 +193,13 @@ describe "#{Tablo::Table} -> summary definition using UserAggregation (with sour
       border:         Tablo::Border.new("EEESSSEEESSSESSS"),
     })
   it "returns valid data" do
-    sources_array = tbl.summary.as(Tablo::SummaryTable).sources.to_a
+    sources_array = tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).sources.to_a
     {% if flag?(:DEBUG) %}
       puts "\n#{tbl}"
-      puts "#{tbl.summary.as(Tablo::SummaryTable)}"
+      puts "#{tbl.summary.as(Tablo::Table(Array(Tablo::CellType)))}"
     {% end %}
 
-    (tbl.to_s + "\n" + tbl.summary.as(Tablo::SummaryTable).to_s).should eq invoice_output
+    (tbl.to_s + "\n" + tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).to_s).should eq invoice_output
   end
 end
 describe "#{Tablo::Table} -> summary definition using UserAggregation (with columns)", tags: "summary" do
@@ -205,11 +210,11 @@ describe "#{Tablo::Table} -> summary definition using UserAggregation (with colu
       border:         Tablo::Border.new("EEESSSEEESSSESSS"),
     })
   it "returns valid data" do
-    sources_array = tbl.summary.as(Tablo::SummaryTable).sources.to_a
+    sources_array = tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).sources.to_a
     {% if flag?(:DEBUG) %}
       puts "\n#{tbl}"
-      puts "#{tbl.summary.as(Tablo::SummaryTable)}"
+      puts "#{tbl.summary.as(Tablo::Table(Array(Tablo::CellType)))}"
     {% end %}
-    (tbl.to_s + "\n" + tbl.summary.as(Tablo::SummaryTable).to_s).should eq invoice_output
+    (tbl.to_s + "\n" + tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).to_s).should eq invoice_output
   end
 end

@@ -10,8 +10,9 @@ require "./heading"
 require "./summary"
 
 module Tablo
-  alias SummaryTable = Table(Array(CellType))
-
+  # An abstract table is needed to allow assignment on class properties `parent`
+  # and `child`, as they T type is different (Array(CellType) for child, and
+  # given T parameter for parent.
   abstract class ATable
   end
 
@@ -21,37 +22,34 @@ module Tablo
   class Table(T) < ATable
     include Enumerable(Row(T))
 
-    #
-    # -------------- Table management attributes ------------------------------------
-    #
-    property parent : ATable? = nil
-    property child : ATable? = nil
-    property name : Symbol = :main
+    protected property parent : ATable? = nil
+    protected property child : ATable? = nil
+    protected property name : Symbol = :main
 
-    getter column_registry = {} of LabelType => Column(T)
+    protected getter column_registry = {} of LabelType => Column(T)
     protected getter group_registry = {} of LabelType => TextCell
     protected getter groups = [] of Range(Int32, Int32)
     protected property row_count : Int32 = 0
 
-    # Table parameters
-    getter sources
+    protected getter sources
     private setter sources
-    property title, subtitle, footer
-    protected getter border
-    protected getter group_alignment, group_formatter, group_styler
-    protected getter header_alignment, header_formatter, header_styler
-    protected getter body_alignment, body_formatter, body_styler
-    protected getter left_padding, right_padding, padding_character
-    protected getter width, truncation_indicator
-    protected getter header_frequency, row_divider_frequency
-    protected getter wrap_mode, header_wrap, body_wrap
+    private getter group_alignment, group_formatter, group_styler
+    private getter left_padding, right_padding, padding_character
+    private getter width, truncation_indicator
+    private getter row_divider_frequency
+    private getter wrap_mode, header_wrap, body_wrap
+
+    # Called from RowGroup
+    protected getter title, subtitle, footer
+    protected getter header_frequency
     protected getter? masked_headers, omit_last_rule, omit_group_header_rule
 
-    #
-    #
-    # -------------- initialize -----------------------------------------------------
-    #
-    #
+    # Called from Summary
+    protected getter header_alignment, header_formatter, header_styler
+    protected getter border
+    protected getter body_alignment, body_formatter, body_styler
+
+    # TODO TODO TODO TODO TODO I'm here! TODO TODO TODO TODO TODO
 
     # The `initialize` macro generates two `initialize' methods, one with block_given = true
     # and one with block_given = false
@@ -587,7 +585,7 @@ module Tablo
       group_width
     end
 
-    def update_group_widths
+    private def update_group_widths
       # Only main is involved (summary has no groups)
       self_main = self.name == :main ? self : self.parent.as(ATable)
       gr = self_main.group_registry
