@@ -49,8 +49,6 @@ module Tablo
     protected getter border
     protected getter body_alignment, body_formatter, body_styler
 
-    # TODO TODO TODO TODO TODO I'm here! TODO TODO TODO TODO TODO
-
     # The `initialize` macro generates two `initialize' methods, one with block_given = true
     # and one with block_given = false
     macro initialize(block_given)
@@ -247,12 +245,6 @@ module Tablo
     # Second constructor, with same parameters as the first one, but with a block given
     initialize(block_given: true)
 
-    #
-    #
-    # -------------- parameters checks  ---------------------------------------------
-    #
-    #
-
     # Checks that the parameter setting for `header_frequency` is within the value
     # range defined in `Config.header_frequency_range` <br />
     # Raises InvalidValue or returns `nil`
@@ -301,12 +293,9 @@ module Tablo
       end
     end
 
-    #
-    #
-    # -------------- check table & column parameters --------------------------------
-    #
-    #
-
+    # Checks that the parameter setting for `width` is within the
+    # value range defined in `Config.column_width_range` <br />
+    # Raises InvalidValue or returns `nil`
     private def check_width(width)
       unless width.in?(Config.column_width_range)
         raise InvalidValue.new "Column width must be in range " \
@@ -314,6 +303,9 @@ module Tablo
       end
     end
 
+    # Checks that the parameter setting for `padding` is within the
+    # value range defined in `Config.padding_width_range` <br />
+    # Raises InvalidValue or returns `nil`
     private def check_padding(padding)
       unless padding.in?(Config.padding_width_range)
         raise InvalidValue.new "Column padding width must be in range " \
@@ -321,21 +313,21 @@ module Tablo
       end
     end
 
-    private def check_padding_character(padding_string)
-      raise InvalidValue.new "Padding string must be exactly" \
-                             " *one* character" if padding_string.size != 1
+    # Checks that the parameter setting for `padding_character` string is
+    # exactly one character.` <br />
+    # Raises InvalidValue or returns `nil`
+    private def check_padding_character(padding_character)
+      raise InvalidValue.new "Padding character string must be exactly" \
+                             " *one* character" if padding_character.size != 1
     end
 
-    private def check_truncation_indicator(truncation_string)
-      raise InvalidValue.new "Truncation string  must be exactly" \
-                             " *one* character" if truncation_string.size != 1
+    # Checks that the parameter setting for `truncation_indicator` string is
+    # exactly one character.` <br />
+    # Raises InvalidValue or returns `nil`
+    private def check_truncation_indicator(truncation_indicator)
+      raise InvalidValue.new "Truncation indicator string  must be exactly" \
+                             " *one* character" if truncation_indicator.size != 1
     end
-
-    #
-    #
-    # -------------- reset_sources --------------------------------------------------
-    #
-    #
 
     # Returns the sources enumerable
     #
@@ -344,17 +336,12 @@ module Tablo
     #
     # _Mandatory positional parameter_
     #
-    # - `src`: type is `Enumerable(T)`
-    #
+    # - `src`: type is `Enumerable(T) (Where T is the same type as at table initialization)
     def reset_sources(to src : Enumerable(T))
       self.child = nil
       self.row_count = src.size
       self.sources = src
     end
-
-    # -------------- add_column -----------------------------------------------------
-    #
-    #
 
     # Adds a column to the table
     #
@@ -478,10 +465,6 @@ module Tablo
       )
     end
 
-    # -------------- add_group ------------------------------------------------------
-    #
-    #
-
     # Returns an instance of `TextCell`
     #
     # Creates a group including all previous columns not already grouped.
@@ -536,14 +519,7 @@ module Tablo
       groups << columns_group
 
       columns = column_list[groups.last]
-      left_padding = columns.first.left_padding
-      right_padding = columns.last.right_padding
-      group_width = columns.reduce(0) do |acc, column|
-        width = column.width + column.total_padding
-        acc + width
-      end
-      group_width -= (left_padding + right_padding)
-      group_width += (groups.last.size - 1) unless border.vdiv_mid.empty?
+      group_width = calc_group_width(columns)
 
       group_registry[label] = TextCell.new(
         value: header,
@@ -571,26 +547,34 @@ module Tablo
       start_column..current_column
     end
 
-    private def calc_group_width(column_range)
-      cr = (self.name == :main ? self : self.parent.as(ATable)).column_registry
-      columns = cr.values.select &.index.in?(column_range)
+    # Calculates the group width from an array of column values
+    private def calc_group_width(columns)
+      # calculate paddings of group
       left_padding = columns.first.left_padding
       right_padding = columns.last.right_padding
+      # and total width of columns, including paddings
       group_width = columns.reduce(0) do |acc, column|
-        width = column.width + column.total_padding
-        acc + width
+        w = column.width + column.total_padding
+        acc + w
       end
-      group_width -= (left_padding + right_padding)
+      # Do not forget to add size of middle vertical connectors
       group_width += ((columns.size - 1) * border.vdiv_mid.size) unless border.vdiv_mid.empty?
-      group_width
+      # Substract paddings at each end of the group as they are not part of
+      # the group width
+      group_width -= (left_padding + right_padding)
     end
+
+    # TODO TODO TODO TODO TODO I'm here! TODO TODO TODO TODO TODO
 
     private def update_group_widths
       # Only main is involved (summary has no groups)
       self_main = self.name == :main ? self : self.parent.as(ATable)
       gr = self_main.group_registry
       gr.each_with_index do |(_, group), index|
-        group.width = calc_group_width(self_main.groups[index])
+        # retrieve group columns
+        cr = self_main.column_registry
+        columns = cr.values.select &.index.in?(self_main.groups[index])
+        group.width = calc_group_width(columns)
       end
     end
 
@@ -643,8 +627,8 @@ module Tablo
       # below to create rows, formatting them with (Row)to_s and joining all
       # formatted rows with newline to output the formatted table.
       if !column_registry.empty?
-        unless @groups.empty?
-          if @groups.last.end != @column_registry.size - 1
+        unless groups.empty?
+          if groups.last.end != column_registry.size - 1
             add_group(:dummy_last_group, header: "")
           end
         end
