@@ -373,9 +373,64 @@ module Tablo
     Sum
   end
 
-  record Aggregation, column : LabelType | Array(LabelType), aggregate : Aggregate | Array(Aggregate)
+  # The `struct` `Aggregation` allows you to define up to 4 types of aggregation
+  # on any number of columns, while scanning the source data only once.
+  #
+  # Entries with a `nil` value are ignored.
+  #
+  # The 4 `Aggregation` types, defined in `Aggregate` are :
+  # - `Count`: number of data items in a column, regardless of type
+  # - `Min`: smallest numerical value of a column
+  # - `Max`: largest numerical value of a column
+  # - `Sum`: sum of all numerical values in a column
+  #
+  # Example:
+  # ```
+  # Tablo::Aggregation.new([col1, col2], [Tablo::Aggregate::Max, Tablo::Aggregate::Sum])
+  # ```
+  # This instance of `Tablo::Aggregation` would be interpreted by Tablo algorithms as
+  # a calculation of `Max` and `Sum` on columns `col1` and `col2`, and the results would be
+  # automatically saved for future use (see `Tablo::HeaderRow` or `Tablo::BodyRow`).
+  struct Aggregation
+    protected getter column, aggregate
 
-  record UserAggregation(S), ident : Symbol, proc : Proc(Table(S), CellType)
+    # Returns an instance of Aggregation
+    #
+    # _Mandatory parameters:_
+    #
+    # - `column`: type is `LabelType` | `Array(LabelType)`<br />
+    #
+    # - `aggregate`: type is  `Aggregate` | `Array(Aggregate)`<br />
+    def initialize(@column : LabelType | Array(LabelType),
+                   @aggregate : Aggregate | Array(Aggregate))
+    end
+  end
+
+  # The `UserAggregation` structure lets you define specific functions to be applied
+  # to source data, either by column or by source value.
+  # Example of accessing data directly from source:
+  # ```
+  # Tablo::UserAggregation(InvoiceItem).new(
+  #   ident: :total_sum, proc: ->(tbl : Tablo::Table(InvoiceItem)) {
+  #   total_sum = 0
+  #   tbl.sources.each do |row|
+  #     unless row.quantity.nil? || row.price.nil?
+  #       if row.quantity.is_a?(Number) && row.price.is_a?(Number)
+  #         total_sum += row.quantity.as(Int32) * row.price.as(Int32)
+  #       end
+  #     end
+  #   end
+  #   total_sum.as(Tablo::CellType)
+  # })
+  # ```
+  struct UserAggregation(T)
+    protected getter ident, proc
+
+    def initialize(@ident : Symbol, @proc : Proc(Table(T), CellType))
+    end
+  end
+
+  # record UserAggregation(S), ident : Symbol, proc : Proc(Table(S), CellType)
 
   record HeaderColumn, column : LabelType, alignment : Justify? = nil,
     formatter : DataCellFormatter? = nil, styler : DataCellStyler? = nil

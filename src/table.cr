@@ -343,22 +343,6 @@ module Tablo
       self.sources = src
     end
 
-    # Adds a column to the table
-    #
-    # **Parameters:**
-    #
-    # - *label* is the only (positional) mandatory parameter, of type `LabelType`
-    #
-    # - A block (*&extractor*) must be provided to the method call to extract the cell raw data
-    # from the source. Extractor type is `Proc(T, Int32, CellType)`.
-    #
-    # All other are optional named parameters, and have default values taken from
-    # Table parameters, except *header* which defaults to *label*
-    #
-    # Returns an instance of class Column(T)
-
-    # ## Method `add_column`
-
     # Returns an instance of `Column(T)`
     #
     # _Mandatory positional parameter:_
@@ -557,15 +541,14 @@ module Tablo
         w = column.width + column.total_padding
         acc + w
       end
-      # Do not forget to add size of middle vertical connectors
+      # Add size of middle vertical connectors
       group_width += ((columns.size - 1) * border.vdiv_mid.size) unless border.vdiv_mid.empty?
       # Substract paddings at each end of the group as they are not part of
       # the group width
       group_width -= (left_padding + right_padding)
     end
 
-    # TODO TODO TODO TODO TODO I'm here! TODO TODO TODO TODO TODO
-
+    # Calculates width of each defined group
     private def update_group_widths
       # Only main is involved (summary has no groups)
       self_main = self.name == :main ? self : self.parent.as(ATable)
@@ -578,6 +561,7 @@ module Tablo
       end
     end
 
+    # Harmonize widths between main table and summary table
     private def harmonize_widths
       if self.name == :summary
         iter_main = self.parent.as(ATable).column_registry.each
@@ -593,29 +577,58 @@ module Tablo
       update_group_widths
     end
 
+    # harmonize by selecting largest width between main and summary
     private def harmonize(itm, its)
       iter = itm.zip(its)
-      iter.each do |(k_m, v_m), (k_s, v_s)|
+      iter.each do |(_, v_m), (_, v_s)|
         mx = [v_m.width, v_s.width].max
         v_m.width = v_s.width = mx
       end
     end
 
-    # -------------- summary --------------------------------------------------------
+    # The `add_summary` method creates a summary table, attached to the main table.
     #
+    # _Mandatory positional parameters:_
     #
-
-    # Returns the newly created summary table and sets its parent
-    def add_summary(summary_def, **summary_options)
-      self.child = Summary.new(self, summary_def, summary_options).run
+    # - `summary_definition`: type is `Array(<structs>)`<br />
+    # where `<structs>` may be one or more instances of `Aggregation`, `UserAggregation`,
+    # `HeaderColumn`, `HeaderRow`, `BodyColumn` or `BodyRow` <br />
+    #
+    # - `summary_options`: type is `NamedTuple(<Table parameters>)` <br />
+    # where `<Table parameters>` is a list of any number of Table initializers (may be empty).
+    #
+    # Example of `summary_definition` :
+    # ```
+    # summary_definition = [
+    #   Tablo::Aggregation.new(:total, Tablo::Aggregate::Sum),
+    #   Tablo::BodyRow.new(:total, 1, ->{ Tablo::Summary.use(:total, Tablo::Aggregate::Sum) }),
+    #   Tablo::BodyColumn.new(:total, alignment: Tablo::Justify::Center),
+    # ]
+    # ```
+    # which means :
+    #  1. Sum the `:total` column
+    #  2. populate the Summary table with this result in column `:total`, row 1
+    #  3. and set column alignment to Center
+    #
+    # This method is overloaded on the `summary_options` parameter, which can be given as:
+    # - a named tuple of Table initializers : { ..., ...,  }  (first form)
+    # - a list of Table initializers : ..., ...,  (second form) <br />
+    #   (converted into a named tuple by the ** operator)
+    #
+    # Creates a summary table and sets its parent<br />
+    # Returns self (an instance of Table(T)) with an embedded Summary Table
+    def add_summary(summary_definition, summary_options)
+      self.child = Summary.new(self, summary_definition, summary_options).run
       self.child.as(ATable).parent = self.as(ATable)
     end
 
-    def add_summary(summary_def, summary_options)
-      self.child = Summary.new(self, summary_def, summary_options).run
+    # Second form : `summary_options` given as a list of Table initializers
+    def add_summary(summary_definition, **summary_options)
+      self.child = Summary.new(self, summary_definition, summary_options).run
       self.child.as(ATable).parent = self.as(ATable)
     end
 
+    # TODO TODO TODO TODO TODO I'm here! TODO TODO TODO TODO TODO
     # Returns a previously defined summary table
     def summary
       self.child
