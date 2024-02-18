@@ -1,8 +1,9 @@
 require "./spec_helper"
 
-# Redefine protected and private methods for tests
+# create or Redefine protected and private methods for tests
 class Tablo::Table(T)
   getter sources
+  setter omit_last_rule
 end
 
 # clear aggregations and user_aggregations between tests
@@ -21,7 +22,7 @@ struct InvoiceItem
   end
 end
 
-def invoice
+def create_table
   invoice = [
     InvoiceItem.new("Laptop", 3, 98000),
     InvoiceItem.new("Printer", 2, 15499),
@@ -30,7 +31,6 @@ def invoice
     InvoiceItem.new("Switch", nil, 4500),
     InvoiceItem.new("Accessories", 5, 6450),
   ]
-
   table = Tablo::Table.new(invoice,
     omit_last_rule: false,
     border: Tablo::Border.new(Tablo::BorderName::Fancy),
@@ -148,8 +148,8 @@ invoice_summary_definition_3 =
 
     iter = iter_quantity.zip(iter_price)
     iter.each do |q, p|
-      next if q.nil? || p.nil?
-      total_sum += q.as(Int32) * p.as(Int32)
+      next unless q.is_a?(Int32) && p.is_a?(Int32)
+      total_sum += q * p
     end
     total_sum.as(Tablo::CellType)
   }),
@@ -180,80 +180,232 @@ invoice_output =
     "                                                ========  \n" +
     "                                  Balance due    \e[1m4185.49\e[0m  "
 
-describe "#{Tablo::Summary} -> summary definition using Aggregation", tags: "summary" do
-  Tablo::Summary.clear_results
-  tbl = invoice
-  tbl.pack
-  tbl.add_summary(invoice_summary_definition_1,
-    {
-      masked_headers: true,
-      border:         Tablo::Border.new("EEESSSEEESSSESSS"),
-    })
-  it "Returns the correct, cleanly formatted values, with the expected layout" do
-    tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).pack(only: ["Price", :total])
-    output = tbl.to_s + "\n" + tbl.summary.to_s
-    {% if flag?(:DEBUG) %}
-      puts "\n#{output}"
-    {% end %}
-    output.should eq invoice_output
-  end
-end
+invoice_layout1 =
+  "                           Invoice                           \n" +
+    "╭──────────────┬──────────────┬──────────────┬──────────────╮\n" +
+    "│ Product      :     Quantity :        Price :        Total │\n" +
+    "├--------------┼--------------┼--------------┼--------------┤\n" +
+    "│ Laptop       :            3 :       980.00 :      2940.00 │\n" +
+    "│ Printer      :            2 :       154.99 :       309.98 │\n" +
+    "│ Router       :            1 :        99.00 :        99.00 │\n" +
+    "│ Switch       : N/A          :        45.00 :              │\n" +
+    "│ Accessories  :            5 :        64.50 :       322.50 │\n" +
+    "╰──────────────┴──────────────┴──────────────┴──────────────╯\n" +
+    "╭──────────────┬──────────────┬──────────────┬──────────────╮\n" +
+    "│              :              :     SubTotal :      \e[1m3671.48\e[0m │\n" +
+    "│              :              :  Discount 5% :       \e[3m183.57\e[0m │\n" +
+    "│              :              :    S/T after :      \e[1m3487.91\e[0m │\n" +
+    "│              :              :     discount :              │\n" +
+    "│              :              :    Tax (20%) :       697.58 │\n" +
+    "│              :              :              :     ======== │\n" +
+    "│              :              :  Balance due :      \e[1m4185.49\e[0m │\n" +
+    "╰──────────────┴──────────────┴──────────────┴──────────────╯"
 
-describe "#{Tablo::Summary} -> summary definition using UserAggregation (with sources " +
-         "- a)", tags: "summary" do
-  Tablo::Summary.clear_results
-  tbl = invoice
-  tbl.pack
-  tbl.add_summary(invoice_summary_definition_2a,
-    {
-      masked_headers: true,
-      border:         Tablo::Border.new("EEESSSEEESSSESSS"),
-    })
-  it "Returns the correct, cleanly formatted values, with the expected layout" do
-    tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).pack(only: ["Price", :total])
-    output = tbl.to_s + "\n" + tbl.summary.to_s
-    {% if flag?(:DEBUG) %}
-      puts "\n#{output}"
-    {% end %}
-    output.should eq invoice_output
-  end
-end
+invoice_layout2 =
+  "                              Invoice                              \n" +
+    "╭──────────────┬──────────────┬────────────────────┬──────────────╮\n" +
+    "│ Product      :     Quantity :              Price :        Total │\n" +
+    "├--------------┼--------------┼--------------------┼--------------┤\n" +
+    "│ Laptop       :            3 :             980.00 :      2940.00 │\n" +
+    "│ Printer      :            2 :             154.99 :       309.98 │\n" +
+    "│ Router       :            1 :              99.00 :        99.00 │\n" +
+    "│ Switch       : N/A          :              45.00 :              │\n" +
+    "│ Accessories  :            5 :              64.50 :       322.50 │\n" +
+    "╰──────────────┴──────────────┴────────────────────┴──────────────╯\n" +
+    "╭──────────────┬──────────────┬────────────────────┬──────────────╮\n" +
+    "│              :              :           SubTotal :      \e[1m3671.48\e[0m │\n" +
+    "│              :              :        Discount 5% :       \e[3m183.57\e[0m │\n" +
+    "│              :              : S/T after discount :      \e[1m3487.91\e[0m │\n" +
+    "│              :              :          Tax (20%) :       697.58 │\n" +
+    "│              :              :                    :     ======== │\n" +
+    "│              :              :        Balance due :      \e[1m4185.49\e[0m │\n" +
+    "╰──────────────┴──────────────┴────────────────────┴──────────────╯"
 
-describe "#{Tablo::Summary} -> summary definition using UserAggregation " +
-         "(with sources - b)", tags: "summary" do
-  Tablo::Summary.clear_results
-  tbl = invoice
-  tbl.pack
-  tbl.add_summary(invoice_summary_definition_2b,
-    {
-      masked_headers: true,
-      border:         Tablo::Border.new("EEESSSEEESSSESSS"),
-    })
-  it "Returns the correct, cleanly formatted values, with the expected layout" do
-    tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).pack(only: ["Price", :total])
-    output = tbl.to_s + "\n" + tbl.summary.to_s
-    {% if flag?(:DEBUG) %}
-      puts "\n#{output}"
-    {% end %}
-    output.should eq invoice_output
+invoice_layout3 =
+  "                          Invoice                         \n" +
+    "╭─────────────┬──────────┬────────────────────┬──────────╮\n" +
+    "│ Product     : Quantity :              Price :    Total │\n" +
+    "├-------------┼----------┼--------------------┼----------┤\n" +
+    "│ Laptop      :        3 :             980.00 :  2940.00 │\n" +
+    "│ Printer     :        2 :             154.99 :   309.98 │\n" +
+    "│ Router      :        1 :              99.00 :    99.00 │\n" +
+    "│ Switch      : N/A      :              45.00 :          │\n" +
+    "│ Accessories :        5 :              64.50 :   322.50 │\n" +
+    "╰─────────────┴──────────┴────────────────────┴──────────╯\n" +
+    "╭─────────────┬──────────┬────────────────────┬──────────╮\n" +
+    "│             :          :           SubTotal :  \e[1m3671.48\e[0m │\n" +
+    "│             :          :        Discount 5% :   \e[3m183.57\e[0m │\n" +
+    "│             :          : S/T after discount :  \e[1m3487.91\e[0m │\n" +
+    "│             :          :          Tax (20%) :   697.58 │\n" +
+    "│             :          :                    : ======== │\n" +
+    "│             :          :        Balance due :  \e[1m4185.49\e[0m │\n" +
+    "╰─────────────┴──────────┴────────────────────┴──────────╯"
+
+invoice_layout4 =
+  "                          Invoice                         \n" +
+    "╭─────────────┬──────────┬────────────────────┬──────────╮\n" +
+    "│ Product     : Quantity :              Price :    Total │\n" +
+    "├-------------┼----------┼--------------------┼----------┤\n" +
+    "│ Laptop      :        3 :             980.00 :  2940.00 │\n" +
+    "│ Printer     :        2 :             154.99 :   309.98 │\n" +
+    "│ Router      :        1 :              99.00 :    99.00 │\n" +
+    "│ Switch      : N/A      :              45.00 :          │\n" +
+    "│ Accessories :        5 :              64.50 :   322.50 │\n" +
+    "├─────────────┼──────────┼────────────────────┼──────────┤\n" +
+    "│             :          :           SubTotal :  \e[1m3671.48\e[0m │\n" +
+    "│             :          :        Discount 5% :   \e[3m183.57\e[0m │\n" +
+    "│             :          : S/T after discount :  \e[1m3487.91\e[0m │\n" +
+    "│             :          :          Tax (20%) :   697.58 │\n" +
+    "│             :          :                    : ======== │\n" +
+    "│             :          :        Balance due :  \e[1m4185.49\e[0m │\n" +
+    "╰─────────────┴──────────┴────────────────────┴──────────╯"
+describe "#{Tablo::Summary} Calculations and layout", tags: "summary" do
+  context "#{Tablo::Summary} Calculations and summary rows arrangement, with no border" do
+    context "#{Tablo::Summary} summary definition using Aggregation" do
+      it "Returns the correct, cleanly formatted values, with the expected layout" do
+        Tablo::Summary.clear_results
+        tbl = create_table
+        tbl.pack
+        tbl.add_summary(invoice_summary_definition_1,
+          {
+            masked_headers: true,
+            border:         Tablo::Border.new("EEESSSEEESSSESSS"),
+          })
+        tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).pack(only: ["Price", :total])
+        output = tbl.to_s + "\n" + tbl.summary.to_s
+        {% if flag?(:DEBUG) %}
+          puts "\n#{output}"
+        {% end %}
+        output.should eq invoice_output
+      end
+    end
+
+    describe "#{Tablo::Summary} summary definition using UserAggregation (with sources " +
+             "- a)", tags: "summary" do
+      it "Returns the correct, cleanly formatted values, with the expected layout" do
+        Tablo::Summary.clear_results
+        tbl = create_table
+        tbl.pack
+        tbl.add_summary(invoice_summary_definition_2a,
+          {
+            masked_headers: true,
+            border:         Tablo::Border.new("EEESSSEEESSSESSS"),
+          })
+        tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).pack(only: ["Price", :total])
+        output = tbl.to_s + "\n" + tbl.summary.to_s
+        {% if flag?(:DEBUG) %}
+          puts "\n#{output}"
+        {% end %}
+        output.should eq invoice_output
+      end
+    end
+
+    describe "#{Tablo::Summary} summary definition using UserAggregation " +
+             "(with sources - b)", tags: "summary" do
+      it "Returns the correct, cleanly formatted values, with the expected layout" do
+        Tablo::Summary.clear_results
+        tbl = create_table
+        tbl.pack
+        tbl.add_summary(invoice_summary_definition_2b,
+          {
+            masked_headers: true,
+            border:         Tablo::Border.new("EEESSSEEESSSESSS"),
+          })
+        tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).pack(only: ["Price", :total])
+        output = tbl.to_s + "\n" + tbl.summary.to_s
+        {% if flag?(:DEBUG) %}
+          puts "\n#{output}"
+        {% end %}
+        output.should eq invoice_output
+      end
+    end
+    describe "#{Tablo::Summary} summary definition using UserAggregation " +
+             "(with columns)", tags: "summary" do
+      it "Returns the correct, cleanly formatted values, with the expected layout" do
+        Tablo::Summary.clear_results
+        tbl = create_table
+        tbl.pack
+        tbl.add_summary(invoice_summary_definition_3,
+          {
+            masked_headers: true,
+            border:         Tablo::Border.new("EEESSSEEESSSESSS"),
+          })
+        tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).pack(only: ["Price", :total])
+        output = tbl.to_s + "\n" + tbl.summary.to_s
+        {% if flag?(:DEBUG) %}
+          puts "\n#{output}"
+        {% end %}
+        output.should eq invoice_output
+      end
+    end
   end
-end
-describe "#{Tablo::Summary} -> summary definition using UserAggregation " +
-         "(with columns)", tags: "summary" do
-  Tablo::Summary.clear_results
-  tbl = invoice
-  tbl.pack
-  tbl.add_summary(invoice_summary_definition_3,
-    {
-      masked_headers: true,
-      border:         Tablo::Border.new("EEESSSEEESSSESSS"),
-    })
-  it "Returns the correct, cleanly formatted values, with the expected layout" do
-    tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).pack(only: ["Price", :total])
-    output = tbl.to_s + "\n" + tbl.summary.to_s
-    {% if flag?(:DEBUG) %}
-      puts "\n#{output}"
-    {% end %}
-    output.should eq invoice_output
+  context "#{Tablo::Summary} Summary layouts" do
+    context "#{Tablo::Summary} Defining main and summary, no packing" do
+      it "Returns the expected layout (summary table is detached, with borders)" do
+        Tablo::Summary.clear_results
+        tbl = create_table
+        tbl.add_summary(invoice_summary_definition_1,
+          {
+            masked_headers: true,
+          })
+        output = tbl.to_s + "\n" + tbl.summary.to_s
+        {% if flag?(:DEBUG) %}
+          puts "\n#{output}"
+        {% end %}
+        output.should eq invoice_layout1
+      end
+    end
+    context "#{Tablo::Summary} Defining main and summary, packing main, packing summary" do
+      it "Returns the expected layout (packing is partially optimized)" do
+        Tablo::Summary.clear_results
+        tbl = create_table
+        tbl.add_summary(invoice_summary_definition_1,
+          {
+            masked_headers: true,
+          })
+        tbl.pack
+        tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).pack(only: ["Price", :total])
+        output = tbl.to_s + "\n" + tbl.summary.to_s
+        {% if flag?(:DEBUG) %}
+          puts "\n#{output}"
+        {% end %}
+        output.should eq invoice_layout2
+      end
+    end
+    context "#{Tablo::Summary} Defining and packing main, defining summary, packing summary" do
+      it "Returns the expected layout (packing is fully optimized)" do
+        Tablo::Summary.clear_results
+        tbl = create_table
+        tbl.pack
+        tbl.add_summary(invoice_summary_definition_1,
+          {
+            masked_headers: true,
+          })
+        tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).pack(only: ["Price", :total])
+        output = tbl.to_s + "\n" + tbl.summary.to_s
+        {% if flag?(:DEBUG) %}
+          puts "\n#{output}"
+        {% end %}
+        output.should eq invoice_layout3
+      end
+    end
+    context "#{Tablo::Summary} Fully optimized packing and joined tables" do
+      it "Returns the expected layout" do
+        Tablo::Summary.clear_results
+        tbl = create_table
+        tbl.omit_last_rule = true
+        tbl.pack
+        tbl.add_summary(invoice_summary_definition_1,
+          {
+            masked_headers: true,
+          })
+        tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).pack(only: ["Price", :total])
+        output = tbl.to_s + "\n" + tbl.summary.to_s
+        {% if flag?(:DEBUG) %}
+          puts "\n#{output}"
+        {% end %}
+        output.should eq invoice_layout4
+      end
+    end
   end
 end

@@ -1,11 +1,10 @@
 require "./types"
 require "./table"
-require "big"
 
 module Tablo
   class Summary(T, U, V)
-    getter summary_definition, summary_options, table
-    property summary_sources = [] of Array(CellType)
+    private getter summary_definition, summary_options, table
+    private getter summary_sources = [] of Array(CellType)
 
     private getter header_values = {} of LabelType => CellType
     private getter header_alignments = {} of LabelType => Justify
@@ -17,8 +16,15 @@ module Tablo
     private getter body_formatters = {} of LabelType => DataCellFormatter
     private getter body_stylers = {} of LabelType => DataCellStyler
 
-    protected class_property aggr_results = {} of LabelType => Hash(Aggregate, CellType)
-    protected class_property proc_results = {} of Symbol | String => CellType
+    private class_property aggr_results = {} of LabelType => Hash(Aggregate, CellType)
+    private class_property proc_results = {} of Symbol | String => CellType
+
+    # Constructor
+    #
+    def initialize(@table : Table(T),
+                   @summary_definition : U,
+                   @summary_options : V)
+    end
 
     def self.keep(key_column, key_aggregate, value)
       # # create first hash key if necessary
@@ -40,11 +46,6 @@ module Tablo
       proc_results[user_func]
     end
 
-    def initialize(@table : Table(T),
-                   @summary_definition : U,
-                   @summary_options : V)
-    end
-
     def build_summary
       aggregations = [] of Aggregation
       user_aggregations = [] of UserAggregation(T)
@@ -53,7 +54,6 @@ module Tablo
       header_rows = [] of HeaderRow
       header_columns = [] of HeaderColumn
       summary_definition.each do |sd|
-        # debug! sd
         case sd
         when Aggregation
           aggregations << sd
@@ -87,12 +87,6 @@ module Tablo
       unless header_columns.empty?
         build_header_columns(header_columns)
       end
-      # debug! aggregations.size
-      # debug! user_aggregations.size
-      # debug! body_rows.size
-      # debug! body_columns.size
-      # debug! header_rows.size
-      # debug! header_columns.size
     end
 
     def build_aggregations(aggregations)
@@ -102,24 +96,18 @@ module Tablo
       running_count = {} of LabelType => Numbers
       column_aggregates = {} of LabelType => Array(Aggregate)
       duplicates = {} of {LabelType, Aggregate} => Int32
-      # debug! aggregations
       aggregations.each do |entry|
-        # debug! entry
         if entry.column.is_a?(Array)
           cols = entry.column.as(Array(LabelType))
         else
           cols = [entry.column.as(LabelType)].as(Array(LabelType))
         end
-        # debug! cols
         cols.each do |col|
-          # debug! col
-          # debug! entry.aggregate
           if entry.aggregate.is_a?(Array)
             aggregates = entry.aggregate.as(Array(Aggregate))
           else
             aggregates = [entry.aggregate.as(Aggregate)].as(Array(Aggregate))
           end
-          # entry.aggregates.each do |aggregate|
           aggregates.each do |aggregate|
             if duplicates.has_key?({col, aggregate})
               raise DuplicateInSummaryDefinition.new "Duplicate error on aggregations : <#{aggregate}> for <#{col}>"
@@ -130,18 +118,12 @@ module Tablo
           column_aggregates[col.as(LabelType)] = aggregates
         end
       end
-      # debug! column_aggregates
       table.sources.each_with_index do |source, index|
         column_aggregates.each do |column_id, aggregates|
           column = table.column_registry[column_id]
           value = column.extractor.call(source, index)
           next if value.nil?
-
           aggregates.each do |aggregate|
-            #
-            # cols = (entry.column.is_a?(Array) ? entry.column : [entry.column]).as(Array(LabelType))
-            # cols = entry.column.is_a?(Array) ? entry.column : [entry.column]
-            # debug! cols
             case aggregate
             in Aggregate::Sum
               if value.is_a?(Number)
@@ -189,32 +171,12 @@ module Tablo
       running_max.each do |k, v|
         Summary.keep(k, Aggregate::Max, v).as(CellType)
       end
-      # debug! Summary.aggr_results
     end
 
     def build_user_aggregations(user_aggregations)
-      # debug! user_aggregations
       user_aggregations.each do |entry|
-        # debug! entry
-        #   debug! entry.proc
-        # entry.proc.call(table) # .as(Tablo::Table(CellType)))
         Summary.keep(entry.ident, entry.proc.call(table).as(CellType))
-        # case entry.proc
-        # in Proc(Enumerable(CellType), CellType)
-        # Summary.keep(entry.ident, entry.proc.call(table.sources).as(CellType))
-        # Summary.keep(entry.ident, entry.proc.as(Proc(Enumerable(CellType), CellType)).call(table.sources.as(Enumerable(CellType))).as(CellType))
-        # in Proc(Table(CellType), CellType)
-        # Summary.keep(entry.ident, entry.proc.call(table).as(CellType))
-        # Summary.keep(entry.ident, entry.proc.call(table.as(Tablo::Table(Tablo::CellType))).as(CellType))
       end
-      # end
-      # debug! Summary.proc_results
-      #     Summary.keep(key, proc.call(table.sources)).as(CellType)
-      #   else
-      #     raise InvalidSummaryDefinition.new(
-      #       "Summary: invalid user_aggregation definition <#{key}>")
-      #   end
-      # end
     end
 
     def build_header_rows(header_rows)
@@ -228,16 +190,13 @@ module Tablo
           duplicates[entry.column] = 1
         end
       end
-      # debug! header_values
     end
 
     def build_body_rows(body_rows)
-      # debug! summary_sources
       column_number = {} of LabelType => Int32
       table.column_registry.keys.each_with_index do |column_label, column_index|
         column_number[column_label] = column_index
       end
-      # debug! column_number
       defined_rows = [] of Int32
       duplicates = {} of {LabelType, Int32} => Int32
       body_rows.each do |entry|
@@ -258,23 +217,13 @@ module Tablo
           body_values[entry.column][entry.row] = entry.content.as(Proc(CellType)).call
         end
       end
-      # debug! colrow
-      # debug! defined_rows
-      # debug! body_values
-
       row_number = {} of Int32 => Int32
       defined_rows.sort!.uniq!.each_with_index do |row, index|
         row_number[row] = index
       end
-      # debug! row_number
-
-      # debug! summary_sources
       row_number.size.times do |i|
-        # debug! i
         summary_sources << Array.new(table.column_registry.size, nil.as(CellType))
       end
-      # debug! summary_sources
-
       body_values.each do |column_label, body_rows|
         body_rows.each do |body_row|
           row = body_row[0]
@@ -282,11 +231,9 @@ module Tablo
           summary_sources[row_number[row]][column_number[column_label]] = value.as(CellType)
         end
       end
-      # debug! summary_sources
     end
 
     def build_body_columns(body_columns)
-      # debug! body_columns
       duplicates = {} of LabelType => Int32
       body_columns.each do |entry|
         if duplicates.has_key?(entry.column)
@@ -305,13 +252,9 @@ module Tablo
           end
         end
       end
-      # debug! body_alignments
-      # debug! body_formatters
-      # debug! body_stylers
     end
 
     def build_header_columns(header_columns)
-      # debug! header_columns
       duplicates = {} of LabelType => Int32
       header_columns.each do |entry|
         if duplicates.has_key?(entry.column)
@@ -330,39 +273,21 @@ module Tablo
           end
         end
       end
-      # debug! header_alignments
-      # debug! header_formatters
-      # debug! header_stylers
     end
 
     # Returns the summary table
     def run
       build_summary
-      # build_aggregation(summary_definition.aggregation)
-      # build_user_aggregation(summary_definition.user_aggregation)
-      # build_header_row(summary_definition.header_row)
-      # build_body_row(summary_definition.body_row)
-      # build_body_column(summary_definition.body_column)
-      # build_header_column(summary_definition.header_column)
-      # return
-      # build_summary
-      # default_parameters NamedTuple contains parameters copied from the current
-      # (main) table instance, which may be default values or given arguments to the
-      # Table#initialize method. To ensure optimal styling between :main and :sumary
-      # tables, they should be used for summary. However, they can be overriden
-      # by summary_options when merging both named tuples.
+      # Parameters taken from the main table
       default_parameters = {
         border: table.border,
-
         # groups are *not* used in summary table
-
         header_alignment: table.header_alignment,
         header_formatter: table.header_formatter,
         header_styler:    table.header_styler,
-
-        body_alignment: table.body_alignment,
-        body_formatter: table.body_formatter,
-        body_styler:    table.body_styler,
+        body_alignment:   table.body_alignment,
+        body_formatter:   table.body_formatter,
+        body_styler:      table.body_styler,
       }
 
       # Here we use the stdlib NamedTuple.merge method, which ensures
@@ -406,7 +331,6 @@ module Tablo
         ) { |n| n[column_index] }
       end
       summary_table.name = :summary
-      # Table.summary_table = summary_table
       summary_table
     end
   end
