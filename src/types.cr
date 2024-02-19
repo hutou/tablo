@@ -55,7 +55,8 @@ end
 macro include_celltype
   {% for name in [Int8, Int16, Int32, Int64, Int128,
                   UInt8, UInt16, UInt32, UInt64, UInt128,
-                  Float32, Float64, Char, Bool, Nil, Symbol, Time] %}
+                  Float32, Float64, Char, Bool, Nil, Symbol,
+                  Time, BigDecimal, BigFloat, BigInt] %}
     struct {{name.id}}
       include Tablo::CellType
     end
@@ -67,9 +68,23 @@ macro include_celltype
   {% end %}
 end
 
-# :nodoc:
 # macro for CellType inclusion in scalar standard types
 include_celltype
+
+module Tablo::Nums
+end
+
+macro include_nums
+   {% for name in [Int8, Int16, Int32, Int64, Int128,
+                   UInt8, UInt16, UInt32, UInt64, UInt128,
+                   Float32, Float64, BigDecimal, BigFloat, BigInt] %}
+     struct {{name.id}}
+       include Tablo::Nums
+     end
+   {% end %}
+ end
+
+include_nums
 
 module Tablo
   extend Tablo::CellType
@@ -86,9 +101,10 @@ module Tablo
     end
   end
 
-  alias Numbers = Int8 | Int16 | Int32 | Int64 | Int128 |
-                  UInt8 | UInt16 | UInt32 | UInt64 | UInt128 |
-                  Float32 | Float64
+  # alias Numbers = Int8 | Int16 | Int32 | Int64 | Int128 |
+  #                 UInt8 | UInt16 | UInt32 | UInt64 | UInt128 |
+  #                 Float32 | Float64 | BigDecimal | BigFloat | BigInt
+
   # BorderName define allowed keys to access predefined connectors string.
   enum BorderName
     Ascii

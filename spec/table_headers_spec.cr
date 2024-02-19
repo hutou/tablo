@@ -7,7 +7,7 @@ require "./spec_helper"
 #
 # record Person, name : String, age : Int32
 
-# class Numbers
+# class IntSamples
 #   include Enumerable(Int32)
 
 #   def each(&)
@@ -22,7 +22,7 @@ require "./spec_helper"
 #   end
 # end
 
-test_data_numbers = Numbers.new
+test_data_numbers = IntSamples.new
 # test_data_array_3_int32 = [1, 2, 3]
 # test_data_array_10_int32 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
@@ -36,11 +36,11 @@ test_data_numbers = Numbers.new
 # test_data_struct_person << Person.new("Joseph", 56)
 
 describe "#{Tablo::Table} -> Title and headers variations on initialization, " +
-         "based on Numbers class" do
+         "based on IntSamples class" do
   describe "#initialize with 'header_frequency' = nil" do
     context "with only column header, no group, no title" do
       it "displays the table without any header" do
-        table = Tablo::Table.new(Numbers.new,
+        table = Tablo::Table.new(IntSamples.new,
           border: Tablo::Border.new(Tablo::BorderName::Fancy),
           header_frequency: nil) do |t|
           t.add_column("itself", &.itself)

@@ -3,7 +3,7 @@ require "spec"
 require "../src/tablo"
 require "debug"
 
-class FNumbers
+class FloatSamples
   include Enumerable(Float64)
 
   def each(&)
@@ -15,7 +15,7 @@ class FNumbers
   end
 end
 
-class Numbers
+class IntSamples
   include Enumerable(Int32)
 
   def each(&)
@@ -28,5 +28,17 @@ class Numbers
     yield 43
     yield 59
     yield 66
+  end
+end
+
+class OddSamples
+  include Enumerable(Int32)
+
+  def each(&)
+    yield 1
+    yield 7
+    yield 13
+    yield 43
+    yield 59
   end
 end

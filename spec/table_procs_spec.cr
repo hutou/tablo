@@ -1,26 +1,26 @@
 require "./spec_helper"
 
-class FNumbers
-  include Enumerable(Float64)
+# class FloatSamples
+#   include Enumerable(Float64)
 
-  def each(&)
-    yield 0.0
-    yield -10.3
-    yield 43.606
-    yield -909.0302
-    yield 1024.0
-  end
-end
+#   def each(&)
+#     yield 0.0
+#     yield -10.3
+#     yield 43.606
+#     yield -909.0302
+#     yield 1024.0
+#   end
+# end
 
 # define border type for all tests
 Tablo::Config.border_type = Tablo::BorderName::Fancy
 
-test_data_numbers = FNumbers.new
+test_data_numbers = FloatSamples.new
 
 describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
   describe "#Formatting headings" do
     it "displays the title in upper case" do
-      table = Tablo::Table.new(FNumbers.new,
+      table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Title.new("my title",
           formatter: ->(c : Tablo::CellType) { c.as(String).upcase })) do |t|
         t.add_column("itself", &.itself)
@@ -41,7 +41,7 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
     end
 
     it "stretches the title with  dashes" do
-      table = Tablo::Table.new(FNumbers.new,
+      table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Title.new("my title",
           formatter: ->(c : Tablo::CellType, column_width : Int32) {
             Tablo::Util.stretch(c.as(String),
@@ -68,7 +68,7 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
     end
 
     it "stretches the footer with spaces" do
-      table = Tablo::Table.new(FNumbers.new,
+      table = Tablo::Table.new(FloatSamples.new,
         footer: Tablo::Footer.new("Footer", frame: Tablo::Frame.new(1, 0),
           formatter: ->(c : Tablo::CellType, column_width : Int32) { Tablo::Util.stretch(c.as(String),
             width: column_width, insert_char: ' ', gap: 2) })) do |t|
@@ -92,7 +92,7 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
   end
   describe "#Styling headings" do
     it "displays the title in blue" do
-      table = Tablo::Table.new(FNumbers.new,
+      table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Title.new("my title",
           styler: ->(s : String) { s.colorize(:blue).to_s })) do |t|
         t.add_column("itself", width: 15, &.itself)
@@ -125,7 +125,7 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
     end
 
     it "displays the (possibly) multiline title in different colors" do
-      table = Tablo::Table.new(FNumbers.new,
+      table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Title.new("This is a very, very, very long title",
           styler: ->(content : String, line : Int32) {
             case line
@@ -170,7 +170,7 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
       table.to_s.should eq output
     end
     it "displays the (forced) multiline title in different colors" do
-      table = Tablo::Table.new(FNumbers.new,
+      table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Title.new("Title line 1\nTitle line 2\nTitle line 3",
           styler: ->(content : String, line : Int32) {
             case line
@@ -220,7 +220,7 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
       table = Tablo::Table.new([1, 2, 3]) do |t|
         t.add_column("itself", &.itself)
         t.add_column("double") { |n| n * 2 }
-        t.add_group("Numbers",
+        t.add_group("Numeric",
           formatter: ->(c : Tablo::CellType, column_width : Int32) { Tablo::Util.stretch(c.as(String),
             width: column_width, insert_char: ' ', gap: 0) })
         t.add_column("stringified") { |n| n.to_s * 7 }
@@ -231,7 +231,7 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
       output = %q(╭─────────────────────────────┬──────────────╮
-                  │  N   u   m   b   e   r   s  :  S t r i n g │
+                  │  N   u   m   e   r   i   c  :  S t r i n g │
                   ├−−−−−−−−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−┤
                   │       itself :       double : stringified  │
                   ├--------------┼--------------┼--------------┤
@@ -247,7 +247,7 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
       table = Tablo::Table.new([1, 2, 3]) do |t|
         t.add_column("itself", &.itself)
         t.add_column("double") { |n| n * 2 }
-        t.add_group("Numbers",
+        t.add_group("Numeric",
           formatter: ->(c : Tablo::CellType) { Tablo::Util.stretch(c.as(String), 25, ' ') },
           styler: ->(s : String) {
             colors = [:blue, :red, :green, :yellow]
@@ -271,7 +271,7 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
       if Tablo::Util.styler_allowed
         output = %Q( ╭─────────────────────────────┬──────────────╮
-                   │  \e[32;1mN\e[0m   \e[32;1mu\e[0m   \e[34;1mm\e[0m   \e[33;1mb\e[0m   \e[31;1me\e[0m   \e[31;1mr\e[0m   \e[34;1ms\e[0m  :  S t r i n g │
+                   │  \e[32;1mN\e[0m   \e[32;1mu\e[0m   \e[34;1mm\e[0m   \e[34;1me\e[0m   \e[32;1mr\e[0m   \e[32;1mi\e[0m   \e[34;1mc\e[0m  :  S t r i n g │
                    ├−−−−−−−−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−┤
                    │       itself :       double : stringified  │
                    ├--------------┼--------------┼--------------┤
@@ -281,7 +281,7 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
                    ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
       else
         output = %Q( ╭─────────────────────────────┬──────────────╮
-                   │  N   u   m   b   e   r   s  :  S t r i n g │
+                   │  N   u   m   e   r   i   c  :  S t r i n g │
                    ├−−−−−−−−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−┤
                    │       itself :       double : stringified  │
                    ├--------------┼--------------┼--------------┤
@@ -323,7 +323,7 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
   end
   describe "#Formatting body" do
     it "displays floating point numbers with 2 decimals" do
-      table = Tablo::Table.new(FNumbers.new,
+      table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Title.new("Floating point formatting", frame: Tablo::Frame.new)) do |t|
         t.add_column("itself", width: 15,
           body_formatter: ->(c : Tablo::CellType) { "%.2f" % c.as(Float64) },
@@ -345,7 +345,7 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
       table.to_s.should eq output
     end
     it "align floating point numbers on decimal point (empty)" do
-      table = Tablo::Table.new(FNumbers.new,
+      table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Title.new("Floating point align (empty)", frame: Tablo::Frame.new)) do |t|
         t.add_column("itself", width: 15,
           body_formatter: ->(c : Tablo::CellType) { Tablo::Util.dot_align(c.as(Float64), 4, :empty) },
@@ -367,7 +367,7 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
       table.to_s.should eq output
     end
     it "align floating point numbers on decimal point (dot_zero)" do
-      table = Tablo::Table.new(FNumbers.new,
+      table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Title.new("Floating point align (dot_zero)", frame: Tablo::Frame.new)) do |t|
         t.add_column("itself", width: 16,
           body_formatter: ->(c : Tablo::CellType) { Tablo::Util.dot_align(c.as(Float64), 4, :dot_zero) },
@@ -393,7 +393,7 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
   end
   describe "#Styling body" do
     it "unconditionnaly colorizes body contents" do
-      table = Tablo::Table.new(FNumbers.new,
+      table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Title.new("Body in color, blank aligned", frame: Tablo::Frame.new)) do |t|
         t.add_column("itself", width: 16,
           body_formatter: ->(c : Tablo::CellType) { Tablo::Util.dot_align(c.as(Float64), 4, :blank) },
@@ -431,7 +431,7 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
       table.to_s.should eq output
     end
     it "conditionnaly colorizes body contents, depending on cell value" do
-      table = Tablo::Table.new(FNumbers.new,
+      table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Title.new("Body in color, blank aligned", frame: Tablo::Frame.new)) do |t|
         t.add_column("itself", width: 16,
           body_formatter: ->(c : Tablo::CellType) { Tablo::Util.dot_align(c.as(Float64), 4, :blank) },
@@ -475,7 +475,7 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
       table.to_s.should eq output
     end
     it "conditionnaly colorizes body contents, depending on row index" do
-      table = Tablo::Table.new(FNumbers.new,
+      table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Title.new("Body in color, dot aligned", frame: Tablo::Frame.new)) do |t|
         t.add_column("itself", width: 16,
           body_formatter: ->(c : Tablo::CellType) { Tablo::Util.dot_align(c.as(Float64), 4, :dot) },
@@ -519,7 +519,7 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
       table.to_s.should eq output
     end
     it "conditionnaly colorizes row's body contents, depending on row index" do
-      table = Tablo::Table.new(FNumbers.new,
+      table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Title.new("Body in color, dot aligned", frame: Tablo::Frame.new),
         body_styler: ->(_c : Tablo::CellType, r : Tablo::CellData, s : String) {
           if r.row_index % 2 == 0
@@ -564,7 +564,7 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
       table.to_s.should eq output
     end
     it "conditionnaly colorizes row's body contents, depending on row AND column index" do
-      table = Tablo::Table.new(FNumbers.new,
+      table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Title.new("Body in color, dot aligned", frame: Tablo::Frame.new),
         body_styler: ->(_c : Tablo::CellType, r : Tablo::CellData, s : String) {
           if r.row_index % 2 == 0
@@ -613,7 +613,7 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
       table.to_s.should eq output
     end
     it "conditionnaly colorizes row's body contents, depending on row AND column index AND cell line number" do
-      table = Tablo::Table.new(FNumbers.new,
+      table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Title.new("Body in color\n2nd line of cell in bold", frame: Tablo::Frame.new),
         body_styler: ->(_c : Tablo::CellType, r : Tablo::CellData, s : String, line : Int32) {
           if line == 1

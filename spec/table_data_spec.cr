@@ -4,25 +4,13 @@ require "./spec_helper"
 #
 record Person, name : String, age : Int32
 
-class OddNumbers
-  include Enumerable(Int32)
-
-  def each(&)
-    yield 1
-    yield 7
-    yield 13
-    yield 43
-    yield 59
-  end
-end
-
 test_data_array_int32 = [1, 2, 3]
 
 test_data_hash_string_int32 = {"A" => 1, "B" => 2, "C" => 3}
 
 test_data_range_int32 = 1..3
 
-test_data_oddnumbers = OddNumbers.new
+test_data_oddnumbers = OddSamples.new
 
 test_data_struct_person = [] of Person
 test_data_struct_person << Person.new("Albert", 76)
@@ -67,7 +55,7 @@ describe "#{Tablo::Table} -> Initialization with different types of Enumerable" 
       end
     end
     context "from a user defined enumerable class" do
-      it "correctly create a new table from OddNumbers enumerable class" do
+      it "correctly create a new table from OddSamples enumerable class" do
         table = Tablo::Table.new(test_data_oddnumbers) do |t|
           t.add_column("Row") { |_, row_index| row_index }
           t.add_column("Number", &.itself)
@@ -110,7 +98,7 @@ describe "#{Tablo::Table} -> Initialization with different types of Enumerable" 
       end
     end
     context "from a user defined enumerable class" do
-      it "correctly create a new table from OddNumbers enumerable class" do
+      it "correctly create a new table from OddSamples enumerable class" do
         table = Tablo::Table.new(test_data_oddnumbers)
         table.add_column("Row") { |_, row_index| row_index }
         table.add_column("Number", &.itself)

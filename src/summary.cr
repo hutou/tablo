@@ -31,11 +31,11 @@ module Tablo
       unless aggr_results.has_key?(key_column)
         aggr_results[key_column] = {} of Aggregate => CellType
       end
-      aggr_results[key_column][key_aggregate] = value
+      aggr_results[key_column][key_aggregate] = value.as(CellType)
     end
 
     def self.keep(user_func, value)
-      proc_results[user_func] = value
+      proc_results[user_func] = value.as(CellType)
     end
 
     def self.use(key_column, key_aggregate)
@@ -90,10 +90,10 @@ module Tablo
     end
 
     def build_aggregations(aggregations)
-      running_sum = {} of LabelType => Numbers
-      running_min = {} of LabelType => Numbers
-      running_max = {} of LabelType => Numbers
-      running_count = {} of LabelType => Numbers
+      running_sum = {} of LabelType => Int32
+      running_min = {} of LabelType => Nums
+      running_max = {} of LabelType => Nums
+      running_count = {} of LabelType => Int32
       column_aggregates = {} of LabelType => Array(Aggregate)
       duplicates = {} of {LabelType, Aggregate} => Int32
       aggregations.each do |entry|
@@ -126,11 +126,11 @@ module Tablo
           aggregates.each do |aggregate|
             case aggregate
             in Aggregate::Sum
-              if value.is_a?(Number)
+              if value.is_a?(Nums)
                 if running_sum.has_key?(column_id)
-                  running_sum[column_id] += value
+                  running_sum[column_id] += value.as(Int32)
                 else
-                  running_sum[column_id] = value
+                  running_sum[column_id] = value.as(Int32)
                 end
               end
             in Aggregate::Count
@@ -140,19 +140,19 @@ module Tablo
                 running_count[column_id] = 1
               end
             in Aggregate::Min
-              if value.is_a?(Number)
+              if value.is_a?(Nums)
                 if running_min.has_key?(column_id)
-                  running_min[column_id] = [running_min[column_id], value].min
+                  running_min[column_id] = [running_min[column_id], value].min.as(Nums)
                 else
-                  running_min[column_id] = value
+                  running_min[column_id] = value.as(Nums)
                 end
               end
             in Aggregate::Max
-              if value.is_a?(Number)
+              if value.is_a?(Nums)
                 if running_max.has_key?(column_id)
-                  running_max[column_id] = [running_max[column_id], value].max
+                  running_max[column_id] = [running_max[column_id], value].max.as(Nums)
                 else
-                  running_max[column_id] = value
+                  running_max[column_id] = value.as(Nums)
                 end
               end
             end
