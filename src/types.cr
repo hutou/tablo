@@ -56,7 +56,7 @@ macro include_celltype
   {% for name in [Int8, Int16, Int32, Int64, Int128,
                   UInt8, UInt16, UInt32, UInt64, UInt128,
                   Float32, Float64, Char, Bool, Nil, Symbol,
-                  Time, BigDecimal, BigFloat, BigInt] %}
+                  Time] %}
     struct {{name.id}}
       include Tablo::CellType
     end
@@ -70,21 +70,6 @@ end
 
 # macro for CellType inclusion in scalar standard types
 include_celltype
-
-module Tablo::Nums
-end
-
-macro include_nums
-   {% for name in [Int8, Int16, Int32, Int64, Int128,
-                   UInt8, UInt16, UInt32, UInt64, UInt128,
-                   Float32, Float64, BigDecimal, BigFloat, BigInt] %}
-     struct {{name.id}}
-       include Tablo::Nums
-     end
-   {% end %}
- end
-
-include_nums
 
 module Tablo
   extend Tablo::CellType
@@ -100,10 +85,6 @@ module Tablo
     def initialize(@body_value : CellType, @row_index : Int32, @column_index : Int32)
     end
   end
-
-  # alias Numbers = Int8 | Int16 | Int32 | Int64 | Int128 |
-  #                 UInt8 | UInt16 | UInt32 | UInt64 | UInt128 |
-  #                 Float32 | Float64 | BigDecimal | BigFloat | BigInt
 
   # BorderName define allowed keys to access predefined connectors string.
   enum BorderName
@@ -226,9 +207,6 @@ module Tablo
                      Proc(CellType, String, String) |
                      Proc(String, Int32, String) |
                      Proc(String, String)
-  # ---------- TextCellFormatter --------------------------------------------------
-  #
-  #
 
   # Formatter proc for text cell types (Heading and Group).
   #
@@ -321,10 +299,10 @@ module Tablo
     Footer
   end
 
-  enum SummaryRow
-    Header
-    Body
-  end
+  # enum SummaryRow
+  #   Header
+  #   Body
+  # end
 
   # :nodoc:
   # Rows position
@@ -371,56 +349,16 @@ module Tablo
   # alias SummaryProcs = SummaryLineProcCurrent | SummaryLineProcAll | Array(SummaryLineProcCurrent) |
   #                      Array(SummaryLineProcAll) | Array(SummaryLineProcBoth)
 
-  alias SummaryProcs = {Int32, Proc(Array(CellType), CellType)} |
-                       {Int32, Proc(Hash(LabelType, Array(CellType)), CellType)} |
-                       Array({Int32, Proc(Array(CellType), CellType)}) |
-                       Array({Int32, Proc(Hash(LabelType, Array(CellType)), CellType)}) |
-                       Array({Int32, Proc(Array(CellType), CellType)} |
-                             {Int32, Proc(Hash(LabelType, Array(CellType)), CellType)})
+  # alias SummaryProcs = {Int32, Proc(Array(CellType), CellType)} |
+  #                      {Int32, Proc(Hash(LabelType, Array(CellType)), CellType)} |
+  #                      Array({Int32, Proc(Array(CellType), CellType)}) |
+  #                      Array({Int32, Proc(Hash(LabelType, Array(CellType)), CellType)}) |
+  #                      Array({Int32, Proc(Array(CellType), CellType)} |
+  #                            {Int32, Proc(Hash(LabelType, Array(CellType)), CellType)})
 
   # Tablo Exceptions hierarchy
   #
   # Parent class
-
-  enum Aggregate
-    Count
-    Min
-    Max
-    Sum
-  end
-
-  # The `struct` `Aggregation` allows you to define up to 4 types of aggregation
-  # on any number of columns, while scanning the source data only once.
-  #
-  # Entries with a `nil` value are ignored.
-  #
-  # The 4 `Aggregation` types, defined in `Aggregate` are :
-  # - `Count`: number of data items in a column, regardless of type
-  # - `Min`: smallest numerical value of a column
-  # - `Max`: largest numerical value of a column
-  # - `Sum`: sum of all numerical values in a column
-  #
-  # Example:
-  # ```
-  # Tablo::Aggregation.new([col1, col2], [Tablo::Aggregate::Max, Tablo::Aggregate::Sum])
-  # ```
-  # This instance of `Tablo::Aggregation` would be interpreted by Tablo algorithms as
-  # a calculation of `Max` and `Sum` on columns `col1` and `col2`, and the results would be
-  # automatically saved for future use (see `Tablo::HeaderRow` or `Tablo::BodyRow`).
-  struct Aggregation
-    protected getter column, aggregate
-
-    # Returns an instance of Aggregation
-    #
-    # _Mandatory parameters:_
-    #
-    # - `column`: type is `LabelType` | `Array(LabelType)`<br />
-    #
-    # - `aggregate`: type is  `Aggregate` | `Array(Aggregate)`<br />
-    def initialize(@column : LabelType | Array(LabelType),
-                   @aggregate : Aggregate | Array(Aggregate))
-    end
-  end
 
   # The `UserAggregation` structure lets you define specific functions to be applied
   # to source data, either by column or by source value.
@@ -440,9 +378,11 @@ module Tablo
   # })
   # ```
   struct UserAggregation(T)
-    protected getter ident, proc
+    # protected getter ident, proc
+    protected getter proc
 
-    def initialize(@ident : Symbol, @proc : Proc(Table(T), CellType))
+    # def initialize(@ident : Symbol, @proc : Proc(Table(T), CellType))
+    def initialize(@proc : Proc(Table(T), Hash(Symbol, CellType)))
     end
   end
 

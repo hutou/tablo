@@ -16,7 +16,7 @@ module Tablo
     private getter body_formatters = {} of LabelType => DataCellFormatter
     private getter body_stylers = {} of LabelType => DataCellStyler
 
-    private class_property aggr_results = {} of LabelType => Hash(Aggregate, CellType)
+    # private class_property aggr_results = {} of LabelType => Hash(Aggregate, CellType)
     private class_property proc_results = {} of Symbol | String => CellType
 
     # Constructor
@@ -26,20 +26,8 @@ module Tablo
                    @summary_options : V)
     end
 
-    def self.keep(key_column, key_aggregate, value)
-      # # create first hash key if necessary
-      unless aggr_results.has_key?(key_column)
-        aggr_results[key_column] = {} of Aggregate => CellType
-      end
-      aggr_results[key_column][key_aggregate] = value.as(CellType)
-    end
-
     def self.keep(user_func, value)
       proc_results[user_func] = value.as(CellType)
-    end
-
-    def self.use(key_column, key_aggregate)
-      aggr_results[key_column][key_aggregate]
     end
 
     def self.use(user_func)
@@ -47,7 +35,6 @@ module Tablo
     end
 
     def build_summary
-      aggregations = [] of Aggregation
       user_aggregations = [] of UserAggregation(T)
       body_rows = [] of BodyRow
       body_columns = [] of BodyColumn
@@ -55,8 +42,6 @@ module Tablo
       header_columns = [] of HeaderColumn
       summary_definition.each do |sd|
         case sd
-        when Aggregation
-          aggregations << sd
         when UserAggregation(T)
           user_aggregations << sd
         when BodyRow
@@ -68,9 +53,6 @@ module Tablo
         when HeaderColumn
           header_columns << sd
         end
-      end
-      unless aggregations.empty?
-        build_aggregations(aggregations)
       end
       unless user_aggregations.empty?
         build_user_aggregations(user_aggregations)
@@ -89,93 +71,11 @@ module Tablo
       end
     end
 
-    def build_aggregations(aggregations)
-      running_sum = {} of LabelType => Int32
-      running_min = {} of LabelType => Nums
-      running_max = {} of LabelType => Nums
-      running_count = {} of LabelType => Int32
-      column_aggregates = {} of LabelType => Array(Aggregate)
-      duplicates = {} of {LabelType, Aggregate} => Int32
-      aggregations.each do |entry|
-        if entry.column.is_a?(Array)
-          cols = entry.column.as(Array(LabelType))
-        else
-          cols = [entry.column.as(LabelType)].as(Array(LabelType))
-        end
-        cols.each do |col|
-          if entry.aggregate.is_a?(Array)
-            aggregates = entry.aggregate.as(Array(Aggregate))
-          else
-            aggregates = [entry.aggregate.as(Aggregate)].as(Array(Aggregate))
-          end
-          aggregates.each do |aggregate|
-            if duplicates.has_key?({col, aggregate})
-              raise DuplicateInSummaryDefinition.new "Duplicate error on aggregations : <#{aggregate}> for <#{col}>"
-            else
-              duplicates[{col.as(LabelType), aggregate}] = 1
-            end
-          end
-          column_aggregates[col.as(LabelType)] = aggregates
-        end
-      end
-      table.sources.each_with_index do |source, index|
-        column_aggregates.each do |column_id, aggregates|
-          column = table.column_registry[column_id]
-          value = column.extractor.call(source, index)
-          next if value.nil?
-          aggregates.each do |aggregate|
-            case aggregate
-            in Aggregate::Sum
-              if value.is_a?(Nums)
-                if running_sum.has_key?(column_id)
-                  running_sum[column_id] += value.as(Int32)
-                else
-                  running_sum[column_id] = value.as(Int32)
-                end
-              end
-            in Aggregate::Count
-              if running_count.has_key?(column_id)
-                running_count[column_id] += 1
-              else
-                running_count[column_id] = 1
-              end
-            in Aggregate::Min
-              if value.is_a?(Nums)
-                if running_min.has_key?(column_id)
-                  running_min[column_id] = [running_min[column_id], value].min.as(Nums)
-                else
-                  running_min[column_id] = value.as(Nums)
-                end
-              end
-            in Aggregate::Max
-              if value.is_a?(Nums)
-                if running_max.has_key?(column_id)
-                  running_max[column_id] = [running_max[column_id], value].max.as(Nums)
-                else
-                  running_max[column_id] = value.as(Nums)
-                end
-              end
-            end
-          end
-        end
-      end
-      running_count.each do |k, v|
-        Summary.keep(k, Aggregate::Count, v).as(CellType)
-      end
-      running_sum.each do |k, v|
-        Summary.keep(k, Aggregate::Sum, v).as(CellType)
-      end
-      running_min.each do |k, v|
-        Summary.keep(k, Aggregate::Min, v).as(CellType)
-      end
-      running_max.each do |k, v|
-        Summary.keep(k, Aggregate::Max, v).as(CellType)
-      end
-    end
-
     def build_user_aggregations(user_aggregations)
       user_aggregations.each do |entry|
-        Summary.keep(entry.ident, entry.proc.call(table).as(CellType))
+        entry.proc.call(table).each do |k, v|
+          Summary.keep(k, v)
+        end
       end
     end
 
