@@ -1188,7 +1188,7 @@ end
 
 invoice_summary_definition = [
   Tablo::Aggregation.new(:total, Tablo::Aggregate::Sum),
-  Tablo::BodyColumn.new(:total, alignment: Tablo::Justify::Right,
+  Tablo::SummaryBodyColumn.new(:total, alignment: Tablo::Justify::Right,
     formatter: ->(value : Tablo::CellType) {
       value.is_a?(String) ? value : (
         value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
@@ -1204,24 +1204,24 @@ invoice_summary_definition = [
         fc
       end
     }),
-  Tablo::BodyRow.new("Price", 1, "SubTotal"),
-  Tablo::BodyRow.new("Price", 2, "Discount 5%"),
-  Tablo::BodyRow.new("Price", 3, "S/T discount"),
-  Tablo::BodyRow.new("Price", 4, "Tax (20%)"),
-  Tablo::BodyRow.new("Price", 6, "Balance due"),
-  Tablo::BodyRow.new(:total, 1, ->{ Tablo::Summary.use(:total,
+  Tablo::SummaryBodyRow.new("Price", 1, "SubTotal"),
+  Tablo::SummaryBodyRow.new("Price", 2, "Discount 5%"),
+  Tablo::SummaryBodyRow.new("Price", 3, "S/T discount"),
+  Tablo::SummaryBodyRow.new("Price", 4, "Tax (20%)"),
+  Tablo::SummaryBodyRow.new("Price", 6, "Balance due"),
+  Tablo::SummaryBodyRow.new(:total, 1, ->{ Tablo::Summary.use(:total,
     Tablo::Aggregate::Sum) }),
-  Tablo::BodyRow.new(:total, 2, ->{ Tablo::Summary.keep(:discount,
+  Tablo::SummaryBodyRow.new(:total, 2, ->{ Tablo::Summary.keep(:discount,
     (Tablo::Summary.use(:total, Tablo::Aggregate::Sum).as(Int32) * 0.05)
       .to_i).as(Tablo::CellType) }),
-  Tablo::BodyRow.new(:total, 3, ->{ (Tablo::Summary.keep(:total_after_discount,
+  Tablo::SummaryBodyRow.new(:total, 3, ->{ (Tablo::Summary.keep(:total_after_discount,
     Tablo::Summary.use(:total, Tablo::Aggregate::Sum).as(Int32) -
     Tablo::Summary.use(:discount).as(Int32))).as(Tablo::CellType) }),
-  Tablo::BodyRow.new(:total, 4, ->{ (Tablo::Summary.keep(:tax,
+  Tablo::SummaryBodyRow.new(:total, 4, ->{ (Tablo::Summary.keep(:tax,
     (Tablo::Summary.use(:total_after_discount).as(Int32) * 0.2)
       .to_i)).as(Tablo::CellType) }),
-  Tablo::BodyRow.new(:total, 5, "========".as(Tablo::CellType)),
-  Tablo::BodyRow.new(:total, 6, ->{ (Tablo::Summary.use(:tax).as(Int32) +
+  Tablo::SummaryBodyRow.new(:total, 5, "========".as(Tablo::CellType)),
+  Tablo::SummaryBodyRow.new(:total, 6, ->{ (Tablo::Summary.use(:tax).as(Int32) +
                                      Tablo::Summary.use(:total_after_discount)
                                        .as(Int32)).as(Tablo::CellType) }),
 ]
@@ -1281,8 +1281,8 @@ TODO TODO TODO
 TODO TODO TODO
 TODO TODO TODO
 
-the BodyRow type
-BodyColumn type
+the SummaryBodyRow type
+SummaryBodyColumn type
 
 The first part - the creation of the main table - calls for no particular
 comment (except perhaps the use of a more realistic data source than the

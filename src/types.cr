@@ -68,11 +68,12 @@ macro include_celltype
   {% end %}
 end
 
+# :nodoc:
 # macro for CellType inclusion in scalar standard types
 include_celltype
 
 module Tablo
-  extend Tablo::CellType
+  # extend Tablo::CellType
   NEWLINE                       = /\r\n|\n|\r/
   DEFAULT_STYLER                = ->(s : String) { s }
   DEFAULT_DATA_DEPENDENT_STYLER = ->(_c : CellType, s : String) { s }
@@ -102,8 +103,9 @@ module Tablo
   # name (`Tablo::BorderName`) or by a litteral string of 16 characters (see `Tablo::Border`).
   alias BorderType = String | BorderName
 
-  # Styler procs for borders
-  # default : do nothing
+  # Styler Proc for borders<br />
+  # Default : `Config.border_styler`
+  #
   # Example, to colorize borders in blue :
   # ```
   # border_styler: ->(b : String) { b.colorize(:blue).to_s }
@@ -201,12 +203,13 @@ module Tablo
   # value, cell_data, content, line_index
   # value, cell_data, content
   # value, content
+  # content
 
-  alias CellStyler = Proc(CellType, CellData, String, Int32, String) |
-                     Proc(CellType, CellData, String, String) |
-                     Proc(CellType, String, String) |
-                     Proc(String, Int32, String) |
-                     Proc(String, String)
+  # alias CellStyler = Proc(CellType, CellData, String, Int32, String) |
+  #                    Proc(CellType, CellData, String, String) |
+  #                    Proc(CellType, String, String) |
+  #                    Proc(String, Int32, String) |
+  #                    Proc(String, String)
 
   # Formatter proc for text cell types (Heading and Group).
   #
@@ -235,20 +238,21 @@ module Tablo
   #
   # For example, to alternate case after each row, the Proc would be:
   # ```
-  # formatter: ->(c : Tablo::CellType, d : Tablo::CellData) {
-  #   d.row_index % 2 == 0 ? c.as(String).upcase : c.as(String).downcase }
+  # formatter: ->(value : Tablo::CellType, cell_data : Tablo::CellData) {
+  #   cell_data.row_index % 2 == 0 ? value.as(String).upcase : value.as(String).downcase }
   # ```
   #
   # The second form is the same as `Tablo::TextCellFormatter`
+  #
+  # Commonly used parameter names for the different forms:<br />
+  # - value : `CellType`, cell_data : `CellData`, width : `Int32`
+  # - value : `CellType`, cell_data : `CellData`
+  # - value : `CellType`, width : `Int32`
+  # - value : `CellType`
   alias DataCellFormatter = Proc(CellType, CellData, Int32, String) |
                             Proc(CellType, CellData, String) |
                             Proc(CellType, Int32, String) |
                             Proc(CellType, String)
-  # Corresponding parameters:
-  # value, cell_data, width
-  # value, cell_data
-  # value, width
-  # value
 
   # ---------- LabelType ----------------------------------------------------------
   #
@@ -262,7 +266,7 @@ module Tablo
   #
 
   # Excepted columns
-  alias Except = LabelType | Array(LabelType)
+  # alias Except = LabelType | Array(LabelType)
 
   # -------------------------------------------------------------------------------
   #
@@ -299,11 +303,6 @@ module Tablo
     Footer
   end
 
-  # enum SummaryRow
-  #   Header
-  #   Body
-  # end
-
   # :nodoc:
   # Rows position
   enum Position
@@ -335,69 +334,141 @@ module Tablo
     Right
   end
 
-  # Summary: all proper aliases defined here
-
-  # alias SourcesCurrentColumn = Array(CellType)
-  # alias SourcesAllColumns = Hash(LabelType, Array(CellType))
-  # alias SummaryProcCurrent = Proc(SourcesCurrentColumn, CellType)
-  # alias SummaryProcAll = Proc(SourcesAllColumns, CellType)
-
-  # alias SummaryLineProcCurrent = {Int32, SummaryProcCurrent}
-  # alias SummaryLineProcAll = {Int32, SummaryProcAll}
-  # alias SummaryLineProcBoth = SummaryLineProcCurrent | SummaryLineProcAll
-
-  # alias SummaryProcs = SummaryLineProcCurrent | SummaryLineProcAll | Array(SummaryLineProcCurrent) |
-  #                      Array(SummaryLineProcAll) | Array(SummaryLineProcBoth)
-
-  # alias SummaryProcs = {Int32, Proc(Array(CellType), CellType)} |
-  #                      {Int32, Proc(Hash(LabelType, Array(CellType)), CellType)} |
-  #                      Array({Int32, Proc(Array(CellType), CellType)}) |
-  #                      Array({Int32, Proc(Hash(LabelType, Array(CellType)), CellType)}) |
-  #                      Array({Int32, Proc(Array(CellType), CellType)} |
-  #                            {Int32, Proc(Hash(LabelType, Array(CellType)), CellType)})
-
-  # Tablo Exceptions hierarchy
-  #
-  # Parent class
-
-  # The `UserAggregation` structure lets you define specific functions to be applied
-  # to source data, either by column or by source value.
-  # Example of accessing data directly from source:
-  # ```
-  # Tablo::UserAggregation(InvoiceItem).new(
-  #   ident: :total_sum, proc: ->(tbl : Tablo::Table(InvoiceItem)) {
-  #   total_sum = 0
-  #   tbl.sources.each do |row|
-  #     unless row.quantity.nil? || row.price.nil?
-  #       if row.quantity.is_a?(Number) && row.price.is_a?(Number)
-  #         total_sum += row.quantity.as(Int32) * row.price.as(Int32)
-  #       end
-  #     end
-  #   end
-  #   total_sum.as(Tablo::CellType)
-  # })
-  # ```
-  struct UserAggregation(T)
-    # protected getter ident, proc
+  # The `SummaryProc` struct lets you define specific functions to be applied
+  # to source data, accessible either by column or directly from the source,
+  # in order to provide aggregated results.
+  struct SummaryProc(T)
     protected getter proc
 
-    # def initialize(@ident : Symbol, @proc : Proc(Table(T), CellType))
+    # The constructor's only parameter is a Proc, which in turn expects
+    # a Table(T) as its only parameter.
+    #
+    # The Proc must return a hash of results (of type CellType), which are
+    # automatically saved for future use (See `Summary.use` method
+    # in `SummaryBodyRow`).
+    #
+    # Example of accessing data directly from source:
+    # ```
+    # struct InvoiceItem
+    #   getter product, quantity, price
+    #
+    #   def initialize(@product : String, @quantity : Int32?, @price : Int32?)
+    #   end
+    # end
+    #
+    # Tablo::SummaryProc.new(
+    #   proc: ->(tbl : Tablo::Table(InvoiceItem)) {
+    #     total_sum = 0
+    #     tbl.sources.each do |row|
+    #       next unless row.quantity.is_a?(Int32) && row.price.is_a?(Int32)
+    #       total_sum += row.quantity.as(Int32) * row.price.as(Int32)
+    #     end
+    #     {:total_sum => total_sum.as(Tablo::CellType)}
+    #   })
+    # ```
+    # Another example, this time using column access, with iterators, and
+    # returning several results.
+    # ```
+    # Tablo::SummaryProc.new(
+    #   proc: ->(tbl : Tablo::Table(InvoiceItem)) {
+    #     total_sum = total_count = max_price = 0
+    #     iter_quantity = tbl.source_column("Quantity").each
+    #     iter_price = tbl.source_column("Price").each
+    #     iter = iter_quantity.zip(iter_price)
+    #     iter.each do |q, p|
+    #       next unless q.is_a?(Int32) && p.is_a?(Int32)
+    #       total_sum += q * p
+    #       total_count += 1
+    #       max_price = [max_price, p].max
+    #     end
+    #     {
+    #       :total_count => total_count.as(Tablo::CellType),
+    #       :total_sum   => total_sum.as(Tablo::CellType),
+    #       :max_price   => max_price.as(Tablo::CellType),
+    #     }
+    #   })
+    # ```
     def initialize(@proc : Proc(Table(T), Hash(Symbol, CellType)))
     end
   end
 
-  # record UserAggregation(S), ident : Symbol, proc : Proc(Table(S), CellType)
+  # The `SummaryHeaderColumn` struct lets you define header content and specific
+  # alignment, formatting and styling
+  struct SummaryHeaderColumn
+    protected getter column, content, alignment, formatter, styler
 
-  record HeaderColumn, column : LabelType, alignment : Justify? = nil,
-    formatter : DataCellFormatter? = nil, styler : DataCellStyler? = nil
+    # The constructor expects up to 5 parameters, the first 2 being mandatory
+    #
+    # - `column` : type if `LabelType` <br />
+    #    It is the column identifier.
+    #
+    # - `content` : type is String <br />
+    #    (may be empty)
+    #
+    # - The last three are optional (`alignment`, `formatter` and `styler`)
+    #
+    # Examples:
+    # ```
+    # Tablo::SummaryHeaderColumn.new("Price",
+    #   content: "Total Invoice",
+    #   alignment: Tablo::Justify::Right),
+    # Tablo::SummaryHeaderColumn.new(:total,
+    #   content: "Amounts",
+    #   styler: ->(s : String) {s.colorize(:red).to_s}),
+    # ```
+    def initialize(@column : LabelType,
+                   @content : String,
+                   @alignment : Justify? = nil,
+                   @formatter : DataCellFormatter? = nil,
+                   @styler : DataCellStyler? = nil)
+    end
+  end
 
-  record BodyColumn, column : LabelType, alignment : Justify? = nil,
-    formatter : DataCellFormatter? = nil, styler : DataCellStyler? = nil
+  # The `SummaryBodyColumn` struct lets you define specific
+  # alignment, formatting and styling on body columns.
+  struct SummaryBodyColumn
+    protected getter column, alignment, formatter, styler
 
-  record HeaderRow, column : LabelType, content : CellType
+    # The constructor expects up to 4 parameters, of which the first, the
+    # column identifier, is the only mandatory one (but it goes without saying
+    # that at least one of the 3 optional parameters must be defined!)
+    #
+    # - `column` : type if `LabelType`
+    #
+    # - The last three optional parameters are (`alignment`,
+    #   `formatter` and `styler`)
+    #
+    # Example:
+    # ```
+    # Tablo::SummaryBodyColumn.new(:total, alignment: Tablo::Justify::Right,
+    #   formatter: ->(value : Tablo::CellType) {
+    #     value.is_a?(String) ? value : (
+    #       value.nil? ? "" : "%.2f" % value.as(BigDecimal)
+    #     )
+    #   },
+    #   styler: ->(_value : Tablo::CellType, cd : Tablo::CellData, fc : String) {
+    #     case cd.row_index
+    #     when 0, 2, 5 then fc.colorize.mode(:bold).to_s
+    #     when 1       then fc.colorize.mode(:italic).to_s
+    #     else              fc
+    #     end
+    #   }),
+    # ```
+    def initialize(@column : LabelType,
+                   @alignment : Justify? = nil,
+                   @formatter : DataCellFormatter? = nil,
+                   @styler : DataCellStyler? = nil)
+    end
+  end
 
-  record BodyRow, column : LabelType, row : Int32,
-    content : CellType | Proc(CellType)
+  struct SummaryBodyRow
+    protected getter column, row, content
+
+    def initialize(@column : LabelType,
+                   @row : Int32,
+                   @content : CellType | Proc(CellType))
+    end
+  end
 
   class TabloException < Exception
   end

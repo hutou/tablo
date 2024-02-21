@@ -10,9 +10,9 @@ require "./heading"
 require "./summary"
 
 module Tablo
-  # An abstract table is needed to allow assignment on class properties `parent`
-  # and `child`, as they T type is different (Array(CellType) for child, and
-  # given T parameter for parent.
+  # An abstract table is needed to allow assignment on class properties
+  # `Table.parent` and `Table.child`, as their type is different :
+  # Array(CellType) for `Table.child`, and given T parameter for `Table.parent`.
   abstract class ATable
   end
 
@@ -591,8 +591,8 @@ module Tablo
     # _Mandatory positional parameters:_
     #
     # - `summary_definition`: type is `Array(<structs>)`<br />
-    # where `<structs>` may be one or more instances of `Aggregation`, `UserAggregation`,
-    # `HeaderColumn`, `HeaderRow`, `BodyColumn` or `BodyRow` <br />
+    # where `<structs>` may be one or more instances of `SummaryProc`,
+    # `SummaryHeaderColumn`, `HeaderRow`, `SummaryBodyColumn` or `SummaryBodyRow` <br />
     #
     # - `summary_options`: type is `NamedTuple(<Table parameters>)` <br />
     # where `<Table parameters>` is a list of any number of Table initializers (may be empty).
@@ -600,9 +600,9 @@ module Tablo
     # Example of `summary_definition` :
     # ```
     # summary_definition = [
-    #   Tablo::Aggregation.new(:total, Tablo::Aggregate::Sum),
-    #   Tablo::BodyRow.new(:total, 1, ->{ Tablo::Summary.use(:total, Tablo::Aggregate::Sum) }),
-    #   Tablo::BodyColumn.new(:total, alignment: Tablo::Justify::Center),
+    #   Tablo::... TODO
+    #   Tablo::SummaryBodyRow.new(:total, 1, ->{ Tablo::Summary.use(:total_sum) }),
+    #   Tablo::SummaryBodyColumn.new(:total, alignment: Tablo::Justify::Center),
     # ]
     # ```
     # which means :
