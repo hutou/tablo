@@ -225,30 +225,25 @@ module Tablo
   # value, width
   # value
 
-  # ---------- DataCellFormatter --------------------------------------------------
-  #
-  #
-
   # Formatter Proc for data cell types (Header and Body).
   #
-  # Any processing can be done on cell value.
+  # There are 4 of them, as shown below by their commonly used parameter names
+  # and types: <br />
+  # - 1st form : (value : `CellType`, cell_data : `CellData`, column_width : `Int32`)
+  # - 2nd form : (value : `CellType`, cell_data : `CellData`)
+  # - 3rd form : (value : `CellType`, column_width : `Int32`)
+  # - 4th form : (value : `CellType`)
   #
-  # The first form allows for conditional formatting, depending on attribute values
-  # of `Tablo::CellData` (row_index or column_index).
+  # Return type is String for all of them.
   #
-  # For example, to alternate case after each row, the Proc would be:
+  # These different forms can be used for conditional formatting.
+  #
+  # For example, to alternate case after each row, the 2nd form
+  # can be used :
   # ```
   # formatter: ->(value : Tablo::CellType, cell_data : Tablo::CellData) {
   #   cell_data.row_index % 2 == 0 ? value.as(String).upcase : value.as(String).downcase }
   # ```
-  #
-  # The second form is the same as `Tablo::TextCellFormatter`
-  #
-  # Commonly used parameter names for the different forms:<br />
-  # - value : `CellType`, cell_data : `CellData`, width : `Int32`
-  # - value : `CellType`, cell_data : `CellData`
-  # - value : `CellType`, width : `Int32`
-  # - value : `CellType`
   alias DataCellFormatter = Proc(CellType, CellData, Int32, String) |
                             Proc(CellType, CellData, String) |
                             Proc(CellType, Int32, String) |
@@ -433,7 +428,7 @@ module Tablo
     # column identifier, is the only mandatory one (but it goes without saying
     # that at least one of the 3 optional parameters must be defined!)
     #
-    # - `column` : type if `LabelType`
+    # - `column` : type is `LabelType`
     #
     # - The last three optional parameters are (`alignment`,
     #   `formatter` and `styler`)
@@ -461,9 +456,37 @@ module Tablo
     end
   end
 
+  # The `SummaryBodyRow` struct lets you define body rows content
   struct SummaryBodyRow
     protected getter column, row, content
 
+    # The constructor expects 3 mandatory parameters.
+    #
+    # - `column` : type is `LabelType`, the column identifier
+    #
+    # - `row` : type is `Int32`, the row number
+    #
+    # - `content` : type is `CellType` or a Proc returning a `CellType`
+    #
+    # `column` and `row` define the precise location of the aggregated value in the
+    # Summary table. Row numbers need not be contiguous; what's important is that
+    # they allow results to be displayed in the desired row order.
+    #
+    # Example of `content` directly fed by a literal string:
+    # ```
+    # Tablo::SummaryBodyRow.new("Price", 40, "Tax (20%)")
+    # Tablo::SummaryBodyRow.new("Price", 60, "Balance due"),
+    # ```
+    #  Example of `content` fed by a proc returning a `CellType` value:
+    # ```
+    # Tablo::SummaryBodyRow.new(:total, 40, ->{ Tablo::Summary.use(:tax) }),
+    # Tablo::SummaryBodyRow.new(:total, 60, ->{ Tablo::Summary.use(:total_due) }),
+    # ```
+    #
+    # **Important**:
+    # Note here the use of the `Summary.use` class method, which retrieves, via
+    # a Symbol key, an aggregated value previously calculated in
+    # a `SummaryProc`  instance.
     def initialize(@column : LabelType,
                    @row : Int32,
                    @content : CellType | Proc(CellType))
@@ -473,14 +496,18 @@ module Tablo
   class TabloException < Exception
   end
 
+  class DuplicateKey < TabloException
+  end
+
+  # --- to be validated ---
   class InvalidConnectorString < TabloException
   end
 
-  class DuplicateLabel < TabloException
-  end
+  # class DuplicateLabel < TabloException
+  # end
 
-  class DuplicateRow < TabloException
-  end
+  # class DuplicateRow < TabloException
+  # end
 
   class LabelNotFound < TabloException
   end
@@ -495,8 +522,5 @@ module Tablo
   end
 
   class InvalidSummaryDefinition < TabloException
-  end
-
-  class DuplicateInSummaryDefinition < TabloException
   end
 end

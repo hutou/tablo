@@ -175,12 +175,15 @@ module Tablo
     # ```
     # A few points of note <br />
     # - Use of the `BigDecimal` type (not included in Tablo by default, but made
-    # possible by the `include CellType` statement).
+    #   possible by reopening the `BigDecimal` struct and adding the `include CellType`
+    #   statement).
     # - Joining of the summary table to the main table, with the main table's
     # `omit_last_rule` parameter set to `true`.
     # - Row numbers need not be consecutive. What's important is that their
     # order is well defined, as they will ultimately be replaced by their index
     # in a sorted array of row values.
+    # - To obtain optimal result in packing, the main table must be packed
+    #   before summary table definition.
     def initialize(@table : Table(T),
                    @summary_definition : U,
                    @summary_options : V)
@@ -192,7 +195,8 @@ module Tablo
     end
 
     # Class method to retrieve and use results of saved calculations
-    # by key (which is of type Symbol) <br />
+    # by key (which is of type Symbol).
+    #
     # For example, to populate row 1 of column `:total` with the result of
     # a previous calculation identified by `:total_sum`:
     # ```
@@ -249,7 +253,7 @@ module Tablo
       duplicates = {} of LabelType => Int32
       header_columns.each do |entry|
         if duplicates.has_key?(entry.column)
-          raise DuplicateInSummaryDefinition.new(
+          raise DuplicateKey.new(
             "Summary: duplicate header column definition for column<#{entry.column}>")
         else
           duplicates[entry.column] = 1
@@ -277,7 +281,7 @@ module Tablo
       duplicates = {} of {LabelType, Int32} => Int32
       body_rows.each do |entry|
         if duplicates.has_key?({entry.column, entry.row})
-          raise DuplicateInSummaryDefinition.new(
+          raise DuplicateKey.new(
             "Summary: duplicate body definition, row<#{entry.row}> for column<#{entry.column}> already used.")
         else
           defined_rows << entry.row
@@ -314,7 +318,7 @@ module Tablo
       duplicates = {} of LabelType => Int32
       body_columns.each do |entry|
         if duplicates.has_key?(entry.column)
-          raise DuplicateInSummaryDefinition.new(
+          raise DuplicateKey.new(
             "Summary: duplicate body column definition for column<#{entry.column}>")
         else
           duplicates[entry.column] = 1

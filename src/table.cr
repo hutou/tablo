@@ -416,7 +416,7 @@ module Tablo
                    wrap_mode = wrap_mode,
                    &extractor : (T, Int32) -> CellType)
       if column_registry.has_key?(label)
-        raise DuplicateLabel.new("Column label already used in this table.")
+        raise DuplicateKey.new("Column label already used in this table.")
       end
       check_width(width)
       check_padding(left_padding)
@@ -492,7 +492,7 @@ module Tablo
                   truncation_indicator = truncation_indicator,
                   wrap_mode = wrap_mode)
       if group_registry.has_key?(label)
-        raise DuplicateLabel.new("Group label already used in this table.")
+        raise DuplicateKey.new("Group label already used in this table.")
       end
       if column_registry.size.zero?
         raise GroupError.new("Group requires at least one column.")
