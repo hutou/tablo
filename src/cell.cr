@@ -221,6 +221,7 @@ module Tablo
   #
   #
 
+  # :nodoc:
   # Subclass of Cell for TextCell (Headings, group)
   class TextCell < Cell
     # called from Table

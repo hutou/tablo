@@ -92,7 +92,32 @@ module Tablo
   #
   # For example, the string `"E EE EE EE E───"` is how the `ReducedModern`
   # style is defined.
+
+  # BorderName define allowed keys to access predefined connectors string.
+  enum BorderName
+    Ascii
+    ReducedAscii
+    ReducedModern
+    Markdown
+    Modern
+    Fancy
+    Empty
+    Blank
+  end
+
+  # A border may be created either by a border predefined
+  # name (`Tablo::BorderName`) or by a litteral string of 16 characters (see `Tablo::Border`).
+  alias BorderType = String | BorderName
+
+  # Styler Proc for borders<br />
+  # Default : `Config.border_styler`
   #
+  # Example, to colorize borders in blue :
+  # ```
+  # border_styler: ->(b : String) { b.colorize(:blue).to_s }
+  # ```
+  alias BorderStyler = Proc(String, String)
+
   # A border can be styled by a user defined proc, of type `BorderStyler` allowing
   # for colorized output, either by using ANSI sequences or the "colorize" module
   # from the stdlib (default: no style).
