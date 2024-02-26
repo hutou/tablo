@@ -53,8 +53,7 @@ module Tablo
         rows = RowGroup.new(@table, @source, @divider, @index).run
         # rows = RowGroup.new(@table, @source, @divider, @index).run
         # io << @table.join_lines(rows.reject &.empty?)
-        # TODO Deal with Windows line separator (\r\n ?)
-        io << (rows.reject &.empty?).join("\n")
+        io << (rows.reject &.empty?).join(NEWLINE)
         # io << @table.all_rendered_rows(@source, @divider, @index)
       else
         io << ""

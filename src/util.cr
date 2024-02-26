@@ -87,16 +87,17 @@ module Tablo
       STDOUT.tty? || !Config.styler_tty_only?
     end
 
-    # -------------- stretch --------------------------------------------------------
-    #
-    #
-    def self.stretch(s : String, width : Int32, insert_char : Char, gap : Int32 = 0,
-                     left_margin : String = "", right_margin : String = "")
+    # The stretch method is designed to optimize the filling of a text area,
+    # possibly multi-line, by inserting one or more separators (by default
+    # a space) between each character of the initial string.
+    def self.stretch(str : String, width : Int32, insert_char : Char = ' ',
+                     gap : Int32 = 0, left_margin : String = "",
+                     right_margin : String = "")
       # first, we need to compute the optimized working_gap, the gap
-      # which "harmonize" all lines
-      working_gap = 999
+      # which "harmonizes" all lines in the cell
+      working_gap = Int32::MAX
       working_width = width - (left_margin.size + right_margin.size)
-      s.each_line do |line|
+      str.each_line do |line|
         if line.size > 1
           intervals = line.size - 1
           max_gap = (working_width - line.size) // intervals
@@ -104,15 +105,17 @@ module Tablo
           working_gap = [working_gap, max_gap].min
         end
       end
-      # now, compute final_gap, min between gap and working_gap if gap > 0
+      # now, we compute final_gap, min between gap and working_gap if gap > 0
+      # (ie, if gap is 0, we retain working_gap, otherwise, we retain the smallest
+      # value between gap and working_gap)
       final_gap = if gap == 0
                     working_gap
                   else
                     [working_gap, gap].min
                   end
-      # and finally, compute stretched lines
+      # and finally, we compute stretched lines
       arrout = [] of String
-      s.each_line do |line|
+      str.each_line do |line|
         if line =~ /^\s*$/
           arrout << ""
         elsif line.size == 1
@@ -134,7 +137,7 @@ module Tablo
           end
         end
       end
-      arrout.join("\n")
+      arrout.join(NEWLINE)
     end
 
     enum DotAlign # All trailing decimal zeroes are replaced by spaces

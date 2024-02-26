@@ -16,10 +16,6 @@ class Tablo::Cell
   def line_count
     previous_def
   end
-
-  def rendered_subcells
-    previous_def
-  end
 end
 
 describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
@@ -57,6 +53,7 @@ describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
       subcells[3].should eq("needed for  ")
     end
   end
+  #
   context "Specs on DataCell" do
     describe Tablo::DataCell do
       context "With simple float value" do
@@ -136,7 +133,7 @@ describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
         end
         describe "#calculate_subcells" do
           it "correctly returns an array of formatted and styled subcells, " \
-             "left aligned as bodycell value is string" do
+             "left aligned as bodycell value is a string" do
             headercell = Tablo::DataCell.new(
               value: header_value, cell_data: Tablo::CellData.new(header_value, 0, 0), left_padding: 1,
               right_padding: 1, padding_character: " ", alignment: Tablo::Justify::Left,

@@ -1,94 +1,8 @@
 require "./types"
 
 module Tablo
-  # :nodoc:
-  # Abstract class for subcell formatting, depending on wrap_mode
-  #  Non-Roman characters are also supported if the *naqvis/uni_char_width*
-  #  library is loaded.
-  private abstract class SubCell
-    # include Enumerable(String)
-
-    private getter line, width
-
-    private abstract def each(& : String ->)
-
-    def initialize(@line : String, @width : Int32)
-    end
-  end
-
-  # :nodoc:
-  # class helper for rune (~character) string cut
-  class RuneSubCell < SubCell
-    protected def each(&)
-      subcell_width = 0
-      subcell = String::Builder.new
-      line.scan(/\X/).each do |matchdata|
-        rune = matchdata[0]
-        rune_width = rune.size
-        {% if @top_level.has_constant?("UnicodeCharWidth") %}
-          rune_width = UnicodeCharWidth.width(rune)
-        {% end %}
-        if subcell_width + rune_width > width
-          s = subcell.to_s
-          yield s unless s.strip.empty?
-          subcell_width = 0
-          subcell = String::Builder.new
-        end
-
-        subcell << rune
-        subcell_width += rune_width
-      end
-      s = subcell.to_s
-      yield s unless s.strip.empty?
-    end
-  end
-
-  # :nodoc:
-  # class helper for word string cut
-  class WordSubCell < SubCell
-    protected def each(&)
-      subcell_width = 0
-      subcell = String::Builder.new
-      # split line on :
-      # - space or
-      # - dash (minus sign), when not followed by digits or
-      # - EM dash or
-      # - EN dash followed by &NoBreak
-      line.split(/(?<= |\-(?=\D+)|\—|\–⁠)\b/).each do |word|
-        word_width = word.size
-        {% if @top_level.has_constant?("UnicodeCharWidth") %}
-          word_width = UnicodeCharWidth.width(word)
-        {% end %}
-        combined_width = subcell_width + word_width
-        if combined_width - 1 == width && word[-1] == " "
-          # do nothing, as we're on the final word of the line and
-          # the space at the end will be chopped off.
-        elsif combined_width > width
-          s = subcell.to_s
-          yield s unless s.strip.empty?
-          subcell_width = 0
-          subcell = String::Builder.new
-        end
-        if word_width >= width
-          RuneSubCell.new(word, width).each do |rune_subcell|
-            yield rune_subcell
-          end
-        else
-          subcell << word
-          subcell_width += word_width
-        end
-      end
-      s = subcell.to_s
-      yield s unless s.strip.empty?
-    end
-  end
-
-  # -------------- class Cell -----------------------------------------------------
-  #
-  #
-
   # Cell is an abstract class representing a single cell inside a Table.<br />
-  # Derived concrete cells are : TextCell and DataCell
+  # Derived concrete cells are : `TextCell` and `DataCell`
   abstract class Cell
     # Common attributes of TextCell and DataCell
     private getter value
@@ -104,6 +18,83 @@ module Tablo
     private abstract def apply_formatter
     private abstract def apply_styler(content : String, line_index : Int32)
     private abstract def real_alignment
+
+    # Abstract class for subcell formatting, depending on wrap_mode
+    #  Non-Roman characters are also supported if the *naqvis/uni_char_width*
+    #  library is loaded.
+    private abstract class SubCell
+      private getter line, width
+
+      private abstract def each(& : String ->)
+
+      def initialize(@line : String, @width : Int32)
+      end
+    end
+
+    # class helper for rune (~character) string cut
+    private class RuneSubCell < SubCell
+      protected def each(&)
+        subcell_width = 0
+        subcell = String::Builder.new
+        line.scan(/\X/).each do |matchdata|
+          rune = matchdata[0]
+          rune_width = rune.size
+          {% if @top_level.has_constant?("UnicodeCharWidth") %}
+            rune_width = UnicodeCharWidth.width(rune)
+          {% end %}
+          if subcell_width + rune_width > width
+            s = subcell.to_s
+            yield s unless s.strip.empty?
+            subcell_width = 0
+            subcell = String::Builder.new
+          end
+
+          subcell << rune
+          subcell_width += rune_width
+        end
+        s = subcell.to_s
+        yield s unless s.strip.empty?
+      end
+    end
+
+    # class helper for word string cut
+    private class WordSubCell < SubCell
+      protected def each(&)
+        subcell_width = 0
+        subcell = String::Builder.new
+        # split line on :
+        # - space or
+        # - dash (minus sign), when not followed by digits or
+        # - EM dash or
+        # - EN dash followed by &NoBreak
+        line.split(/(?<= |\-(?=\D+)|\—|\–⁠)\b/).each do |word|
+          word_width = word.size
+          {% if @top_level.has_constant?("UnicodeCharWidth") %}
+            word_width = UnicodeCharWidth.width(word)
+          {% end %}
+          combined_width = subcell_width + word_width
+          if combined_width - 1 == width && word[-1] == " "
+            # do nothing, as we're on the final word of the line and
+            # the space at the end will be chopped off.
+          elsif combined_width > width
+            s = subcell.to_s
+            yield s unless s.strip.empty?
+            subcell_width = 0
+            subcell = String::Builder.new
+          end
+          if word_width >= width
+            RuneSubCell.new(word, width).each do |rune_subcell|
+              yield rune_subcell
+            end
+          else
+            subcell << word
+            subcell_width += word_width
+          end
+        end
+        s = subcell.to_s
+        yield s unless s.strip.empty?
+      end
+    end
 
     # returns the number of subcells in a cell
     # ie, the number of lines a cell contains
@@ -217,11 +208,59 @@ module Tablo
     end
   end
 
-  # -------------- class TextCell -------------------------------------------------
+  # Formatter procs for text cell types (Title, SubTitle, Footer and Group).
   #
+  # There are 2 of them, as shown below by their commonly used parameter names
+  # and types: <br />
+  # - 1st form : (value : `CellType`, column_width : `Int32`)
+  # - 2nd form : (value : `CellType`)
   #
+  # Return type is String for all of them.
+  #
+  # Any processing can be done on cell value. For example, if the runtime cell
+  # value type is Time, we could format as :
+  # ```
+  # formatter: ->(value : Tablo::CellType) { "Date: " + value.as(Time).to_s("%Y-%m-%d") }
+  # ```
+  # Another example, to stretch contents of a cell to its maximum width:
+  # ```
+  # formatter: ->(value : Tablo::CellType, column_width : Int32) {
+  #               Tablo::Util.stretch(value.as(String), width: column_width) }
+  # ```
+  alias TextCellFormatter = Proc(CellType, Int32, String) |
+                            Proc(CellType, String)
 
-  # :nodoc:
+  # Styler procs for text cell types.
+  #
+  # There are 2 of them, as shown below by their commonly used parameter names
+  # and types: <br />
+  # - 1st form : (content : `String`, line : `Int32`)
+  # - 2nd form : (content : `String`)
+  #
+  # `content` is the formatted cell value, after the formatter has been applied.<br />
+  # `line` designates the line number in a (multi-line) cell (0..n).
+  #
+  # Return type is String for all of them.
+  #
+  # The first form allows easy conditional styling. For example, to colorize
+  # differently each line of the cell:
+  # ```
+  # styler: ->(content : String, line : Int32) {
+  #   case line
+  #   when 0 then content.colorize(:blue).to_s
+  #   when 1 then content.colorize(:green).to_s
+  #   else        content.colorize(:red).to_s
+  #   end
+  # }
+  # ```
+  #  or, more simply, to style the whole cell, we use the 2nd form:
+  # ```
+  # styler: ->(content : String) { content.colorize.fore(:bold).to_s }
+  # ```
+  alias TextCellStyler = Proc(String, Int32, String) |
+                         Proc(String, String)
+
+  # :nodoc: kept public for spec tests
   # Subclass of Cell for TextCell (Headings, group)
   class TextCell < Cell
     # called from Table
@@ -274,6 +313,115 @@ module Tablo
     end
   end
 
+  # This data structure is attached to DataCell cells and therefore only
+  # concerns Header and Body row types: it is used in particular for
+  # conditional formatting and styling.
+  struct CellData
+    # Returns the raw value of the Body Cell (useful when dealing with a
+    # Header cell)
+    getter body_value
+
+    # Returns the index of the row (0..n)
+    getter row_index
+
+    # Returns the index of the column (0..n)
+    getter column_index
+
+    # Constructor with 3 mandatory parameters.
+    def initialize(@body_value : CellType, @row_index : Int32, @column_index : Int32)
+    end
+  end
+
+  # Formatter Proc for data cell types (Header and Body).
+  #
+  # There are 4 of them, as shown below by their commonly used parameter names
+  # and types: <br />
+  # - 1st form : (value : `CellType`, cell_data : `CellData`, column_width : `Int32`)
+  # - 2nd form : (value : `CellType`, cell_data : `CellData`)
+  # - 3rd form : (value : `CellType`, column_width : `Int32`)
+  # - 4th form : (value : `CellType`)
+  #
+  # Return type is String for all of them.
+  #
+  # These different forms can be used for conditional formatting.
+  #
+  # For example, to alternate case after each row, the 2nd form
+  # can be used :
+  # ```
+  # body_formatter: ->(value : Tablo::CellType, cell_data : Tablo::CellData) {
+  #  if value.is_a?(String)
+  #    cell_data.row_index % 2 == 0 ? value.as(String).upcase : value.as(String).downcase
+  #  else
+  #    value.to_s
+  #  end
+  # }
+  # ```
+  # This will have an impact on all text columns. To limit formatting to the
+  # second column, for example, you could write:
+  # ```
+  # body_formatter: ->(value : Tablo::CellType, cell_data : Tablo::CellData) {
+  #  if value.is_a?(String) && cell_data.column_index == 1
+  #    cell_data.row_index % 2 == 0 ? value.as(String).upcase : value.as(String).downcase
+  #  else
+  #    value.to_s
+  #  end
+  # }
+  # ```
+  alias DataCellFormatter = Proc(CellType, CellData, Int32, String) |
+                            Proc(CellType, CellData, String) |
+                            Proc(CellType, Int32, String) |
+                            Proc(CellType, String)
+
+  # Styler procs for data cell types.
+  #
+  # There are 5 of them, as shown below by their commonly used parameter names
+  # and types: <br />
+  # - 1st form : (value : `CellType`, cell_data : `CellData`, content : `String`, line_index : `Int32`)
+  # - 2nd form : (value : `CellType`, cell_data : `CellData`, content : `String`)
+  # - 3rd form : (value : `CellType`, content : `String`)
+  # - 4th form : (content : `String`, line_index : `Int32`)
+  # - 5th form : (content : `String`)
+  #
+  # *content* is the formatted value of the cell (after formatter is applied) <br />
+  # Return type is String for all of them.
+  #
+  # These different forms can be used for conditional formatting.
+  #
+  # In a somewhat contrived example, we could write:
+  # ```
+  #   body_styler: ->(_value : Tablo::CellType, cell_data : Tablo::CellData, content : String, line_index : Int32) {
+  # if line_index > 0
+  #   content.colorize(:magenta).mode(:bold).to_s
+  # else
+  #   if cell_data.row_index % 2 == 0
+  #     cell_data.column_index == 0 ? content.colorize(:red).to_s : content.colorize(:yellow).to_s
+  #   else
+  #     content.colorize(:blue).to_s
+  #   end
+  # end
+  # }
+  # ```
+  # Or, more simply, to better differentiate between negative and positive values:
+  # ```
+  # body_styler: ->(value : Tablo::CellType, content : String) {
+  #   if value.is_a?(Float64)
+  #     if value.as(Float64) < 0.0
+  #       content.colorize(:red).to_s
+  #     else
+  #       content.colorize(:green).to_s
+  #     end
+  #   else
+  #     content
+  #   end
+  # }
+  # ```
+  alias DataCellStyler = Proc(CellType, CellData, String, Int32, String) |
+                         Proc(CellType, CellData, String, String) |
+                         Proc(CellType, String, String) |
+                         Proc(String, Int32, String) |
+                         Proc(String, String)
+
+  # :nodoc: kept public for spec tests
   # Subclass of Cell for DataCell (Header, Body)
   class DataCell < Cell
     # called from Column
@@ -317,6 +465,8 @@ module Tablo
         s.call(value, cell_data, content)
       in Proc(CellType, String, String)
         s.call(value, content)
+      in Proc(String, Int32, String)
+        s.call(content, line_index)
       in Proc(String, String)
         s.call(content)
       end

@@ -10,6 +10,7 @@ require "./heading"
 require "./summary"
 
 module Tablo
+  # :nodoc:
   # An abstract table is needed to allow assignment on class properties
   # `Table.parent` and `Table.child`, as their type is different :
   # Array(CellType) for `Table.child`, and given T parameter for `Table.parent`.
@@ -757,19 +758,19 @@ module Tablo
       subcell_stacks = cells.map do |cell|
         cell.padded_truncated_subcells(row_line_count)
       end
-      # TODO to be optimized !
+      blank_border = " " # if no frame, no border !!!
       subrows = subcell_stacks.transpose.map do |subrow_components|
         case cell = cells.first
         in TextCell
-          # if cell.row_type == RowType::SubTitle && !@subtitle.framed?
-          if cell.row_type == RowType::SubTitle && @subtitle.frame.nil?
-            " " + subrow_components.join(" ") + " "
-            # elsif cell.row_type == RowType::Title && !@title.framed?
-          elsif cell.row_type == RowType::Title && @title.frame.nil?
-            " " + subrow_components.join(" ") + " "
-            # elsif cell.row_type == RowType::Footer && !@footer.framed?
-          elsif cell.row_type == RowType::Footer && @footer.frame.nil?
-            " " + subrow_components.join(" ") + " "
+          if cell.row_type == RowType::Title && @title.frame.nil? ||
+             cell.row_type == RowType::SubTitle && @subtitle.frame.nil? ||
+             cell.row_type == RowType::Footer && @footer.frame.nil?
+            # subrow_components is an array of String (size=1), which
+            # is not needed here for headings, but needed for other
+            # row types (because of border.join_cell_contents which
+            # expects an array)
+            # So, we take the value of the first (and only) element
+            blank_border + subrow_components.join + blank_border
           else
             border.join_cell_contents(subrow_components)
           end
@@ -820,7 +821,7 @@ module Tablo
           arlines << line
         end
       end
-      arlines.join("\n")
+      arlines.join(NEWLINE)
     end
 
     # -------------- Pack and its auxiliary methods----------------------------------
@@ -1240,8 +1241,7 @@ module Tablo
 
     # returns the string of joined lines by newline
     private def join_lines(lines)
-      # TODO what if Windows \n\r ?
-      lines.join("\n")
+      lines.join(NEWLINE)
     end
 
     def source_column(column_id)
