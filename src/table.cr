@@ -1033,9 +1033,95 @@ module Tablo
       transpose **opts
     end
 
+    # `transpose(opts = {})` returns a Tablo::Table instance
+    #
+    # The `transpose` method creates a new Tablo::Table from the current
+    # table, transposed, i.e.  rotated 90 degrees with respect to the current
+    # table, so that the header names of the current table form the contents
+    # of the leftmost column of the new table, and each subsequent column
+    # corresponds to one of the source elements of the current table, the
+    # header of that column being the string value of that element.
+    #
+    # Example:
+    # ```
+    # require "tablo"
+    # table = Tablo::Table.new([-1, 0, 1]) do |t|
+    #   t.add_column("Even?", &.even?)
+    #   t.add_column("Odd?", &.odd?)
+    #   t.add_column("Abs", &.abs)
+    # end.transpose
+    # puts table
+    #  ```
+    #
+    #  ```
+    # +-------+--------------+--------------+--------------+
+    # |       |      -1      |       0      |       1      |
+    # +-------+--------------+--------------+--------------+
+    # | Even? |     false    |     true     |     false    |
+    # | Odd?  |     true     |     false    |     true     |
+    # | Abs   |            1 |            0 |            1 |
+    # +-------+--------------+--------------+--------------+
+    #  ```
+    # By default, the transposed table inherits all the parameters of the
+    # current table, with their values, except those appearing in the `opts`
+    # parameter of the `transpose` method with a different value.
+    #
+    # These parameters apply to all columns, with one notable exception: the
+    # first column, the leftmost, is special, as it is created from the column
+    # headers (field names) of the current table and therefore has its own
+    # width and alignment parameters, namely:
+    # - `field_names_header_alignment`: default value = `nil`, i.e. alignment
+    #   depends on the body data type, in this case, a left-aligned string.
+    # - `field_names_body_alignment`: default value = `nil`, i.e. dependent on
+    #   data type, i.e. a character string, left-aligned
+    # - `field_names_width`: default value = nil, triggering optimal width
+    #   calculation based on content
+    #
+    #  Two other parameters complete the transposed table:
+    # - `field_names_header`: default value = `nil`, replaced by an empty
+    #   character string
+    # - `body_headers` : default value = `nil`, which returns the current
+    #   value of `source` in each column
+    #
+    # All these values can be modified in the `opts` parameter, according to
+    # their data type.
+    #
+    # However, `body_headers` is a special case: if it contains a character
+    # string, it will be rendered as such, unless it contains the integer
+    # display format `%d`, which will then be replaced by the original row number.
+    #
+    # Modified previous example:
+    #  ```
+    # require "tablo"
+    # table = Tablo::Table.new([-1, 0, 1],
+    #   header_alignment: Tablo::Justify::Center,
+    #   body_alignment: Tablo::Justify::Center) do |t|
+    #   t.add_column("Even?", &.even?)
+    #   t.add_column("Odd?", &.odd?)
+    #   t.add_column("Abs", &.abs)
+    # end.transpose(
+    #   field_names_header_alignment: Tablo::Justify::Right,
+    #   field_names_body_alignment: Tablo::Justify::Right,
+    #   field_names_header: "Field names",
+    #   body_headers: "Row #%d content"
+    # )
+    # puts table
+    #  ```
+    #
+    #  ```
+    # +-------+--------------+--------------+--------------+
+    # | Field |    Row #0    |    Row #1    |    Row #2    |
+    # | names |    content   |    content   |    content   |
+    # +-------+--------------+--------------+--------------+
+    # | Even? |     false    |     true     |     false    |
+    # |  Odd? |     true     |     false    |     true     |
+    # |   Abs |       1      |       0      |       1      |
+    # +-------+--------------+--------------+--------------+
+    #  ```
     def transpose(**opts)
       # Attributes *not* listed below are initialized to their default Table values
       # In principle, they are all listed except unused group attributes
+      # debug! opts
       inherited_attributes = {
         title:    title,
         subtitle: subtitle,
@@ -1063,24 +1149,32 @@ module Tablo
         header_wrap:           header_wrap,
         body_wrap:             body_wrap,
         #
-        masked_headers: masked_headers?,
-        omit_last_rule: omit_last_rule?,
+        masked_headers:         masked_headers?,
+        omit_group_header_rule: omit_group_header_rule?,
+        omit_last_rule:         omit_last_rule?,
       }
 
+      # field_names_* refer to the 1st column of the transposed table, which
+      # contains the headers of the original table
       default_extra_opts = {
+        field_names_header_alignment: nil,
         field_names_body_alignment:   nil,
-        field_names_header:           "ZZZ",
-        field_names_header_alignment: nil, # Justify::Left,
-        field_names_width:            1,
-        headers:                      "3AAA#",
+        field_names_width:            nil,
+        field_names_header:           nil, # "Field names",
+        body_headers:                 nil,
       }
       if opts.nil?
         initializer_opts = inherited_attributes
         extra_opts = default_extra_opts
       else
         initializer_opts = Util.update(inherited_attributes, from: opts)
+        # Initializers in default_extra_opts may be overriden by opts
         extra_opts = Util.update(default_extra_opts, from: opts)
       end
+
+      # debug! extra_opts
+      # debug! body_alignment
+      # debug! header_alignment
 
       fields = column_registry.values
 
@@ -1089,21 +1183,36 @@ module Tablo
         width_opt = extra_opts[:field_names_width]
         field_names_width = width_opt.nil? ? fields.map { |f| f.header.size }.max : width_opt
         # field_names_body_styler = fields.map { |f| f.body_styler }
-        t.add_column(:dummy,
+
+        # Fist, we add a first column for the headers of the original table
+        # This is the header of the ex-headers column
+        header = extra_opts[:field_names_header]
+        header = header.nil? ? "" : header.as(String)
+        t.add_column(0,
           body_alignment: extra_opts[:field_names_body_alignment],
+          header: header,
           header_alignment: extra_opts[:field_names_header_alignment],
-          header: extra_opts[:field_names_header],
-          width: field_names_width, &.header)
+          width: field_names_width,
+          &.header)
+
+        # Then, we add as amany columns as there are originam rows
         @sources.each_with_index do |source, i|
-          header = extra_opts[:headers]
+          header = extra_opts[:body_headers]
           header = if header.nil?
+                     # "##{i}"
                      source.to_s
                    else
-                     "#{header}##{i}"
+                     if header =~ /%d/
+                       "#{header % i}"
+                     else
+                       "#{header}"
+                     end
                    end
-          t.add_column(i,
-            body_alignment: extra_opts[:field_names_body_alignment],
-            header_alignment: extra_opts[:field_names_header_alignment],
+          t.add_column(i + 1,
+            # body_alignment: body_alignment,
+            # header_alignment: header_alignment,
+            # body_alignment: extra_opts[:field_names_body_alignment],
+            # header_alignment: extra_opts[:field_names_header_alignment],
             header: header
           ) do |original_column|
             original_column.body_cell_value(source, row_index: i)
