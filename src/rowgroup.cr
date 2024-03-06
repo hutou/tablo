@@ -2,6 +2,7 @@ require "./types"
 require "./heading"
 
 module Tablo
+  # :nodoc:
   # Each time the source is read, an instance of the RowGroup class is created
   # to display Body and all other preceeding possible row types and rule
   # types.
@@ -24,17 +25,16 @@ module Tablo
   # :main or nil, depending of the last rowtype of :main. This info is then
   # use on first row of :summary to properly link or not the two tables.
   class RowGroup(T)
-    class_property transition_footer : Footer? = nil
-    class_property rowtype_memory : RowType? = nil
+    protected class_property rowtype_memory : RowType? = nil
+    protected class_property transition_footer : Footer? = nil
 
-    @rows = [] of String
     # Whenever we enter rowgroup, we retrieve the previous rowtype from
     # the recorded value in class variable RowGroup.rowtype_memory
-    property previous_rowtype : RowType? = RowGroup.rowtype_memory
-    # property previous_rowtype : RowType? = Table.previous_rowtype
-    property current_rowtype : RowType? = nil
+    private property previous_rowtype : RowType? = RowGroup.rowtype_memory
+    private property current_rowtype : RowType? = nil
+
+    private getter rows = [] of String
     private getter table, source, row_index, row_divider
-    property rows
 
     def initialize(@table : Table(T),
                    @source : T,
@@ -43,7 +43,7 @@ module Tablo
     end
 
     {% if flag?(:DEBUG_ROWS) %}
-      def add_row(rows, linenum = 0)
+      private def add_row(rows, linenum = 0)
         rows.each_line.with_index do |r, i|
           if i == 0
             self.rows << "[in %-8s from %-8s%18s (%3d)] => %s" % [
@@ -55,7 +55,7 @@ module Tablo
         end
       end
 
-      def add_rule(position, groups = nil, linenum = 0)
+      private def add_rule(position, groups = nil, linenum = 0)
         row = table.horizontal_rule(position, groups)
         unless row.empty?
           self.rows << "[in %-8s from %-8s  pos:%-12.12s (%3d)] => %s" % [
@@ -64,11 +64,11 @@ module Tablo
         end
       end
     {% else %}
-      def add_row(rows, linenum = 0)
+      private def add_row(rows, linenum = 0)
         self.rows << rows
       end
 
-      def add_rule(position, groups = nil, linenum = 0)
+      private def add_rule(position, groups = nil, linenum = 0)
         row = table.horizontal_rule(position, groups)
         unless row.empty?
           self.rows << row
@@ -76,7 +76,7 @@ module Tablo
       end
     {% end %}
 
-    def framed?(rowtype)
+    private def framed?(rowtype)
       case rowtype
       when Nil
         false
@@ -121,7 +121,7 @@ module Tablo
       end
     end
 
-    ROWTYPE_POSITION = {
+    private ROWTYPE_POSITION = {
       # previous, current
       {RowType::Body, RowType::Body}       => Position::BodyBody,
       {RowType::Body, :bottom}             => Position::BodyBottom,
@@ -231,7 +231,7 @@ module Tablo
       self.previous_rowtype = current_rowtype
     end
 
-    def add_rowtype
+    private def add_rowtype
       case current_rowtype
       when RowType::Title
         add_row(table.rendered_title_row, linenum: __LINE__)
@@ -249,7 +249,7 @@ module Tablo
       end
     end
 
-    def close_table
+    private def close_table
       # Only Body and Footer row types are possible
       case previous_rowtype
       when RowType::Body
@@ -311,7 +311,7 @@ module Tablo
       end
     end
 
-    def run
+    protected def run
       if summary_first?
         if RowGroup.rowtype_memory.nil?
           # :main has been closed, so no previous rowtype !

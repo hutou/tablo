@@ -34,6 +34,7 @@ module Tablo
 
     protected getter sources
     private setter sources
+
     private getter group_alignment, group_formatter, group_styler
     private getter left_padding, right_padding, padding_character
     private getter width, truncation_indicator

@@ -4,6 +4,10 @@ class Tablo::Cell
   getter value
 end
 
+class Tablo::Table(T)
+  getter sources
+end
+
 describe Tablo::Row do
   # define border type for all tests
   # Tablo::Config.border_type = Tablo::BorderName::Ascii

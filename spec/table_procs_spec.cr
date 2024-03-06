@@ -222,12 +222,11 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
         t.add_column("double") { |n| n * 2 }
         t.add_group("Numeric",
           formatter: ->(c : Tablo::CellType, column_width : Int32) { Tablo::Util.stretch(c.as(String),
-            width: column_width, insert_char: ' ', gap: 0) })
+            width: column_width, insert_char: ' ', gap: nil) })
         t.add_column("stringified") { |n| n.to_s * 7 }
         t.add_group("String",
-          # formatter: ->(c : Tablo::CellType) { Tablo::Util.stretch(c.as(String), 11, ' ') })
           formatter: ->(c : Tablo::CellType, column_width : Int32) { Tablo::Util.stretch(c.as(String),
-            width: column_width, insert_char: ' ', gap: 0) })
+            width: column_width, insert_char: ' ', gap: nil) })
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
       output = %q(╭─────────────────────────────┬──────────────╮
