@@ -91,51 +91,104 @@ module Tablo
     # possibly multi-line, by inserting one or more separators (by default
     # a space) between each character of the initial string.
     def self.stretch(str : String, width : Int32, insert_char : Char = ' ',
-                     gap : Int32 = 0, left_margin : String = "",
+                     gap : Int32? = nil, left_margin : String = "",
                      right_margin : String = "")
-      # first, we need to compute the optimized working_gap, the gap
-      # which "harmonizes" all lines in the cell
-      working_gap = Int32::MAX
-      working_width = width - (left_margin.size + right_margin.size)
-      str.each_line do |line|
-        if line.size > 1
-          intervals = line.size - 1
-          max_gap = (working_width - line.size) // intervals
+      #
+      # Compute the ideal gap depending on width and line(s) size
+      # returns ideal_gap and largest line
+      idealgap = ->(lines : String, width : Int32) do
+        ideal_gap = lines.empty? ? 0 : Int32::MAX
+        largest_line = ""
+        lines.each_line do |line|
+          largest_line = line if line.size > largest_line.size
+          max_gap = line.size == 1 ? 0 : (width - line.size) // (line.size - 1)
           max_gap = 0 if max_gap < 0
-          working_gap = [working_gap, max_gap].min
+          ideal_gap = [ideal_gap, max_gap].min
         end
+        unless gap.nil?
+          ideal_gap = ideal_gap > gap ? gap : ideal_gap
+        end
+        {ideal_gap, largest_line}
       end
-      # now, we compute final_gap, min between gap and working_gap if gap > 0
-      # (ie, if gap is 0, we retain working_gap, otherwise, we retain the smallest
-      # value between gap and working_gap)
-      final_gap = if gap == 0
-                    working_gap
-                  else
-                    [working_gap, gap].min
-                  end
-      # and finally, we compute stretched lines
+
+      # Stretch the line for a given gap
+      stretched = ->(line : String, idgap : Int32) do
+        final_length = line.size + (line.size - 1) * idgap
+        ary_dest = Array(Char).new(final_length, insert_char)
+        pos = 0
+        line.chars.each.with_index do |c, i|
+          ary_dest[pos] = c
+          pos += (1 + idgap)
+        end
+        ary_dest.join
+      end
+
+      # Compute left and right margin areas
+      rx = /^([^,;]+)*[,;]*(.+)*$/
+      lm_first, lm_last = (left_margin.match(rx)
+        .as(Regex::MatchData).to_a.map &.to_s)[1, 2]
+      rm_last, rm_first = (right_margin.match(rx)
+        .as(Regex::MatchData).to_a.map &.to_s)[1, 2]
+      rm_last, rm_first = rm_first, rm_last if rm_first.empty?
+
+      # get margins
+      get_margins = ->do
+        lm_first.size + rm_first.size + lm_last.size + rm_last.size
+      end
+
+      # Increase stretch zone by reducing margins to fit width
+      increase_stretching_width = ->do
+        # now, reduce margin begin
+        first = false
+        if lm_first.size > 0
+          lm_first = lm_first[0..-2]
+          first = true
+        end
+        if rm_first.size > 0
+          rm_first = rm_first[1..-1]
+          first = true
+        end
+        # now, reduce margin begin
+        last = false
+        unless first
+          if lm_last.size > 0
+            lm_last = lm_last[1..-1]
+            last = true
+          end
+          if rm_last.size > 0
+            rm_last = rm_last[0..-2]
+            last = true
+          end
+        end
+        # returns true if a modification has been done
+        first | last
+      end
+
+      # Starting position : we consider all margins are kept
+      stretching_width = width - get_margins.call
+      ideal_gap, largest_line = idealgap.call(str, stretching_width)
+
+      # Now, check if the largest stretched fits ?
+      while (stretched.call(largest_line, ideal_gap).size + get_margins.call) > width
+        # obviously, we need to reduce margins !
+        break unless increase_stretching_width.call
+        stretching_width = width - get_margins.call
+      end
+
+      # and finally, we render stretched lines
       arrout = [] of String
       str.each_line do |line|
         if line =~ /^\s*$/
-          arrout << ""
+          xline = ""
         elsif line.size == 1
-          arrout << line
+          xline = line
         else
-          intervals = line.size - 1
-          if final_gap == 0
-            arrout << line
-          else
-            ary_src = line.chars
-            final_length = line.size + (intervals * final_gap)
-            ary_dest = Array(Char).new(final_length, insert_char)
-            pos = 0
-            ary_src.each.with_index do |c, i|
-              ary_dest[pos] = c
-              pos += (1 + final_gap)
-            end
-            arrout << left_margin + ary_dest.join + right_margin
-          end
+          xline = stretched.call(line, ideal_gap)
         end
+        lm = lm_first + lm_last
+        rm = rm_last + rm_first
+
+        arrout << lm + xline.center(width - lm.size - rm.size) + rm
       end
       arrout.join(NEWLINE)
     end
