@@ -252,20 +252,27 @@ module Tablo
     private def build_header_columns(header_columns)
       duplicates = {} of LabelType => Int32
       header_columns.each do |entry|
-        if duplicates.has_key?(entry.column)
-          raise DuplicateKey.new(
-            "Summary: duplicate header column definition for column<#{entry.column}>")
+        if entry.column.is_a?(Array(LabelType))
+          columns = entry.column # .as(Array(LabelType))
         else
-          duplicates[entry.column] = 1
-          header_values[entry.column] = entry.content
-          unless entry.alignment.nil?
-            header_alignments[entry.column] = entry.alignment.as(Justify)
-          end
-          unless entry.formatter.nil?
-            header_formatters[entry.column] = entry.formatter.as(DataCellFormatter)
-          end
-          unless entry.styler.nil?
-            header_stylers[entry.column] = entry.styler.as(DataCellStyler)
+          columns = [entry.column.as(LabelType)]
+        end
+        columns.as(Array(LabelType)).each do |column|
+          if duplicates.has_key?(column)
+            raise DuplicateKey.new(
+              "Summary: duplicate header column definition for column<#{column}>")
+          else
+            duplicates[column] = 1
+            header_values[column] = entry.content
+            unless entry.alignment.nil?
+              header_alignments[column] = entry.alignment.as(Justify)
+            end
+            unless entry.formatter.nil?
+              header_formatters[column] = entry.formatter.as(DataCellFormatter)
+            end
+            unless entry.styler.nil?
+              header_stylers[column] = entry.styler.as(DataCellStyler)
+            end
           end
         end
       end
@@ -317,19 +324,26 @@ module Tablo
     private def build_body_columns(body_columns)
       duplicates = {} of LabelType => Int32
       body_columns.each do |entry|
-        if duplicates.has_key?(entry.column)
-          raise DuplicateKey.new(
-            "Summary: duplicate body column definition for column<#{entry.column}>")
+        if entry.column.is_a?(Array(LabelType))
+          columns = entry.column
         else
-          duplicates[entry.column] = 1
-          unless entry.alignment.nil?
-            body_alignments[entry.column] = entry.alignment.as(Justify)
-          end
-          unless entry.formatter.nil?
-            body_formatters[entry.column] = entry.formatter.as(DataCellFormatter)
-          end
-          unless entry.styler.nil?
-            body_stylers[entry.column] = entry.styler.as(DataCellStyler)
+          columns = [entry.column.as(LabelType)] # .as(Array(LabelType)) # .as(Array(LabelType))
+        end
+        columns.as(Array(LabelType)).each do |column|
+          if duplicates.has_key?(column)
+            raise DuplicateKey.new(
+              "Summary: duplicate body column definition for column<#{column}>")
+          else
+            duplicates[column] = 1
+            unless entry.alignment.nil?
+              body_alignments[column] = entry.alignment.as(Justify)
+            end
+            unless entry.formatter.nil?
+              body_formatters[column] = entry.formatter.as(DataCellFormatter)
+            end
+            unless entry.styler.nil?
+              body_stylers[column] = entry.styler.as(DataCellStyler)
+            end
           end
         end
       end
@@ -477,7 +491,7 @@ module Tablo
     #   content: "Amounts",
     #   styler: ->(s : String) {s.colorize(:red).to_s}),
     # ```
-    def initialize(@column : LabelType,
+    def initialize(@column : LabelType | Array(LabelType),
                    @content : String,
                    @alignment : Justify? = nil,
                    @formatter : DataCellFormatter? = nil,
@@ -515,7 +529,7 @@ module Tablo
     #     end
     #   }),
     # ```
-    def initialize(@column : LabelType,
+    def initialize(@column : LabelType | Array(LabelType),
                    @alignment : Justify? = nil,
                    @formatter : DataCellFormatter? = nil,
                    @styler : DataCellStyler? = nil)

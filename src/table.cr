@@ -32,7 +32,7 @@ module Tablo
     protected getter groups = [] of Range(Int32, Int32)
     protected property row_count : Int32 = 0
 
-    protected getter sources
+    getter sources
     private setter sources
 
     private getter group_alignment, group_formatter, group_styler
