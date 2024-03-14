@@ -92,7 +92,7 @@ module Tablo
   #
   # For example, the string `"E EE EE EE E───"` is how the `ReducedModern`
   # style is defined.
-
+  #
   # BorderName define allowed keys to access predefined connectors string.
   enum BorderName
     Ascii
@@ -118,6 +118,11 @@ module Tablo
   # ```
   alias BorderStyler = Proc(String, String)
 
+  # The Border class enhances the layout of a data table by separating rows
+  # and columns with interconnected horizontal and vertical lines.
+  #
+  # Various predefined line types are available, but you are free to create your own.
+  #
   # A border can be styled by a user defined proc, of type `BorderStyler` allowing
   # for colorized output, either by using ANSI sequences or the "colorize" module
   # from the stdlib (default: no style).
