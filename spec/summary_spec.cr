@@ -171,8 +171,8 @@ invoice_summary_definition_3 =
     Tablo::SummaryProc.new(
       proc: ->(tbl : Tablo::Table(InvoiceItem)) {
         total_sum = 0
-        iter_quantity = tbl.source_column("Quantity").each
-        iter_price = tbl.source_column("Price").each
+        iter_quantity = tbl.column_data("Quantity").each
+        iter_price = tbl.column_data("Price").each
 
         iter = iter_quantity.zip(iter_price)
         iter.each do |q, p|
@@ -197,7 +197,7 @@ invoice_summary_definition_big = [
   Tablo::SummaryProc.new(
     proc: ->(tbl : Tablo::Table(InvoiceItemBig)) {
       total_sum = BigDecimal.new(0)
-      tbl.source_column(:total).each do |tot|
+      tbl.column_data(:total).each do |tot|
         total_sum += tot.as(BigDecimal) unless tot.nil?
       end
       discount = total_sum * 0.05

@@ -64,7 +64,7 @@ module Tablo
     #   Tablo::SummaryProc.new(
     #     proc: ->(tbl : Tablo::Table(InvoiceItem)) {
     #       total_sum = BigDecimal.new(0)
-    #       tbl.source_column(:total).each do |tot|
+    #       tbl.column_data(:total).each do |tot|
     #         total_sum += tot.as(BigDecimal) unless tot.nil?
     #       end
     #       discount = total_sum * 0.05
@@ -447,8 +447,8 @@ module Tablo
     # Tablo::SummaryProc.new(
     #   proc: ->(tbl : Tablo::Table(InvoiceItem)) {
     #     total_sum = total_count = max_price = 0
-    #     iter_quantity = tbl.source_column("Quantity").each
-    #     iter_price = tbl.source_column("Price").each
+    #     iter_quantity = tbl.column_data("Quantity").each
+    #     iter_price = tbl.column_data("Price").each
     #     iter = iter_quantity.zip(iter_price)
     #     iter.each do |q, p|
     #       next unless q.is_a?(Int32) && p.is_a?(Int32)

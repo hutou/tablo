@@ -630,7 +630,6 @@ module Tablo
       self.child.as(ATable).parent = self.as(ATable)
     end
 
-    # TODO TODO TODO TODO TODO I'm here! TODO TODO TODO TODO TODO
     # Returns a previously defined summary table
     def summary
       self.child
@@ -680,6 +679,9 @@ module Tablo
             show_divider &&= (index % hf != 0) if hf > 0
           end
         end
+        # x = yield Row.new(table: self, source: source, divider: show_divider, index: index)
+        # debug! x
+        # x
         yield Row.new(table: self, source: source, divider: show_divider, index: index)
       end
     end
@@ -782,24 +784,17 @@ module Tablo
       join_lines(subrows)
     end
 
-    # Produce a horizontal dividing line suitable for printing at the top,
-    # bottom or middle of the table, or before or after the table title, if any.
+    # Produce a horizontal dividing line suitable for printing between
+    # rendered rows, so as to customize table output.
     #
-    # This method is also suitable to customize output of a table, for example,
-    # to list a table with an horizontal rule between rows, as in :
+    # For example, to insert a horizontal line at specific tow positions, we
+    # can do :
     # ```
     # table.each_with_index do |row, i|
-    #   puts table.horizontal_rule(Tablo::Position::Middle) unless i == 0
+    #   puts table.horizontal_rule(Tablo::Position::BodyBody) unless i == 0 || i == 2
     #   puts row
     # end
-    # puts table.horizontal_rule(Tablo::Position::Bottom)
     # ```
-    #
-    # The method calculates an array of column widths (including padding), passing
-    # it to the `Border.horizontal_rule` method.
-    #
-    # - *position* indicates the type of horizontal rule expected
-    #
     # - Returns a String representing the formatted horizontal rule
     def horizontal_rule(position = Position::Bottom, groups = nil)
       # groups = column count per group, eg: [3,1,2,4]
@@ -824,10 +819,6 @@ module Tablo
       end
       arlines.join(NEWLINE)
     end
-
-    # -------------- Pack and its auxiliary methods----------------------------------
-    #
-    #
 
     # `pack` method version 1
     #
@@ -1026,9 +1017,7 @@ module Tablo
       end
     end
 
-    # -------------- Transpose method -----------------------------------------------
-    #
-    #
+    # TODO TODO TODO TODO TODO I'm here! TODO TODO TODO TODO TODO
 
     def transpose(opts)
       transpose **opts
@@ -1122,7 +1111,6 @@ module Tablo
     def transpose(**opts)
       # Attributes *not* listed below are initialized to their default Table values
       # In principle, they are all listed except unused group attributes
-      # debug! opts
       inherited_attributes = {
         title:    title,
         subtitle: subtitle,
@@ -1173,10 +1161,6 @@ module Tablo
         extra_opts = Util.update(default_extra_opts, from: opts)
       end
 
-      # debug! extra_opts
-      # debug! body_alignment
-      # debug! header_alignment
-
       fields = column_registry.values
 
       table = Table.new(fields, **initializer_opts) do |t|
@@ -1223,90 +1207,10 @@ module Tablo
       table
     end
 
-    def original_transpose(**opts)
-      default_opts = {
-        title: @title,
-        # align
-        body_alignment:   @body_alignment,
-        header_alignment: @header_alignment,
-        header_formatter: @header_formatter,
-        body_formatter:   @body_formatter,
-        header_styler:    @header_styler,
-        body_styler:      @body_styler,
-        # border_styler:    @border_styler,
-        # padding
-        left_padding:  @left_padding,
-        right_padding: @right_padding,
-        width:         @width,
-        # miscellaneous
-        # border_type:          @border_type, # (border)
-        border:               border,
-        header_frequency:     @header_frequency,
-        truncation_indicator: @truncation_indicator,
-        body_wrap:            @body_wrap,
-        header_wrap:          @header_wrap,
-      }
-
-      default_extra_opts = {
-        field_names_body_alignment:   nil, # Justify::Right,
-        field_names_header:           "",
-        field_names_header_alignment: nil, # Justify::Left,
-        field_names_width:            nil,
-        headers:                      "#",
-      }
-      if opts.nil?
-        initializer_opts = default_opts
-        extra_opts = default_extra_opts
-      else
-        initializer_opts = Util.update(default_opts, from: opts)
-        extra_opts = Util.update(default_extra_opts, from: opts)
-      end
-
-      fields = column_registry.values
-
-      table = Table.new(fields, **initializer_opts) do |t|
-        # table = Table.new(fields, **opts) do |t|
-        width_opt = extra_opts[:field_names_width]
-        field_names_width = width_opt.nil? ? fields.map { |f| f.header.size }.max : width_opt
-        # field_names_body_styler = fields.map { |f| f.body_styler }
-        t.add_column(:dummy,
-          body_alignment: extra_opts[:field_names_body_alignment],
-          header_alignment: extra_opts[:field_names_header_alignment],
-          header: extra_opts[:field_names_header],
-          width: field_names_width, &.header)
-        @sources.each_with_index do |source, i|
-          header = extra_opts[:headers]
-          header = if header.nil?
-                     source.to_s
-                   else
-                     "#{header}##{i}"
-                   end
-          t.add_column(i,
-            body_alignment: extra_opts[:field_names_body_alignment],
-            header_alignment: extra_opts[:field_names_header_alignment],
-            header: header
-          ) do |original_column|
-            original_column.body_cell_value(source, row_index: i)
-          end
-        end
-      end
-      table
-    end
-
-    # -------------- Public auxiliary methods ---------------------------------------
-    #
-    #
-
     # returns the total actual width of the table as a whole
-    # TODO : to be renamed to 'width' ???
-    #        but wait for global refactoring and renaming
     def total_table_width
       widths_sum + padding_widths_sum + border_widths_sum
     end
-
-    # -------------- private auxiliary methods---------------------------------------
-    #
-    #
 
     # Returns the length of the longest segment of str when split by newlines
     private def wrapped_width(str)
@@ -1354,11 +1258,28 @@ module Tablo
       lines.join(NEWLINE)
     end
 
-    def source_column(column_id)
+    # returns an array of data for a specific column
+    # Used by SummaryProc
+    def column_data(column_label : LabelType)
       column_data = [] of CellType
-      extractor = column_registry[column_id].extractor
+      extractor = column_registry[column_label].extractor
       sources.each_with_index do |source, index|
         column_data << extractor.call(source, index)
+      end
+      column_data
+    end
+
+    # returns a hash of array of data for several columns
+    # Used by SummaryProc
+    def column_data(column_label : Array(LabelType))
+      column_data = {} of LabelType => Array(CellType)
+      sources.each_with_index do |source, index|
+        column_label.each do |col|
+          unless column_data.has_key?(col)
+            column_data[col] = [] of CellType
+          end
+          column_data[col] << column_registry[col].extractor.call(source, index)
+        end
       end
       column_data
     end

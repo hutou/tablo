@@ -157,7 +157,7 @@ where :
 
 The function can process data in two different ways, either directly
 (using `table.sources`) or indirectly (using
-`table.source_column(colum)`). In the latter case, the use of iterators
+`table.column_data(colum)`). In the latter case, the use of iterators
 may be necessary if several columns are involved in the calculation.
 
 The following examples illustrate the 2 possible cases, with the aim of
@@ -190,14 +190,14 @@ Tablo::SummaryProc(InvoiceItem).new(
     .sum.to_i.as(Tablo::CellType) })
 ```
 
-Second case, using `table.source_column(column)` with 2 columns, and iterators
+Second case, using `table.column_data(column)` with 2 columns, and iterators
 
 ```crystal
 Tablo::SummaryProc(InvoiceItem).new(
   ident: :total_sum, proc: ->(tbl : Tablo::Table(InvoiceItem)) {
   total_sum = 0
-  iter_quantity = tbl.source_column("Quantity").each
-  iter_price = tbl.source_column("Price").each
+  iter_quantity = tbl.column_data("Quantity").each
+  iter_price = tbl.column_data("Price").each
   loop do
     quantity = iter_quantity.next
     price = iter_price.next
