@@ -265,6 +265,7 @@ module Tablo
   class TextCell < Cell
     # called from Table
     protected getter row_type
+    def_clone
 
     # :nodoc:
     def initialize(@value : CellType,

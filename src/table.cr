@@ -510,19 +510,9 @@ module Tablo
       check_padding_character(padding_character)
       check_truncation_indicator(truncation_indicator)
 
-      # debug! columns_group
       column_groups << columns_group
-      # debug! column_groups
-      # columns = column_list[column_groups.last]
-      # debug! column_groups.last
-      # debug! column_list
       columns = column_list.select { |e| e.index.in?(column_groups.last) }
-      # filtered_registry_values = column_registry.values.select { |e|
-      #   e.index.in?(filtered_columns)
-      # }
-      # debug! columns
       group_width = calc_group_width(columns)
-      # debug! group_width
 
       group_registry[label] = TextCell.new(
         value: header,
@@ -554,8 +544,6 @@ module Tablo
     # Calculates the group width from an array of column values
     private def calc_group_width(columns)
       # calculate paddings of group
-      # debug! "in calc_group_width"
-      # debug! columns
       left_padding = columns.first.left_padding
       right_padding = columns.last.right_padding
       # and total width of columns, including paddings
@@ -575,20 +563,10 @@ module Tablo
       # Only main is involved (summary has no column_groups)
       self_main = self.name == :main ? self : self.parent.as(ATable)
       gr = self_main.group_registry
-      # debug! gr
-      # debug! "in update_group_width"
-      debug! gr.size
-      # debug! column_groups
-      gr.each_with_index do |(_, group), index|
+      gr.each_with_index do |(_, group), idx|
         # retrieve group columns
-        # debug! index
-        cr = self_main.column_registry
-        # debug! group
-        # debug! self_main.column_groups
-        # debug! self_main.column_groups[index]
-        # debug! self_main.column_groups[index]
-        columns = cr.values.select &.index.in?(self_main.column_groups[index])
-        # debug! columns
+        cr = self_main.column_list
+        columns = cr.select &.index.in?(self_main.column_groups[idx])
         group.width = calc_group_width(columns)
       end
     end
@@ -662,23 +640,17 @@ module Tablo
 
     # Returns a previously defined summary table
     def summary
-      self.child
+      self.child.as(ATable)
     end
 
     # Returns the table as a formatted string
     def to_s(io)
-      # unless filtered_columns.empty?
-      #   unless column_groups.empty?
-      #     deal_with_groups
-      #   end
-      # end
       # Here, map applies to self, which is Table, using the each method
       # below to create rows, formatting them with (Row)to_s and joining all
       # formatted rows with newline to output the formatted table.
       # debugger
       unless column_registry.empty?
         unless column_groups.empty?
-          # if column_groups.last[-1] != column_registry.size - 1
           if column_groups.flatten.size != column_list.size
             add_group(:dummy_last_group, header: "")
           end
@@ -691,14 +663,8 @@ module Tablo
       end
       # Clean up with_columns after table display
       unless filtered_columns.empty?
-        restore_group_context # unless column_groups.empty?
         filtered_columns.clear
-        #   unless column_groups.empty?
-        #     # deal_with_groups
-        #     self.column_groups = column_groups_saved
-        #     update_group_widths
-        #     # TODO : recompute column_groups here, if appropriate
-        #   end
+        restore_group_context
       end
     end
 
@@ -719,7 +685,7 @@ module Tablo
     # puts table
     # ```
     def each(&)
-      @sources.each_with_index do |source, index|
+      sources.each_with_index do |source, index|
         show_divider = false
         unless (rdf = row_divider_frequency).nil?
           show_divider = (index > 0) && (index % rdf == 0)
@@ -727,20 +693,17 @@ module Tablo
             show_divider &&= (index % hf != 0) if hf > 0
           end
         end
-        # x = yield Row.new(table: self, source: source, divider: show_divider, index: index)
-        # debug! x
-        # x
         yield Row.new(table: self, source: source, divider: show_divider, index: index)
       end
     end
 
     protected def rendered_group_row
-      (cells = @group_registry.map { |_, v| v }).each do |c|
+      (cells = group_registry.map { |_, v| v }).each do |c|
         # group cells need to be zapped (ie set to nil) so that
         # group width can be recomputed properly
         c.reset_memoized_rendered_subcells
       end
-      format_row(cells, @header_wrap)
+      format_row(cells, header_wrap)
     end
 
     protected def rendered_header_row(source, row_index)
@@ -750,13 +713,13 @@ module Tablo
       header_cells = column_list.map_with_index do |column, index|
         column.header_cell(body_cells[index])
       end
-      format_row(header_cells, @header_wrap)
+      format_row(header_cells, header_wrap)
     end
 
     # Called by RowGroup
     protected def rendered_body_row(source, index)
       cells = row_cells(source, index)
-      format_row(cells, @body_wrap)
+      format_row(cells, body_wrap)
     end
 
     protected def rendered_title_row
@@ -774,11 +737,11 @@ module Tablo
     private def rendered_heading_row(row_type, page_count = 0)
       row_name, value = case row_type
                         when RowType::Title
-                          {@title, @title.value}
+                          {title, title.value}
                         when RowType::SubTitle
-                          {@subtitle, @subtitle.value}
+                          {subtitle, subtitle.value}
                         else
-                          {@footer, paginated(@footer.value.as(String), page_count)}
+                          {footer, paginated(footer.value.as(String), page_count)}
                         end
       columns = column_list
       # takes into account the possible internal border
@@ -793,9 +756,9 @@ module Tablo
         formatter: row_name.formatter, styler: row_name.styler,
         left_padding: columns.first.left_padding,
         right_padding: columns.last.right_padding,
-        padding_character: @padding_character,
-        truncation_indicator: @truncation_indicator,
-        wrap_mode: @wrap_mode,
+        padding_character: padding_character,
+        truncation_indicator: truncation_indicator,
+        wrap_mode: wrap_mode,
         width: heading_cell_width,
       )
       format_row([heading_cell], nil)
@@ -813,9 +776,9 @@ module Tablo
       subrows = subcell_stacks.transpose.map do |subrow_components|
         case cell = cells.first
         in TextCell
-          if cell.row_type == RowType::Title && @title.frame.nil? ||
-             cell.row_type == RowType::SubTitle && @subtitle.frame.nil? ||
-             cell.row_type == RowType::Footer && @footer.frame.nil?
+          if cell.row_type == RowType::Title && title.frame.nil? ||
+             cell.row_type == RowType::SubTitle && subtitle.frame.nil? ||
+             cell.row_type == RowType::Footer && footer.frame.nil?
             # subrow_components is an array of String (size=1), which
             # is not needed here for headings, but needed for other
             # row types (because of border.join_cell_contents which
@@ -973,7 +936,7 @@ module Tablo
     end
 
     private def packit(width, starting_widths, columns)
-      return if columns.empty?
+      return self if columns.empty?
       required_width = case width
                        in Nil
                          if STDOUT.tty? && Config.terminal_capped_width?
@@ -1013,7 +976,7 @@ module Tablo
     # accommodate its header text as well as the formatted content of each cell for
     # the entire collection, together with padding, without wrapping.
     private def autosize_columns(columns)
-      @sources.each_with_index do |source, row_index|
+      sources.each_with_index do |source, row_index|
         columns.each_with_index do |column, column_index|
           # create a DataCell (Body)
           body_cell = column.body_cell(source, row_index: row_index, column_index: column_index)
@@ -1229,7 +1192,7 @@ module Tablo
           &.header)
 
         # Then, we add as amany columns as there are originam rows
-        @sources.each_with_index do |source, i|
+        sources.each_with_index do |source, i|
           header = extra_opts[:body_headers]
           header = if header.nil?
                      # "##{i}"
@@ -1273,7 +1236,7 @@ module Tablo
       end
     end
 
-    def with_columns(*cols)
+    def using_columns(*cols)
       cols.each do |e|
         case e
         when LabelType
@@ -1294,9 +1257,8 @@ module Tablo
       self
     end
 
-    def with_column_indexes(*idx)
+    def using_column_indexes(*idx)
       index_range = 0..column_registry.keys.size - 1
-      save_group_context
       idx.each do |e|
         case e
         when Range
@@ -1311,7 +1273,6 @@ module Tablo
           raise Exception.new "<e> is not a valid index"
         end
       end
-      # debugger
       deal_with_groups
       self
     end
@@ -1319,10 +1280,8 @@ module Tablo
     private def deal_with_groups
       unless column_groups.empty?
         # first save groups
-        # save_group_context
+        save_group_context
         alk = [] of LabelType
-        # debug! group_registry.size
-        # debug! column_groups
         # then, compute new column_groups
         group_registry.each_with_index do |(k, v), idx|
           cols = column_groups[idx].select { |c| c.in?(filtered_columns) }
@@ -1339,71 +1298,28 @@ module Tablo
         alk.each do |k|
           group_registry.delete(k)
         end
-        # debug! group_registry.size
-        # debug! column_groups
-        update_group_widths
-      end
-    end
-
-    private def old_deal_with_groups
-      unless column_groups.empty?
-        # first save column_groups
-        self.column_groups_saved = column_groups.dup
-        # debug! column_groups_saved
-        column_groups.clear
-        # then, compute new column_groups
-        column_groups_saved.each do |rg|
-          cols = rg.select { |e| e.in?(filtered_columns) }
-          unless cols.empty?
-            # debug! cols
-            column_groups << cols
-            # debug! column_groups
-          end
-        end
         update_group_widths
       end
     end
 
     private def save_group_context
-      group_registry.each do |k, v|
-        group_registry_saved[k] = v
-      end
-      # debug! group_registry_saved
-      self.column_groups_saved = column_groups.dup
-      debug! column_groups_saved
-    end
-
-    private def old_save_group_context
-      group_registry.each do |k, v|
-        self.group_registry_saved[k] = v
-      end
-      debug! group_registry_saved
+      self.group_registry_saved = group_registry.clone
       self.column_groups_saved = column_groups.dup
     end
 
     private def restore_group_context
-      # debug! group_registry_saved
-      self.group_registry = group_registry_saved
-      # debug! group_registry
+      self.group_registry = group_registry_saved # .clone
       self.column_groups = column_groups_saved
-      debug! self.column_groups
+      update_group_widths
     end
 
-    private def old_restore_group_context
-      debug! self.group_registry_saved
-      self.group_registry = group_registry_saved
-      debug! group_registry
-      self.column_groups = column_groups_saved
-    end
-
-    private def column_list
+    protected def column_list
       if filtered_columns.empty?
         column_registry.values
       else
         filtered_registry_values = column_registry.values.select { |e|
           e.index.in?(filtered_columns)
         }
-        # filtered_columns.clear
         filtered_registry_values
       end
     end

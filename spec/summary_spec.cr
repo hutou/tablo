@@ -122,6 +122,7 @@ invoice_summary_definition_base =
     Tablo::SummaryBodyRow.new(:total, 5, "========"),
     Tablo::SummaryBodyRow.new(:total, 6, ->{ Tablo::Summary.use(:total_due) }),
   ]
+
 invoice_summary_definition_1 =
   [
     Tablo::SummaryProc.new(
@@ -372,6 +373,14 @@ invoice_layout_big =
     "│             :          :        Balance due :  \e[1m4185.49\e[0m │\n" +
     "╰─────────────┴──────────┴────────────────────┴──────────╯"
 
+# describe "zzz" do
+#   it "works" do
+#     create_table_big
+#   end
+# end
+
+# exit
+
 describe "#{Tablo::Summary}", tags: "summary" do
   describe "#{Tablo::Summary} Calculations and summary rows arrangement, with no border" do
     describe "#{Tablo::Summary} summary definition using SummaryProc (with sources " +
@@ -384,7 +393,8 @@ describe "#{Tablo::Summary}", tags: "summary" do
             masked_headers: true,
             border:         Tablo::Border.new("EEESSSEEESSSESSS"),
           })
-        tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).pack(only: ["Price", :total])
+        # tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).pack(only: ["Price", :total])
+        tbl.summary.pack(only: ["Price", :total])
         output = tbl.to_s + "\n" + tbl.summary.to_s
         {% if flag?(:DEBUG) %}
           puts "\n#{output}"
@@ -392,7 +402,6 @@ describe "#{Tablo::Summary}", tags: "summary" do
         output.should eq invoice_layout_0
       end
     end
-
     describe "#{Tablo::Summary} summary definition using SummaryProc " +
              "(with sources - 2)", tags: "summary" do
       it "Returns the correct, cleanly formatted values, with the expected layout" do
@@ -403,7 +412,7 @@ describe "#{Tablo::Summary}", tags: "summary" do
             masked_headers: true,
             border:         Tablo::Border.new("EEESSSEEESSSESSS"),
           })
-        tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).pack(only: ["Price", :total])
+        tbl.summary.pack(only: ["Price", :total])
         output = tbl.to_s + "\n" + tbl.summary.to_s
         {% if flag?(:DEBUG) %}
           puts "\n#{output}"
@@ -421,7 +430,7 @@ describe "#{Tablo::Summary}", tags: "summary" do
             masked_headers: true,
             border:         Tablo::Border.new("EEESSSEEESSSESSS"),
           })
-        tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).pack(only: ["Price", :total])
+        tbl.summary.pack(only: ["Price", :total])
         output = tbl.to_s + "\n" + tbl.summary.to_s
         {% if flag?(:DEBUG) %}
           puts "\n#{output}"
@@ -455,7 +464,7 @@ describe "#{Tablo::Summary}", tags: "summary" do
             masked_headers: true,
           })
         tbl.pack
-        tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).pack(only: ["Price", :total])
+        tbl.summary.pack(only: ["Price", :total])
         output = tbl.to_s + "\n" + tbl.summary.to_s
         {% if flag?(:DEBUG) %}
           puts "\n#{output}"
@@ -472,7 +481,7 @@ describe "#{Tablo::Summary}", tags: "summary" do
           {
             masked_headers: true,
           })
-        tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).pack(only: ["Price", :total])
+        tbl.summary.pack(only: ["Price", :total])
         output = tbl.to_s + "\n" + tbl.summary.to_s
         {% if flag?(:DEBUG) %}
           puts "\n#{output}"
@@ -490,7 +499,7 @@ describe "#{Tablo::Summary}", tags: "summary" do
           {
             masked_headers: true,
           })
-        tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).pack(only: ["Price", :total])
+        tbl.summary.pack(only: ["Price", :total])
         output = tbl.to_s + "\n" + tbl.summary.to_s
         {% if flag?(:DEBUG) %}
           puts "\n#{output}"
