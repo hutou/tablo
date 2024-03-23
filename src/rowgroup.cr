@@ -168,7 +168,7 @@ module Tablo
 
     private def apply_rules
       groups = previous_rowtype == RowType::Group ||
-               current_rowtype == RowType::Group ? table.groups : nil
+               current_rowtype == RowType::Group ? table.column_groups : nil
       spacing = [line_breaks_after(previous_rowtype), line_breaks_before(current_rowtype)].max
       case {framed?(previous_rowtype), framed?(current_rowtype)}
       when {true, true}

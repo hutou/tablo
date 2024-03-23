@@ -28,8 +28,16 @@ module Tablo
     protected property name : Symbol = :main
 
     protected getter column_registry = {} of LabelType => Column(T)
-    protected getter group_registry = {} of LabelType => TextCell
-    protected getter groups = [] of Range(Int32, Int32)
+    # Array of column indexes
+    protected property filtered_columns = [] of Int32
+
+    protected property group_registry = {} of LabelType => TextCell
+    protected property group_registry_saved = {} of LabelType => TextCell
+
+    # Array of array (=group) of columns, example : [[1,2,3],[4,5,6,7],[8]]
+    protected property column_groups = [] of Array(Int32)
+    protected property column_groups_saved = [] of Array(Int32)
+
     protected property row_count : Int32 = 0
 
     getter sources
@@ -502,10 +510,19 @@ module Tablo
       check_padding_character(padding_character)
       check_truncation_indicator(truncation_indicator)
 
-      groups << columns_group
-
-      columns = column_list[groups.last]
+      # debug! columns_group
+      column_groups << columns_group
+      # debug! column_groups
+      # columns = column_list[column_groups.last]
+      # debug! column_groups.last
+      # debug! column_list
+      columns = column_list.select { |e| e.index.in?(column_groups.last) }
+      # filtered_registry_values = column_registry.values.select { |e|
+      #   e.index.in?(filtered_columns)
+      # }
+      # debug! columns
       group_width = calc_group_width(columns)
+      # debug! group_width
 
       group_registry[label] = TextCell.new(
         value: header,
@@ -528,14 +545,17 @@ module Tablo
       if group_registry.size.zero?
         start_column = 0
       else
-        start_column = groups.last.end + 1
+        # start_column = column_groups.last.end + 1
+        start_column = column_groups.last[-1] + 1
       end
-      start_column..current_column
+      (start_column..current_column).to_a
     end
 
     # Calculates the group width from an array of column values
     private def calc_group_width(columns)
       # calculate paddings of group
+      # debug! "in calc_group_width"
+      # debug! columns
       left_padding = columns.first.left_padding
       right_padding = columns.last.right_padding
       # and total width of columns, including paddings
@@ -552,13 +572,23 @@ module Tablo
 
     # Calculates width of each defined group
     private def update_group_widths
-      # Only main is involved (summary has no groups)
+      # Only main is involved (summary has no column_groups)
       self_main = self.name == :main ? self : self.parent.as(ATable)
       gr = self_main.group_registry
+      # debug! gr
+      # debug! "in update_group_width"
+      debug! gr.size
+      # debug! column_groups
       gr.each_with_index do |(_, group), index|
         # retrieve group columns
+        # debug! index
         cr = self_main.column_registry
-        columns = cr.values.select &.index.in?(self_main.groups[index])
+        # debug! group
+        # debug! self_main.column_groups
+        # debug! self_main.column_groups[index]
+        # debug! self_main.column_groups[index]
+        columns = cr.values.select &.index.in?(self_main.column_groups[index])
+        # debug! columns
         group.width = calc_group_width(columns)
       end
     end
@@ -637,12 +667,19 @@ module Tablo
 
     # Returns the table as a formatted string
     def to_s(io)
+      # unless filtered_columns.empty?
+      #   unless column_groups.empty?
+      #     deal_with_groups
+      #   end
+      # end
       # Here, map applies to self, which is Table, using the each method
       # below to create rows, formatting them with (Row)to_s and joining all
       # formatted rows with newline to output the formatted table.
-      if !column_registry.empty?
-        unless groups.empty?
-          if groups.last.end != column_registry.size - 1
+      # debugger
+      unless column_registry.empty?
+        unless column_groups.empty?
+          # if column_groups.last[-1] != column_registry.size - 1
+          if column_groups.flatten.size != column_list.size
             add_group(:dummy_last_group, header: "")
           end
         end
@@ -651,6 +688,17 @@ module Tablo
         io << join_lines(rows)
       else
         io << ""
+      end
+      # Clean up with_columns after table display
+      unless filtered_columns.empty?
+        restore_group_context # unless column_groups.empty?
+        filtered_columns.clear
+        #   unless column_groups.empty?
+        #     # deal_with_groups
+        #     self.column_groups = column_groups_saved
+        #     update_group_widths
+        #     # TODO : recompute column_groups here, if appropriate
+        #   end
       end
     end
 
@@ -796,10 +844,10 @@ module Tablo
     # end
     # ```
     # - Returns a String representing the formatted horizontal rule
-    def horizontal_rule(position = Position::Bottom, groups = nil)
-      # groups = column count per group, eg: [3,1,2,4]
+    def horizontal_rule(position = Position::Bottom, column_groups = nil)
+      # column_groups = column count per group, eg: [3,1,2,4]
       widths = column_list.map { |column| column.width + column.total_padding }
-      border.horizontal_rule(widths, position, groups: groups)
+      border.horizontal_rule(widths, position, groups: column_groups)
     end
 
     private def row_cells(source, index)
@@ -1225,8 +1273,139 @@ module Tablo
       end
     end
 
+    def with_columns(*cols)
+      cols.each do |e|
+        case e
+        when LabelType
+          raise LabelNotFound.new "No such column <#{e}>" if e.nil?
+          filtered_columns << column_registry.keys.index(e).as(Int32)
+        when Tuple(LabelType, LabelType)
+          bg = column_registry.keys.index(e[0])
+          raise LabelNotFound.new "No such column <#{bg}>" if bg.nil?
+          nd = column_registry.keys.index(e[1])
+          raise LabelNotFound.new "No such column <#{nd}>" if nd.nil?
+          bg, nd = nd, bg if bg > nd
+          bg.upto nd do |i|
+            filtered_columns << i
+          end
+        end
+      end
+      deal_with_groups
+      self
+    end
+
+    def with_column_indexes(*idx)
+      index_range = 0..column_registry.keys.size - 1
+      save_group_context
+      idx.each do |e|
+        case e
+        when Range
+          e.each do |i|
+            raise Exception.new "No such column index <#{i}>" if !i.in?(index_range)
+            filtered_columns << i
+          end
+        when Int32
+          raise Exception.new "No such column index <#{e}>" if !e.in?(index_range)
+          filtered_columns << e
+        else
+          raise Exception.new "<e> is not a valid index"
+        end
+      end
+      # debugger
+      deal_with_groups
+      self
+    end
+
+    private def deal_with_groups
+      unless column_groups.empty?
+        # first save groups
+        # save_group_context
+        alk = [] of LabelType
+        # debug! group_registry.size
+        # debug! column_groups
+        # then, compute new column_groups
+        group_registry.each_with_index do |(k, v), idx|
+          cols = column_groups[idx].select { |c| c.in?(filtered_columns) }
+          if cols.empty?
+            # key to be deleted
+            alk << k
+            # current columns group at index = idx is deleted
+            column_groups.delete_at(idx)
+          else
+            # Current group may have lost some columns !!
+            self.column_groups[idx] = cols
+          end
+        end
+        alk.each do |k|
+          group_registry.delete(k)
+        end
+        # debug! group_registry.size
+        # debug! column_groups
+        update_group_widths
+      end
+    end
+
+    private def old_deal_with_groups
+      unless column_groups.empty?
+        # first save column_groups
+        self.column_groups_saved = column_groups.dup
+        # debug! column_groups_saved
+        column_groups.clear
+        # then, compute new column_groups
+        column_groups_saved.each do |rg|
+          cols = rg.select { |e| e.in?(filtered_columns) }
+          unless cols.empty?
+            # debug! cols
+            column_groups << cols
+            # debug! column_groups
+          end
+        end
+        update_group_widths
+      end
+    end
+
+    private def save_group_context
+      group_registry.each do |k, v|
+        group_registry_saved[k] = v
+      end
+      # debug! group_registry_saved
+      self.column_groups_saved = column_groups.dup
+      debug! column_groups_saved
+    end
+
+    private def old_save_group_context
+      group_registry.each do |k, v|
+        self.group_registry_saved[k] = v
+      end
+      debug! group_registry_saved
+      self.column_groups_saved = column_groups.dup
+    end
+
+    private def restore_group_context
+      # debug! group_registry_saved
+      self.group_registry = group_registry_saved
+      # debug! group_registry
+      self.column_groups = column_groups_saved
+      debug! self.column_groups
+    end
+
+    private def old_restore_group_context
+      debug! self.group_registry_saved
+      self.group_registry = group_registry_saved
+      debug! group_registry
+      self.column_groups = column_groups_saved
+    end
+
     private def column_list
-      column_registry.values
+      if filtered_columns.empty?
+        column_registry.values
+      else
+        filtered_registry_values = column_registry.values.select { |e|
+          e.index.in?(filtered_columns)
+        }
+        # filtered_columns.clear
+        filtered_registry_values
+      end
     end
 
     # returns the total combined width of vertical border characters
