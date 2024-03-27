@@ -1236,7 +1236,7 @@ module Tablo
       end
     end
 
-    def using_columns(*cols)
+    def using_columns(*cols, reordered = false)
       raise InvalidValue.new "No column given" if cols.empty?
       cols.each do |e|
         case e
@@ -1259,14 +1259,15 @@ module Tablo
       self
     end
 
-    def using_column_indexes(*idx)
+    def using_column_indexes(*idx, reordered = false)
       raise InvalidValue.new "No column index given" if idx.empty?
       index_range = 0..column_registry.keys.size - 1
       idx.each do |e|
         case e
         when Range
-          raise Exception.new "No such column index <#{e.begin}>" if !e.begin.in?(index_range)
-          raise Exception.new "No such column index <#{e.end}>" if !e.end.in?(index_range)
+          unless (er = e.begin).in?(index_range) && (er = e.end).in?(index_range)
+            raise Exception.new "No such column index <#{er}>"
+          end
           e.each do |i|
             filtered_columns << i
           end
