@@ -667,7 +667,7 @@ module Tablo
       else
         io << ""
       end
-      # Clean up with_columns after table display
+      # Clean up after table display
       unless used_columns.indexes.empty?
         used_columns.indexes.clear
         used_columns.reordered = false
@@ -1278,6 +1278,9 @@ module Tablo
       index_range = 0..column_registry.size - 1
       idx.each do |e|
         case e
+        when Int32
+          raise Exception.new "No such column index <#{e}>" if !e.in?(index_range)
+          used_columns.indexes << e
         when Tuple(Int32, Int32)
           bg = e[0]
           raise LabelNotFound.new "No such column index <#{bg}>" if !bg.in?(index_range)
@@ -1292,9 +1295,6 @@ module Tablo
               used_columns.indexes << idx
             end
           end
-        when Int32
-          raise Exception.new "No such column index <#{e}>" if !e.in?(index_range)
-          used_columns.indexes << e
         else
           raise Exception.new "<#{e}> is not a valid index"
         end
@@ -1318,8 +1318,8 @@ module Tablo
           group_registry.each_with_index do |(k, v), idx|
             cols = column_groups[idx].select { |c| c.in?(used_columns.indexes) }
             if cols.empty?
-              # delay deletes, as it is not safe to delete array entries inside
-              # a loop !
+              # delay deletes, as it is not safe to delete array entries
+              # inside a loop !
               #
               # group_registry entry is to be deleted  (by key k)
               delayed_group_registry_deletes << k
