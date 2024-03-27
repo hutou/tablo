@@ -23,13 +23,19 @@ module Tablo
   class Table(T) < ATable
     include Enumerable(Row(T))
 
+    struct UsedColumns
+      property reordered, indexes
+
+      def initialize(@reordered : Bool, @indexes : Array(Int32))
+      end
+    end
+
     protected property parent : ATable? = nil
     protected property child : ATable? = nil
     protected property name : Symbol = :main
 
     protected getter column_registry = {} of LabelType => Column(T)
-    # Array of column indexes
-    protected property filtered_columns = [] of Int32
+    protected property used_columns = UsedColumns.new(false, [] of Int32)
 
     protected property group_registry = {} of LabelType => TextCell
     protected property group_registry_saved = {} of LabelType => TextCell
@@ -662,8 +668,9 @@ module Tablo
         io << ""
       end
       # Clean up with_columns after table display
-      unless filtered_columns.empty?
-        filtered_columns.clear
+      unless used_columns.indexes.empty?
+        used_columns.indexes.clear
+        used_columns.reordered = false
         restore_group_context
       end
     end
@@ -807,7 +814,7 @@ module Tablo
     # end
     # ```
     # - Returns a String representing the formatted horizontal rule
-    def horizontal_rule(position = Position::Bottom, column_groups = nil)
+    def horizontal_rule(position = Position::Bottom, column_groups = [] of Array(Int32)) # nil)
       # column_groups = column count per group, eg: [3,1,2,4]
       widths = column_list.map { |column| column.width + column.total_padding }
       border.horizontal_rule(widths, position, groups: column_groups)
@@ -1238,20 +1245,26 @@ module Tablo
 
     def using_columns(*cols, reordered = false)
       raise InvalidValue.new "No column given" if cols.empty?
+      used_columns.reordered = reordered
       cols.each do |e|
         case e
         when LabelType
           idx = column_registry.keys.index(e)
           raise LabelNotFound.new "No such column <#{e}>" if idx.nil?
-          filtered_columns << idx
+          used_columns.indexes << idx
         when Tuple(LabelType, LabelType)
           bg = column_registry.keys.index(e[0])
           raise LabelNotFound.new "No such column <#{e[0]}>" if bg.nil?
           nd = column_registry.keys.index(e[1])
           raise LabelNotFound.new "No such column <#{e[1]}>" if nd.nil?
-          bg, nd = nd, bg if bg > nd
-          bg.upto nd do |idx|
-            filtered_columns << idx
+          if bg > nd
+            bg.downto nd do |idx|
+              used_columns.indexes << idx
+            end
+          else
+            bg.upto nd do |idx|
+              used_columns.indexes << idx
+            end
           end
         end
       end
@@ -1261,19 +1274,27 @@ module Tablo
 
     def using_column_indexes(*idx, reordered = false)
       raise InvalidValue.new "No column index given" if idx.empty?
-      index_range = 0..column_registry.keys.size - 1
+      used_columns.reordered = reordered
+      index_range = 0..column_registry.size - 1
       idx.each do |e|
         case e
-        when Range
-          unless (er = e.begin).in?(index_range) && (er = e.end).in?(index_range)
-            raise Exception.new "No such column index <#{er}>"
-          end
-          e.each do |i|
-            filtered_columns << i
+        when Tuple(Int32, Int32)
+          bg = e[0]
+          raise LabelNotFound.new "No such column index <#{bg}>" if !bg.in?(index_range)
+          nd = e[1]
+          raise LabelNotFound.new "No such column index <#{nd}>" if !nd.in?(index_range)
+          if bg > nd
+            bg.downto nd do |idx|
+              used_columns.indexes << idx
+            end
+          else
+            bg.upto nd do |idx|
+              used_columns.indexes << idx
+            end
           end
         when Int32
           raise Exception.new "No such column index <#{e}>" if !e.in?(index_range)
-          filtered_columns << e
+          used_columns.indexes << e
         else
           raise Exception.new "<#{e}> is not a valid index"
         end
@@ -1283,27 +1304,42 @@ module Tablo
     end
 
     private def deal_with_groups
-      unless column_groups.empty?
-        # first save groups
+      if used_columns.reordered
         save_group_context
-        alk = [] of LabelType
-        # then, compute new column_groups
-        group_registry.each_with_index do |(k, v), idx|
-          cols = column_groups[idx].select { |c| c.in?(filtered_columns) }
-          if cols.empty?
-            # key to be deleted
-            alk << k
-            # current columns group at index = idx is deleted
-            column_groups.delete_at(idx)
-          else
-            # Current group may have lost some columns !!
-            self.column_groups[idx] = cols
+        self.column_groups.clear
+        self.group_registry.clear
+      else
+        unless column_groups.empty?
+          # first save groups
+          save_group_context
+          delayed_group_registry_deletes = [] of LabelType
+          delayed_column_groups_deletes = [] of Int32
+          # then, compute new column_groups
+          group_registry.each_with_index do |(k, v), idx|
+            cols = column_groups[idx].select { |c| c.in?(used_columns.indexes) }
+            if cols.empty?
+              # delay deletes, as it is not safe to delete array entries inside
+              # a loop !
+              #
+              # group_registry entry is to be deleted  (by key k)
+              delayed_group_registry_deletes << k
+              # column_groups entry at index idx must also be deleted
+              delayed_column_groups_deletes << idx
+            else
+              # Update current column_groups entry
+              # (it may  have lost some columns !!)
+              self.column_groups[idx] = cols
+            end
           end
+          delayed_group_registry_deletes.each do |k|
+            group_registry.delete(k)
+          end
+          delayed_column_groups_deletes.reverse.each do |i|
+            column_groups.delete_at(i)
+          end
+          # column_groups = x
+          update_group_widths
         end
-        alk.each do |k|
-          group_registry.delete(k)
-        end
-        update_group_widths
       end
     end
 
@@ -1319,12 +1355,19 @@ module Tablo
     end
 
     protected def column_list
-      if filtered_columns.empty?
+      if used_columns.indexes.empty?
         column_registry.values
       else
-        filtered_registry_values = column_registry.values.select { |e|
-          e.index.in?(filtered_columns)
-        }
+        filtered_registry_values = [] of Column(T)
+        if used_columns.reordered
+          used_columns.indexes.each do |idx|
+            filtered_registry_values << column_registry.values[idx]
+          end
+        else
+          filtered_registry_values = column_registry.values.select { |e|
+            e.index.in?(used_columns.indexes)
+          }
+        end
         filtered_registry_values
       end
     end

@@ -3,7 +3,8 @@ require "./spec_helper"
 # Redefine protected and private methods for tests
 module Tablo
   struct Border
-    def horizontal_rule(column_widths, position = Tablo::Position::Bottom, groups = nil)
+    def horizontal_rule(column_widths, position = Tablo::Position::Bottom,
+                        groups = [] of Array(Int32))
       previous_def
     end
 
@@ -50,24 +51,24 @@ describe Tablo::Border do
     it "correctly formats line, without grouped columns" do
       border = Tablo::Border.new(Tablo::BorderName::Modern)
       rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        position: Tablo::Position::TitleTop, groups: nil)
+        position: Tablo::Position::TitleTop, groups: [] of Array(Int32))
       rule.should eq("┌────────────────────────────────────────────────────────────┐")
       border.connectors(Tablo::Position::BodyBody).should eq({"├", "┼", "┤", "─", ""})
       border.border_string.should eq("┌┬┐├┼┤└┴┘│││────")
       rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        position: Tablo::Position::TitleBottom, groups: nil)
+        position: Tablo::Position::TitleBottom, groups: [] of Array(Int32))
       rule.should eq("└────────────────────────────────────────────────────────────┘")
       rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        position: Tablo::Position::TitleHeader, groups: nil)
+        position: Tablo::Position::TitleHeader, groups: [] of Array(Int32))
       rule.should eq("├────────┬──────┬─────┬────────────┬───────────────┬─────────┤")
       rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        position: Tablo::Position::HeaderTop, groups: nil)
+        position: Tablo::Position::HeaderTop, groups: [] of Array(Int32))
       rule.should eq("┌────────┬──────┬─────┬────────────┬───────────────┬─────────┐")
       rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        position: Tablo::Position::HeaderBody, groups: nil)
+        position: Tablo::Position::HeaderBody, groups: [] of Array(Int32))
       rule.should eq("├────────┼──────┼─────┼────────────┼───────────────┼─────────┤")
       rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        position: Tablo::Position::BodyBottom, groups: nil)
+        position: Tablo::Position::BodyBottom, groups: [] of Array(Int32))
       rule.should eq("└────────┴──────┴─────┴────────────┴───────────────┴─────────┘")
     end
     it "correctly formats line, with grouped columns" do

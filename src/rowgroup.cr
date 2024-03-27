@@ -55,7 +55,8 @@ module Tablo
         end
       end
 
-      private def add_rule(position, groups = nil, linenum = 0)
+      # private def add_rule(position, groups = nil, linenum = 0)
+      private def add_rule(position, groups = [] of Array(Int32), linenum = 0)
         row = table.horizontal_rule(position, groups)
         unless row.empty?
           self.rows << "[in %-8s from %-8s  pos:%-12.12s (%3d)] => %s" % [
@@ -68,7 +69,8 @@ module Tablo
         self.rows << rows
       end
 
-      private def add_rule(position, groups = nil, linenum = 0)
+      # private def add_rule(position, groups = nil, linenum = 0)
+      private def add_rule(position, groups = [] of Array(Int32), linenum = 0)
         row = table.horizontal_rule(position, groups)
         unless row.empty?
           self.rows << row
@@ -161,14 +163,16 @@ module Tablo
       if previous_rowtype == RowType::Body && current_rowtype == RowType::Footer
         missing_rows.times do
           add_rule(ROWTYPE_POSITION[{RowType::Body, :filler}],
-            groups: nil, linenum: __LINE__)
+            groups: [] of Array(Int32), linenum: __LINE__)
+          # groups: nil, linenum: __LINE__)
         end
       end
     end
 
     private def apply_rules
       groups = previous_rowtype == RowType::Group ||
-               current_rowtype == RowType::Group ? table.column_groups : nil
+               current_rowtype == RowType::Group ? table.column_groups : [] of Array(Int32)
+      # current_rowtype == RowType::Group ? table.column_groups : nil
       spacing = [line_breaks_after(previous_rowtype), line_breaks_before(current_rowtype)].max
       case {framed?(previous_rowtype), framed?(current_rowtype)}
       when {true, true}

@@ -202,12 +202,14 @@ module Tablo
 
     # Renders a horizontal rule, depending on its position.
     # (cannot be private, because of call from table.cr)
-    protected def horizontal_rule(column_widths, position = Position::Bottom, groups = nil)
+    protected def horizontal_rule(column_widths, position = Position::Bottom,
+                                  groups = [] of Array(Int32)) # nil)
       left, middle, right, segment, altmiddle = connectors(position)
       segments = column_widths.map { |width| segment * width }
       # Purpose of the line below ???  Use case not clear, but doesn't hurt though!
       left = right = middle = altmiddle = "" if segments.all?(&.empty?)
-      str = if groups.nil?
+      # str = if groups.nil?
+      str = if groups.empty?
               segments.join(vdiv_mid.empty? ? "" : middle)
             else
               middles = groups.flat_map { |e|
