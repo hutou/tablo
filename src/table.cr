@@ -1237,19 +1237,21 @@ module Tablo
     end
 
     def using_columns(*cols)
+      raise InvalidValue.new "No column given" if cols.empty?
       cols.each do |e|
         case e
         when LabelType
-          raise LabelNotFound.new "No such column <#{e}>" if e.nil?
-          filtered_columns << column_registry.keys.index(e).as(Int32)
+          idx = column_registry.keys.index(e)
+          raise LabelNotFound.new "No such column <#{e}>" if idx.nil?
+          filtered_columns << idx
         when Tuple(LabelType, LabelType)
           bg = column_registry.keys.index(e[0])
-          raise LabelNotFound.new "No such column <#{bg}>" if bg.nil?
+          raise LabelNotFound.new "No such column <#{e[0]}>" if bg.nil?
           nd = column_registry.keys.index(e[1])
-          raise LabelNotFound.new "No such column <#{nd}>" if nd.nil?
+          raise LabelNotFound.new "No such column <#{e[1]}>" if nd.nil?
           bg, nd = nd, bg if bg > nd
-          bg.upto nd do |i|
-            filtered_columns << i
+          bg.upto nd do |idx|
+            filtered_columns << idx
           end
         end
       end
@@ -1258,19 +1260,21 @@ module Tablo
     end
 
     def using_column_indexes(*idx)
+      raise InvalidValue.new "No column index given" if idx.empty?
       index_range = 0..column_registry.keys.size - 1
       idx.each do |e|
         case e
         when Range
+          raise Exception.new "No such column index <#{e.begin}>" if !e.begin.in?(index_range)
+          raise Exception.new "No such column index <#{e.end}>" if !e.end.in?(index_range)
           e.each do |i|
-            raise Exception.new "No such column index <#{i}>" if !i.in?(index_range)
             filtered_columns << i
           end
         when Int32
           raise Exception.new "No such column index <#{e}>" if !e.in?(index_range)
           filtered_columns << e
         else
-          raise Exception.new "<e> is not a valid index"
+          raise Exception.new "<#{e}> is not a valid index"
         end
       end
       deal_with_groups
