@@ -1318,7 +1318,7 @@ module Tablo
           group_registry.each_with_index do |(k, v), idx|
             cols = column_groups[idx].select { |c| c.in?(used_columns.indexes) }
             if cols.empty?
-              # delay deletes, as it is not safe to delete array entries
+              # delay deletes, as it is not safe to delete elements
               # inside a loop !
               #
               # group_registry entry is to be deleted  (by key k)

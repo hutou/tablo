@@ -67,7 +67,7 @@ module Tablo
     #
     # _All (named) parameters are optional, with default values_
     #
-    # - `value`: type is `CellType?` <br />
+    # - `value`: type is `CellType` <br />
     #   Default value is `nil` <br />
     # This is the title's display content.
     # - `frame`: type is `Frame?` <br />
@@ -85,7 +85,7 @@ module Tablo
     #   This attribute governs the repetition of the title and subtitle when the
     #   `header_frequency` attribute of `Table` is greater than 0 (if `true`, title and subtitle
     #   are inserted before the repeated group and header rows).
-    def initialize(@value : CellType? = nil,
+    def initialize(@value : CellType = nil,
                    @frame : Frame? = nil,
                    @alignment : Justify = Config.heading_alignment,
                    @formatter : TextCellFormatter = Config.heading_formatter,
@@ -117,7 +117,7 @@ module Tablo
     #
     # _All (named) parameters are optional, with default values_
     #
-    # - `value`: type is `CellType?` <br />
+    # - `value`: type is `CellType` <br />
     #   Default value is `nil` <br />
     # This is the subtitle's display content.
     # - `frame`: type is `Frame?` <br />
@@ -130,7 +130,7 @@ module Tablo
     #   Default value is set by `Config.heading_formatter`
     # - `styler`:  a Proc whose type is `TextCellStyler` <br />
     #   Default value is set by `Config.heading_styler`
-    def initialize(@value : CellType? = nil,
+    def initialize(@value : CellType = nil,
                    @frame : Frame? = nil,
                    @alignment : Justify = Config.heading_alignment,
                    @formatter : TextCellFormatter = Config.heading_formatter,
@@ -160,7 +160,7 @@ module Tablo
     #
     # _All (named) parameters are optional, with default values_
     #
-    # - `value`: type is `CellType?` <br />
+    # - `value`: type is `CellType` <br />
     #   Default value is `nil` <br />
     # This is the footer's display content.
     # - `frame`: type is `Frame?` <br />
@@ -179,7 +179,7 @@ module Tablo
     # footer frame, but note that in this case, it prevents the join with the
     # frame that follows when the value of the `omit_last_rule` parameter of
     # `Table` is `true`).
-    def initialize(@value : CellType? = nil,
+    def initialize(@value : CellType = nil,
                    @frame : Frame? = nil,
                    @alignment : Justify = Config.heading_alignment,
                    @formatter : TextCellFormatter = Config.heading_formatter,
