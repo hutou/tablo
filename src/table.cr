@@ -1388,7 +1388,7 @@ module Tablo
 
     # returns the count of defined columns
     private def column_count
-      column_registry.size
+      column_list.size
     end
 
     # returns the total combined width of column contents (excludes border and padding)
