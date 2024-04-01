@@ -96,12 +96,12 @@ module Tablo
       #
       # Compute the ideal gap depending on width and line(s) size
       # returns ideal_gap and largest line
-      idealgap = ->(lines : String, width : Int32) do
+      idealgap = ->(lines : String, wdth : Int32) do
         ideal_gap = lines.empty? ? 0 : Int32::MAX
         largest_line = ""
         lines.each_line do |line|
           largest_line = line if line.size > largest_line.size
-          max_gap = line.size == 1 ? 0 : (width - line.size) // (line.size - 1)
+          max_gap = line.size == 1 ? 0 : (wdth - line.size) // (line.size - 1)
           max_gap = 0 if max_gap < 0
           ideal_gap = [ideal_gap, max_gap].min
         end

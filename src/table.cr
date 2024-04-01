@@ -1249,9 +1249,9 @@ module Tablo
       cols.each do |e|
         case e
         when LabelType
-          idx = column_registry.keys.index(e)
-          raise LabelNotFound.new "No such column <#{e}>" if idx.nil?
-          used_columns.indexes << idx
+          index = column_registry.keys.index(e)
+          raise LabelNotFound.new "No such column <#{e}>" if index.nil?
+          used_columns.indexes << index
         when Tuple(LabelType, LabelType)
           bg = column_registry.keys.index(e[0])
           raise LabelNotFound.new "No such column <#{e[0]}>" if bg.nil?
@@ -1272,11 +1272,11 @@ module Tablo
       self
     end
 
-    def using_column_indexes(*idx, reordered = false)
-      raise InvalidValue.new "No column index given" if idx.empty?
+    def using_column_indexes(*indexes, reordered = false)
+      raise InvalidValue.new "No column index given" if indexes.empty?
       used_columns.reordered = reordered
       index_range = 0..column_registry.size - 1
-      idx.each do |e|
+      indexes.each do |e|
         case e
         when Int32
           raise Exception.new "No such column index <#{e}>" if !e.in?(index_range)

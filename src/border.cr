@@ -215,11 +215,11 @@ module Tablo
               middles = groups.flat_map { |e|
                 Array.new(e.size - 1) { vdiv_mid.empty? ? "" : altmiddle } << middle
               }
-              String.build do |s|
+              String.build do |string|
                 (segments.size - 1).times do |i|
-                  s << segments[i] << middles[i]
+                  string << segments[i] << middles[i]
                 end
-                s << segments.last
+                string << segments.last
               end
             end
       style("#{left}#{str}#{right}")

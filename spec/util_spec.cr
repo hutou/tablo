@@ -8,4 +8,8 @@ describe Tablo::Util do
       Tablo::Util.update(nt1, nt2).should eq({x: 1, y: 2, z: 42})
     end
   end
+  pending ".stretch" do
+  end
+  pending ".dot_align" do
+  end
 end
