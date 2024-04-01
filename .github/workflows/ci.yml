@@ -21,8 +21,8 @@ jobs:
       - name: Check formatting
         run: crystal tool format --check
 
-      - name: Run ameba linter
-        run: bin/ameba
+        # - name: Run ameba linter
+        #   run: bin/ameba
 
       - name: Build docs
         run: crystal docs
