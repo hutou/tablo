@@ -100,16 +100,17 @@ invoice_summary_definition_base =
           value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
         )
       },
-      styler: ->(_value : Tablo::CellType, cd : Tablo::CellData, fc : String) {
-        case cd.row_index
-        when 0, 2, 5
-          fc.colorize.mode(:bold).to_s
-        when 1
-          fc.colorize.mode(:italic).to_s
-        else
-          fc
-        end
-      }),
+      # styler: ->(_value : Tablo::CellType, cd : Tablo::CellData, fc : String) {
+      #   case cd.row_index
+      #   when 0, 2, 5
+      #     fc.colorize.mode(:bold).to_s
+      #   when 1
+      #     fc.colorize.mode(:italic).to_s
+      #   else
+      #     fc
+      #   end
+      # }
+    ),
     Tablo::SummaryBodyRow.new("Price", 1, "SubTotal"),
     Tablo::SummaryBodyRow.new("Price", 2, "Discount 5%"),
     Tablo::SummaryBodyRow.new("Price", 3, "S/T after discount"),
@@ -220,13 +221,14 @@ invoice_summary_definition_big = [
         value.nil? ? "" : "%.2f" % value.as(BigDecimal)
       )
     },
-    styler: ->(_value : Tablo::CellType, cd : Tablo::CellData, fc : String) {
-      case cd.row_index
-      when 0, 2, 5 then fc.colorize.mode(:bold).to_s
-      when 1       then fc.colorize.mode(:italic).to_s
-      else              fc
-      end
-    }),
+    # styler: ->(_value : Tablo::CellType, cd : Tablo::CellData, fc : String) {
+    #   case cd.row_index
+    #   when 0, 2, 5 then fc.colorize.mode(:bold).to_s
+    #   when 1       then fc.colorize.mode(:italic).to_s
+    #   else              fc
+    #   end
+    # }
+  ),
   Tablo::SummaryHeaderColumn.new("Product", content: ""),
   Tablo::SummaryHeaderColumn.new("Quantity", content: ""),
   Tablo::SummaryHeaderColumn.new("Price", content: "Total Invoice",
@@ -258,14 +260,52 @@ invoice_layout_0 =
     "│ Switch      : N/A      :              45.00 :          │\n" +
     "│ Accessories :        5 :              64.50 :   322.50 │\n" +
     "╰─────────────┴──────────┴────────────────────┴──────────╯\n" +
+    "                                     SubTotal    3671.48  \n" +
+    "                                  Discount 5%     183.57  \n" +
+    "                           S/T after discount    3487.91  \n" +
+    "                                    Tax (20%)     697.58  \n" +
+    "                                                ========  \n" +
+    "                                  Balance due    4185.49  "
+
+invoice_layout_0_styled =
+  "                          Invoice                         \n" +
+    "╭─────────────┬──────────┬────────────────────┬──────────╮\n" +
+    "│ Product     : Quantity :              Price :    Total │\n" +
+    "├-------------┼----------┼--------------------┼----------┤\n" +
+    "│ Laptop      :        3 :             980.00 :  2940.00 │\n" +
+    "│ Printer     :        2 :             154.99 :   309.98 │\n" +
+    "│ Router      :        1 :              99.00 :    99.00 │\n" +
+    "│ Switch      : N/A      :              45.00 :          │\n" +
+    "│ Accessories :        5 :              64.50 :   322.50 │\n" +
+    "╰─────────────┴──────────┴────────────────────┴──────────╯\n" +
     "                                     SubTotal    \e[1m3671.48\e[0m  \n" +
     "                                  Discount 5%     \e[3m183.57\e[0m  \n" +
     "                           S/T after discount    \e[1m3487.91\e[0m  \n" +
     "                                    Tax (20%)     697.58  \n" +
     "                                                ========  \n" +
     "                                  Balance due    \e[1m4185.49\e[0m  "
-
 invoice_layout1 =
+  "                           Invoice                           \n" +
+    "╭──────────────┬──────────────┬──────────────┬──────────────╮\n" +
+    "│ Product      :     Quantity :        Price :        Total │\n" +
+    "├--------------┼--------------┼--------------┼--------------┤\n" +
+    "│ Laptop       :            3 :       980.00 :      2940.00 │\n" +
+    "│ Printer      :            2 :       154.99 :       309.98 │\n" +
+    "│ Router       :            1 :        99.00 :        99.00 │\n" +
+    "│ Switch       : N/A          :        45.00 :              │\n" +
+    "│ Accessories  :            5 :        64.50 :       322.50 │\n" +
+    "╰──────────────┴──────────────┴──────────────┴──────────────╯\n" +
+    "╭──────────────┬──────────────┬──────────────┬──────────────╮\n" +
+    "│              :              :     SubTotal :      3671.48 │\n" +
+    "│              :              :  Discount 5% :       183.57 │\n" +
+    "│              :              :    S/T after :      3487.91 │\n" +
+    "│              :              :     discount :              │\n" +
+    "│              :              :    Tax (20%) :       697.58 │\n" +
+    "│              :              :              :     ======== │\n" +
+    "│              :              :  Balance due :      4185.49 │\n" +
+    "╰──────────────┴──────────────┴──────────────┴──────────────╯"
+
+invoice_layout1_styled =
   "                           Invoice                           \n" +
     "╭──────────────┬──────────────┬──────────────┬──────────────╮\n" +
     "│ Product      :     Quantity :        Price :        Total │\n" +
@@ -298,6 +338,26 @@ invoice_layout2 =
     "│ Accessories  :            5 :              64.50 :       322.50 │\n" +
     "╰──────────────┴──────────────┴────────────────────┴──────────────╯\n" +
     "╭──────────────┬──────────────┬────────────────────┬──────────────╮\n" +
+    "│              :              :           SubTotal :      3671.48 │\n" +
+    "│              :              :        Discount 5% :       183.57 │\n" +
+    "│              :              : S/T after discount :      3487.91 │\n" +
+    "│              :              :          Tax (20%) :       697.58 │\n" +
+    "│              :              :                    :     ======== │\n" +
+    "│              :              :        Balance due :      4185.49 │\n" +
+    "╰──────────────┴──────────────┴────────────────────┴──────────────╯"
+
+invoice_layout2_styled =
+  "                              Invoice                              \n" +
+    "╭──────────────┬──────────────┬────────────────────┬──────────────╮\n" +
+    "│ Product      :     Quantity :              Price :        Total │\n" +
+    "├--------------┼--------------┼--------------------┼--------------┤\n" +
+    "│ Laptop       :            3 :             980.00 :      2940.00 │\n" +
+    "│ Printer      :            2 :             154.99 :       309.98 │\n" +
+    "│ Router       :            1 :              99.00 :        99.00 │\n" +
+    "│ Switch       : N/A          :              45.00 :              │\n" +
+    "│ Accessories  :            5 :              64.50 :       322.50 │\n" +
+    "╰──────────────┴──────────────┴────────────────────┴──────────────╯\n" +
+    "╭──────────────┬──────────────┬────────────────────┬──────────────╮\n" +
     "│              :              :           SubTotal :      \e[1m3671.48\e[0m │\n" +
     "│              :              :        Discount 5% :       \e[3m183.57\e[0m │\n" +
     "│              :              : S/T after discount :      \e[1m3487.91\e[0m │\n" +
@@ -307,6 +367,26 @@ invoice_layout2 =
     "╰──────────────┴──────────────┴────────────────────┴──────────────╯"
 
 invoice_layout3 =
+  "                          Invoice                         \n" +
+    "╭─────────────┬──────────┬────────────────────┬──────────╮\n" +
+    "│ Product     : Quantity :              Price :    Total │\n" +
+    "├-------------┼----------┼--------------------┼----------┤\n" +
+    "│ Laptop      :        3 :             980.00 :  2940.00 │\n" +
+    "│ Printer     :        2 :             154.99 :   309.98 │\n" +
+    "│ Router      :        1 :              99.00 :    99.00 │\n" +
+    "│ Switch      : N/A      :              45.00 :          │\n" +
+    "│ Accessories :        5 :              64.50 :   322.50 │\n" +
+    "╰─────────────┴──────────┴────────────────────┴──────────╯\n" +
+    "╭─────────────┬──────────┬────────────────────┬──────────╮\n" +
+    "│             :          :           SubTotal :  3671.48 │\n" +
+    "│             :          :        Discount 5% :   183.57 │\n" +
+    "│             :          : S/T after discount :  3487.91 │\n" +
+    "│             :          :          Tax (20%) :   697.58 │\n" +
+    "│             :          :                    : ======== │\n" +
+    "│             :          :        Balance due :  4185.49 │\n" +
+    "╰─────────────┴──────────┴────────────────────┴──────────╯"
+
+invoice_layout3_styled =
   "                          Invoice                         \n" +
     "╭─────────────┬──────────┬────────────────────┬──────────╮\n" +
     "│ Product     : Quantity :              Price :    Total │\n" +
@@ -337,6 +417,25 @@ invoice_layout4 =
     "│ Switch      : N/A      :              45.00 :          │\n" +
     "│ Accessories :        5 :              64.50 :   322.50 │\n" +
     "├─────────────┼──────────┼────────────────────┼──────────┤\n" +
+    "│             :          :           SubTotal :  3671.48 │\n" +
+    "│             :          :        Discount 5% :   183.57 │\n" +
+    "│             :          : S/T after discount :  3487.91 │\n" +
+    "│             :          :          Tax (20%) :   697.58 │\n" +
+    "│             :          :                    : ======== │\n" +
+    "│             :          :        Balance due :  4185.49 │\n" +
+    "╰─────────────┴──────────┴────────────────────┴──────────╯"
+
+invoice_layout4_styled =
+  "                          Invoice                         \n" +
+    "╭─────────────┬──────────┬────────────────────┬──────────╮\n" +
+    "│ Product     : Quantity :              Price :    Total │\n" +
+    "├-------------┼----------┼--------------------┼----------┤\n" +
+    "│ Laptop      :        3 :             980.00 :  2940.00 │\n" +
+    "│ Printer     :        2 :             154.99 :   309.98 │\n" +
+    "│ Router      :        1 :              99.00 :    99.00 │\n" +
+    "│ Switch      : N/A      :              45.00 :          │\n" +
+    "│ Accessories :        5 :              64.50 :   322.50 │\n" +
+    "├─────────────┼──────────┼────────────────────┼──────────┤\n" +
     "│             :          :           SubTotal :  \e[1m3671.48\e[0m │\n" +
     "│             :          :        Discount 5% :   \e[3m183.57\e[0m │\n" +
     "│             :          : S/T after discount :  \e[1m3487.91\e[0m │\n" +
@@ -346,6 +445,34 @@ invoice_layout4 =
     "╰─────────────┴──────────┴────────────────────┴──────────╯"
 
 invoice_layout_big =
+  "                                                          \n" +
+    "                          Invoice                         \n" +
+    "                          =======                         \n" +
+    "                                                          \n" +
+    "╭────────────────────────────────────────────────────────╮\n" +
+    "│                         Details                        │\n" +
+    "├─────────────┬──────────┬────────────────────┬──────────┤\n" +
+    "│ Product     : Quantity :              Price :    Total │\n" +
+    "├-------------┼----------┼--------------------┼----------┤\n" +
+    "│ Laptop      :        3 :             980.00 :  2940.00 │\n" +
+    "│ Printer     :        2 :             154.99 :   309.98 │\n" +
+    "│ Router      :        1 :              99.00 :    99.00 │\n" +
+    "│ Switch      : N/A      :              45.00 :          │\n" +
+    "│ Accessories :        5 :              64.50 :   322.50 │\n" +
+    "├─────────────┴──────────┴────────────────────┴──────────┤\n" +
+    "│                         Summary                        │\n" +
+    "├─────────────┬──────────┬────────────────────┬──────────┤\n" +
+    "│             :          :      Total Invoice :  Amounts │\n" +
+    "├-------------┼----------┼--------------------┼----------┤\n" +
+    "│             :          :           SubTotal :  3671.48 │\n" +
+    "│             :          :        Discount 5% :   183.57 │\n" +
+    "│             :          : S/T after discount :  3487.91 │\n" +
+    "│             :          :          Tax (20%) :   697.58 │\n" +
+    "│             :          :                    : ======== │\n" +
+    "│             :          :        Balance due :  4185.49 │\n" +
+    "╰─────────────┴──────────┴────────────────────┴──────────╯"
+
+invoice_layout_big_styled =
   "                                                          \n" +
     "                          Invoice                         \n" +
     "                          =======                         \n" +
