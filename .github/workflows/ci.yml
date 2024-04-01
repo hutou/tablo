@@ -1,14 +1,35 @@
 on:
   push:
-  pull_request:
-    branches: [master]
+    branches: [development]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Download source
         uses: actions/checkout@v4
+
       - name: Install Crystal
         uses: crystal-lang/install-crystal@v1
-      - name: Create html API
+
+      - name: Install dependencies
+        run: shards install
+
+      - name: Run specs
+        run: crystal spec -v
+
+      - name: Check formatting
+        run: crystal tool format --check
+
+      - name: Run ameba linter
+        run: bin/ameba
+
+      - name: Build docs
         run: crystal docs
+
+      - name: Deploy docs 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: docs
+          clean: true
