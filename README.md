@@ -5,9 +5,10 @@
 ![logo](/docs/assets/images/logo.png)
 ![logo](/blob/development/docs/assets/images/logo.png)
 ![logo](https://hutou.fr/gramps/logo.png)
+<img src="https://github.com/hutou/tablo/blob/4769d99f24738a6a8fe75e8e2901c5b2624bcd9a/logo.png" alt="Logo" width=700/>
 -->
 
-<img src="https://github.com/hutou/tablo/blob/4769d99f24738a6a8fe75e8e2901c5b2624bcd9a/logo.png" alt="Logo" width=700/>
+![logo](./assets/images/logo.png)
 
 ## About Tablo
 
