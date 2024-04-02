@@ -129,7 +129,7 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
 ## Contributors
 
-[hutou](https://github.com/hutou) - Creator and maintainer<br />
+[hutou](https://github.com/hutou) - Creator and maintainer <br />
 [koffeinfrei](https://github.com/koffeinfrei) - Contributor
 
 Project Link: [https://github.com/hutou/tablo](https://github.com/hutou/tablo)
