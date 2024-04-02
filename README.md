@@ -1,4 +1,4 @@
-[<img src="assets/images/logo.png" alt="Logo" width=700/>](README.md)
+[<img src="logo.png" alt="Logo" width=700/>](README.md)
 
 ## About Tablo
 
