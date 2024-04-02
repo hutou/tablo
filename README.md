@@ -11,7 +11,7 @@
 
 -->
 
-![logo](https://github.com/hutou/tablo/blob/gh-pages/assets/images/logo.png)
+![logo](https://raw.githubusercontent.com/hutou/tablo/development/docs/assets/images/logo.png)
 
 ## About Tablo
 
