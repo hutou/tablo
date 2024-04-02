@@ -96,20 +96,6 @@ module Tablo
       #
       # Compute the ideal gap depending on width and line(s) size
       # returns ideal_gap and largest line
-      idealgap = ->(lines : String, wdth : Int32) do
-        ideal_gap = lines.empty? ? 0 : Int32::MAX
-        largest_line = ""
-        lines.each_line do |line|
-          largest_line = line if line.size > largest_line.size
-          max_gap = line.size == 1 ? 0 : (wdth - line.size) // (line.size - 1)
-          max_gap = 0 if max_gap < 0
-          ideal_gap = [ideal_gap, max_gap].min
-        end
-        unless gap.nil?
-          ideal_gap = ideal_gap > gap ? gap : ideal_gap
-        end
-        {ideal_gap, largest_line}
-      end
 
       # Stretch the line for a given gap
       stretched = ->(line : String, idgap : Int32) do
@@ -166,7 +152,17 @@ module Tablo
 
       # Starting position : we consider all margins are kept
       stretching_width = width - get_margins.call
-      ideal_gap, largest_line = idealgap.call(str, stretching_width)
+      ideal_gap = str.empty? ? 0 : Int32::MAX
+      largest_line = ""
+      str.each_line do |line|
+        largest_line = line if line.size > largest_line.size
+        max_gap = line.size == 1 ? 0 : (stretching_width - line.size) // (line.size - 1)
+        max_gap = 0 if max_gap < 0
+        ideal_gap = [ideal_gap, max_gap].min
+      end
+      unless gap.nil?
+        ideal_gap = ideal_gap > gap ? gap : ideal_gap
+      end
 
       # Now, check if the largest stretched fits ?
       while (stretched.call(largest_line, ideal_gap).size + get_margins.call) > width
