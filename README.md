@@ -1,4 +1,6 @@
-[<img src="logo.png" alt="Logo" width=700/>](README.md)
+<!-- [<img src="logo.png" alt="Logo" width=700/>](README.md) -->
+
+[<img src="https://github.com/hutou/tablo/blob/4769d99f24738a6a8fe75e8e2901c5b2624bcd9a/logo.png" alt="Logo" width=700/>](README.md)
 
 ## About Tablo
 
