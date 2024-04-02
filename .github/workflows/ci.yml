@@ -32,4 +32,5 @@ jobs:
         with:
           branch: gh-pages
           folder: docs
+          folder: images
           clean: true
