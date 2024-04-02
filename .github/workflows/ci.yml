@@ -12,8 +12,8 @@ jobs:
       - name: Install Crystal
         uses: crystal-lang/install-crystal@v1
 
-        #- name: Install dependencies
-        #run: shards install
+      - name: Install dependencies
+        run: shards install
 
         # - name: Run specs
         #   run: crystal spec -v
