@@ -6,7 +6,7 @@
 ![logo](/blob/development/docs/assets/images/logo.png)
 -->
 
-![logo](/tablo/docs/assets/images/logo.png)
+![logo](https://github.com/hutou/tablo/blob/development/docs/assets/images/logo.png)
 
 ## About Tablo
 
