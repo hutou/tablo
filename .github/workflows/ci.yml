@@ -16,10 +16,10 @@ jobs:
         #run: shards install
 
         # - name: Run specs
-        r#un: crystal spec -v
+        #   run: crystal spec -v
 
-        #- name: Check formatting
-        #run: crystal tool format --check
+        # - name: Check formatting
+        #   run: crystal tool format --check
 
         # - name: Run ameba linter
         #   run: bin/ameba
