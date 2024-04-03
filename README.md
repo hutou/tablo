@@ -5,9 +5,10 @@
 <!--
 [<img src="assets/images/logo.png" alt="Logo" width=700/>](README.md)
 [![Logo](assets/images/logo.png")](../.github/README.md)
+[<img src="assets/images/logo.png" alt="Logo" width=700/>](https://github.com/hutou/tablo/tree/development?tab=readme-ov-file)
 i-->
 
-[<img src="assets/images/logo.png" alt="Logo" width=700/>](https://github.com/hutou/tablo/tree/development?tab=readme-ov-file)
+[<img src="assets/images/logo.png" alt="Logo"/>](https://github.com/hutou/tablo/tree/development?tab=readme-ov-file)
 
 ## Table of contents
 
