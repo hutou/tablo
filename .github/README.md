@@ -18,7 +18,7 @@ version (v0.10.1) was released on November 30, 2021, as part of the
 Crystal language learning, which explains its relative limitations
 compared with Tabulo v2.7, the current version at the time.
 
-The current version of Tablo (v1.00.0) is an almost complete rewrite of
+The current version of Tablo (v1.0.0) is an almost complete rewrite of
 the library.
 
 Compared to the first version, it offers extended capabilities,
@@ -59,13 +59,13 @@ the source code, meanwhile, has been deeply redesigned.
   left-aligned. By default, title, subtitle, footer and group header
   are centered.
 
-- Apply colors and other styling to table content and borders.
+- Colors and other styling can be applied to table content and borders.
 
-- Choose from several border configurations, predefined or user-defined ones.
+- Several predefined borders are available, not counting user-defined ones.
 
-- Step through your table a row at a time, for custom layouts.
+- For customized layouts, a table can be displayed row by row.
 
-- Easily transpose the table, so that rows are swapped with columns.
+- A table can be easily transposed, so that rows are swapped with columns.
 
 - A summary can be added at the bottom of the table by applying
   user-defined functions to column source data. If appropriate, this
