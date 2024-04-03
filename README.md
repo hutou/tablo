@@ -13,7 +13,7 @@
 ![logo](https://raw.githubusercontent.com/hutou/tablo/development/docs/assets/images/logo.png)
 -->
 
-![logo](assets/images/logo.png)
+![logo](./assets/images/logo.png)
 
 ## About Tablo
 
