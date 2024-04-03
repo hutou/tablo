@@ -17,7 +17,7 @@
 
 ## About Tablo
 
-<p> <img src="images/summary.svg" width=460> </p>
+<p> <img src="docs/assets/images/summary.svg" width=460> </p>
 
 Tablo is a Crystal library that facilitates the creation of tabular
 layouts from a set of enumerable data.
