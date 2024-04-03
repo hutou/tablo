@@ -17,8 +17,6 @@
 
 ## About Tablo
 
-<p> <img src="docs/assets/images/summary.svg" width=460> </p>
-
 Tablo is a Crystal library that facilitates the creation of tabular
 layouts from a set of enumerable data.
 
@@ -127,7 +125,7 @@ to display a formatted table of some integers with their doubles:
 +--------------+--------------+
 ```
 
-See the ![Tutorial and detailed API](https://hutou.github.io/tablo) for
+See the [Tutorial and detailed API](https://hutou.github.io/tablo) for
 a step-by-step introduction to the library, followed by a complete API
 on public classes and methods, their usage and their parameters.
 
