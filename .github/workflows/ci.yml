@@ -22,6 +22,7 @@ jobs:
         #   run: crystal tool format --check
 
         # - name: Run ameba linter
+        #
         #   run: bin/ameba
 
       - name: Build docs
