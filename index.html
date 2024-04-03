@@ -283,16 +283,6 @@
     <use href="#octicon-link"/>
   </svg>
 </a>Tutorial</h1>
-<h6><a id="switch-to-api" class="anchor" href="#switch-to-api">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a><a href="API.md">switch to API</a></h6>
-<!--
-[<img src="assets/images/logo.png" alt="Logo" width=700/>](README.md)
-[![Logo](assets/images/logo.png")](../.github/README.md)
-[<img src="assets/images/logo.png" alt="Logo" width=700/>](https://github.com/hutou/tablo/tree/development?tab=readme-ov-file)
-i-->
 <p><a href="https://github.com/hutou/tablo/tree/development?tab=readme-ov-file"><img src="assets/images/logo.png" alt="Logo"/></a></p>
 <h2><a id="table-of-contents" class="anchor" href="#table-of-contents">
   <svg class="octicon-link" aria-hidden="true">
@@ -327,9 +317,6 @@ i-->
     <use href="#octicon-link"/>
   </svg>
 </a>Getting started</h2>
-<p><a href="#tutorial">:top:</a>
-<a href="#table-of-contents">:arrow_up:</a>
-<a href="#borders">:arrow_down:</a></p>
 <p>In this tutorial, we'll start with a very simple example, which we'll build on
 as we go along to gradually discover all the possibilities offered by the
 Tablo library.</p>
@@ -383,8 +370,7 @@ both headers and body.</li>
     <use href="#octicon-link"/>
   </svg>
 </a>Borders</h2>
-<p><a href="#tutorial">:top:</a> <a href="#getting-started">:arrow_up:</a> <a href="#row-types">:arrow_down:</a>
-The Border structure lets you create frames around rows and columns, using
+<p>The Border structure lets you create frames around rows and columns, using
 ascii and/or graphic characters.</p>
 <p>A set of predefined borders is available, including <code>Ascii</code>,
 <code>ReducedAscii</code> and <code>Fancy</code>, but you can also define your own border
@@ -410,15 +396,11 @@ border type, you can do:</p>
     <use href="#octicon-link"/>
   </svg>
 </a>Row types</h2>
-<p><a href="#tutorial">:top:</a> <a href="#borders">:arrow_up:</a> <a href="#rules">:arrow_down:</a> <a href="#header-and-body">:arrow_lower_right:</a></p>
 <h3><a id="header-and-body" class="anchor" href="#header-and-body">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>Header and Body</h3>
-<p><a href="#tutorial">:top:</a>
-<a href="#row-types">:arrow_upper_left:</a>
-<a href="#group">:arrow_down:</a></p>
 <p>The Header and Body data row types form the basis of table formatting. Other
 types can be optionally added to establish the final layout: the Group row
 type and Heading row types (Title, SubTitle and Footer).</p>
@@ -427,7 +409,6 @@ type and Heading row types (Title, SubTitle and Footer).</p>
     <use href="#octicon-link"/>
   </svg>
 </a>Group</h3>
-<p><a href="#tutorial">:top:</a> <a href="#header-and-body">:arrow_up:</a> <a href="#headings">:arrow_down:</a></p>
 <p>Adjacent columns can share a common header, above the column headers
 themselves. This common header constitutes a Group row type.</p>
 <p>To create a Group row, simply define a common header after each set of
@@ -496,7 +477,6 @@ puts table</code></pre>
     <use href="#octicon-link"/>
   </svg>
 </a>Headings</h3>
-<p><a href="#tutorial">:top:</a> <a href="#group">:arrow_up:</a> <a href="#rules">:arrow_lower_left:</a></p>
 <p>A formatted table can optionally include a title, subtitle and footer. Each of
 these elements is of type Title, SubTitle or Footer, inherited from the
 abstract class Heading (see API).</p>
@@ -555,7 +535,6 @@ value between the current element's <code>line_breaks_after</code> and the next 
     <use href="#octicon-link"/>
   </svg>
 </a>Rules</h2>
-<p><a href="#tutorial">:top:</a> <a href="#row-types">:arrow_up:</a> <a href="#display-frequency-and-repeated-title">:arrow_down:</a></p>
 <p>Between the different types of rows, there are also different types of
 separator lines, whose format varies according to the types of rows they
 separate.</p>
@@ -570,7 +549,6 @@ Border.</p>
     <use href="#octicon-link"/>
   </svg>
 </a>Display frequency and repeated title</h2>
-<p><a href="#tutorial">:top:</a> <a href="#rules">:arrow_up:</a> <a href="#extracting---formatting---styling">:arrow_down:</a></p>
 <p>An important parameter in table initialization is <code>header_frequency:</code></p>
 <ul>
 <li>By default, it is set to 0, i.e. rows of data other than body are displayed
@@ -678,7 +656,6 @@ subtitle repetition.</p>
     <use href="#octicon-link"/>
   </svg>
 </a>Extracting - Formatting - Styling</h2>
-<p><a href="#tutorial">:top:</a> <a href="#display-frequency-and-repeated-title">:arrow_up:</a> <a href="#packing">:arrow_down:</a> <a href="#extracting">:arrow_lower_right:</a></p>
 <p>At the heart of Tablo's operation lies the Cell, a data structure containing
 all the elements required for display.</p>
 <p>A cell, whether fed by data extracted from the source or directly from the
@@ -745,9 +722,6 @@ managed, without impacting alignment.</p>
     <use href="#octicon-link"/>
   </svg>
 </a>Extracting</h3>
-<p><a href="#tutorial">:top:</a>
-<a href="#extracting---formatting---styling">:arrow_upper_left:</a>
-<a href="#formatting">:arrow_down:</a></p>
 <p>The cell <code>value</code> attribute contains the raw data.</p>
 <p>If directly given as argument to Headings or Group, the cell is a <code>TextCell</code>
 as it is not related to source data.</p>
@@ -794,7 +768,6 @@ puts table</code></pre>
     <use href="#octicon-link"/>
   </svg>
 </a>Formatting</h3>
-<p><a href="#tutorial">:top:</a> <a href="#extracting">:arrow_up:</a> <a href="#styling">:arrow_down:</a></p>
 <p>Formatting consists in applying a transformation to the raw data (the <code>value</code>)
 to obtain a character string ready to be displayed. The simplest
 transformation (which is also the one applied by default) is simply a call to
@@ -929,7 +902,6 @@ Its usefulness seems less obvious, however.</p>
     <use href="#octicon-link"/>
   </svg>
 </a>Styling</h3>
-<p><a href="#tutorial">:top:</a> <a href="#formatting">:arrow_up:</a> <a href="#packing">:arrow_lower_left:</a></p>
 <p>as they depend on the terminal's capabilities. There are therefore
 2 complementary ways of proceeding:</p>
 <ul>
@@ -1017,7 +989,6 @@ of ANSI sequences is given here simply as an example.</p>
     <use href="#octicon-link"/>
   </svg>
 </a>Packing</h2>
-<p><a href="#tutorial">:top:</a> <a href="#extracting---formatting---styling">:arrow_up:</a> <a href="#summary">:arrow_down:</a></p>
 <p>In the previous examples, the notion of column width was used. For a better
 understanding, the diagram below highlights the structure of a column.</p>
 <p> <img src="assets/images/column_layout.svg" width=460> </p>
@@ -1201,7 +1172,6 @@ puts table</code></pre>
     <use href="#octicon-link"/>
   </svg>
 </a>Summary</h2>
-<p><a href="#tutorial">:top:</a> <a href="#packing">:arrow_up:</a> <a href="#transpose">:arrow_down:</a></p>
 <p>The Tablo library offers a basic yet useful summary method.</p>
 <p>At present, it can be used to perform calculations on individual columns of data
 and between columns.</p>
@@ -1408,7 +1378,6 @@ it to an array of integers before summing and converting the result</li>
     <use href="#octicon-link"/>
   </svg>
 </a>Transpose</h2>
-<p><a href="#tutorial">:top:</a> <a href="#summary">:arrow_up:</a></p>
 <pre><code class="language-crystal"></code></pre>
 </div>
 </body>
