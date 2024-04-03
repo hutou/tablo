@@ -1,5 +1,3 @@
-# Tutorial
-
 [<img src="assets/images/logo.png" alt="Logo"/>](https://github.com/hutou/tablo/tree/development?tab=readme-ov-file)
 
 ## Table of contents
