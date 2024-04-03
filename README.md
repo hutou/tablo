@@ -1,13 +1,5 @@
 # Tutorial
 
-###### [switch to API](API.md)
-
-<!--
-[<img src="assets/images/logo.png" alt="Logo" width=700/>](README.md)
-[![Logo](assets/images/logo.png")](../.github/README.md)
-[<img src="assets/images/logo.png" alt="Logo" width=700/>](https://github.com/hutou/tablo/tree/development?tab=readme-ov-file)
-i-->
-
 [<img src="assets/images/logo.png" alt="Logo"/>](https://github.com/hutou/tablo/tree/development?tab=readme-ov-file)
 
 ## Table of contents
@@ -29,10 +21,6 @@ i-->
 - [Transpose](#transpose)
 
 ## Getting started
-
-[:top:](#tutorial)
-[:arrow_up:](#table-of-contents)
-[:arrow_down:](#borders)
 
 In this tutorial, we'll start with a very simple example, which we'll build on
 as we go along to gradually discover all the possibilities offered by the
@@ -97,7 +85,6 @@ A great deal of information can already be extracted from this simple example:
 
 ## Borders
 
-[:top:](#tutorial) [:arrow_up:](#getting-started) [:arrow_down:](#row-types)
 The Border structure lets you create frames around rows and columns, using
 ascii and/or graphic characters.
 
@@ -134,21 +121,13 @@ table = Tablo::Table.new([1, 2, 3],
 
 ## Row types
 
-[:top:](#tutorial) [:arrow_up:](#borders) [:arrow_down:](#rules) [:arrow_lower_right:](#header-and-body)
-
 ### Header and Body
-
-[:top:](#tutorial)
-[:arrow_upper_left:](#row-types)
-[:arrow_down:](#group)
 
 The Header and Body data row types form the basis of table formatting. Other
 types can be optionally added to establish the final layout: the Group row
 type and Heading row types (Title, SubTitle and Footer).
 
 ### Group
-
-[:top:](#tutorial) [:arrow_up:](#header-and-body) [:arrow_down:](#headings)
 
 Adjacent columns can share a common header, above the column headers
 themselves. This common header constitutes a Group row type.
@@ -249,8 +228,6 @@ Output:
 
 ### Headings
 
-[:top:](#tutorial) [:arrow_up:](#group) [:arrow_lower_left:](#rules)
-
 A formatted table can optionally include a title, subtitle and footer. Each of
 these elements is of type Title, SubTitle or Footer, inherited from the
 abstract class Heading (see API).
@@ -327,8 +304,6 @@ In summary, we have 6 types of data rows :
 
 ## Rules
 
-[:top:](#tutorial) [:arrow_up:](#row-types) [:arrow_down:](#display-frequency-and-repeated-title)
-
 Between the different types of rows, there are also different types of
 separator lines, whose format varies according to the types of rows they
 separate.
@@ -342,8 +317,6 @@ These horizontal rules are formatted by the `horizontal_rule` method of class
 Border.
 
 ## Display frequency and repeated title
-
-[:top:](#tutorial) [:arrow_up:](#rules) [:arrow_down:](#extracting---formatting---styling)
 
 An important parameter in table initialization is `header_frequency:`
 
@@ -476,8 +449,6 @@ Output:
 
 ## Extracting - Formatting - Styling
 
-[:top:](#tutorial) [:arrow_up:](#display-frequency-and-repeated-title) [:arrow_down:](#packing) [:arrow_lower_right:](#extracting)
-
 At the heart of Tablo's operation lies the Cell, a data structure containing
 all the elements required for display.
 
@@ -560,10 +531,6 @@ at the beginning of your app.
 
 ### Extracting
 
-[:top:](#tutorial)
-[:arrow_upper_left:](#extracting---formatting---styling)
-[:arrow_down:](#formatting)
-
 The cell `value` attribute contains the raw data.
 
 If directly given as argument to Headings or Group, the cell is a `TextCell`
@@ -630,8 +597,6 @@ would output:
 ```
 
 ### Formatting
-
-[:top:](#tutorial) [:arrow_up:](#extracting) [:arrow_down:](#styling)
 
 Formatting consists in applying a transformation to the raw data (the `value`)
 to obtain a character string ready to be displayed. The simplest
@@ -805,8 +770,6 @@ Overview of the 4 different forms of formatter procs:
 
 ### Styling
 
-[:top:](#tutorial) [:arrow_up:](#formatting) [:arrow_lower_left:](#packing)
-
 as they depend on the terminal's capabilities. There are therefore
 2 complementary ways of proceeding:
 
@@ -913,8 +876,6 @@ Overview of the 5 different forms of styler procs:
 | 5th form              | `value` : `Tablo::CellType`, `cell_data` : `Tablo::CellData`, <br /> `(formatted) content` : `String`, `line_index` : `Int32` <br /> used by: `DataCell` |
 
 ## Packing
-
-[:top:](#tutorial) [:arrow_up:](#extracting---formatting---styling) [:arrow_down:](#summary)
 
 In the previous examples, the notion of column width was used. For a better
 understanding, the diagram below highlights the structure of a column.
@@ -1140,8 +1101,6 @@ To sum up:
 | `table.pack(40, starting_widths: StartingWidths::Initial`) | <ul><li> Resets current column values to their initial values</li> <li>Reduces or increases column widths to meet total table size requirements</li></ul>                                                   |
 
 ## Summary
-
-[:top:](#tutorial) [:arrow_up:](#packing) [:arrow_down:](#transpose)
 
 The Tablo library offers a basic yet useful summary method.
 
@@ -1371,8 +1330,6 @@ Looking again at the source code, we see that :
   it to an array of integers before summing and converting the result
 
 ## Transpose
-
-[:top:](#tutorial) [:arrow_up:](#summary)
 
 ```
 
