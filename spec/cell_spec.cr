@@ -21,8 +21,8 @@ end
 describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
   context "specs on subcells" do
   end
-  context "Specs on TextCell, with WrapMode::Rune" do
-    title_cell = Tablo::TextCell.new(
+  context "Specs on Cell::Text, with WrapMode::Rune" do
+    title_cell = Tablo::Cell::Text.new(
       value: "This is a rather long line, needed for tests",
       row_type: Tablo::RowType::Title,
       left_padding: 1, right_padding: 1, padding_character: " ",
@@ -37,8 +37,8 @@ describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
       subcells[3].should eq("or tests    ")
     end
   end
-  context "Specs on TextCell, with WrapMode::Word" do
-    title_cell = Tablo::TextCell.new(
+  context "Specs on Cell::Text, with WrapMode::Word" do
+    title_cell = Tablo::Cell::Text.new(
       value: "This is a rather long line, needed for tests",
       row_type: Tablo::RowType::Title,
       left_padding: 1, right_padding: 1, padding_character: " ",
@@ -54,12 +54,12 @@ describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
     end
   end
   #
-  context "Specs on DataCell" do
-    describe Tablo::DataCell do
+  context "Specs on Cell::Data" do
+    describe Tablo::Cell::Data do
       context "With simple float value" do
         describe "#line_count" do
-          bodycell = Tablo::DataCell.new(
-            value: 3.14, cell_data: Tablo::CellData.new(3.14, 0, 0),
+          bodycell = Tablo::Cell::Data.new(
+            value: 3.14, cell_data: Tablo::Cell::Data::Coords.new(3.14, 0, 0),
             left_padding: 1, right_padding: 1, padding_character: " ",
             alignment: nil,
             styler: ->(_c : Tablo::CellType, s : String) { s },
@@ -70,8 +70,8 @@ describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
           end
         end
         describe "#content_postformat" do
-          bodycell = Tablo::DataCell.new(
-            value: 3.14, cell_data: Tablo::CellData.new(3.14, 0, 0),
+          bodycell = Tablo::Cell::Data.new(
+            value: 3.14, cell_data: Tablo::Cell::Data::Coords.new(3.14, 0, 0),
             left_padding: 1, right_padding: 1, padding_character: " ",
             alignment: nil,
             styler: ->(_c : Tablo::CellType, s : String) { s },
@@ -83,8 +83,8 @@ describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
           end
         end
         describe "#calculate_subcells" do
-          bodycell = Tablo::DataCell.new(
-            value: 3.14, cell_data: Tablo::CellData.new(3.14, 0, 0),
+          bodycell = Tablo::Cell::Data.new(
+            value: 3.14, cell_data: Tablo::Cell::Data::Coords.new(3.14, 0, 0),
             left_padding: 1, right_padding: 1, padding_character: " ",
             alignment: nil,
             styler: ->(_c : Tablo::CellType, s : String) { s.colorize(:red).to_s },
@@ -101,15 +101,15 @@ describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
         end
       end
     end
-    describe Tablo::DataCell do
+    describe Tablo::Cell::Data do
       header_value = "This is a very long and multiline header " \
                      "for testing formatting, styling and alignment"
 
       context "With long header text" do
         describe "#line_count" do
           it "returns the correct number of subcells in the cell" do
-            headercell = Tablo::DataCell.new(
-              value: header_value, cell_data: Tablo::CellData.new(header_value, 0, 0), left_padding: 1,
+            headercell = Tablo::Cell::Data.new(
+              value: header_value, cell_data: Tablo::Cell::Data::Coords.new(header_value, 0, 0), left_padding: 1,
               right_padding: 1, padding_character: " ", alignment: nil,
               styler: ->(_c : Tablo::CellType, s : String) { s },
               formatter: ->(c : Tablo::CellType) { c.to_s },
@@ -119,8 +119,8 @@ describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
         end
         describe "#content_postformat" do
           it "correctly apply the formatter" do
-            headercell = Tablo::DataCell.new(
-              value: header_value, cell_data: Tablo::CellData.new(header_value, 0, 0), left_padding: 1,
+            headercell = Tablo::Cell::Data.new(
+              value: header_value, cell_data: Tablo::Cell::Data::Coords.new(header_value, 0, 0), left_padding: 1,
               right_padding: 1, padding_character: " ", alignment: nil,
               styler: ->(_c : Tablo::CellType, s : String) { s },
               formatter: ->(c : Tablo::CellType) { c.to_s.upcase },
@@ -134,8 +134,8 @@ describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
         describe "#calculate_subcells" do
           it "correctly returns an array of formatted and styled subcells, " \
              "left aligned as bodycell value is a string" do
-            headercell = Tablo::DataCell.new(
-              value: header_value, cell_data: Tablo::CellData.new(header_value, 0, 0), left_padding: 1,
+            headercell = Tablo::Cell::Data.new(
+              value: header_value, cell_data: Tablo::Cell::Data::Coords.new(header_value, 0, 0), left_padding: 1,
               right_padding: 1, padding_character: " ", alignment: Tablo::Justify::Left,
               styler: ->(_c : Tablo::CellType, s : String) { s.colorize(:red).to_s },
               formatter: ->(c : Tablo::CellType) { c.to_s },
@@ -159,8 +159,8 @@ describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
 
           it "correctly returns an array of formatted and styled subcells, " \
              "center justified" do
-            headercell = Tablo::DataCell.new(
-              value: header_value, cell_data: Tablo::CellData.new(header_value, 0, 0), left_padding: 1,
+            headercell = Tablo::Cell::Data.new(
+              value: header_value, cell_data: Tablo::Cell::Data::Coords.new(header_value, 0, 0), left_padding: 1,
               right_padding: 1, padding_character: " ", alignment: Tablo::Justify::Center,
               styler: ->(_c : Tablo::CellType, s : String) { s.colorize(:red).to_s },
               formatter: ->(c : Tablo::CellType) { c.to_s },
@@ -188,10 +188,10 @@ describe "\n\n#{Tablo::Cell} - Specs for cell.cr" do
 
           it "correctly returns an array of formatted and styled subcells, " \
              "with different styled lines, left aligned as value is string" do
-            headercell = Tablo::DataCell.new(
-              value: header_value, cell_data: Tablo::CellData.new(header_value, 0, 0), left_padding: 1,
+            headercell = Tablo::Cell::Data.new(
+              value: header_value, cell_data: Tablo::Cell::Data::Coords.new(header_value, 0, 0), left_padding: 1,
               right_padding: 1, padding_character: " ", alignment: nil,
-              styler: ->(_c : Tablo::CellType, _n : Tablo::CellData, s : String, line : Int32) {
+              styler: ->(_c : Tablo::CellType, _n : Tablo::Cell::Data::Coords, s : String, line : Int32) {
                 case line
                 when 1
                   s.colorize(:red).to_s

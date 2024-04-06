@@ -26,7 +26,7 @@ def create_table
   ]
   table = Tablo::Table.new(invoice,
     omit_last_rule: false,
-    border: Tablo::Border.new(Tablo::BorderName::Fancy),
+    border: Tablo::Border.new(Tablo::Border::Name::Fancy),
     title: Tablo::Title.new("Invoice")) do |t|
     t.add_column("Product",
       &.product)
@@ -68,9 +68,9 @@ def create_table_big
 
   table = Tablo::Table.new(invoice,
     omit_last_rule: true,
-    border: Tablo::Border.new(Tablo::BorderName::Fancy),
+    border: Tablo::Border.new(Tablo::Border::Name::Fancy),
     title: Tablo::Title.new("\nInvoice\n=======\n"),
-    subtitle: Tablo::SubTitle.new("Details", frame: Tablo::Frame.new)) do |t|
+    subtitle: Tablo::SubTitle.new("Details", frame: Tablo::Heading::Frame.new)) do |t|
     t.add_column("Product",
       &.product)
     t.add_column("Quantity",
@@ -100,7 +100,7 @@ invoice_summary_definition_base =
           value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
         )
       },
-      styler: ->(_value : Tablo::CellType, cd : Tablo::CellData, fc : String) {
+      styler: ->(_value : Tablo::CellType, cd : Tablo::Cell::Data::Coords, fc : String) {
         case cd.row_index
         when 0, 2, 5
           fc.colorize.mode(:bold).to_s
@@ -221,7 +221,7 @@ invoice_summary_definition_big = [
         value.nil? ? "" : "%.2f" % value.as(BigDecimal)
       )
     },
-    styler: ->(_value : Tablo::CellType, cd : Tablo::CellData, fc : String) {
+    styler: ->(_value : Tablo::CellType, cd : Tablo::Cell::Data::Coords, fc : String) {
       case cd.row_index
       when 0, 2, 5 then fc.colorize.mode(:bold).to_s
       when 1       then fc.colorize.mode(:italic).to_s
@@ -580,7 +580,7 @@ describe "#{Tablo::Summary}", tags: "summary" do
         tbl.omit_last_rule = true
         tbl.pack
         tbl.add_summary(invoice_summary_definition_big,
-          title: Tablo::Title.new("Summary", frame: Tablo::Frame.new)
+          title: Tablo::Title.new("Summary", frame: Tablo::Heading::Frame.new)
         )
         tbl.summary.as(Tablo::Table).pack
         output = tbl.to_s + "\n" + tbl.summary.to_s

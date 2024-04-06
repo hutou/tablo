@@ -37,8 +37,8 @@ module Tablo
     protected getter column_registry = {} of LabelType => Column(T)
     protected property used_columns = UsedColumns.new(false, [] of Int32)
 
-    protected property group_registry = {} of LabelType => TextCell
-    protected property group_registry_saved = {} of LabelType => TextCell
+    protected property group_registry = {} of LabelType => Cell::Text
+    protected property group_registry_saved = {} of LabelType => Cell::Text
 
     # Array of array (=group) of columns, example : [[1,2,3],[4,5,6,7],[8]]
     protected property column_groups = [] of Array(Int32)
@@ -77,16 +77,16 @@ module Tablo
         @border : Border = Border.new(Config.border_type, Config.border_styler),
         #
         @group_alignment : Justify = Config.group_alignment,
-        @group_formatter : TextCellFormatter = Config.group_formatter,
-        @group_styler : TextCellStyler = Config.group_styler,
+        @group_formatter : Cell::Text::Formatter = Config.group_formatter,
+        @group_styler : Cell::Text::Styler = Config.group_styler,
         #
         @header_alignment : Justify? = Config.header_alignment,
-        @header_formatter : DataCellFormatter = Config.header_formatter,
-        @header_styler : DataCellStyler = Config.header_styler,
+        @header_formatter : Cell::Data::Formatter = Config.header_formatter,
+        @header_styler : Cell::Data::Styler = Config.header_styler,
         #
         @body_alignment : Justify? = Config.body_alignment,
-        @body_formatter : DataCellFormatter = Config.body_formatter,
-        @body_styler : DataCellStyler = Config.body_styler,
+        @body_formatter : Cell::Data::Formatter = Config.body_formatter,
+        @body_styler : Cell::Data::Styler = Config.body_styler,
         #
         @left_padding : Int32 = Config.left_padding,
         @right_padding : Int32 = Config.right_padding,
@@ -161,24 +161,24 @@ module Tablo
     #   `border` may also be initialized directly by a string of 16 characters.
     # - `group_alignment`: type is `Justify`<br />
     #   Default value is `DEFAULT_HEADING_ALIGNMENT`
-    # - `group_formatter`: type is `TextCellFormatter`<br />
+    # - `group_formatter`: type is `Cell::Text::Formatter`<br />
     #   Default value is `DEFAULT_FORMATTER`
-    # - `group_styler`: type is `TextCellStyler` <br />
+    # - `group_styler`: type is `Cell::Text::Styler` <br />
     #   Default value is `DEFAULT_STYLER`
     # - `header_alignment`: type is `Justify?` <br />
     #   Default value is `nil` <br />
     #   (with `nil` as default, alignment
     #   depends on the type of the related body cell value)
-    # - `header_formatter`: type is `DataCellFormatter` <br />
+    # - `header_formatter`: type is `Cell::Data::Formatter` <br />
     #   Default value is `DEFAULT_FORMATTER`
-    # - `header_styler`: type is `DataCellStyler` <br />
+    # - `header_styler`: type is `Cell::Data::Styler` <br />
     #   Defaut value is `DEFAULT_DATA_DEPENDENT_STYLER`
     # - `body_alignment`: type is `Justify?` <br />
     #   Default value is `nil` <br />
     #   (With `nil` as default, alignment depends on the type of its cell value)
-    # - `body_formatter`: type id `DataCellFormatter` <br />
+    # - `body_formatter`: type id `Cell::Data::Formatter` <br />
     #   Default value is `DEFAULT_FORMATTER`
-    # - `body_styler`: type is `DataCellStyler` <br />
+    # - `body_styler`: type is `Cell::Data::Styler` <br />
     #   Default value is `DEFAULT_DATA_DEPENDENT_STYLER`
     # - `left_padding`: type is `Int32`<br />
     #   Default value is `1` <br />
@@ -375,19 +375,19 @@ module Tablo
     # - `header_alignment`: type is `Justify?`<br />
     #   By default, inherits from table `header_alignment` initializer
     #
-    # - `header_formatter`: type is `DataCellFormatter` <br />
+    # - `header_formatter`: type is `Cell::Data::Formatter` <br />
     #   By default, inherits from table `header_formatter` initializer
     #
-    # - `header_styler`: type is `DataCellStyler` <br />
+    # - `header_styler`: type is `Cell::Data::Styler` <br />
     #   By default, inherits from table `header_styler` initializer
     #
     # - `body_alignment`: type is `Justify?` <br />
     #   By default, inherits from table `body_alignment` initializer
     #
-    # - `body_formatter`: type is `DataCellFormatter` <br />
+    # - `body_formatter`: type is `Cell::Data::Formatter` <br />
     #   By default, inherits from table `body_formatter` initializer
     #
-    # - `body_styler`: type is `DataCellStyler` <br />
+    # - `body_styler`: type is `Cell::Data::Styler` <br />
     #   By default, inherits from table `body_styler` initializer
     #
     # - `left_padding`: type is `Int32` <br />
@@ -432,7 +432,7 @@ module Tablo
                    wrap_mode = wrap_mode,
                    &extractor : (T, Int32) -> CellType)
       if column_registry.has_key?(label)
-        raise DuplicateKey.new("Column label already used in this table.")
+        raise Exception::DuplicateKey.new("Column label already used in this table.")
       end
       check_width(width)
       check_padding(left_padding)
@@ -465,7 +465,7 @@ module Tablo
       )
     end
 
-    # Returns an instance of `TextCell`
+    # Returns an instance of `Cell::Text`
     #
     # Creates a group including all previous columns not already grouped.
     # After adding the last column, a group is automatically created (with an
@@ -485,10 +485,10 @@ module Tablo
     # - `alignment`: type is `Justify` <br />
     #   By default, inherits from table `group_alignment` initializer
     #
-    # - `formatter`: type is `TextCellFormatter` <br />
+    # - `formatter`: type is `Cell::Text::Formatter` <br />
     #   By default, inherits from table `group_formatter` initializer
     #
-    # - `styler`: type is `TextCellStyler` <br />
+    # - `styler`: type is `Cell::Text::Styler` <br />
     #   By default, inherits from table `group_styler` initializer
     #
     # - `padding_character`: type is `String` <br />
@@ -508,7 +508,7 @@ module Tablo
                   truncation_indicator = truncation_indicator,
                   wrap_mode = wrap_mode)
       if group_registry.has_key?(label)
-        raise DuplicateKey.new("Group label already used in this table.")
+        raise Exception::DuplicateKey.new("Group label already used in this table.")
       end
       if column_registry.size.zero?
         raise GroupError.new("Group requires at least one column.")
@@ -520,7 +520,7 @@ module Tablo
       columns = column_list.select { |e| e.index.in?(column_groups.last) }
       group_width = calc_group_width(columns)
 
-      group_registry[label] = TextCell.new(
+      group_registry[label] = Cell::Text.new(
         value: header,
         row_type: RowType::Group,
         alignment: alignment,
@@ -758,7 +758,7 @@ module Tablo
       end
       heading_cell_width -= (columns.first.left_padding + columns.last.right_padding +
                              extra_for_internal_dividers)
-      heading_cell = TextCell.new(value: value.as(CellType),
+      heading_cell = Cell::Text.new(value: value.as(CellType),
         row_type: row_type, alignment: row_name.alignment,
         formatter: row_name.formatter, styler: row_name.styler,
         left_padding: columns.first.left_padding,
@@ -782,7 +782,7 @@ module Tablo
       blank_border = " " # if no frame, no border !!!
       subrows = subcell_stacks.transpose.map do |subrow_components|
         case cell = cells.first
-        in TextCell
+        in Cell::Text
           if cell.row_type == RowType::Title && title.frame.nil? ||
              cell.row_type == RowType::SubTitle && subtitle.frame.nil? ||
              cell.row_type == RowType::Footer && footer.frame.nil?
@@ -795,7 +795,7 @@ module Tablo
           else
             border.join_cell_contents(subrow_components)
           end
-        in DataCell
+        in Cell::Data
           border.join_cell_contents(subrow_components)
         end
       end
@@ -985,10 +985,10 @@ module Tablo
     private def autosize_columns(columns)
       sources.each_with_index do |source, row_index|
         columns.each_with_index do |column, column_index|
-          # create a DataCell (Body)
+          # create a Cell::Data (Body)
           body_cell = column.body_cell(source, row_index: row_index, column_index: column_index)
           if row_index == 0
-            # if first row, create a DataCell for Header
+            # if first row, create a Cell::Data for Header
             header_cell = column.header_cell(body_cell)
             column.width = wrapped_width(header_cell.formatted_content)
           end

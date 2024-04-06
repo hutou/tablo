@@ -10,10 +10,10 @@ end
 
 describe Tablo::Row do
   # define border type for all tests
-  # Tablo::Config.border_type = Tablo::BorderName::Ascii
+  # Tablo::Config.border_type = Tablo::Border::Name::Ascii
 
   table = Tablo::Table.new([["A", "B"], ["C", "D"], ["E", "F"], ["G", "H"], ["I", "J"]],
-    border: Tablo::Border.new(Tablo::BorderName::Ascii),
+    border: Tablo::Border.new(Tablo::Border::Name::Ascii),
     header_frequency: 0) do |t|
     t.add_column("N") { |n| n[0] }
     t.add_column("Double") { |n| n[0] * 2 }
@@ -51,7 +51,7 @@ describe Tablo::Row do
   end
   it "iterates over the results of calling the column's extractor on the source object" do
     row.each_with_index do |cell, i|
-      cell.should be_a(Tablo::DataCell)
+      cell.should be_a(Tablo::Cell::Data)
       case i
       when 0
         cell.value.should eq("G")

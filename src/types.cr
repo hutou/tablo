@@ -137,11 +137,20 @@ module Tablo
     Right
   end
 
+  class Exception < Exception
+    # This exception is raised when the column identifier (LabelType) is used more than once
+    class DuplicateKey < Exception
+    end
+
+    class LabelNotFound < Exception
+    end
+  end
+
   class TabloException < Exception
   end
 
-  class DuplicateKey < TabloException
-  end
+  # class DuplicateKey < TabloException
+  # end
 
   # --- to be validated ---
   class InvalidConnectorString < TabloException

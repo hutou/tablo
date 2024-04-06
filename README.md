@@ -258,7 +258,7 @@ Output:
 ```
 
 These elements can also be framed, possibly with line breaks before and after
-(defined in the `Frame` struct initializer as `line_breaks_before` and
+(defined in the `Heading::Frame` struct initializer as `line_breaks_before` and
 `line_breaks_after` with a value of 0).
 
 The number of line breaks between adjacent elements is equal to the highest
@@ -268,7 +268,7 @@ value between the current element's `line_breaks_after` and the next element's
 ```crystal
 table = Tablo::Table.new([1, 2, 3],
   title: Tablo::Title.new("Data types alignment",
-    frame: Tablo::Frame.new(line_breaks_before: 0, line_breaks_after: 2))) do |t|
+    frame: Tablo::Heading::Frame.new(line_breaks_before: 0, line_breaks_after: 2))) do |t|
 ```
 
 Output:
@@ -325,7 +325,7 @@ An important parameter in table initialization is `header_frequency:`
 table = Tablo::Table.new([1, 2, 3],
         header_frequency: 0,
         title: Tablo::Title.new("Data types alignment",
-          frame: Tablo::Frame.new(0, 2)),
+          frame: Tablo::Heading::Frame.new(0, 2)),
         subtitle: Tablo::SubTitle.new("Only Booleans are centered by default"),
         footer: Tablo::Footer.new("End of page")) do |t|
 ```
@@ -409,7 +409,7 @@ subtitle repetition.
 table = Tablo::Table.new([1, 2, 3],
         header_frequency: 2,
         title: Tablo::Title.new("Data types alignment",
-          frame: Tablo::Frame.new(0, 2), repeated: true),
+          frame: Tablo::Heading::Frame.new(0, 2), repeated: true),
 ```
 
 Output:
@@ -544,7 +544,7 @@ the cell's coordinates (`row_index` and `column_index`), as well as the
 styling.
 
 ```crystal
-struct CellData
+struct Cell::Data::Coords
 getter body_value, row_index, column_index
     def initialize(@body_value : CellType, @row_index : Int32, @column_index : Int32)
     end
@@ -718,7 +718,7 @@ the `column_index` as formatting condition.
 require "tablo"
 
 table = Tablo::Table.new([-30.00001, -3.14159, 0.0, 1.470001, 5.78707, 10.0],
-  body_formatter: ->(value : Tablo::CellType, cell_data : Tablo::CellData) {
+  body_formatter: ->(value : Tablo::CellType, cell_data : Tablo::Cell::Data::Coords) {
     case cell_data.column_index
     when 1 then Tablo::Util.dot_align(value.as(Float), 4, Tablo::Util::DotAlign::Empty)
     when 2 then Tablo::Util.dot_align(value.as(Float), 4, Tablo::Util::DotAlign::Blank)
@@ -763,8 +763,8 @@ Overview of the 4 different forms of formatter procs:
 | -- | -- |
 | 1st form | `value` : `Tablo::CellType` <br />used by: `TextCell` or `DataCell`|
 | 2nd form | `value` : `Tablo::CellType`, `width` : `Int32` <br />used by: `TextCell` or `DataCell` |
-| 3rd form | `value` : `Tablo::CellType`, `cell_data` : `Tablo::CellData` <br />used by: `DataCell`|
-| 4th form | `value` : `Tablo::CellType`, `cell_data` : `Tablo::CellData`, <br />`width` : `Int32` used by: `DataCell` |
+| 3rd form | `value` : `Tablo::CellType`, `cell_data` : `Tablo::Cell::Data::Coords` <br />used by: `DataCell`|
+| 4th form | `value` : `Tablo::CellType`, `cell_data` : `Tablo::Cell::Data::Coords`, <br />`width` : `Int32` used by: `DataCell` |
 
 ### Styling
 
@@ -837,12 +837,12 @@ require "tablo"
 require "colorize"
 
 table = Tablo::Table.new([1, 2, 3, 4, 5],
-  title: Tablo::Title.new("My black and white fancy table", frame: Tablo::Frame.new),
-  footer: Tablo::Footer.new("End of data", frame: Tablo::Frame.new),
+  title: Tablo::Title.new("My black and white fancy table", frame: Tablo::Heading::Frame.new),
+  footer: Tablo::Footer.new("End of data", frame: Tablo::Heading::Frame.new),
   border: Tablo::Border.new(:fancy, ->(border_char : String) {
     border_char.colorize(:light_gray).to_s
   }),
-  body_styler: ->(_value : Tablo::CellType, cell_data : Tablo::CellData, content : String) {
+  body_styler: ->(_value : Tablo::CellType, cell_data : Tablo::Cell::Data::Coords, content : String) {
     if cell_data.row_index.even?
       "\e[3m" + content.colorize(:light_gray).to_s + "\e[0m"                      <1>
     else
@@ -865,13 +865,13 @@ of ANSI sequences is given here simply as an example.
 
 Overview of the 5 different forms of styler procs:
 
-| Forms of styler procs | Parameter and types, in order                                                                                                                            |
-| --------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1st form              | `(formatted) content` : `String` <br />used by: `Border`, `TextCell` or `DataCell`                                                                       |
-| 2nd form              | `(formatted) content` : `String`, `line_index` : `Int32` <br /> used by: `TextCell`                                                                      |
-| 3rd form              | `value` : `Tablo::CellType`, `(formatted) content` : `String` <br /> used by: `DataCell`                                                                 |
-| 4th form              | `value` : `Tablo::CellType`, `cell_data` : `Tablo::CellData`, <br /> `(formatted) content` : `String` used by: `DataCell`                                |
-| 5th form              | `value` : `Tablo::CellType`, `cell_data` : `Tablo::CellData`, <br /> `(formatted) content` : `String`, `line_index` : `Int32` <br /> used by: `DataCell` |
+| Forms of styler procs | Parameter and types, in order                                                                                                                                      |
+| --------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1st form              | `(formatted) content` : `String` <br />used by: `Border`, `TextCell` or `DataCell`                                                                                 |
+| 2nd form              | `(formatted) content` : `String`, `line_index` : `Int32` <br /> used by: `TextCell`                                                                                |
+| 3rd form              | `value` : `Tablo::CellType`, `(formatted) content` : `String` <br /> used by: `DataCell`                                                                           |
+| 4th form              | `value` : `Tablo::CellType`, `cell_data` : `Tablo::Cell::Data::Coords`, <br /> `(formatted) content` : `String` used by: `DataCell`                                |
+| 5th form              | `value` : `Tablo::CellType`, `cell_data` : `Tablo::Cell::Data::Coords`, <br /> `(formatted) content` : `String`, `line_index` : `Int32` <br /> used by: `DataCell` |
 
 ## Packing
 
@@ -1157,7 +1157,7 @@ invoice_summary_definition = [
         value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
       )
     },
-    styler: ->(_value : Tablo::CellType, cd : Tablo::CellData, fc : String) {
+    styler: ->(_value : Tablo::CellType, cd : Tablo::Cell::Data::Coords, fc : String) {
       case cd.row_index
       when 0, 2, 5
         fc.colorize.mode(:bold).to_s

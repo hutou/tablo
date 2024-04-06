@@ -1,19 +1,19 @@
 require "./spec_helper"
 
 def set_border
-  Tablo::Border.new(Tablo::BorderName::Fancy)
+  Tablo::Border.new(Tablo::Border::Name::Fancy)
 end
 
 def set_title
-  Tablo::Title.new("This a very long text to be displayed as title heading", frame: Tablo::Frame.new)
+  Tablo::Title.new("This a very long text to be displayed as title heading", frame: Tablo::Heading::Frame.new)
 end
 
 def set_subtitle
-  Tablo::SubTitle.new("A very simple subtitle", frame: Tablo::Frame.new)
+  Tablo::SubTitle.new("A very simple subtitle", frame: Tablo::Heading::Frame.new)
 end
 
 def set_footer
-  Tablo::Footer.new("Do you need a footer?", frame: Tablo::Frame.new)
+  Tablo::Footer.new("Do you need a footer?", frame: Tablo::Heading::Frame.new)
 end
 
 describe "#{Tablo::Table} -> packing method", tags: "pack" do

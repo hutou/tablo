@@ -26,7 +26,7 @@ They differ mainly in 2 exclusive attribute types:
 
 - RowType for TextCell cells
 
-- CellData for DataCell cells
+- Cell::Data::Coords for DataCell cells
 
 Both have the `value` attribute, which contains the raw data extracted from
 source. Its type is `Tablo::CellType`
@@ -313,7 +313,7 @@ _Parameters_
 - `value`: type is `CellType?` <br />
   Default value is `nil` (no display)<br />
   `value` is the title contents (may not be an empty string).
-- `frame`: type is `Frame?` <br />
+- `frame`: type is `Heading::Frame?` <br />
   Default value is `nil` <br />
   Defines a frame around title contents. If `nil`, no frame.
 
@@ -384,20 +384,20 @@ _Parameters (see `Title` for details)_
   Default value is `false` <br />
   If `true`, emit a page break
 
-## struct Frame
+## struct Heading::Frame
 
 [:top:](#tablo-api)
 [:arrow_up:](#struct-footer)
 [:arrow_lower_right:](#frame-method-initialize)
 
-The `Frame` struct is used to add a frame to `Title`, `SubTitle` or `Footer`.
+The `Heading::Frame` struct is used to add a frame to `Title`, `SubTitle` or `Footer`.
 
-### Frame method `initialize`
+### Heading::Frame method `initialize`
 
 [:top:](#tablo-api)
 [:arrow_upper_left:](#struct-frame)
 
-Returns an instance of `Frame`
+Returns an instance of `Heading::Frame`
 
 _Parameters_
 

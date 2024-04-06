@@ -78,7 +78,7 @@ module Tablo
     class_setter column_width_range : Range(Int32, Int32) = 1..128
 
     # Returns the range of allowable values for `line_breaks_before` and
-    # `line_breaks_after` attributes in `Frame` struct <br />
+    # `line_breaks_after` attributes in `Heading::Frame` struct <br />
     class_getter line_breaks_range : Range(Int32, Int32)
     # Sets the range of allowable values for `line_breaks_before` and
     # `line_breaks_after`  <br />
@@ -110,39 +110,39 @@ module Tablo
 
     # TODO I'm here! TODO
     #
-    class_getter border_type : String | BorderName
-    class_setter border_type : String | BorderName = BorderName::Ascii
+    class_getter border_type : String | Border::Name
+    class_setter border_type : String | Border::Name = Border::Name::Ascii
 
-    class_getter border_styler : BorderStyler
-    class_setter border_styler : BorderStyler = DEFAULT_STYLER
+    class_getter border_styler : Border::Styler
+    class_setter border_styler : Border::Styler = DEFAULT_STYLER
 
     class_getter heading_alignment : Justify
     class_setter heading_alignment : Justify = DEFAULT_HEADING_ALIGNMENT
 
-    class_getter heading_formatter : TextCellFormatter
-    class_setter heading_formatter : TextCellFormatter = DEFAULT_FORMATTER
+    class_getter heading_formatter : Cell::Text::Formatter
+    class_setter heading_formatter : Cell::Text::Formatter = DEFAULT_FORMATTER
 
-    class_getter heading_styler : TextCellStyler
-    class_setter heading_styler : TextCellStyler = DEFAULT_STYLER
+    class_getter heading_styler : Cell::Text::Styler
+    class_setter heading_styler : Cell::Text::Styler = DEFAULT_STYLER
 
     class_getter group_alignment : Justify
     class_setter group_alignment : Justify = DEFAULT_HEADING_ALIGNMENT
 
-    class_getter group_formatter : TextCellFormatter
-    class_setter group_formatter : TextCellFormatter = DEFAULT_FORMATTER
+    class_getter group_formatter : Cell::Text::Formatter
+    class_setter group_formatter : Cell::Text::Formatter = DEFAULT_FORMATTER
 
-    class_getter group_styler : TextCellStyler
-    class_setter group_styler : TextCellStyler = DEFAULT_STYLER
+    class_getter group_styler : Cell::Text::Styler
+    class_setter group_styler : Cell::Text::Styler = DEFAULT_STYLER
 
     #
     class_getter header_alignment : Justify?
     class_setter header_alignment : Justify? = nil
 
-    class_getter header_formatter : DataCellFormatter
-    class_setter header_formatter : DataCellFormatter = DEFAULT_FORMATTER
+    class_getter header_formatter : Cell::Data::Formatter
+    class_setter header_formatter : Cell::Data::Formatter = DEFAULT_FORMATTER
 
-    class_getter header_styler : DataCellStyler
-    class_setter header_styler : DataCellStyler = DEFAULT_DATA_DEPENDENT_STYLER
+    class_getter header_styler : Cell::Data::Styler
+    class_setter header_styler : Cell::Data::Styler = DEFAULT_DATA_DEPENDENT_STYLER
 
     # Returns `.body_alignment`
     class_getter body_alignment : Justify?
@@ -150,11 +150,11 @@ module Tablo
     # (Default `nil` => alignment depends on body cell value datatype)
     class_setter body_alignment : Justify? = nil
 
-    class_getter body_formatter : DataCellFormatter
-    class_setter body_formatter : DataCellFormatter = DEFAULT_FORMATTER
+    class_getter body_formatter : Cell::Data::Formatter
+    class_setter body_formatter : Cell::Data::Formatter = DEFAULT_FORMATTER
 
-    class_getter body_styler : DataCellStyler
-    class_setter body_styler : DataCellStyler = DEFAULT_DATA_DEPENDENT_STYLER
+    class_getter body_styler : Cell::Data::Styler
+    class_setter body_styler : Cell::Data::Styler = DEFAULT_DATA_DEPENDENT_STYLER
     #
     class_getter left_padding : Int32
     class_setter left_padding : Int32 = 1

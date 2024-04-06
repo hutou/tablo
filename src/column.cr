@@ -31,12 +31,12 @@ module Tablo
     def initialize(@header : String,
                    #
                    @header_alignment : Justify?,
-                   @header_formatter : DataCellFormatter,
-                   @header_styler : DataCellStyler,
+                   @header_formatter : Cell::Data::Formatter,
+                   @header_styler : Cell::Data::Styler,
                    #
                    @body_alignment : Justify?,
-                   @body_formatter : DataCellFormatter,
-                   @body_styler : DataCellStyler,
+                   @body_formatter : Cell::Data::Formatter,
+                   @body_styler : Cell::Data::Styler,
                    #
                    @left_padding : Int32,
                    @right_padding : Int32,
@@ -52,9 +52,9 @@ module Tablo
 
     # Creates a HeaderCell type cell
     # called from Table
-    # Returns a DataCell
+    # Returns a Cell::Data
     protected def header_cell(bodycell)
-      DataCell.new(
+      Cell::Data.new(
         value: header,
         cell_data: bodycell.cell_data,
         left_padding: left_padding,
@@ -71,11 +71,11 @@ module Tablo
 
     # Creates a BodyCell type cell
     # called from Table
-    # Returns a DataCell
+    # Returns a Cell::Data
     protected def body_cell(source, row_index, column_index)
       value = body_cell_value(source, row_index)
-      cell_data = CellData.new(value, row_index, index)
-      DataCell.new(
+      cell_data = Cell::Data::Coords.new(value, row_index, index)
+      Cell::Data.new(
         value: value,
         cell_data: cell_data,
         left_padding: left_padding,

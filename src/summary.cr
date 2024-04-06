@@ -10,13 +10,13 @@ module Tablo
 
     private getter header_values = {} of LabelType => CellType
     private getter header_alignments = {} of LabelType => Justify
-    private getter header_formatters = {} of LabelType => DataCellFormatter
-    private getter header_stylers = {} of LabelType => DataCellStyler
+    private getter header_formatters = {} of LabelType => Cell::Data::Formatter
+    private getter header_stylers = {} of LabelType => Cell::Data::Styler
 
     private getter body_values = {} of LabelType => Hash(Int32, CellType | Proc(CellType))
     private getter body_alignments = {} of LabelType => Justify
-    private getter body_formatters = {} of LabelType => DataCellFormatter
-    private getter body_stylers = {} of LabelType => DataCellStyler
+    private getter body_formatters = {} of LabelType => Cell::Data::Formatter
+    private getter body_stylers = {} of LabelType => Cell::Data::Styler
 
     private class_property proc_results = {} of Symbol => CellType
 
@@ -86,7 +86,7 @@ module Tablo
     #         value.nil? ? "" : "%.2f" % value.as(BigDecimal)
     #       )
     #     },
-    #     styler: ->(_value : Tablo::CellType, cd : Tablo::CellData, fc : String) {
+    #     styler: ->(_value : Tablo::CellType, cd : Tablo::Cell::Data::Coords, fc : String) {
     #       case cd.row_index
     #       when 0, 2, 5 then fc.colorize.mode(:bold).to_s
     #       when 1       then fc.colorize.mode(:italic).to_s
@@ -117,7 +117,7 @@ module Tablo
     #   omit_last_rule: true,
     #   border: Tablo::Border.new(Tablo::BorderName::Fancy),
     #   title: Tablo::Title.new("\nInvoice\n=======\n"),
-    #   subtitle: Tablo::SubTitle.new("Details", frame: Tablo::Frame.new)) do |t|
+    #   subtitle: Tablo::SubTitle.new("Details", frame: Tablo::Heading::Frame.new)) do |t|
     #   t.add_column("Product",
     #     &.product)
     #   t.add_column("Quantity",
@@ -139,7 +139,7 @@ module Tablo
     #
     # table.pack
     # table.add_summary(invoice_summary_definition,
-    #   title: Tablo::Title.new("Summary", frame: Tablo::Frame.new))
+    #   title: Tablo::Title.new("Summary", frame: Tablo::Heading::Frame.new))
     # table.summary.as(Tablo::Table).pack
     # puts table
     # puts table.summary
@@ -259,7 +259,7 @@ module Tablo
         end
         columns.as(Array(LabelType)).each do |column|
           if duplicates.has_key?(column)
-            raise DuplicateKey.new(
+            raise Exception::DuplicateKey.new(
               "Summary: duplicate header column definition for column<#{column}>")
           else
             duplicates[column] = 1
@@ -268,10 +268,10 @@ module Tablo
               header_alignments[column] = entry.alignment.as(Justify)
             end
             unless entry.formatter.nil?
-              header_formatters[column] = entry.formatter.as(DataCellFormatter)
+              header_formatters[column] = entry.formatter.as(Cell::Data::Formatter)
             end
             unless entry.styler.nil?
-              header_stylers[column] = entry.styler.as(DataCellStyler)
+              header_stylers[column] = entry.styler.as(Cell::Data::Styler)
             end
           end
         end
@@ -288,7 +288,7 @@ module Tablo
       duplicates = {} of {LabelType, Int32} => Int32
       body_rows.each do |entry|
         if duplicates.has_key?({entry.column, entry.row})
-          raise DuplicateKey.new(
+          raise Exception::DuplicateKey.new(
             "Summary: duplicate body definition, row<#{entry.row}> for column<#{entry.column}> already used.")
         else
           defined_rows << entry.row
@@ -331,7 +331,7 @@ module Tablo
         end
         columns.as(Array(LabelType)).each do |column|
           if duplicates.has_key?(column)
-            raise DuplicateKey.new(
+            raise Exception::DuplicateKey.new(
               "Summary: duplicate body column definition for column<#{column}>")
           else
             duplicates[column] = 1
@@ -339,10 +339,10 @@ module Tablo
               body_alignments[column] = entry.alignment.as(Justify)
             end
             unless entry.formatter.nil?
-              body_formatters[column] = entry.formatter.as(DataCellFormatter)
+              body_formatters[column] = entry.formatter.as(Cell::Data::Formatter)
             end
             unless entry.styler.nil?
-              body_stylers[column] = entry.styler.as(DataCellStyler)
+              body_stylers[column] = entry.styler.as(Cell::Data::Styler)
             end
           end
         end
@@ -494,8 +494,8 @@ module Tablo
     def initialize(@column : LabelType | Array(LabelType),
                    @content : String,
                    @alignment : Justify? = nil,
-                   @formatter : DataCellFormatter? = nil,
-                   @styler : DataCellStyler? = nil)
+                   @formatter : Cell::Data::Formatter? = nil,
+                   @styler : Cell::Data::Styler? = nil)
     end
   end
 
@@ -521,7 +521,7 @@ module Tablo
     #       value.nil? ? "" : "%.2f" % value.as(BigDecimal)
     #     )
     #   },
-    #   styler: ->(_value : Tablo::CellType, cd : Tablo::CellData, fc : String) {
+    #   styler: ->(_value : Tablo::CellType, cd : Tablo::Cell::Data::Coords, fc : String) {
     #     case cd.row_index
     #     when 0, 2, 5 then fc.colorize.mode(:bold).to_s
     #     when 1       then fc.colorize.mode(:italic).to_s
@@ -531,8 +531,8 @@ module Tablo
     # ```
     def initialize(@column : LabelType | Array(LabelType),
                    @alignment : Justify? = nil,
-                   @formatter : DataCellFormatter? = nil,
-                   @styler : DataCellStyler? = nil)
+                   @formatter : Cell::Data::Formatter? = nil,
+                   @styler : Cell::Data::Styler? = nil)
     end
   end
 

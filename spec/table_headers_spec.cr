@@ -1,6 +1,6 @@
 require "./spec_helper"
 
-# For these specs, border_type if BorderName::Fancy, to better see
+# For these specs, border_type if Border::Name::Fancy, to better see
 # border transitions between rows
 
 # test_data definitions
@@ -41,7 +41,7 @@ describe "#{Tablo::Table} -> Title and headers variations on initialization, " +
     context "with only column header, no group, no title" do
       it "displays the table without any header" do
         table = Tablo::Table.new(IntSamples.new,
-          border: Tablo::Border.new(Tablo::BorderName::Fancy),
+          border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           header_frequency: nil) do |t|
           t.add_column("itself", &.itself)
           t.add_column("even?", &.even?)
@@ -64,7 +64,7 @@ describe "#{Tablo::Table} -> Title and headers variations on initialization, " +
     context "with column header and table title" do
       it "displays the table without any header or title" do
         table = Tablo::Table.new(test_data_numbers,
-          border: Tablo::Border.new(Tablo::BorderName::Fancy),
+          border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           title: Tablo::Title.new("Table title"),
           header_frequency: nil) do |t|
           t.add_column("itself", &.itself)
@@ -88,7 +88,7 @@ describe "#{Tablo::Table} -> Title and headers variations on initialization, " +
     context "with column header and table title and subtitle" do
       it "displays the table without any header, title or subtitle" do
         table = Tablo::Table.new(test_data_numbers,
-          border: Tablo::Border.new(Tablo::BorderName::Fancy),
+          border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           title: Tablo::Title.new("Table title"),
           subtitle: Tablo::SubTitle.new("table subtitle"),
           header_frequency: nil) do |t|
@@ -113,10 +113,10 @@ describe "#{Tablo::Table} -> Title and headers variations on initialization, " +
     context "with column header, title, subtitle and footer" do
       it "displays the table without any header, title, subtitle or footer" do
         table = Tablo::Table.new(test_data_numbers,
-          border: Tablo::Border.new(Tablo::BorderName::Fancy),
-          title: Tablo::Title.new("Table title", frame: Tablo::Frame.new),
-          subtitle: Tablo::SubTitle.new("table subtitle", frame: Tablo::Frame.new),
-          footer: Tablo::Footer.new("Table footer", frame: Tablo::Frame.new),
+          border: Tablo::Border.new(Tablo::Border::Name::Fancy),
+          title: Tablo::Title.new("Table title", frame: Tablo::Heading::Frame.new),
+          subtitle: Tablo::SubTitle.new("table subtitle", frame: Tablo::Heading::Frame.new),
+          footer: Tablo::Footer.new("Table footer", frame: Tablo::Heading::Frame.new),
           header_frequency: nil) do |t|
           t.add_column("itself", &.itself)
           t.add_column("even?", &.even?)
@@ -141,7 +141,7 @@ describe "#{Tablo::Table} -> Title and headers variations on initialization, " +
     context "with only column headers, no group, no title" do
       it "displays the table with column headers" do
         table = Tablo::Table.new(test_data_numbers,
-          border: Tablo::Border.new(Tablo::BorderName::Fancy),
+          border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           header_frequency: 0) do |t|
           t.add_column("itself", &.itself)
           t.add_column("even?", &.even?)
@@ -166,9 +166,9 @@ describe "#{Tablo::Table} -> Title and headers variations on initialization, " +
     context "with column headers and title" do
       it "displays the table with column headers and title attached" do
         table = Tablo::Table.new(test_data_numbers,
-          border: Tablo::Border.new(Tablo::BorderName::Fancy),
+          border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           # all Heading <booleans> default are false
-          title: Tablo::Title.new("Table title", frame: Tablo::Frame.new),
+          title: Tablo::Title.new("Table title", frame: Tablo::Heading::Frame.new),
           header_frequency: 0) do |t|
           t.add_column("itself", &.itself)
           t.add_column("even?", &.even?)
@@ -194,7 +194,7 @@ describe "#{Tablo::Table} -> Title and headers variations on initialization, " +
     context "with column header, title and subtitle" do
       it "displays the table with headers, and un_framed title and subtitle" do
         table = Tablo::Table.new(test_data_numbers,
-          border: Tablo::Border.new(Tablo::BorderName::Fancy),
+          border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           title: Tablo::Title.new("Table title"),
           subtitle: Tablo::SubTitle.new("table subtitle"),
           header_frequency: 0) do |t|
@@ -223,8 +223,8 @@ describe "#{Tablo::Table} -> Title and headers variations on initialization, " +
     context "with column headers and table title *framed* and subtitle" do
       it "displays the table with headers, title and subtitle" do
         table = Tablo::Table.new(test_data_numbers,
-          border: Tablo::Border.new(Tablo::BorderName::Fancy),
-          title: Tablo::Title.new("Table title", frame: Tablo::Frame.new),
+          border: Tablo::Border.new(Tablo::Border::Name::Fancy),
+          title: Tablo::Title.new("Table title", frame: Tablo::Heading::Frame.new),
           subtitle: Tablo::SubTitle.new("table subtitle"),
           header_frequency: 0) do |t|
           t.add_column("itself", &.itself)
@@ -254,8 +254,8 @@ describe "#{Tablo::Table} -> Title and headers variations on initialization, " +
     context "with column headers and table title *framed* and subtitle and footer" do
       it "displays the table with headers, title, subtitle and footer" do
         table = Tablo::Table.new(test_data_numbers,
-          border: Tablo::Border.new(Tablo::BorderName::Fancy),
-          title: Tablo::Title.new("Table title", frame: Tablo::Frame.new),
+          border: Tablo::Border.new(Tablo::Border::Name::Fancy),
+          title: Tablo::Title.new("Table title", frame: Tablo::Heading::Frame.new),
           subtitle: Tablo::SubTitle.new("table subtitle"),
           footer: Tablo::Footer.new("Table footer"),
           header_frequency: 0) do |t|
@@ -289,7 +289,7 @@ describe "#{Tablo::Table} -> Title and headers variations on initialization, " +
     context "with only column headers, no group, no title" do
       it "displays the table with column headers" do
         table = Tablo::Table.new(test_data_numbers,
-          border: Tablo::Border.new(Tablo::BorderName::Fancy),
+          border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           header_frequency: 3) do |t|
           t.add_column("itself", &.itself)
           t.add_column("even?", &.even?)
@@ -320,7 +320,7 @@ describe "#{Tablo::Table} -> Title and headers variations on initialization, " +
     context "with column headers and table title" do
       it "displays the table with title and repeated column headers" do
         table = Tablo::Table.new(test_data_numbers,
-          border: Tablo::Border.new(Tablo::BorderName::Fancy),
+          border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           title: Tablo::Title.new("Table title"),
           header_frequency: 3) do |t|
           t.add_column("itself", &.itself)
@@ -353,7 +353,7 @@ describe "#{Tablo::Table} -> Title and headers variations on initialization, " +
     context "with group, column headers and table title" do
       it "displays the table with title and repeated group and column headers" do
         table = Tablo::Table.new(test_data_numbers,
-          border: Tablo::Border.new(Tablo::BorderName::Fancy),
+          border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           title: Tablo::Title.new("Table title"),
           header_frequency: 3) do |t|
           t.add_column("itself", &.itself)
@@ -393,7 +393,7 @@ describe "#{Tablo::Table} -> Title and headers variations on initialization, " +
     context "with column headers and table title and subtitle" do
       it "displays the table with headers, title but no subtitle" do
         table = Tablo::Table.new(test_data_numbers,
-          border: Tablo::Border.new(Tablo::BorderName::Fancy),
+          border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           title: Tablo::Title.new("Table title"),
           subtitle: Tablo::SubTitle.new("table subtitle"),
           header_frequency: 3) do |t|
@@ -435,8 +435,8 @@ describe "#{Tablo::Table} -> Title and headers variations on initialization, " +
     context "with column headers and table title *framed* and subtitle" do
       it "displays the table with headers, title and subtitle" do
         table = Tablo::Table.new(test_data_numbers,
-          border: Tablo::Border.new(Tablo::BorderName::Fancy),
-          title: Tablo::Title.new("Table title", frame: Tablo::Frame.new),
+          border: Tablo::Border.new(Tablo::Border::Name::Fancy),
+          title: Tablo::Title.new("Table title", frame: Tablo::Heading::Frame.new),
           subtitle: Tablo::SubTitle.new("table subtitle"),
           header_frequency: 3) do |t|
           t.add_column("itself", &.itself)
@@ -479,8 +479,8 @@ describe "#{Tablo::Table} -> Title and headers variations on initialization, " +
     context "with column headers and table title *framed* and subtitle and footer" do
       it "displays the table with headers, title, subtitle and footer" do
         table = Tablo::Table.new(test_data_numbers,
-          border: Tablo::Border.new(Tablo::BorderName::Fancy),
-          title: Tablo::Title.new("Table title", frame: Tablo::Frame.new),
+          border: Tablo::Border.new(Tablo::Border::Name::Fancy),
+          title: Tablo::Title.new("Table title", frame: Tablo::Heading::Frame.new),
           subtitle: Tablo::SubTitle.new("table subtitle"),
           footer: Tablo::Footer.new("Table footer"),
           header_frequency: 3) do |t|

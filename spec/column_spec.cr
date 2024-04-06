@@ -58,8 +58,8 @@ describe Tablo::Column do
   source = 17
   bodycell = column.body_cell(source, 0, 0)
   describe "#body_cell" do
-    it "instanciates a cell of type DataCell" do
-      bodycell.should be_a(Tablo::DataCell)
+    it "instanciates a cell of type Cell::Data" do
+      bodycell.should be_a(Tablo::Cell::Data)
     end
     it "correctly retrieves cell value from extractor call on source" do
       bodycell.value.should eq(17)
@@ -68,8 +68,8 @@ describe Tablo::Column do
   end
   headercell = column.header_cell(bodycell)
   describe "#header_cell" do
-    it "instanciates a cell of type DataCell" do
-      headercell.should be_a(Tablo::DataCell)
+    it "instanciates a cell of type Cell::Data" do
+      headercell.should be_a(Tablo::Cell::Data)
     end
     it "correctly retrieves cell value from header field" do
       headercell.value.should eq("Double")
