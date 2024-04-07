@@ -27,7 +27,7 @@ def create_table
   table = Tablo::Table.new(invoice,
     omit_last_rule: false,
     border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-    title: Tablo::Title.new("Invoice")) do |t|
+    title: Tablo::Heading::Title.new("Invoice")) do |t|
     t.add_column("Product",
       &.product)
     t.add_column("Quantity",
@@ -69,8 +69,8 @@ def create_table_big
   table = Tablo::Table.new(invoice,
     omit_last_rule: true,
     border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-    title: Tablo::Title.new("\nInvoice\n=======\n"),
-    subtitle: Tablo::SubTitle.new("Details", frame: Tablo::Heading::Frame.new)) do |t|
+    title: Tablo::Heading::Title.new("\nInvoice\n=======\n"),
+    subtitle: Tablo::Heading::SubTitle.new("Details", frame: Tablo::Frame.new)) do |t|
     t.add_column("Product",
       &.product)
     t.add_column("Quantity",
@@ -93,8 +93,8 @@ end
 
 invoice_summary_definition_base =
   [
-    Tablo::SummaryBodyColumn.new("Price", alignment: Tablo::Justify::Right),
-    Tablo::SummaryBodyColumn.new(:total, alignment: Tablo::Justify::Right,
+    Tablo::Summary::BodyColumn.new("Price", alignment: Tablo::Justify::Right),
+    Tablo::Summary::BodyColumn.new(:total, alignment: Tablo::Justify::Right,
       formatter: ->(value : Tablo::CellType) {
         value.is_a?(String) ? value : (
           value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
@@ -111,22 +111,22 @@ invoice_summary_definition_base =
         end
       }
     ),
-    Tablo::SummaryBodyRow.new("Price", 1, "SubTotal"),
-    Tablo::SummaryBodyRow.new("Price", 2, "Discount 5%"),
-    Tablo::SummaryBodyRow.new("Price", 3, "S/T after discount"),
-    Tablo::SummaryBodyRow.new("Price", 4, "Tax (20%)"),
-    Tablo::SummaryBodyRow.new("Price", 6, "Balance due"),
-    Tablo::SummaryBodyRow.new(:total, 1, ->{ Tablo::Summary.use(:total_sum) }),
-    Tablo::SummaryBodyRow.new(:total, 2, ->{ Tablo::Summary.use(:discount) }),
-    Tablo::SummaryBodyRow.new(:total, 3, ->{ Tablo::Summary.use(:total_after_discount) }),
-    Tablo::SummaryBodyRow.new(:total, 4, ->{ Tablo::Summary.use(:tax) }),
-    Tablo::SummaryBodyRow.new(:total, 5, "========"),
-    Tablo::SummaryBodyRow.new(:total, 6, ->{ Tablo::Summary.use(:total_due) }),
+    Tablo::Summary::BodyRow.new("Price", 1, "SubTotal"),
+    Tablo::Summary::BodyRow.new("Price", 2, "Discount 5%"),
+    Tablo::Summary::BodyRow.new("Price", 3, "S/T after discount"),
+    Tablo::Summary::BodyRow.new("Price", 4, "Tax (20%)"),
+    Tablo::Summary::BodyRow.new("Price", 6, "Balance due"),
+    Tablo::Summary::BodyRow.new(:total, 1, ->{ Tablo::Summary.use(:total_sum) }),
+    Tablo::Summary::BodyRow.new(:total, 2, ->{ Tablo::Summary.use(:discount) }),
+    Tablo::Summary::BodyRow.new(:total, 3, ->{ Tablo::Summary.use(:total_after_discount) }),
+    Tablo::Summary::BodyRow.new(:total, 4, ->{ Tablo::Summary.use(:tax) }),
+    Tablo::Summary::BodyRow.new(:total, 5, "========"),
+    Tablo::Summary::BodyRow.new(:total, 6, ->{ Tablo::Summary.use(:total_due) }),
   ]
 
 invoice_summary_definition_1 =
   [
-    Tablo::SummaryProc.new(
+    Tablo::Summary::UserProc.new(
       proc: ->(tbl : Tablo::Table(InvoiceItem)) {
         total_sum = 0
         tbl.sources.each do |row|
@@ -149,7 +149,7 @@ invoice_summary_definition_1 =
 
 invoice_summary_definition_2 =
   [
-    Tablo::SummaryProc.new(
+    Tablo::Summary::UserProc.new(
       proc: ->(tbl : Tablo::Table(InvoiceItem)) {
         total_sum = tbl.sources.select { |n| n.quantity.is_a?(Int32) && n.price.is_a?(Int32) }
           .map { |n| n.quantity.as(Int32) * n.price.as(Int32) }
@@ -170,7 +170,7 @@ invoice_summary_definition_2 =
 
 invoice_summary_definition_3 =
   [
-    Tablo::SummaryProc.new(
+    Tablo::Summary::UserProc.new(
       proc: ->(tbl : Tablo::Table(InvoiceItem)) {
         total_sum = 0
         iter_quantity = tbl.column_data("Quantity").each
@@ -196,7 +196,7 @@ invoice_summary_definition_3 =
   ] + invoice_summary_definition_base
 
 invoice_summary_definition_big = [
-  Tablo::SummaryProc.new(
+  Tablo::Summary::UserProc.new(
     proc: ->(tbl : Tablo::Table(InvoiceItemBig)) {
       total_sum = BigDecimal.new(0)
       tbl.column_data(:total).each do |tot|
@@ -214,8 +214,8 @@ invoice_summary_definition_big = [
         :total_due            => total_due.as(Tablo::CellType),
       }
     }),
-  Tablo::SummaryBodyColumn.new("Price", alignment: Tablo::Justify::Right),
-  Tablo::SummaryBodyColumn.new(:total, alignment: Tablo::Justify::Right,
+  Tablo::Summary::BodyColumn.new("Price", alignment: Tablo::Justify::Right),
+  Tablo::Summary::BodyColumn.new(:total, alignment: Tablo::Justify::Right,
     formatter: ->(value : Tablo::CellType) {
       value.is_a?(String) ? value : (
         value.nil? ? "" : "%.2f" % value.as(BigDecimal)
@@ -229,24 +229,24 @@ invoice_summary_definition_big = [
       end
     }
   ),
-  Tablo::SummaryHeaderColumn.new("Product", content: ""),
-  Tablo::SummaryHeaderColumn.new("Quantity", content: ""),
-  Tablo::SummaryHeaderColumn.new("Price", content: "Total Invoice",
+  Tablo::Summary::HeaderColumn.new("Product", content: ""),
+  Tablo::Summary::HeaderColumn.new("Quantity", content: ""),
+  Tablo::Summary::HeaderColumn.new("Price", content: "Total Invoice",
     alignment: Tablo::Justify::Right),
-  Tablo::SummaryHeaderColumn.new(:total, content: "Amounts"),
+  Tablo::Summary::HeaderColumn.new(:total, content: "Amounts"),
 
-  Tablo::SummaryBodyRow.new("Price", 10, "SubTotal"),
-  Tablo::SummaryBodyRow.new("Price", 20, "Discount 5%"),
-  Tablo::SummaryBodyRow.new("Price", 30, "S/T after discount"),
-  Tablo::SummaryBodyRow.new("Price", 40, "Tax (20%)"),
-  Tablo::SummaryBodyRow.new("Price", 60, "Balance due"),
+  Tablo::Summary::BodyRow.new("Price", 10, "SubTotal"),
+  Tablo::Summary::BodyRow.new("Price", 20, "Discount 5%"),
+  Tablo::Summary::BodyRow.new("Price", 30, "S/T after discount"),
+  Tablo::Summary::BodyRow.new("Price", 40, "Tax (20%)"),
+  Tablo::Summary::BodyRow.new("Price", 60, "Balance due"),
 
-  Tablo::SummaryBodyRow.new(:total, 10, ->{ Tablo::Summary.use(:total_sum) }),
-  Tablo::SummaryBodyRow.new(:total, 20, ->{ Tablo::Summary.use(:discount) }),
-  Tablo::SummaryBodyRow.new(:total, 30, ->{ Tablo::Summary.use(:total_after_discount) }),
-  Tablo::SummaryBodyRow.new(:total, 40, ->{ Tablo::Summary.use(:tax) }),
-  Tablo::SummaryBodyRow.new(:total, 50, "========"),
-  Tablo::SummaryBodyRow.new(:total, 60, ->{ Tablo::Summary.use(:total_due) }),
+  Tablo::Summary::BodyRow.new(:total, 10, ->{ Tablo::Summary.use(:total_sum) }),
+  Tablo::Summary::BodyRow.new(:total, 20, ->{ Tablo::Summary.use(:discount) }),
+  Tablo::Summary::BodyRow.new(:total, 30, ->{ Tablo::Summary.use(:total_after_discount) }),
+  Tablo::Summary::BodyRow.new(:total, 40, ->{ Tablo::Summary.use(:tax) }),
+  Tablo::Summary::BodyRow.new(:total, 50, "========"),
+  Tablo::Summary::BodyRow.new(:total, 60, ->{ Tablo::Summary.use(:total_due) }),
 ]
 
 invoice_layout_0 =
@@ -448,7 +448,7 @@ invoice_layout_big =
 
 describe "#{Tablo::Summary}", tags: "summary" do
   describe "#{Tablo::Summary} Calculations and summary rows arrangement, with no border" do
-    describe "#{Tablo::Summary} summary definition using SummaryProc (with sources " +
+    describe "#{Tablo::Summary} summary definition using Summary::UserProc (with sources " +
              "- 1)", tags: "summary" do
       it "Returns the correct, cleanly formatted values, with the expected layout" do
         tbl = create_table
@@ -467,7 +467,7 @@ describe "#{Tablo::Summary}", tags: "summary" do
         output.should eq invoice_layout_0
       end
     end
-    describe "#{Tablo::Summary} summary definition using SummaryProc " +
+    describe "#{Tablo::Summary} summary definition using Summary::UserProc " +
              "(with sources - 2)", tags: "summary" do
       it "Returns the correct, cleanly formatted values, with the expected layout" do
         tbl = create_table
@@ -485,7 +485,7 @@ describe "#{Tablo::Summary}", tags: "summary" do
         output.should eq invoice_layout_0
       end
     end
-    describe "#{Tablo::Summary} summary definition using SummaryProc " +
+    describe "#{Tablo::Summary} summary definition using Summary::UserProc " +
              "(with columns)", tags: "summary" do
       it "Returns the correct, cleanly formatted values, with the expected layout" do
         tbl = create_table
@@ -580,7 +580,7 @@ describe "#{Tablo::Summary}", tags: "summary" do
         tbl.omit_last_rule = true
         tbl.pack
         tbl.add_summary(invoice_summary_definition_big,
-          title: Tablo::Title.new("Summary", frame: Tablo::Heading::Frame.new)
+          title: Tablo::Heading::Title.new("Summary", frame: Tablo::Frame.new)
         )
         tbl.summary.as(Tablo::Table).pack
         output = tbl.to_s + "\n" + tbl.summary.to_s

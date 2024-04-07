@@ -82,11 +82,11 @@ module Tablo
   # end
   # alias TableWidth = GetWidthFrom | Int32
 
-  enum StartingWidths
-    Initial
-    Current
-    AutoSized
-  end
+  # enum StartingWidths
+  #   Initial
+  #   Current
+  #   AutoSized
+  # end
 
   # an Enum to define cutting modes
   # - Rune : cutting allowed between graphemes
@@ -137,43 +137,36 @@ module Tablo
     Right
   end
 
-  class Exception < Exception
-    # This exception is raised when the column identifier (LabelType) is used more than once
-    class DuplicateKey < Exception
+  # The class Error contains all the error cases specific to the Tablo library
+  #
+  # Its subclasses return the precise type of error
+  class Error < Exception
+    # This exception is raised when the column (or group) identifier (LabelType)
+    # is used more than once in a given situation
+    class DuplicateLabel < Error
     end
 
-    class LabelNotFound < Exception
+    # This exception is raised when the column (or group) identifier (LabelType)
+    # does not exist
+    class LabelNotFound < Error
     end
-  end
 
-  class TabloException < Exception
-  end
+    # This exception is raised when the column index is out of bounds
+    class InvalidColumnIndex < Error
+    end
 
-  # class DuplicateKey < TabloException
-  # end
+    # This exception is raised when there is no column to group
+    class GroupEmpty < Error
+    end
 
-  # --- to be validated ---
-  class InvalidConnectorString < TabloException
-  end
+    # This exception is raised when the border definition string is invalid,
+    # ie when its size is not exactly 16.
+    class InvalidBorderDefinition < Error
+    end
 
-  # class DuplicateLabel < TabloException
-  # end
-
-  # class DuplicateRow < TabloException
-  # end
-
-  class LabelNotFound < TabloException
-  end
-
-  class GroupError < TabloException
-  end
-
-  class InvalidValue < TabloException
-  end
-
-  class IncompatibleValue < TabloException
-  end
-
-  class InvalidSummaryDefinition < TabloException
+    # This exception is raised when the given value is not expected
+    # (This is a generic error, covering various cases)
+    class InvalidValue < Error
+    end
   end
 end

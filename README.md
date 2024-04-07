@@ -238,7 +238,7 @@ initializing the table.
 
 ```crystal
 table = Tablo::Table.new([1, 2, 3],
-        title: Tablo::Title.new("Data types alignment")) do |t|
+        title: Tablo::Heading::Title.new("Data types alignment")) do |t|
 ```
 
 Output:
@@ -267,7 +267,7 @@ value between the current element's `line_breaks_after` and the next element's
 
 ```crystal
 table = Tablo::Table.new([1, 2, 3],
-  title: Tablo::Title.new("Data types alignment",
+  title: Tablo::Heading::Title.new("Data types alignment",
     frame: Tablo::Heading::Frame.new(line_breaks_before: 0, line_breaks_after: 2))) do |t|
 ```
 
@@ -324,10 +324,10 @@ An important parameter in table initialization is `header_frequency:`
 ```crystal
 table = Tablo::Table.new([1, 2, 3],
         header_frequency: 0,
-        title: Tablo::Title.new("Data types alignment",
+        title: Tablo::Heading::Title.new("Data types alignment",
           frame: Tablo::Heading::Frame.new(0, 2)),
-        subtitle: Tablo::SubTitle.new("Only Booleans are centered by default"),
-        footer: Tablo::Footer.new("End of page")) do |t|
+        subtitle: Tablo::Heading::SubTitle.new("Only Booleans are centered by default"),
+        footer: Tablo::Heading::Footer.new("End of page")) do |t|
 ```
 
 Output:
@@ -408,7 +408,7 @@ subtitle repetition.
 ```crystal
 table = Tablo::Table.new([1, 2, 3],
         header_frequency: 2,
-        title: Tablo::Title.new("Data types alignment",
+        title: Tablo::Heading::Title.new("Data types alignment",
           frame: Tablo::Heading::Frame.new(0, 2), repeated: true),
 ```
 
@@ -837,8 +837,8 @@ require "tablo"
 require "colorize"
 
 table = Tablo::Table.new([1, 2, 3, 4, 5],
-  title: Tablo::Title.new("My black and white fancy table", frame: Tablo::Heading::Frame.new),
-  footer: Tablo::Footer.new("End of data", frame: Tablo::Heading::Frame.new),
+  title: Tablo::Heading::Title.new("My black and white fancy table", frame: Tablo::Heading::Frame.new),
+  footer: Tablo::Heading::Footer.new("End of data", frame: Tablo::Heading::Frame.new),
   border: Tablo::Border.new(:fancy, ->(border_char : String) {
     border_char.colorize(:light_gray).to_s
   }),
@@ -1130,7 +1130,7 @@ invoice = [
 table = Tablo::Table.new(invoice,
   omit_last_rule: false,
   border: Tablo::Border.new(Tablo::BorderName::Fancy),
-  title: Tablo::Title.new("Invoice")) do |t|
+  title: Tablo::Heading::Title.new("Invoice")) do |t|
   t.add_column("Product",
     &.product)
   t.add_column("Quantity",
@@ -1151,7 +1151,7 @@ end
 
 invoice_summary_definition = [
   Tablo::Aggregation.new(:total, Tablo::Aggregate::Sum),
-  Tablo::SummaryBodyColumn.new(:total, alignment: Tablo::Justify::Right,
+  Tablo::Summary::BodyColumn.new(:total, alignment: Tablo::Justify::Right,
     formatter: ->(value : Tablo::CellType) {
       value.is_a?(String) ? value : (
         value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
@@ -1167,24 +1167,24 @@ invoice_summary_definition = [
         fc
       end
     }),
-  Tablo::SummaryBodyRow.new("Price", 1, "SubTotal"),
-  Tablo::SummaryBodyRow.new("Price", 2, "Discount 5%"),
-  Tablo::SummaryBodyRow.new("Price", 3, "S/T discount"),
-  Tablo::SummaryBodyRow.new("Price", 4, "Tax (20%)"),
-  Tablo::SummaryBodyRow.new("Price", 6, "Balance due"),
-  Tablo::SummaryBodyRow.new(:total, 1, ->{ Tablo::Summary.use(:total,
+  Tablo::Summary::BodyRow.new("Price", 1, "SubTotal"),
+  Tablo::Summary::BodyRow.new("Price", 2, "Discount 5%"),
+  Tablo::Summary::BodyRow.new("Price", 3, "S/T discount"),
+  Tablo::Summary::BodyRow.new("Price", 4, "Tax (20%)"),
+  Tablo::Summary::BodyRow.new("Price", 6, "Balance due"),
+  Tablo::Summary::BodyRow.new(:total, 1, ->{ Tablo::Summary.use(:total,
     Tablo::Aggregate::Sum) }),
-  Tablo::SummaryBodyRow.new(:total, 2, ->{ Tablo::Summary.keep(:discount,
+  Tablo::Summary::BodyRow.new(:total, 2, ->{ Tablo::Summary.keep(:discount,
     (Tablo::Summary.use(:total, Tablo::Aggregate::Sum).as(Int32) * 0.05)
       .to_i).as(Tablo::CellType) }),
-  Tablo::SummaryBodyRow.new(:total, 3, ->{ (Tablo::Summary.keep(:total_after_discount,
+  Tablo::Summary::BodyRow.new(:total, 3, ->{ (Tablo::Summary.keep(:total_after_discount,
     Tablo::Summary.use(:total, Tablo::Aggregate::Sum).as(Int32) -
     Tablo::Summary.use(:discount).as(Int32))).as(Tablo::CellType) }),
-  Tablo::SummaryBodyRow.new(:total, 4, ->{ (Tablo::Summary.keep(:tax,
+  Tablo::Summary::BodyRow.new(:total, 4, ->{ (Tablo::Summary.keep(:tax,
     (Tablo::Summary.use(:total_after_discount).as(Int32) * 0.2)
       .to_i)).as(Tablo::CellType) }),
-  Tablo::SummaryBodyRow.new(:total, 5, "========".as(Tablo::CellType)),
-  Tablo::SummaryBodyRow.new(:total, 6, ->{ (Tablo::Summary.use(:tax).as(Int32) +
+  Tablo::Summary::BodyRow.new(:total, 5, "========".as(Tablo::CellType)),
+  Tablo::Summary::BodyRow.new(:total, 6, ->{ (Tablo::Summary.use(:tax).as(Int32) +
                                      Tablo::Summary.use(:total_after_discount)
                                        .as(Int32)).as(Tablo::CellType) }),
 ]
@@ -1244,8 +1244,8 @@ TODO TODO TODO
 TODO TODO TODO
 TODO TODO TODO
 
-the SummaryBodyRow type
-SummaryBodyColumn type
+the Summary::BodyRow type
+Summary::BodyColumn type
 
 The first part - the creation of the main table - calls for no particular
 comment (except perhaps the use of a more realistic data source than the
@@ -1264,46 +1264,46 @@ therefore a column identifier (`LabelType` is an alias of `String | Symbol
 
 The `NamedTuple` may have up to 8 entries, all optional except `proc`
 
-| Hash key           | Type of hash value  |
-| :----------------- | :------------------ |
-| `header`           | `String`            |
-| `header_alignment` | `Justify`           |
-| `header_formatter` | `DataCellFormatter` |
-| `header_styler`    | `DataCellStyler`    |
-| `body_alignment`   | `Justify`           |
-| `body_formatter`   | `DataCellFormatter` |
-| `body_styler`      | `DataCellStyler`    |
-| `proc`             | `SummaryProcs`      |
+| Hash key           | Type of hash value   |
+| :----------------- | :------------------- |
+| `header`           | `String`             |
+| `header_alignment` | `Justify`            |
+| `header_formatter` | `DataCellFormatter`  |
+| `header_styler`    | `DataCellStyler`     |
+| `body_alignment`   | `Justify`            |
+| `body_formatter`   | `DataCellFormatter`  |
+| `body_styler`      | `DataCellStyler`     |
+| `proc`             | `Summary::UserProcs` |
 
 - `header` default value is the empty string
 - the next 6 entries default values are inherited from Table
   initializers of same name
 - `proc` is a bit complex and has no default value. Its value type is
-  `SummaryProcs`, an alias whose definition is :
+  `Summary::UserProcs`, an alias whose definition is :
 
 ```
 
 alias SourcesCurrentColumn = Array(CellType)
 alias SourcesAllColumns = Hash(LabelType, Array(CellType))
-alias SummaryProcCurrent = Proc(SourcesCurrentColumn, CellType)
-alias SummaryProcAll = Proc(SourcesAllColumns, CellType)
+alias Summary::UserProcCurrent = Proc(SourcesCurrentColumn, CellType)
+alias Summary::UserProcAll = Proc(SourcesAllColumns, CellType)
 
-alias SummaryLineProcCurrent = {Int32, SummaryProcCurrent}
-alias SummaryLineProcAll = {Int32, SummaryProcAll}
+alias SummaryLineProcCurrent = {Int32, Summary::UserProcCurrent}
+alias SummaryLineProcAll = {Int32, Summary::UserProcAll}
 alias SummaryLineProcBoth = SummaryLineProcCurrent | SummaryLineProcAll
 
-alias SummaryProcs = {Int32, Proc(Array(CellType), CellType)} |
+alias Summary::UserProcs = {Int32, Proc(Array(CellType), CellType)} |
 {Int32, Proc(Hash(LabelType, Array(CellType)), CellType)} |
 Array({Int32, Proc(Array(CellType), CellType)}) |
 Array({Int32, Proc(Hash(LabelType, Array(CellType)), CellType)}) |
 Array({Int32, Proc(Array(CellType), CellType)} |
 {Int32, Proc(Hash(LabelType, Array(CellType)), CellType)})
-alias SummaryProcAll = Proc(Hash(LabelType, Array(CellType)), CellType)
-alias SummaryProcCurrent = Proc(Array(CellType), CellType)
+alias Summary::UserProcAll = Proc(Hash(LabelType, Array(CellType)), CellType)
+alias Summary::UserProcCurrent = Proc(Array(CellType), CellType)
 
 ```
 
-The latter - `SummaryProcs`- is a tad complex and can take several forms.
+The latter - `Summary::UserProcs`- is a tad complex and can take several forms.
 Basically, it is a tuple of 2 elements :
 
 - An `Int32`, which indicates the position (line) of the proc result in the column

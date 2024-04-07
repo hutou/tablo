@@ -28,8 +28,8 @@ module Tablo
     #   This parameter references the main table
     #
     # - `summary_definition`: its type is U, as its content is a user defined
-    # array containing `n` instances of `SummaryProc`, `SummaryHeaderColumn`,
-    # `SummaryBodyColumn`, `SummaryBodyRow` structs)
+    # array containing `n` instances of `Summary::UserProc`, `Summary::HeaderColumn`,
+    # `Summary::BodyColumn`, `Summary::BodyRow` structs)
     #
     # - `summary_options`: its type is V, a NamedTuple of Table initializers (may be
     # empty)
@@ -61,7 +61,7 @@ module Tablo
     # ]
     #
     # invoice_summary_definition = [
-    #   Tablo::SummaryProc.new(
+    #   Tablo::Summary::UserProc.new(
     #     proc: ->(tbl : Tablo::Table(InvoiceItem)) {
     #       total_sum = BigDecimal.new(0)
     #       tbl.column_data(:total).each do |tot|
@@ -79,8 +79,8 @@ module Tablo
     #         :total_due            => total_due.as(Tablo::CellType),
     #       }
     #     }),
-    #   Tablo::SummaryBodyColumn.new("Price", alignment: Tablo::Justify::Right),
-    #   Tablo::SummaryBodyColumn.new(:total, alignment: Tablo::Justify::Right,
+    #   Tablo::Summary::BodyColumn.new("Price", alignment: Tablo::Justify::Right),
+    #   Tablo::Summary::BodyColumn.new(:total, alignment: Tablo::Justify::Right,
     #     formatter: ->(value : Tablo::CellType) {
     #       value.is_a?(String) ? value : (
     #         value.nil? ? "" : "%.2f" % value.as(BigDecimal)
@@ -93,31 +93,31 @@ module Tablo
     #       else              fc
     #       end
     #     }),
-    #   Tablo::SummaryHeaderColumn.new("Product", content: ""),
-    #   Tablo::SummaryHeaderColumn.new("Quantity", content: ""),
-    #   Tablo::SummaryHeaderColumn.new("Price", content: "Total Invoice",
+    #   Tablo::Summary::HeaderColumn.new("Product", content: ""),
+    #   Tablo::Summary::HeaderColumn.new("Quantity", content: ""),
+    #   Tablo::Summary::HeaderColumn.new("Price", content: "Total Invoice",
     #     alignment: Tablo::Justify::Right),
-    #   Tablo::SummaryHeaderColumn.new(:total, content: "Amounts"),
+    #   Tablo::Summary::HeaderColumn.new(:total, content: "Amounts"),
     #
-    #   Tablo::SummaryBodyRow.new("Price", 10, "SubTotal"),
-    #   Tablo::SummaryBodyRow.new("Price", 20, "Discount 5%"),
-    #   Tablo::SummaryBodyRow.new("Price", 30, "S/T after discount"),
-    #   Tablo::SummaryBodyRow.new("Price", 40, "Tax (20%)"),
-    #   Tablo::SummaryBodyRow.new("Price", 60, "Balance due"),
+    #   Tablo::Summary::BodyRow.new("Price", 10, "SubTotal"),
+    #   Tablo::Summary::BodyRow.new("Price", 20, "Discount 5%"),
+    #   Tablo::Summary::BodyRow.new("Price", 30, "S/T after discount"),
+    #   Tablo::Summary::BodyRow.new("Price", 40, "Tax (20%)"),
+    #   Tablo::Summary::BodyRow.new("Price", 60, "Balance due"),
     #
-    #   Tablo::SummaryBodyRow.new(:total, 10, ->{ Tablo::Summary.use(:total_sum) }),
-    #   Tablo::SummaryBodyRow.new(:total, 20, ->{ Tablo::Summary.use(:discount) }),
-    #   Tablo::SummaryBodyRow.new(:total, 30, ->{ Tablo::Summary.use(:total_after_discount) }),
-    #   Tablo::SummaryBodyRow.new(:total, 40, ->{ Tablo::Summary.use(:tax) }),
-    #   Tablo::SummaryBodyRow.new(:total, 50, "========"),
-    #   Tablo::SummaryBodyRow.new(:total, 60, ->{ Tablo::Summary.use(:total_due) }),
+    #   Tablo::Summary::BodyRow.new(:total, 10, ->{ Tablo::Summary.use(:total_sum) }),
+    #   Tablo::Summary::BodyRow.new(:total, 20, ->{ Tablo::Summary.use(:discount) }),
+    #   Tablo::Summary::BodyRow.new(:total, 30, ->{ Tablo::Summary.use(:total_after_discount) }),
+    #   Tablo::Summary::BodyRow.new(:total, 40, ->{ Tablo::Summary.use(:tax) }),
+    #   Tablo::Summary::BodyRow.new(:total, 50, "========"),
+    #   Tablo::Summary::BodyRow.new(:total, 60, ->{ Tablo::Summary.use(:total_due) }),
     # ]
     #
     # table = Tablo::Table.new(invoice,
     #   omit_last_rule: true,
     #   border: Tablo::Border.new(Tablo::BorderName::Fancy),
-    #   title: Tablo::Title.new("\nInvoice\n=======\n"),
-    #   subtitle: Tablo::SubTitle.new("Details", frame: Tablo::Heading::Frame.new)) do |t|
+    #   title: Tablo::Heading::Title.new("\nInvoice\n=======\n"),
+    #   subtitle: Tablo::Heading::SubTitle.new("Details", frame: Tablo::Heading::Frame.new)) do |t|
     #   t.add_column("Product",
     #     &.product)
     #   t.add_column("Quantity",
@@ -139,7 +139,7 @@ module Tablo
     #
     # table.pack
     # table.add_summary(invoice_summary_definition,
-    #   title: Tablo::Title.new("Summary", frame: Tablo::Heading::Frame.new))
+    #   title: Tablo::Heading::Title.new("Summary", frame: Tablo::Heading::Frame.new))
     # table.summary.as(Tablo::Table).pack
     # puts table
     # puts table.summary
@@ -200,7 +200,7 @@ module Tablo
     # For example, to populate row 1 of column `:total` with the result of
     # a previous calculation identified by `:total_sum`:
     # ```
-    # Tablo::SummaryBodyRow.new(:total, 1, ->{ Tablo::Summary.use(:total_sum) })
+    # Tablo::Summary::BodyRow.new(:total, 1, ->{ Tablo::Summary.use(:total_sum) })
     # ```
     def self.use(key)
       proc_results[key]
@@ -209,19 +209,19 @@ module Tablo
     # Scans the summary definition to group entries of the same type and then
     # processes them in the appropriate order.
     private def build_summary
-      summary_procs = [] of SummaryProc(T)
-      body_rows = [] of SummaryBodyRow
-      body_columns = [] of SummaryBodyColumn
-      header_columns = [] of SummaryHeaderColumn
+      summary_procs = [] of Summary::UserProc(T)
+      body_rows = [] of Summary::BodyRow
+      body_columns = [] of Summary::BodyColumn
+      header_columns = [] of Summary::HeaderColumn
       summary_definition.each do |sd|
         case sd
-        when SummaryProc(T)
+        when Summary::UserProc(T)
           summary_procs << sd
-        when SummaryBodyRow
+        when Summary::BodyRow
           body_rows << sd
-        when SummaryBodyColumn
+        when Summary::BodyColumn
           body_columns << sd
-        when SummaryHeaderColumn
+        when Summary::HeaderColumn
           header_columns << sd
         end
       end
@@ -259,7 +259,7 @@ module Tablo
         end
         columns.as(Array(LabelType)).each do |column|
           if duplicates.has_key?(column)
-            raise Exception::DuplicateKey.new(
+            raise Error::DuplicateLabel.new(
               "Summary: duplicate header column definition for column<#{column}>")
           else
             duplicates[column] = 1
@@ -288,7 +288,7 @@ module Tablo
       duplicates = {} of {LabelType, Int32} => Int32
       body_rows.each do |entry|
         if duplicates.has_key?({entry.column, entry.row})
-          raise Exception::DuplicateKey.new(
+          raise Error::DuplicateLabel.new(
             "Summary: duplicate body definition, row<#{entry.row}> for column<#{entry.column}> already used.")
         else
           defined_rows << entry.row
@@ -331,7 +331,7 @@ module Tablo
         end
         columns.as(Array(LabelType)).each do |column|
           if duplicates.has_key?(column)
-            raise Exception::DuplicateKey.new(
+            raise Error::DuplicateLabel.new(
               "Summary: duplicate body column definition for column<#{column}>")
           else
             duplicates[column] = 1
@@ -407,169 +407,169 @@ module Tablo
       summary_table.name = :summary
       summary_table
     end
-  end
 
-  # The `SummaryProc` struct lets you define specific functions to be applied
-  # to source data, accessible either by column or directly from the source,
-  # in order to provide aggregated results.
-  struct SummaryProc(T)
-    protected getter proc
+    # The `Summary::UserProc` struct lets you define specific functions to be applied
+    # to source data, accessible either by column or directly from the source,
+    # in order to provide aggregated results.
+    struct Summary::UserProc(T)
+      protected getter proc
 
-    # The constructor's only parameter is a Proc, which in turn expects
-    # a Table(T) as its only parameter.
-    #
-    # The Proc must return a hash of results (of type CellType), which are
-    # automatically saved for future use (See `Summary.use` method
-    # in `SummaryBodyRow`).
-    #
-    # Example of accessing data directly from source:
-    # ```
-    # struct InvoiceItem
-    #   getter product, quantity, price
-    #
-    #   def initialize(@product : String, @quantity : Int32?, @price : Int32?)
-    #   end
-    # end
-    #
-    # Tablo::SummaryProc.new(
-    #   proc: ->(tbl : Tablo::Table(InvoiceItem)) {
-    #     total_sum = 0
-    #     tbl.sources.each do |row|
-    #       next unless row.quantity.is_a?(Int32) && row.price.is_a?(Int32)
-    #       total_sum += row.quantity.as(Int32) * row.price.as(Int32)
-    #     end
-    #     {:total_sum => total_sum.as(Tablo::CellType)}
-    #   })
-    # ```
-    # Another example, this time using column access, with iterators, and
-    # returning several results.
-    # ```
-    # Tablo::SummaryProc.new(
-    #   proc: ->(tbl : Tablo::Table(InvoiceItem)) {
-    #     total_sum = total_count = max_price = 0
-    #     iter_quantity = tbl.column_data("Quantity").each
-    #     iter_price = tbl.column_data("Price").each
-    #     iter = iter_quantity.zip(iter_price)
-    #     iter.each do |q, p|
-    #       next unless q.is_a?(Int32) && p.is_a?(Int32)
-    #       total_sum += q * p
-    #       total_count += 1
-    #       max_price = [max_price, p].max
-    #     end
-    #     {
-    #       :total_count => total_count.as(Tablo::CellType),
-    #       :total_sum   => total_sum.as(Tablo::CellType),
-    #       :max_price   => max_price.as(Tablo::CellType),
-    #     }
-    #   })
-    # ```
-    def initialize(@proc : Proc(Table(T), Hash(Symbol, CellType)))
+      # The constructor's only parameter is a Proc, which in turn expects
+      # a Table(T) as its only parameter.
+      #
+      # The Proc must return a hash of results (of type CellType), which are
+      # automatically saved for future use (See `Summary.use` method
+      # in `Summary::BodyRow`).
+      #
+      # Example of accessing data directly from source:
+      # ```
+      # struct InvoiceItem
+      #   getter product, quantity, price
+      #
+      #   def initialize(@product : String, @quantity : Int32?, @price : Int32?)
+      #   end
+      # end
+      #
+      # Tablo::Summary::UserProc.new(
+      #   proc: ->(tbl : Tablo::Table(InvoiceItem)) {
+      #     total_sum = 0
+      #     tbl.sources.each do |row|
+      #       next unless row.quantity.is_a?(Int32) && row.price.is_a?(Int32)
+      #       total_sum += row.quantity.as(Int32) * row.price.as(Int32)
+      #     end
+      #     {:total_sum => total_sum.as(Tablo::CellType)}
+      #   })
+      # ```
+      # Another example, this time using column access, with iterators, and
+      # returning several results.
+      # ```
+      # Tablo::Summary::UserProc.new(
+      #   proc: ->(tbl : Tablo::Table(InvoiceItem)) {
+      #     total_sum = total_count = max_price = 0
+      #     iter_quantity = tbl.column_data("Quantity").each
+      #     iter_price = tbl.column_data("Price").each
+      #     iter = iter_quantity.zip(iter_price)
+      #     iter.each do |q, p|
+      #       next unless q.is_a?(Int32) && p.is_a?(Int32)
+      #       total_sum += q * p
+      #       total_count += 1
+      #       max_price = [max_price, p].max
+      #     end
+      #     {
+      #       :total_count => total_count.as(Tablo::CellType),
+      #       :total_sum   => total_sum.as(Tablo::CellType),
+      #       :max_price   => max_price.as(Tablo::CellType),
+      #     }
+      #   })
+      # ```
+      def initialize(@proc : Proc(Table(T), Hash(Symbol, CellType)))
+      end
     end
-  end
 
-  # The `SummaryHeaderColumn` struct lets you define header content and specific
-  # alignment, formatting and styling
-  struct SummaryHeaderColumn
-    protected getter column, content, alignment, formatter, styler
+    # The `Summary::HeaderColumn` struct lets you define header content and specific
+    # alignment, formatting and styling
+    struct Summary::HeaderColumn
+      protected getter column, content, alignment, formatter, styler
 
-    # The constructor expects up to 5 parameters, the first 2 being mandatory
-    #
-    # - `column` : type if `LabelType` <br />
-    #    It is the column identifier.
-    #
-    # - `content` : type is String <br />
-    #    (may be empty)
-    #
-    # - The last three are optional (`alignment`, `formatter` and `styler`)
-    #
-    # Examples:
-    # ```
-    # Tablo::SummaryHeaderColumn.new("Price",
-    #   content: "Total Invoice",
-    #   alignment: Tablo::Justify::Right),
-    # Tablo::SummaryHeaderColumn.new(:total,
-    #   content: "Amounts",
-    #   styler: ->(s : String) {s.colorize(:red).to_s}),
-    # ```
-    def initialize(@column : LabelType | Array(LabelType),
-                   @content : String,
-                   @alignment : Justify? = nil,
-                   @formatter : Cell::Data::Formatter? = nil,
-                   @styler : Cell::Data::Styler? = nil)
+      # The constructor expects up to 5 parameters, the first 2 being mandatory
+      #
+      # - `column` : type if `LabelType` <br />
+      #    It is the column identifier.
+      #
+      # - `content` : type is String <br />
+      #    (may be empty)
+      #
+      # - The last three are optional (`alignment`, `formatter` and `styler`)
+      #
+      # Examples:
+      # ```
+      # Tablo::Summary::HeaderColumn.new("Price",
+      #   content: "Total Invoice",
+      #   alignment: Tablo::Justify::Right),
+      # Tablo::Summary::HeaderColumn.new(:total,
+      #   content: "Amounts",
+      #   styler: ->(s : String) {s.colorize(:red).to_s}),
+      # ```
+      def initialize(@column : LabelType | Array(LabelType),
+                     @content : String,
+                     @alignment : Justify? = nil,
+                     @formatter : Cell::Data::Formatter? = nil,
+                     @styler : Cell::Data::Styler? = nil)
+      end
     end
-  end
 
-  # The `SummaryBodyColumn` struct lets you define specific
-  # alignment, formatting and styling on body columns.
-  struct SummaryBodyColumn
-    protected getter column, alignment, formatter, styler
+    # The `Summary::BodyColumn` struct lets you define specific
+    # alignment, formatting and styling on body columns.
+    struct Summary::BodyColumn
+      protected getter column, alignment, formatter, styler
 
-    # The constructor expects up to 4 parameters, of which the first, the
-    # column identifier, is the only mandatory one (but it goes without saying
-    # that at least one of the 3 optional parameters must be defined!)
-    #
-    # - `column` : type is `LabelType`
-    #
-    # - The last three optional parameters are (`alignment`,
-    #   `formatter` and `styler`)
-    #
-    # Example:
-    # ```
-    # Tablo::SummaryBodyColumn.new(:total, alignment: Tablo::Justify::Right,
-    #   formatter: ->(value : Tablo::CellType) {
-    #     value.is_a?(String) ? value : (
-    #       value.nil? ? "" : "%.2f" % value.as(BigDecimal)
-    #     )
-    #   },
-    #   styler: ->(_value : Tablo::CellType, cd : Tablo::Cell::Data::Coords, fc : String) {
-    #     case cd.row_index
-    #     when 0, 2, 5 then fc.colorize.mode(:bold).to_s
-    #     when 1       then fc.colorize.mode(:italic).to_s
-    #     else              fc
-    #     end
-    #   }),
-    # ```
-    def initialize(@column : LabelType | Array(LabelType),
-                   @alignment : Justify? = nil,
-                   @formatter : Cell::Data::Formatter? = nil,
-                   @styler : Cell::Data::Styler? = nil)
+      # The constructor expects up to 4 parameters, of which the first, the
+      # column identifier, is the only mandatory one (but it goes without saying
+      # that at least one of the 3 optional parameters must be defined!)
+      #
+      # - `column` : type is `LabelType`
+      #
+      # - The last three optional parameters are (`alignment`,
+      #   `formatter` and `styler`)
+      #
+      # Example:
+      # ```
+      # Tablo::Summary::BodyColumn.new(:total, alignment: Tablo::Justify::Right,
+      #   formatter: ->(value : Tablo::CellType) {
+      #     value.is_a?(String) ? value : (
+      #       value.nil? ? "" : "%.2f" % value.as(BigDecimal)
+      #     )
+      #   },
+      #   styler: ->(_value : Tablo::CellType, cd : Tablo::Cell::Data::Coords, fc : String) {
+      #     case cd.row_index
+      #     when 0, 2, 5 then fc.colorize.mode(:bold).to_s
+      #     when 1       then fc.colorize.mode(:italic).to_s
+      #     else              fc
+      #     end
+      #   }),
+      # ```
+      def initialize(@column : LabelType | Array(LabelType),
+                     @alignment : Justify? = nil,
+                     @formatter : Cell::Data::Formatter? = nil,
+                     @styler : Cell::Data::Styler? = nil)
+      end
     end
-  end
 
-  # The `SummaryBodyRow` struct lets you define body rows content
-  struct SummaryBodyRow
-    protected getter column, row, content
+    # The `Summary::BodyRow` struct lets you define body rows content
+    struct Summary::BodyRow
+      protected getter column, row, content
 
-    # The constructor expects 3 mandatory parameters.
-    #
-    # - `column` : type is `LabelType`, the column identifier
-    #
-    # - `row` : type is `Int32`, the row number
-    #
-    # - `content` : type is `CellType` or a Proc returning a `CellType`
-    #
-    # `column` and `row` define the precise location of the aggregated value in the
-    # Summary table. Row numbers need not be contiguous; what's important is that
-    # they allow results to be displayed in the desired row order.
-    #
-    # Example of `content` directly fed by a literal string:
-    # ```
-    # Tablo::SummaryBodyRow.new("Price", 40, "Tax (20%)")
-    # Tablo::SummaryBodyRow.new("Price", 60, "Balance due"),
-    # ```
-    #  Example of `content` fed by a proc returning a `CellType` value:
-    # ```
-    # Tablo::SummaryBodyRow.new(:total, 40, ->{ Tablo::Summary.use(:tax) }),
-    # Tablo::SummaryBodyRow.new(:total, 60, ->{ Tablo::Summary.use(:total_due) }),
-    # ```
-    #
-    # **Important**:
-    # Note here the use of the `Summary.use` class method, which retrieves, via
-    # a Symbol key, an aggregated value previously calculated in
-    # a `SummaryProc`  instance.
-    def initialize(@column : LabelType,
-                   @row : Int32,
-                   @content : CellType | Proc(CellType))
+      # The constructor expects 3 mandatory parameters.
+      #
+      # - `column` : type is `LabelType`, the column identifier
+      #
+      # - `row` : type is `Int32`, the row number
+      #
+      # - `content` : type is `CellType` or a Proc returning a `CellType`
+      #
+      # `column` and `row` define the precise location of the aggregated value in the
+      # Summary table. Row numbers need not be contiguous; what's important is that
+      # they allow results to be displayed in the desired row order.
+      #
+      # Example of `content` directly fed by a literal string:
+      # ```
+      # Tablo::Summary::BodyRow.new("Price", 40, "Tax (20%)")
+      # Tablo::Summary::BodyRow.new("Price", 60, "Balance due"),
+      # ```
+      #  Example of `content` fed by a proc returning a `CellType` value:
+      # ```
+      # Tablo::Summary::BodyRow.new(:total, 40, ->{ Tablo::Summary.use(:tax) }),
+      # Tablo::Summary::BodyRow.new(:total, 60, ->{ Tablo::Summary.use(:total_due) }),
+      # ```
+      #
+      # **Important**:
+      # Note here the use of the `Summary.use` class method, which retrieves, via
+      # a Symbol key, an aggregated value previously calculated in
+      # a `Summary::UserProc`  instance.
+      def initialize(@column : LabelType,
+                     @row : Int32,
+                     @content : CellType | Proc(CellType))
+      end
     end
   end
 end

@@ -41,7 +41,7 @@ describe Tablo::Border do
       border.should be_a(Tablo::Border)
     end
     it "raises an exception on incorrect string length definition" do
-      expect_raises Tablo::InvalidConnectorString do
+      expect_raises Tablo::Error::InvalidBorderDefinition do
         border = Tablo::Border.new("abcdefghijklmnopz")
       end
     end

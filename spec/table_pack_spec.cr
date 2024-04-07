@@ -5,15 +5,15 @@ def set_border
 end
 
 def set_title
-  Tablo::Title.new("This a very long text to be displayed as title heading", frame: Tablo::Heading::Frame.new)
+  Tablo::Heading::Title.new("This a very long text to be displayed as title heading", frame: Tablo::Frame.new)
 end
 
 def set_subtitle
-  Tablo::SubTitle.new("A very simple subtitle", frame: Tablo::Heading::Frame.new)
+  Tablo::Heading::SubTitle.new("A very simple subtitle", frame: Tablo::Frame.new)
 end
 
 def set_footer
-  Tablo::Footer.new("Do you need a footer?", frame: Tablo::Heading::Frame.new)
+  Tablo::Heading::Footer.new("Do you need a footer?", frame: Tablo::Frame.new)
 end
 
 describe "#{Tablo::Table} -> packing method", tags: "pack" do
@@ -22,7 +22,6 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
       describe "call = table.pack" do
         it "correctly adapts columns size to their largest value for header" \
            " and body and adapts headings contents inside" do
-          Tablo::Config.starting_widths = Tablo::StartingWidths::AutoSized
           table = Tablo::Table.new([["abc", "not so large", "Very long column contents"]],
             border: set_border, title: set_title, subtitle: set_subtitle,
             footer: set_footer) do |t|
@@ -47,7 +46,7 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                       ├───────┴──────────────┴───────────────────────────┤
                       │               Do you need a footer?              │
                       ╰──────────────────────────────────────────────────╯).gsub(/^ */m, "")
-          table.pack.to_s.should eq output
+          table.pack(starting_widths: Tablo::Table::StartingWidths::AutoSized).to_s.should eq output
         end
       end
     end
@@ -55,7 +54,6 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
     context "" do
       describe "call = table.pack(#{requested_size = 30})" do
         it "After autosizing columns, shrinks columns to meet total width requirement" do
-          Tablo::Config.starting_widths = Tablo::StartingWidths::AutoSized
           table = Tablo::Table.new([["abc", "Very long column contents"]],
             border: set_border, title: set_title, subtitle: set_subtitle,
             footer: set_footer) do |t|
@@ -77,7 +75,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                       ├───────┴────────────────────┤
                       │    Do you need a footer?   │
                       ╰────────────────────────────╯).gsub(/^ */m, "")
-          table.pack(requested_size).to_s.should eq output
+          table.pack(requested_size, starting_widths: Tablo::Table::StartingWidths::AutoSized)
+            .to_s.should eq output
         end
       end
     end
@@ -85,7 +84,6 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
     context do
       describe "call = table.pack(#{requested_size = 60})" do
         it "After autosizing columns, expands columns to meet total width requirement" do
-          Tablo::Config.starting_widths = Tablo::StartingWidths::AutoSized
           table = Tablo::Table.new([["abc", "Very long column contents"]],
             border: set_border, title: set_title, subtitle: set_subtitle,
             footer: set_footer) do |t|
@@ -104,7 +102,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                       ├────────────────────────────┴─────────────────────────────┤
                       │                   Do you need a footer?                  │
                       ╰──────────────────────────────────────────────────────────╯).gsub(/^ */m, "")
-          table.pack(requested_size).to_s.should eq output
+          table.pack(requested_size, starting_widths: Tablo::Table::StartingWidths::AutoSized)
+            .to_s.should eq output
         end
       end
     end
@@ -114,7 +113,6 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
       describe "call = table.pack" do
         it "should not do any packing, just reset current column widths " \
            "to their initial value" do
-          Tablo::Config.starting_widths = Tablo::StartingWidths::Initial
           table = Tablo::Table.new([["abc", "Very long column contents"]],
             border: set_border, title: set_title, subtitle: set_subtitle,
             footer: set_footer) do |t|
@@ -137,7 +135,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                       ├──────────────┴──────────────┤
                       │    Do you need a footer?    │
                       ╰─────────────────────────────╯).gsub(/^ */m, "")
-          table.pack.to_s.should eq output
+          table.pack(starting_widths: Tablo::Table::StartingWidths::Initial)
+            .to_s.should eq output
         end
       end
     end
@@ -146,7 +145,6 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
       describe "call = table.pack(#{requested_size = 30})" do
         it "resets current column widths to their initial values " \
            "and shrinks columns to meet total width requirement" do
-          Tablo::Config.starting_widths = Tablo::StartingWidths::Initial
           table = Tablo::Table.new([["abc", "Very long column contents"]],
             border: set_border, title: set_title, subtitle: set_subtitle,
             footer: set_footer) do |t|
@@ -169,7 +167,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                       ├──────────────┴─────────────┤
                       │    Do you need a footer?   │
                       ╰────────────────────────────╯).gsub(/^ */m, "")
-          table.pack(requested_size).to_s.should eq output
+          table.pack(requested_size, starting_widths: Tablo::Table::StartingWidths::Initial)
+            .to_s.should eq output
         end
       end
     end
@@ -178,7 +177,6 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
       describe "call = table.pack(#{requested_size = 60})" do
         it "resets current column widths to their initial values " \
            "and expands columns to meet total width requirement" do
-          Tablo::Config.starting_widths = Tablo::StartingWidths::Initial
           table = Tablo::Table.new([["abc", "Very long column contents"]],
             border: set_border, title: set_title, subtitle: set_subtitle,
             footer: set_footer) do |t|
@@ -197,7 +195,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                       ├────────────────────────────┴─────────────────────────────┤
                       │                   Do you need a footer?                  │
                       ╰──────────────────────────────────────────────────────────╯).gsub(/^ */m, "")
-          table.pack(requested_size).to_s.should eq output
+          table.pack(requested_size, starting_widths: Tablo::Table::StartingWidths::Initial)
+            .to_s.should eq output
         end
       end
     end
@@ -207,7 +206,6 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
     context do
       describe "call = table.pack" do
         it "should not do anything !" do
-          Tablo::Config.starting_widths = Tablo::StartingWidths::Current
           table = Tablo::Table.new([["abc", "Very long column contents"]],
             border: set_border, title: set_title, subtitle: set_subtitle,
             footer: set_footer) do |t|
@@ -230,7 +228,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                         ├──────────────┴──────────────┤
                         │    Do you need a footer?    │
                         ╰─────────────────────────────╯).gsub(/^ */m, "")
-          table.pack.to_s.should eq output
+          table.pack(starting_widths: Tablo::Table::StartingWidths::Current)
+            .to_s.should eq output
         end
       end
     end
@@ -238,7 +237,6 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
     context do
       describe "call = table.pack(#{requested_size = 30})" do
         it "shrinks columns to meet total width requirement" do
-          Tablo::Config.starting_widths = Tablo::StartingWidths::Current
           table = Tablo::Table.new([["abc", "Very long column contents"]],
             border: set_border, title: set_title, subtitle: set_subtitle,
             footer: set_footer) do |t|
@@ -261,7 +259,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                         ├──────────────┴─────────────┤
                         │    Do you need a footer?   │
                         ╰────────────────────────────╯).gsub(/^ */m, "")
-          table.pack(requested_size).to_s.should eq output
+          table.pack(requested_size, starting_widths: Tablo::Table::StartingWidths::Current)
+            .to_s.should eq output
         end
       end
     end
@@ -269,7 +268,6 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
     context do
       describe "call = table.pack(#{requested_size = 60})" do
         it "expands columns to meet total width requirement" do
-          Tablo::Config.starting_widths = Tablo::StartingWidths::Current
           table = Tablo::Table.new([["abc", "Very long column contents"]],
             border: set_border, title: set_title, subtitle: set_subtitle,
             footer: set_footer) do |t|
@@ -288,7 +286,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                         ├────────────────────────────┴─────────────────────────────┤
                         │                   Do you need a footer?                  │
                         ╰──────────────────────────────────────────────────────────╯).gsub(/^ */m, "")
-          table.pack(requested_size).to_s.should eq output
+          table.pack(requested_size, starting_widths: Tablo::Table::StartingWidths::Current)
+            .to_s.should eq output
         end
       end
     end
@@ -299,7 +298,6 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
       describe %(call = table.pack(except: "long")) do
         it "correctly adapts columns size to their largest value for header" \
            " and body, except for excluded column \"long\"" do
-          Tablo::Config.starting_widths = Tablo::StartingWidths::AutoSized
           table = Tablo::Table.new([["abc", "not so large", "Very long column contents"]],
             border: set_border, title: set_title, subtitle: set_subtitle,
             footer: set_footer) do |t|
@@ -326,7 +324,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                         ├───────┴──────────────┴──────────────┤
                         │        Do you need a footer?        │
                         ╰─────────────────────────────────────╯).gsub(/^ */m, "")
-          table.pack(except: "long").to_s.should eq output
+          table.pack(starting_widths: Tablo::Table::StartingWidths::AutoSized,
+            except: "long").to_s.should eq output
         end
       end
     end
@@ -336,7 +335,6 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
       describe %(call = table.pack(only: "long")) do
         it "correctly adapts columns size to their largest value for header" \
            " and body, only for column \"long\"" do
-          Tablo::Config.starting_widths = Tablo::StartingWidths::AutoSized
           table = Tablo::Table.new([["abc", "not so large", "Very long column contents"]],
             border: set_border, title: set_title, subtitle: set_subtitle,
             footer: set_footer) do |t|
@@ -362,7 +360,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                       ├──────────────┴──────────────┴───────────────────────────┤
                       │                  Do you need a footer?                  │
                       ╰─────────────────────────────────────────────────────────╯).gsub(/^ */m, "")
-          table.pack(only: "long").to_s.should eq output
+          table.pack(starting_widths: Tablo::Table::StartingWidths::AutoSized,
+            only: "long").to_s.should eq output
         end
       end
     end

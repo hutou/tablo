@@ -30,9 +30,9 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         it "does not display any title, subtitle, header or footer" do
           table = Tablo::Table.new(IntSamples.new.select(7..13),
             border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-            title: Tablo::Title.new("Numeric", frame: Tablo::Heading::Frame.new),
-            subtitle: Tablo::SubTitle.new("Subtitle", frame: Tablo::Heading::Frame.new),
-            footer: Tablo::Footer.new("Footer", frame: Tablo::Heading::Frame.new),
+            title: Tablo::Heading::Title.new("Numeric", frame: Tablo::Frame.new),
+            subtitle: Tablo::Heading::SubTitle.new("Subtitle", frame: Tablo::Frame.new),
+            footer: Tablo::Heading::Footer.new("Footer", frame: Tablo::Frame.new),
             header_frequency: nil) do |t|
             t.add_column("itself", &.itself)
             t.add_column("Double", &.*(2))
@@ -57,7 +57,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         it "correctly displays framed title, with headers" do
           table = Tablo::Table.new(IntSamples.new.select(7..13),
             border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-            title: Tablo::Title.new("Numeric", frame: Tablo::Heading::Frame.new(0, 1)),
+            title: Tablo::Heading::Title.new("Numeric", frame: Tablo::Frame.new(0, 1)),
             header_frequency: 0) do |t|
             t.add_column("itself", &.itself)
             t.add_column("Double", &.*(2))
@@ -88,7 +88,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         it "correctly displays framed & linked title, with headers" do
           table = Tablo::Table.new(IntSamples.new.select(7..13),
             border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-            title: Tablo::Title.new("Numeric", frame: Tablo::Heading::Frame.new),
+            title: Tablo::Heading::Title.new("Numeric", frame: Tablo::Frame.new),
             header_frequency: 0) do |t|
             t.add_column("itself", &.itself)
             t.add_column("Double", &.*(2))
@@ -115,7 +115,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         it "correctly displays unframed title, with headers" do
           table = Tablo::Table.new(IntSamples.new.select(7..13),
             border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-            title: Tablo::Title.new("Numeric"),
+            title: Tablo::Heading::Title.new("Numeric"),
             header_frequency: 0) do |t|
             t.add_column("itself", &.itself)
             t.add_column("Double", &.*(2))
@@ -142,8 +142,8 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         it "correctly displays framed linked title and subtitle, with headers" do
           table = Tablo::Table.new(IntSamples.new.select(7..13),
             border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-            title: Tablo::Title.new("Numeric", frame: Tablo::Heading::Frame.new),
-            subtitle: Tablo::SubTitle.new("Integers and float", frame: Tablo::Heading::Frame.new),
+            title: Tablo::Heading::Title.new("Numeric", frame: Tablo::Frame.new),
+            subtitle: Tablo::Heading::SubTitle.new("Integers and float", frame: Tablo::Frame.new),
             header_frequency: 0) do |t|
             t.add_column("itself", &.itself)
             t.add_column("Double", &.*(2))
@@ -173,8 +173,8 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         it "correctly displays framed title and subtitle, with headers" do
           table = Tablo::Table.new(IntSamples.new.select(7..13),
             border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-            title: Tablo::Title.new("Numeric", frame: Tablo::Heading::Frame.new(0, 1)),
-            subtitle: Tablo::SubTitle.new("Integers and float", frame: Tablo::Heading::Frame.new(0, 1)),
+            title: Tablo::Heading::Title.new("Numeric", frame: Tablo::Frame.new(0, 1)),
+            subtitle: Tablo::Heading::SubTitle.new("Integers and float", frame: Tablo::Frame.new(0, 1)),
             header_frequency: 0) do |t|
             t.add_column("itself", &.itself)
             t.add_column("Double", &.*(2))
@@ -206,8 +206,8 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         it "correctly displays framed title and subtitle, both linked, with headers" do
           table = Tablo::Table.new(IntSamples.new.select(7..13),
             border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-            title: Tablo::Title.new("Numeric", frame: Tablo::Heading::Frame.new),
-            subtitle: Tablo::SubTitle.new("Integers and float", frame: Tablo::Heading::Frame.new(0, 1)),
+            title: Tablo::Heading::Title.new("Numeric", frame: Tablo::Frame.new),
+            subtitle: Tablo::Heading::SubTitle.new("Integers and float", frame: Tablo::Frame.new(0, 1)),
             header_frequency: 0) do |t|
             t.add_column("itself", &.itself)
             t.add_column("Double", &.*(2))
@@ -240,8 +240,8 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         it "correctly displays framed title, unframed subtitle, with headers" do
           table = Tablo::Table.new(IntSamples.new.select(7..13),
             border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-            title: Tablo::Title.new("Numeric", frame: Tablo::Heading::Frame.new),
-            subtitle: Tablo::SubTitle.new("Integers and float"),
+            title: Tablo::Heading::Title.new("Numeric", frame: Tablo::Frame.new),
+            subtitle: Tablo::Heading::SubTitle.new("Integers and float"),
             header_frequency: 0) do |t|
             t.add_column("itself", &.itself)
             t.add_column("Double", &.*(2))
@@ -273,9 +273,9 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         it "correctly displays framed title, unframed subtitle, and framed footer, with headers" do
           table = Tablo::Table.new(IntSamples.new.select(7..13),
             border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-            title: Tablo::Title.new("Numeric", frame: Tablo::Heading::Frame.new),
-            subtitle: Tablo::SubTitle.new("Integers and float"),
-            footer: Tablo::Footer.new("end of data", frame: Tablo::Heading::Frame.new(1, 0)),
+            title: Tablo::Heading::Title.new("Numeric", frame: Tablo::Frame.new),
+            subtitle: Tablo::Heading::SubTitle.new("Integers and float"),
+            footer: Tablo::Heading::Footer.new("end of data", frame: Tablo::Frame.new(1, 0)),
             header_frequency: 0) do |t|
             t.add_column("itself", &.itself)
             t.add_column("Double", &.*(2))
@@ -312,8 +312,8 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         it "correctly displays framed title, unframed subtitle after body" do
           table = Tablo::Table.new(IntSamples.new.select(7..43),
             border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-            title: Tablo::Title.new("Numeric", frame: Tablo::Heading::Frame.new(1, 0), repeated: true),
-            subtitle: Tablo::SubTitle.new("Integers and float"),
+            title: Tablo::Heading::Title.new("Numeric", frame: Tablo::Frame.new(1, 0), repeated: true),
+            subtitle: Tablo::Heading::SubTitle.new("Integers and float"),
             header_frequency: 3) do |t|
             t.add_column("itself", &.itself)
             t.add_column("Double", &.*(2))
@@ -354,8 +354,8 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         it "correctly displays framed & linked title, unframed subtitle after body" do
           table = Tablo::Table.new(IntSamples.new.select(7..43),
             border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-            title: Tablo::Title.new("Numeric", frame: Tablo::Heading::Frame.new, repeated: true),
-            subtitle: Tablo::SubTitle.new("Integers and float"),
+            title: Tablo::Heading::Title.new("Numeric", frame: Tablo::Frame.new, repeated: true),
+            subtitle: Tablo::Heading::SubTitle.new("Integers and float"),
             header_frequency: 3) do |t|
             t.add_column("itself", &.itself)
             t.add_column("Double", &.*(2))
@@ -397,8 +397,8 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         it "correctly displays unframed title, unframed subtitle after body" do
           table = Tablo::Table.new(IntSamples.new.select(7..43),
             border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-            title: Tablo::Title.new("Numeric", repeated: true),
-            subtitle: Tablo::SubTitle.new("Integers and float"),
+            title: Tablo::Heading::Title.new("Numeric", repeated: true),
+            subtitle: Tablo::Heading::SubTitle.new("Integers and float"),
             header_frequency: 3) do |t|
             t.add_column("itself", &.itself)
             t.add_column("Double", &.*(2))
@@ -437,8 +437,8 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         it "correctly displays framed & body-linked footer, page break and framed title" do
           table = Tablo::Table.new(IntSamples.new.select(7..43),
             border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-            title: Tablo::Title.new("Numeric", frame: Tablo::Heading::Frame.new(1, 1), repeated: true),
-            footer: Tablo::Footer.new("end of data", frame: Tablo::Heading::Frame.new, page_break: true),
+            title: Tablo::Heading::Title.new("Numeric", frame: Tablo::Frame.new(1, 1), repeated: true),
+            footer: Tablo::Heading::Footer.new("end of data", frame: Tablo::Frame.new, page_break: true),
             header_frequency: 3) do |t|
             t.add_column("itself", &.itself)
             t.add_column("Double", &.*(2))
@@ -485,8 +485,8 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         it "correctly displays framed & body-linked footer and framed title" do
           table = Tablo::Table.new(IntSamples.new.select(7..43),
             border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-            title: Tablo::Title.new("Numeric", frame: Tablo::Heading::Frame.new(0, 1), repeated: true),
-            footer: Tablo::Footer.new("end of data", frame: Tablo::Heading::Frame.new(0, 1)),
+            title: Tablo::Heading::Title.new("Numeric", frame: Tablo::Frame.new(0, 1), repeated: true),
+            footer: Tablo::Heading::Footer.new("end of data", frame: Tablo::Frame.new(0, 1)),
             header_frequency: 3) do |t|
             t.add_column("itself", &.itself)
             t.add_column("Double", &.*(2))
@@ -534,8 +534,8 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         it "correctly displays framed and framed title" do
           table = Tablo::Table.new(IntSamples.new.select(7..43),
             border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-            title: Tablo::Title.new("Numeric", frame: Tablo::Heading::Frame.new(1, 1), repeated: true),
-            footer: Tablo::Footer.new("end of data", frame: Tablo::Heading::Frame.new(1, 0)),
+            title: Tablo::Heading::Title.new("Numeric", frame: Tablo::Frame.new(1, 1), repeated: true),
+            footer: Tablo::Heading::Footer.new("end of data", frame: Tablo::Frame.new(1, 0)),
             header_frequency: 3) do |t|
             t.add_column("itself", &.itself)
             t.add_column("Double", &.*(2))
@@ -585,8 +585,8 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         it "correctly displays linked framed footer and title" do
           table = Tablo::Table.new(IntSamples.new.select(7..43),
             border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-            title: Tablo::Title.new("Numeric", frame: Tablo::Heading::Frame.new(0, 1), repeated: true),
-            footer: Tablo::Footer.new("end of data", frame: Tablo::Heading::Frame.new(1, 0)),
+            title: Tablo::Heading::Title.new("Numeric", frame: Tablo::Frame.new(0, 1), repeated: true),
+            footer: Tablo::Heading::Footer.new("end of data", frame: Tablo::Frame.new(1, 0)),
             header_frequency: 3) do |t|
             t.add_column("itself", &.itself)
             t.add_column("Double", &.*(2))
@@ -635,8 +635,8 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         it "correctly displays linked framed footer and title" do
           table = Tablo::Table.new(IntSamples.new.select(7..43),
             border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-            title: Tablo::Title.new("Numeric", frame: Tablo::Heading::Frame.new(0, 1), repeated: true),
-            footer: Tablo::Footer.new("end of data", frame: Tablo::Heading::Frame.new(1, 1), page_break: true),
+            title: Tablo::Heading::Title.new("Numeric", frame: Tablo::Frame.new(0, 1), repeated: true),
+            footer: Tablo::Heading::Footer.new("end of data", frame: Tablo::Frame.new(1, 1), page_break: true),
             header_frequency: 3) do |t|
             t.add_column("itself", &.itself)
             t.add_column("Double", &.*(2))
@@ -687,7 +687,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       it "prints a detached summary" do
         table = Tablo::Table.new((1..5).to_a,
           border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-          title: Tablo::Title.new("Numeric", frame: Tablo::Heading::Frame.new),
+          title: Tablo::Heading::Title.new("Numeric", frame: Tablo::Frame.new),
           masked_headers: false,
           row_divider_frequency: 1,
           omit_last_rule: true,
@@ -711,7 +711,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
           },
             omit_last_rule: false,
             masked_headers: false,
-            title: Tablo::Title.new("Summary", frame: Tablo::Heading::Frame.new(1, 0)),
+            title: Tablo::Heading::Title.new("Summary", frame: Tablo::Frame.new(1, 0)),
           )
         end
         output1 = %Q( ╭────────────────────────────────────────────╮
@@ -754,7 +754,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       it "prints a detached summary, with spacing" do
         table = Tablo::Table.new((1..5).to_a,
           border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-          title: Tablo::Title.new("Numeric", frame: Tablo::Heading::Frame.new),
+          title: Tablo::Heading::Title.new("Numeric", frame: Tablo::Frame.new),
           masked_headers: false,
           row_divider_frequency: 1,
           omit_last_rule: true,
@@ -777,7 +777,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
           },
             omit_last_rule: false,
             masked_headers: false,
-            title: Tablo::Title.new("Summary", frame: Tablo::Heading::Frame.new(3, 0)),
+            title: Tablo::Heading::Title.new("Summary", frame: Tablo::Frame.new(3, 0)),
           )
         end
         output1 = %Q( ╭────────────────────────────────────────────╮
@@ -821,7 +821,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
       it "prints a linked summary" do
         table = Tablo::Table.new((1..5).to_a,
           border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-          title: Tablo::Title.new("Numeric", frame: Tablo::Heading::Frame.new),
+          title: Tablo::Heading::Title.new("Numeric", frame: Tablo::Frame.new),
           masked_headers: false,
           row_divider_frequency: 1,
           omit_last_rule: true,
@@ -846,7 +846,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
           },
             omit_last_rule: false,
             masked_headers: false,
-            title: Tablo::Title.new("Summary", frame: Tablo::Heading::Frame.new),
+            title: Tablo::Heading::Title.new("Summary", frame: Tablo::Frame.new),
           )
         end
         output1 = %Q( ╭────────────────────────────────────────────╮
@@ -890,9 +890,9 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         table = Tablo::Table.new([1, 2, 3],
           border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           header_frequency: 0,
-          # title: Tablo::Title.new("Numeric and text", frame: Tablo::Heading::Frame.new(0,2)),
-          subtitle: Tablo::SubTitle.new("No booleans"),
-          # footer: Tablo::Footer.new("End of page", frame: Tablo::Heading::Frame.new, page_break: true),
+          # title: Tablo::Heading::Title.new("Numeric and text", frame: Tablo::Frame.new(0,2)),
+          subtitle: Tablo::Heading::SubTitle.new("No booleans"),
+          # footer: Tablo::Heading::Footer.new("End of page", frame: Tablo::Frame.new, page_break: true),
           omit_last_rule: false) do |t|
           t.add_column("itself", &.itself)
           t.add_column(2, header: "") { |n| n * 2 }
@@ -908,7 +908,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
                   ],
             },
           }, # masked_headers: true,
-            title: Tablo::Title.new("Summary", frame: Tablo::Heading::Frame.new),
+            title: Tablo::Heading::Title.new("Summary", frame: Tablo::Frame.new),
             header_frequency: nil,
             omit_last_rule: false)
         end
@@ -938,9 +938,9 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         table = Tablo::Table.new([1, 2, 3],
           border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           header_frequency: 0,
-          # title: Tablo::Title.new("Numeric and text", frame: Tablo::Heading::Frame.new(0, 2)),
-          subtitle: Tablo::SubTitle.new("No booleans"),
-          # footer: Tablo::Footer.new("End of page", frame: Tablo::Heading::Frame.new, page_break: true),
+          # title: Tablo::Heading::Title.new("Numeric and text", frame: Tablo::Frame.new(0, 2)),
+          subtitle: Tablo::Heading::SubTitle.new("No booleans"),
+          # footer: Tablo::Heading::Footer.new("End of page", frame: Tablo::Frame.new, page_break: true),
           omit_last_rule: true) do |t|
           t.add_column("itself", &.itself)
           t.add_column(2, header: "") { |n| n * 2 }
@@ -956,7 +956,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
                   ],
             },
           }, # masked_headers: true,
-            title: Tablo::Title.new("Summary", frame: Tablo::Heading::Frame.new),
+            title: Tablo::Heading::Title.new("Summary", frame: Tablo::Frame.new),
             header_frequency: nil,
             omit_last_rule: false)
         end
@@ -985,9 +985,9 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         table = Tablo::Table.new([1, 2, 3],
           border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           header_frequency: nil,
-          # title: Tablo::Title.new("Numeric and text", frame: Tablo::Heading::Frame.new(0, 2)),
-          subtitle: Tablo::SubTitle.new("No booleans"),
-          # footer: Tablo::Footer.new("End of page", frame: Tablo::Heading::Frame.new, page_break: true),
+          # title: Tablo::Heading::Title.new("Numeric and text", frame: Tablo::Frame.new(0, 2)),
+          subtitle: Tablo::Heading::SubTitle.new("No booleans"),
+          # footer: Tablo::Heading::Footer.new("End of page", frame: Tablo::Frame.new, page_break: true),
           omit_last_rule: false) do |t|
           t.add_column("itself", &.itself)
           t.add_column(2, header: "") { |n| n * 2 }
@@ -1003,7 +1003,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
                   ],
             },
           }, # masked_headers: true,
-            title: Tablo::Title.new("Summary", frame: Tablo::Heading::Frame.new),
+            title: Tablo::Heading::Title.new("Summary", frame: Tablo::Frame.new),
             header_frequency: nil,
             omit_last_rule: false)
         end
@@ -1029,9 +1029,9 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         table = Tablo::Table.new([1, 2, 3],
           border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           header_frequency: nil,
-          # title: Tablo::Title.new("Numeric and text", frame: Tablo::Heading::Frame.new(0,2)),
-          subtitle: Tablo::SubTitle.new("No booleans"),
-          # footer: Tablo::Footer.new("End of page"; frame: Tablo::Heading::Frame.new, page_break: true),
+          # title: Tablo::Heading::Title.new("Numeric and text", frame: Tablo::Frame.new(0,2)),
+          subtitle: Tablo::Heading::SubTitle.new("No booleans"),
+          # footer: Tablo::Heading::Footer.new("End of page"; frame: Tablo::Frame.new, page_break: true),
           omit_last_rule: true) do |t|
           t.add_column("itself", &.itself)
           t.add_column(2, header: "") { |n| n * 2 }
@@ -1047,7 +1047,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
                   ],
             },
           }, # masked_headers: true,
-            title: Tablo::Title.new("Summary", frame: Tablo::Heading::Frame.new),
+            title: Tablo::Heading::Title.new("Summary", frame: Tablo::Frame.new),
             header_frequency: nil,
             omit_last_rule: false)
         end
@@ -1073,9 +1073,9 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         table = Tablo::Table.new([1, 2, 3],
           border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           header_frequency: 0,
-          # title: Tablo::Title.new("Numeric and text", frame: Tablo::Heading::Frame.new(0, 2)),
-          subtitle: Tablo::SubTitle.new("No booleans"),
-          footer: Tablo::Footer.new("End of page", frame: Tablo::Heading::Frame.new),
+          # title: Tablo::Heading::Title.new("Numeric and text", frame: Tablo::Frame.new(0, 2)),
+          subtitle: Tablo::Heading::SubTitle.new("No booleans"),
+          footer: Tablo::Heading::Footer.new("End of page", frame: Tablo::Frame.new),
           omit_last_rule: false) do |t|
           t.add_column("itself", &.itself)
           t.add_column(2, header: "") { |n| n * 2 }
@@ -1091,7 +1091,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
                   ],
             },
           }, # masked_headers: true,
-            title: Tablo::Title.new("Summary", frame: Tablo::Heading::Frame.new),
+            title: Tablo::Heading::Title.new("Summary", frame: Tablo::Frame.new),
             header_frequency: nil,
             omit_last_rule: false)
         end
@@ -1122,9 +1122,9 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         table = Tablo::Table.new([1, 2, 3],
           border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           header_frequency: 0,
-          # title: Tablo::Title.new("Numeric and text", frame: Tablo::Heading::Frame(0,2)),
-          subtitle: Tablo::SubTitle.new("No booleans"),
-          footer: Tablo::Footer.new("End of page", frame: Tablo::Heading::Frame.new, page_break: true),
+          # title: Tablo::Heading::Title.new("Numeric and text", frame: Tablo::Frame(0,2)),
+          subtitle: Tablo::Heading::SubTitle.new("No booleans"),
+          footer: Tablo::Heading::Footer.new("End of page", frame: Tablo::Frame.new, page_break: true),
           omit_last_rule: false) do |t|
           t.add_column("itself", &.itself)
           t.add_column(2, header: "") { |n| n * 2 }
@@ -1140,7 +1140,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
                   ],
             },
           }, # masked_headers: true,
-            title: Tablo::Title.new("Summary", frame: Tablo::Heading::Frame.new),
+            title: Tablo::Heading::Title.new("Summary", frame: Tablo::Frame.new),
             header_frequency: nil,
             omit_last_rule: false)
         end
@@ -1171,9 +1171,9 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         table = Tablo::Table.new([1, 2, 3],
           border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           header_frequency: 0,
-          # title: Tablo::Title.new("Numeric and text", frame: Tablo::Heading::Frame.new(0, 2)),
-          subtitle: Tablo::SubTitle.new("No booleans"),
-          footer: Tablo::Footer.new("End of page", frame: Tablo::Heading::Frame.new),
+          # title: Tablo::Heading::Title.new("Numeric and text", frame: Tablo::Frame.new(0, 2)),
+          subtitle: Tablo::Heading::SubTitle.new("No booleans"),
+          footer: Tablo::Heading::Footer.new("End of page", frame: Tablo::Frame.new),
           omit_last_rule: true) do |t|
           t.add_column("itself", &.itself)
           t.add_column(2, header: "") { |n| n * 2 }
@@ -1189,7 +1189,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
                   ],
             },
           }, # masked_headers: true,
-            title: Tablo::Title.new("Summary", frame: Tablo::Heading::Frame.new),
+            title: Tablo::Heading::Title.new("Summary", frame: Tablo::Frame.new),
             header_frequency: nil,
             omit_last_rule: false)
         end
@@ -1219,9 +1219,9 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         table = Tablo::Table.new([1, 2, 3],
           border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           header_frequency: 0,
-          # title: Tablo::Title.new("Numeric and text", frame: Tablo::Heading::Frame.new(0, 2)),
-          subtitle: Tablo::SubTitle.new("No booleans"),
-          footer: Tablo::Footer.new("End of page", frame: Tablo::Heading::Frame.new, page_break: true),
+          # title: Tablo::Heading::Title.new("Numeric and text", frame: Tablo::Frame.new(0, 2)),
+          subtitle: Tablo::Heading::SubTitle.new("No booleans"),
+          footer: Tablo::Heading::Footer.new("End of page", frame: Tablo::Frame.new, page_break: true),
           omit_last_rule: true) do |t|
           t.add_column("itself", &.itself)
           t.add_column(2, header: "") { |n| n * 2 }
@@ -1237,7 +1237,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
                   ],
             },
           }, # masked_headers: true,
-            title: Tablo::Title.new("Summary", frame: Tablo::Heading::Frame.new),
+            title: Tablo::Heading::Title.new("Summary", frame: Tablo::Frame.new),
             header_frequency: nil,
             omit_last_rule: false)
         end
@@ -1267,9 +1267,9 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         table = Tablo::Table.new([1, 2, 3],
           border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           header_frequency: nil,
-          title: Tablo::Title.new("Numeric and text", frame: Tablo::Heading::Frame.new(0, 2)),
-          subtitle: Tablo::SubTitle.new("No booleans"),
-          footer: Tablo::Footer.new("End of page", frame: Tablo::Heading::Frame.new),
+          title: Tablo::Heading::Title.new("Numeric and text", frame: Tablo::Frame.new(0, 2)),
+          subtitle: Tablo::Heading::SubTitle.new("No booleans"),
+          footer: Tablo::Heading::Footer.new("End of page", frame: Tablo::Frame.new),
           omit_last_rule: false) do |t|
           t.add_column("itself", &.itself)
           t.add_column(2, header: "") { |n| n * 2 }
@@ -1285,7 +1285,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
                   ],
             },
           }, # masked_headers: true,
-            title: Tablo::Title.new("Summary", frame: Tablo::Heading::Frame.new),
+            title: Tablo::Heading::Title.new("Summary", frame: Tablo::Frame.new),
             header_frequency: nil,
             omit_last_rule: false)
         end
@@ -1310,8 +1310,8 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         table = Tablo::Table.new([1, 2, 3],
           border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           header_frequency: nil,
-          subtitle: Tablo::SubTitle.new("No booleans"),
-          footer: Tablo::Footer.new("End of page", frame: Tablo::Heading::Frame.new, page_break: true),
+          subtitle: Tablo::Heading::SubTitle.new("No booleans"),
+          footer: Tablo::Heading::Footer.new("End of page", frame: Tablo::Frame.new, page_break: true),
           omit_last_rule: false) do |t|
           t.add_column("itself", &.itself)
           t.add_column(2, header: "") { |n| n * 2 }
@@ -1327,7 +1327,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
                   ],
             },
           }, # masked_headers: true,
-            title: Tablo::Title.new("Summary", frame: Tablo::Heading::Frame.new),
+            title: Tablo::Heading::Title.new("Summary", frame: Tablo::Frame.new),
             header_frequency: nil,
             omit_last_rule: false)
         end
@@ -1351,8 +1351,8 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         table = Tablo::Table.new([1, 2, 3],
           border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           header_frequency: nil,
-          subtitle: Tablo::SubTitle.new("No booleans"),
-          footer: Tablo::Footer.new("End of page", frame: Tablo::Heading::Frame.new),
+          subtitle: Tablo::Heading::SubTitle.new("No booleans"),
+          footer: Tablo::Heading::Footer.new("End of page", frame: Tablo::Frame.new),
           omit_last_rule: true) do |t|
           t.add_column("itself", &.itself)
           t.add_column(2, header: "") { |n| n * 2 }
@@ -1368,7 +1368,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
                   ],
             },
           }, # masked_headers: true,
-            title: Tablo::Title.new("Summary", frame: Tablo::Heading::Frame.new),
+            title: Tablo::Heading::Title.new("Summary", frame: Tablo::Frame.new),
             header_frequency: nil,
             omit_last_rule: false)
         end
@@ -1392,8 +1392,8 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         table = Tablo::Table.new([1, 2, 3],
           border: Tablo::Border.new(Tablo::Border::Name::Fancy),
           header_frequency: nil,
-          subtitle: Tablo::SubTitle.new("No booleans"),
-          footer: Tablo::Footer.new("End of page", frame: Tablo::Heading::Frame.new, page_break: true),
+          subtitle: Tablo::Heading::SubTitle.new("No booleans"),
+          footer: Tablo::Heading::Footer.new("End of page", frame: Tablo::Frame.new, page_break: true),
           omit_last_rule: true) do |t|
           t.add_column("itself", &.itself)
           t.add_column(2, header: "") { |n| n * 2 }
@@ -1409,7 +1409,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
                   ],
             },
           }, # masked_headers: true,
-            title: Tablo::Title.new("Summary"),
+            title: Tablo::Heading::Title.new("Summary"),
             header_frequency: nil,
             omit_last_rule: false)
         end
@@ -1432,7 +1432,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         it "prints results !" do
           table = Tablo::Table.new((1..5).to_a,
             border: Tablo::Border.new(Tablo::Border::Name::Fancy),
-            title: Tablo::Title.new("Numeric", frame: Tablo::Heading::Frame.new),
+            title: Tablo::Heading::Title.new("Numeric", frame: Tablo::Frame.new),
             masked_headers: false,
             border_type: Tablo::Border::Name::Fancy,
             row_divider_frequency: 1,
@@ -1461,7 +1461,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
             },
               omit_last_rule: false,
               masked_headers: false,
-              title: Tablo::Title.new("Summary", frame: Tablo::Heading::Frame.new),
+              title: Tablo::Heading::Title.new("Summary", frame: Tablo::Frame.new),
             )
           end
 

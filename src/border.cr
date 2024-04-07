@@ -176,8 +176,8 @@ module Tablo
       else
         @border_string = @border_type.as(String)
       end
-      raise InvalidConnectorString.new "Invalid border definition <#{@border_string}>" \
-                                       "(size != 16)" unless @border_string.size == 16
+      raise Error::InvalidBorderDefinition.new "Invalid border definition <#{@border_string}>" \
+                                               "(size != 16)" unless @border_string.size == 16
 
       ars = @border_string.split("").map { |e|
         case e

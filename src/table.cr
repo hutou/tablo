@@ -70,9 +70,9 @@ module Tablo
     macro initialize(block_given)
 
       def initialize(@sources : Enumerable(T), *,
-        @title : Title = Config.title,
-        @subtitle : SubTitle = Config.subtitle,
-        @footer : Footer = Config.footer,
+        @title : Heading::Title = Config.title,
+        @subtitle : Heading::SubTitle = Config.subtitle,
+        @footer : Heading::Footer = Config.footer,
         #
         @border : Border = Border.new(Config.border_type, Config.border_styler),
         #
@@ -183,29 +183,29 @@ module Tablo
     # - `left_padding`: type is `Int32`<br />
     #   Default value is `1` <br />
     #   Permitted range of values is governed by `Config.padding_width_range` in the `check_padding` method<br />
-    #   (raises `InvalidValue` runtime exception if value not in range)
+    #   (raises `Error::InvalidValue` runtime exception if value not in range)
     # - `right_padding`: type is `Int32` <br />
     #   Default value is `1` <br />
     #   Permitted range of values is governed by `Config.padding_width_range` in the `check_padding` method<br />
-    #   (raises `InvalidValue` runtime exception if value not in range)
+    #   (raises `Error::InvalidValue` runtime exception if value not in range)
     # - `padding_character`: type is `String`<br />
     #   Default value is `" "` <br />
     #   The `check_padding_character` auxiliairy method ensures the `padding_character` string size is only one <br />
-    #   (raises an `InvalidValue` runtime exception otherwise)
+    #   (raises an `Error::InvalidValue` runtime exception otherwise)
     # - `truncation_indicator`: type is `String` <br />
     #   Defaut value is `"~"` <br />
     #   The `check_truncation_indicator` auxiliairy method ensures the `truncation_indicator` string size
-    #   is only one (raises an `InvalidValue` runtime exception otherwise)
+    #   is only one (raises an `Error::InvalidValue` runtime exception otherwise)
     # - `width`: type is `Int32` <br />
     #   Default value is `12`<br />
     #   Permitted range of values is governed by `Config.column_width_range` in the
-    #   `check_width` auxiliary method (raises `InvalidValue` runtime exception
+    #   `check_width` auxiliary method (raises `Error::InvalidValue` runtime exception
     #   unless value in range)
     #
     # - `header_frequency`: type is `Int32?` <br />
     #   Default value is `0` <br />
     #   Permitted range of values is governed by `Config.header_frequency_range` in the
-    #   `check_header_frequency` auxiliary method (raises `InvalidValue` runtime exception
+    #   `check_header_frequency` auxiliary method (raises `Error::InvalidValue` runtime exception
     #   unless value in range or `nil`)
     #
     #   - If set to `0`, rows of data other than body are displayed
@@ -218,7 +218,7 @@ module Tablo
     # - `row_divider_frequency`: type is `Int32?` <br />
     #   Default value is `nil` <br />
     #   Permitted range of values is governed by `Config.row_divider_frequency_range` in the
-    #   `check_row_divider_frequency` auxiliary method (raises `InvalidValue` runtime
+    #   `check_row_divider_frequency` auxiliary method (raises `Error::InvalidValue` runtime
     #   exception unless value in range or `nil`)
     #
     # - `wrap_mode`: type is `WrapMode` <br />
@@ -232,13 +232,13 @@ module Tablo
     #   Default value is `nil` <br />
     #   Permitted range of values is governed by
     #   `Config.header_wrap_range` in the `check_header_wrap` auxiliary method
-    #   (raises `InvalidValue` runtime exception unless value in range or `nil`)
+    #   (raises `Error::InvalidValue` runtime exception unless value in range or `nil`)
     #
     # - `body_wrap` | `Int32?`<br />
     #   Default value is `nil` <br />
     #   Permitted range of values is governed by
     #   `Config.body_wrap_range` in the `check_body_wrap` auxiliary method (raises
-    #   `InvalidValue` runtime exception unless value in range or `nil`)
+    #   `Error::InvalidValue` runtime exception unless value in range or `nil`)
     #
     # - `masked_headers`: type is `Bool` <br />
     #   Default value is `false` <br />
@@ -263,86 +263,86 @@ module Tablo
 
     # Checks that the parameter setting for `header_frequency` is within the value
     # range defined in `Config.header_frequency_range` <br />
-    # Raises InvalidValue or returns `nil`
+    # Raises Error::InvalidValue or returns `nil`
     private def check_header_frequency
       unless (hf = header_frequency).nil?
         unless hf.in?(Config.header_frequency_range)
-          raise InvalidValue.new "header frequency must be nil or in range " \
-                                 "(#{Config.header_frequency_range})"
+          raise Error::InvalidValue.new "header frequency must be nil or in range " \
+                                        "(#{Config.header_frequency_range})"
         end
       end
     end
 
     # Checks that the parameter setting for `row_divider_frequency` is within the value
     # range defined in `Config.row_divider_frequency_range` <br />
-    # Raises InvalidValue or returns `nil`
+    # Raises Error::InvalidValue or returns `nil`
     private def check_row_divider_frequency
       unless (rdf = row_divider_frequency).nil?
         unless rdf.in?(Config.row_divider_frequency_range)
-          raise InvalidValue.new "row divider frequency must be nil or in range " \
-                                 "(#{Config.row_divider_frequency_range})"
+          raise Error::InvalidValue.new "row divider frequency must be nil or in range " \
+                                        "(#{Config.row_divider_frequency_range})"
         end
       end
     end
 
     # Checks that the parameter setting for `header_wrap` is `nil` or within the
     # value range defined in `Config.header_wrap_range` <br />
-    # Raises InvalidValue or returns `nil`
+    # Raises Error::InvalidValue or returns `nil`
     private def check_header_wrap
       unless (hw = header_wrap).nil?
         unless hw.in?(Config.header_wrap_range)
-          raise InvalidValue.new "header wrap must be nil or in range " \
-                                 "(#{Config.header_wrap_range})"
+          raise Error::InvalidValue.new "header wrap must be nil or in range " \
+                                        "(#{Config.header_wrap_range})"
         end
       end
     end
 
     # Checks that the parameter setting for `body_wrap` is `nil` or within the
     # value range defined in `Config.body_wrap_range` <br />
-    # Raises InvalidValue or returns `nil`
+    # Raises Error::InvalidValue or returns `nil`
     private def check_body_wrap
       unless (bw = body_wrap).nil?
         unless bw.in?(Config.body_wrap_range)
-          raise InvalidValue.new "Body wrap must be nil or in range " \
-                                 "(#{Config.body_wrap_range})"
+          raise Error::InvalidValue.new "Body wrap must be nil or in range " \
+                                        "(#{Config.body_wrap_range})"
         end
       end
     end
 
     # Checks that the parameter setting for `width` is within the
     # value range defined in `Config.column_width_range` <br />
-    # Raises InvalidValue or returns `nil`
+    # Raises Error::InvalidValue or returns `nil`
     private def check_width(width)
       unless width.in?(Config.column_width_range)
-        raise InvalidValue.new "Column width must be in range " \
-                               "(#{Config.column_width_range})"
+        raise Error::InvalidValue.new "Column width must be in range " \
+                                      "(#{Config.column_width_range})"
       end
     end
 
     # Checks that the parameter setting for `padding` is within the
     # value range defined in `Config.padding_width_range` <br />
-    # Raises InvalidValue or returns `nil`
+    # Raises Error::InvalidValue or returns `nil`
     private def check_padding(padding)
       unless padding.in?(Config.padding_width_range)
-        raise InvalidValue.new "Column padding width must be in range " \
-                               "(#{Config.padding_width_range})"
+        raise Error::InvalidValue.new "Column padding width must be in range " \
+                                      "(#{Config.padding_width_range})"
       end
     end
 
     # Checks that the parameter setting for `padding_character` string is
     # exactly one character.` <br />
-    # Raises InvalidValue or returns `nil`
+    # Raises Error::InvalidValue or returns `nil`
     private def check_padding_character(padding_character)
-      raise InvalidValue.new "Padding character string must be exactly" \
-                             " *one* character" if padding_character.size != 1
+      raise Error::InvalidValue.new "Padding character string must be exactly" \
+                                    " *one* character" if padding_character.size != 1
     end
 
     # Checks that the parameter setting for `truncation_indicator` string is
     # exactly one character.` <br />
-    # Raises InvalidValue or returns `nil`
+    # Raises Error::InvalidValue or returns `nil`
     private def check_truncation_indicator(truncation_indicator)
-      raise InvalidValue.new "Truncation indicator string  must be exactly" \
-                             " *one* character" if truncation_indicator.size != 1
+      raise Error::InvalidValue.new "Truncation indicator string  must be exactly" \
+                                    " *one* character" if truncation_indicator.size != 1
     end
 
     # Returns the sources enumerable
@@ -432,7 +432,7 @@ module Tablo
                    wrap_mode = wrap_mode,
                    &extractor : (T, Int32) -> CellType)
       if column_registry.has_key?(label)
-        raise Exception::DuplicateKey.new("Column label already used in this table.")
+        raise Error::DuplicateLabel.new("Column label already used in this table.")
       end
       check_width(width)
       check_padding(left_padding)
@@ -508,10 +508,10 @@ module Tablo
                   truncation_indicator = truncation_indicator,
                   wrap_mode = wrap_mode)
       if group_registry.has_key?(label)
-        raise Exception::DuplicateKey.new("Group label already used in this table.")
+        raise Error::DuplicateLabel.new("Group label already used in this table.")
       end
       if column_registry.size.zero?
-        raise GroupError.new("Group requires at least one column.")
+        raise Error::GroupEmpty.new("Group requires at least one column.")
       end
       check_padding_character(padding_character)
       check_truncation_indicator(truncation_indicator)
@@ -607,8 +607,8 @@ module Tablo
     # _Mandatory positional parameters:_
     #
     # - `summary_definition`: type is `Array(<structs>)`<br />
-    # where `<structs>` may be one or more instances of `SummaryProc`,
-    # `SummaryHeaderColumn`, `HeaderRow`, `SummaryBodyColumn` or `SummaryBodyRow` <br />
+    # where `<structs>` may be one or more instances of `Summary::UserProc`,
+    # `Summary::HeaderColumn`, `HeaderRow`, `Summary::BodyColumn` or `Summary::BodyRow` <br />
     #
     # - `summary_options`: type is `NamedTuple(<Table parameters>)` <br />
     # where `<Table parameters>` is a list of any number of Table initializers (may be empty).
@@ -617,8 +617,8 @@ module Tablo
     # ```
     # summary_definition = [
     #   Tablo::... TODO
-    #   Tablo::SummaryBodyRow.new(:total, 1, ->{ Tablo::Summary.use(:total_sum) }),
-    #   Tablo::SummaryBodyColumn.new(:total, alignment: Tablo::Justify::Center),
+    #   Tablo::Summary::BodyRow.new(:total, 1, ->{ Tablo::Summary.use(:total_sum) }),
+    #   Tablo::Summary::BodyColumn.new(:total, alignment: Tablo::Justify::Center),
     # ]
     # ```
     # which means :
@@ -905,21 +905,30 @@ module Tablo
     # requested table width is reached.<br />
     # This explains why the final result of resizing depends on the starting column
     # widths.
+
+    enum StartingWidths
+      Initial
+      Current
+      AutoSized
+    end
+
     def pack(width : Int32? = nil, *,
-             starting_widths : StartingWidths = Config.starting_widths)
+             starting_widths = StartingWidths::AutoSized)
+      # starting_widths : StartingWidths = Config.starting_widths)
       # All columns are selected
       packit(width, starting_widths, column_list)
     end
 
     # `pack` method version 2
     def pack(width : Int32? = nil, *,
-             starting_widths : StartingWidths = Config.starting_widths,
+             starting_widths = StartingWidths::AutoSized,
+             # starting_widths : StartingWidths = Config.starting_widths,
              except : (LabelType | Array(LabelType))) # ? = nil)
       except = [except] unless except.is_a?(Array)
       # check if labels in except are valid
       except.each do |key|
         unless column_registry.has_key?(key)
-          raise LabelNotFound.new("Pack 'except' error : unknown column label <#{key}>")
+          raise Error::LabelNotFound.new("Pack 'except' error : unknown column label <#{key}>")
         end
       end
       column_labels = column_registry.keys - except
@@ -929,13 +938,14 @@ module Tablo
 
     # `pack` method version 3
     def pack(width : Int32? = nil, *,
-             starting_widths : StartingWidths = Config.starting_widths,
+             starting_widths = StartingWidths::AutoSized,
+             # starting_widths : StartingWidths = Config.starting_widths,
              only : (LabelType | Array(LabelType))) # ? = nil)
       only = [only] unless only.is_a?(Array)
       # check if labels in only are valid
       only.each do |key|
         unless column_registry.has_key?(key)
-          raise LabelNotFound.new("Pack 'only' error : unknown column label <#{key}>")
+          raise Error::LabelNotFound.new("Pack 'only' error : unknown column label <#{key}>")
         end
       end
       columns = only.map { |label| column_registry[label] }
@@ -964,8 +974,8 @@ module Tablo
           c.width = c.initial_width
         end
       in StartingWidths::AutoSized # default
-        # all columns, 'except' excepted, have their width set to their
-        # largest formatted content size --> Implies browsing all source rows
+        # all (selected) columns have their width set to their largest formatted
+        # content size --> Implies browsing all source rows
         autosize_columns(columns)
       end
 
@@ -1244,19 +1254,19 @@ module Tablo
     end
 
     def using_columns(*cols, reordered = false)
-      raise InvalidValue.new "No column given" if cols.empty?
+      raise Error::InvalidValue.new "No column given" if cols.empty?
       used_columns.reordered = reordered
       cols.each do |e|
         case e
         when LabelType
           index = column_registry.keys.index(e)
-          raise LabelNotFound.new "No such column <#{e}>" if index.nil?
+          raise Error::LabelNotFound.new "No such column <#{e}>" if index.nil?
           used_columns.indexes << index
         when Tuple(LabelType, LabelType)
           bg = column_registry.keys.index(e[0])
-          raise LabelNotFound.new "No such column <#{e[0]}>" if bg.nil?
+          raise Error::LabelNotFound.new "No such column <#{e[0]}>" if bg.nil?
           nd = column_registry.keys.index(e[1])
-          raise LabelNotFound.new "No such column <#{e[1]}>" if nd.nil?
+          raise Error::LabelNotFound.new "No such column <#{e[1]}>" if nd.nil?
           if bg > nd
             bg.downto nd do |idx|
               used_columns.indexes << idx
@@ -1273,19 +1283,19 @@ module Tablo
     end
 
     def using_column_indexes(*indexes, reordered = false)
-      raise InvalidValue.new "No column index given" if indexes.empty?
+      raise Error::InvalidValue.new "No column index given" if indexes.empty?
       used_columns.reordered = reordered
       index_range = 0..column_registry.size - 1
       indexes.each do |e|
         case e
         when Int32
-          raise Exception.new "No such column index <#{e}>" if !e.in?(index_range)
+          raise Error::InvalidColumnIndex.new "No such column index <#{e}>" if !e.in?(index_range)
           used_columns.indexes << e
         when Tuple(Int32, Int32)
           bg = e[0]
-          raise LabelNotFound.new "No such column index <#{bg}>" if !bg.in?(index_range)
+          raise Error::InvalidColumnIndex.new "No such column index <#{bg}>" if !bg.in?(index_range)
           nd = e[1]
-          raise LabelNotFound.new "No such column index <#{nd}>" if !nd.in?(index_range)
+          raise Error::InvalidColumnIndex.new "No such column index <#{nd}>" if !nd.in?(index_range)
           if bg > nd
             bg.downto nd do |idx|
               used_columns.indexes << idx
@@ -1296,7 +1306,7 @@ module Tablo
             end
           end
         else
-          raise Exception.new "<#{e}> is not a valid index"
+          raise Error::InvalidColumnIndex.new "<#{e}> is not a valid index"
         end
       end
       deal_with_groups
@@ -1402,7 +1412,7 @@ module Tablo
     end
 
     # returns an array of data for a specific column
-    # Used by SummaryProc
+    # Used by Summary::UserProc
     def column_data(column_label : LabelType)
       column_data = [] of CellType
       extractor = column_registry[column_label].extractor
@@ -1413,7 +1423,7 @@ module Tablo
     end
 
     # returns a hash of array of data for several columns
-    # Used by SummaryProc
+    # Used by Summary::UserProc
     def column_data(column_label : Array(LabelType))
       column_data = {} of LabelType => Array(CellType)
       sources.each_with_index do |source, index|

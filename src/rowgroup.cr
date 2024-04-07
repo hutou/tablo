@@ -26,7 +26,7 @@ module Tablo
   # use on first row of :summary to properly link or not the two tables.
   class RowGroup(T)
     protected class_property rowtype_memory : RowType? = nil
-    protected class_property transition_footer : Footer? = nil
+    protected class_property transition_footer : Heading::Footer? = nil
 
     # Whenever we enter rowgroup, we retrieve the previous rowtype from
     # the recorded value in class variable RowGroup.rowtype_memory
@@ -88,7 +88,7 @@ module Tablo
         table.subtitle.framed?
       when RowType::Footer
         if summary_first?
-          RowGroup.transition_footer.as(Footer).framed?
+          RowGroup.transition_footer.as(Heading::Footer).framed?
         else
           table.footer.framed?
         end
@@ -100,11 +100,11 @@ module Tablo
     private def line_breaks_after(rowtype)
       case rowtype
       when RowType::Title
-        table.title.framed? ? table.title.frame.as(Heading::Frame).line_breaks_after : 0
+        table.title.framed? ? table.title.frame.as(Frame).line_breaks_after : 0
       when RowType::SubTitle
-        table.subtitle.framed? ? table.subtitle.frame.as(Heading::Frame).line_breaks_after : 0
+        table.subtitle.framed? ? table.subtitle.frame.as(Frame).line_breaks_after : 0
       when RowType::Footer
-        table.footer.framed? ? table.footer.frame.as(Heading::Frame).line_breaks_after : 0
+        table.footer.framed? ? table.footer.frame.as(Frame).line_breaks_after : 0
       else
         0
       end
@@ -113,11 +113,11 @@ module Tablo
     private def line_breaks_before(rowtype)
       case rowtype
       when RowType::Title
-        table.title.framed? ? table.title.frame.as(Heading::Frame).line_breaks_before : 0
+        table.title.framed? ? table.title.frame.as(Frame).line_breaks_before : 0
       when RowType::SubTitle
-        table.subtitle.framed? ? table.subtitle.frame.as(Heading::Frame).line_breaks_before : 0
+        table.subtitle.framed? ? table.subtitle.frame.as(Frame).line_breaks_before : 0
       when RowType::Footer
-        table.footer.framed? ? table.footer.frame.as(Heading::Frame).line_breaks_before : 0
+        table.footer.framed? ? table.footer.frame.as(Frame).line_breaks_before : 0
       else
         0
       end
@@ -280,7 +280,7 @@ module Tablo
           if table.omit_last_rule?
             # Ok, linked tables wanted, but conditions are :
             #  - previous_rowtype == Body
-            #  - previous_rowtype == Footer *AND* # Heading::Framed *AND* no page_break
+            #  - previous_rowtype == Footer *AND* # Framed *AND* no page_break
             if current_rowtype == RowType::Body ||
                (current_rowtype == RowType::Footer && table.footer.framed? &&
                !table.footer.page_break?)

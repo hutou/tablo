@@ -11,9 +11,9 @@ module Tablo
     # - `true` : styling not allowed
     # - `false` : styling allowed <br />
     # (Default `true`)
-    class_getter? styler_tty_only : Bool = true
+    class_getter? styler_tty_only : Bool
     # Allows styling (`false`) or not (`true`) when output is redirected.
-    class_setter styler_tty_only : Bool
+    class_setter styler_tty_only : Bool = true
 
     # Tests whether terminal size is used as table total width when packing is
     # called without a specified width.
@@ -21,17 +21,10 @@ module Tablo
     # - `true` : table width is capped to terminal size
     # - `false` : terminal size is ignored <br />
     # (Default `false`)
-    class_getter? terminal_capped_width : Bool = false
+    class_getter? terminal_capped_width : Bool
     # Sets the value of `terminal_capped_width` to control table width
     # (`true`) or not (`false`) when packing if called without a specified width
-    class_setter terminal_capped_width : Bool
-
-    # Returns the value of `StartingWidths`  <br />
-    # (Default `StartingWidths::AutoSized`) <br />
-    # *See `Table#pack` for details*
-    class_getter starting_widths : StartingWidths = StartingWidths::AutoSized
-    # Sets the value of `StartingWidths`
-    class_setter starting_widths : StartingWidths
+    class_setter terminal_capped_width : Bool = false
 
     #
     #
@@ -91,22 +84,22 @@ module Tablo
     #
 
     # Returns the Title struct
-    class_getter title : Title
+    class_getter title : Heading::Title
     # Creates an instance of Title struct with default parameters  <br />
     # (Default struct Title has a nil value, so nothing to display)
-    class_setter title : Title = Title.new
+    class_setter title : Heading::Title = Heading::Title.new
 
     # Returns the SubTitle struct
-    class_getter subtitle : SubTitle
+    class_getter subtitle : Heading::SubTitle
     # Creates an instance of SubTitle struct with default parameters  <br />
     # (Default struct SubTitle has a nil value, so nothing to display)
-    class_setter subtitle : SubTitle = SubTitle.new
+    class_setter subtitle : Heading::SubTitle = Heading::SubTitle.new
 
     # Returns the Footer struct
-    class_getter footer : Footer
+    class_getter footer : Heading::Footer
     # Creates an instance of Footer struct with default parameters  <br />
     # (Default struct Footer has a nil value, so nothing to display)
-    class_setter footer : Footer = Footer.new
+    class_setter footer : Heading::Footer = Heading::Footer.new
 
     # TODO I'm here! TODO
     #

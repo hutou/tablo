@@ -134,16 +134,16 @@ Tablo::Aggregate:Max])` to calculate the count of non nil
   In the event of a duplicate `column/aggregate` pair, the `summary`
   method raises a `DuplicateInSummaryDefinition` exception.
 
-#### `SummaryProc` type
+#### `Summary::UserProc` type
 
-The `SummaryProc` type is used to define custom aggregation
+The `Summary::UserProc` type is used to define custom aggregation
 functions. The user has full control over the data, and is therefore
 responsible for filtering `nil` values, non-numeric values, etc.
 
-The SummaryProc type definition is:
+The Summary::UserProc type definition is:
 
 ```crystal
-record SummaryProc(S), ident : Symbol,
+record Summary::UserProc(S), ident : Symbol,
                            proc : Proc(Table(S), CellType)
 ```
 
@@ -167,7 +167,7 @@ Tablo::Aggregate::Sum
 First case, using `table.sources`
 
 ```crystal
-Tablo::SummaryProc(InvoiceItem).new(
+Tablo::Summary::UserProc(InvoiceItem).new(
   ident: :total_sum, proc: ->(tbl : Tablo::Table(InvoiceItem)) {
   total_sum = 0
   tbl.sources.each do |row|
@@ -183,7 +183,7 @@ Tablo::SummaryProc(InvoiceItem).new(
 or
 
 ```crystal
-Tablo::SummaryProc(InvoiceItem).new(
+Tablo::Summary::UserProc(InvoiceItem).new(
   ident: :total_sum, proc: ->(tbl : Tablo::Table(InvoiceItem)) {
   tbl.sources.select { |n| n.quantity.is_a?(Number) && n.price.is_a?(Number) }
     .map { |n| n.quantity.as(Number) * n.price.as(Number) }
@@ -193,7 +193,7 @@ Tablo::SummaryProc(InvoiceItem).new(
 Second case, using `table.column_data(column)` with 2 columns, and iterators
 
 ```crystal
-Tablo::SummaryProc(InvoiceItem).new(
+Tablo::Summary::UserProc(InvoiceItem).new(
   ident: :total_sum, proc: ->(tbl : Tablo::Table(InvoiceItem)) {
   total_sum = 0
   iter_quantity = tbl.column_data("Quantity").each
@@ -222,10 +222,10 @@ TODO TODO
 TODO TODO
 TODO TODO**
 
-#### `SummaryBodyRow` type
+#### `Summary::BodyRow` type
 
 ```crystal
-record SummaryBodyRow, column : LabelType,
+record Summary::BodyRow, column : LabelType,
                 row : Int32,
                 content : CellType | Proc(CellType)
 ```
@@ -237,19 +237,19 @@ record HeaderRow, column : LabelType,
                   content : CellType
 ```
 
-#### `SummaryBodyColumn` type
+#### `Summary::BodyColumn` type
 
 ```crystal
-record SummaryBodyColumn, column : LabelType,
+record Summary::BodyColumn, column : LabelType,
                    alignment : Justify? = nil,
                    formatter : DataCellFormatter? = nil,
                    styler : DataCellStyler? = nil
 ```
 
-#### `SummaryHeaderColumn` type
+#### `Summary::HeaderColumn` type
 
 ```crystal
-record SummaryHeaderColumn, column : LabelType,
+record Summary::HeaderColumn, column : LabelType,
                      alignment : Justify? = nil,
                      formatter : DataCellFormatter? = nil,
                      styler : DataCellStyler? = nil
