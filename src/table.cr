@@ -851,10 +851,10 @@ module Tablo
     # - `width`: total width required for the formatted table. If no `width` is
     #   given and if the value of parameter `Config.terminal_capped_width` is true,
     #   the value of `width` is read from the size of the terminal, otherwise its
-    #   value is `nil` and in that case, only `starting_widths == AutoSized` has an
+    #   value is `nil` and in that case, only `packing_mode == AutoSized` has an
     #   effect.
     #
-    # - `starting_widths` : column widths taken as starting point for resizing, possible
+    # - `packing_mode` : column widths taken as starting point for resizing, possible
     #   values are :
     #   * `Current` : resizing starts from columns current width
     #   * `Initial` : current values are reset to their initial values, at column
@@ -880,13 +880,13 @@ module Tablo
     #   `width` is the requested total table width. If `nil` and `Config.terminal_capped_width`
     #   is `true` (and output not redirected), `width` finally takes the value of the terminal size.
     #
-    # - `starting_widths`: type is `StartingWidths` <br />
-    #   Default set by `Config.starting_widths` <br />
-    #   `Starting_widths` allows you to specify the starting point for resizing : <br />
+    # - `packing_mode`: type is `PackingMode` <br />
+    #   Default set by `Config.packing_mode` <br />
+    #   `packing_mode` allows you to specify the starting point for resizing : <br />
     #
-    #   - either from the current column width value (`StartingWidths::Current`) <br />
-    #   - or from its initial value (`StartingWidths::Initial`) <br />
-    #   - or ignore it and directly perform optimized resizing (`StartingWidths::AutoSized`)
+    #   - either from the current column width value (`PackingMode::CurrentWidths`) <br />
+    #   - or from its initial value (`PackingMode::InitialWidths`) <br />
+    #   - or ignore it and directly perform optimized resizing (`PackingMode::AutoSized`)
     #
     # - `except` or `only` (mutually exclusive named parameters) : (array of) column label(s) <br />
     #
@@ -906,23 +906,28 @@ module Tablo
     # This explains why the final result of resizing depends on the starting column
     # widths.
 
-    enum StartingWidths
-      Initial
-      Current
+    # enum to define how packing is done
+    enum PackingMode
+      # Packing starts with initial widths, as set by default or at each column
+      # initialization
+      InitialWidths
+      # Packing starts with current widths, as set initially or modified by a
+      # previous pack operation
+      CurrentWidths
+      # Packing optimizes each column width, shroinking or expanding it, so that
+      # it can display whole contents without line break
       AutoSized
     end
 
     def pack(width : Int32? = nil, *,
-             starting_widths = StartingWidths::AutoSized)
-      # starting_widths : StartingWidths = Config.starting_widths)
+             packing_mode = PackingMode::AutoSized)
       # All columns are selected
-      packit(width, starting_widths, column_list)
+      packit(width, packing_mode, column_list)
     end
 
     # `pack` method version 2
     def pack(width : Int32? = nil, *,
-             starting_widths = StartingWidths::AutoSized,
-             # starting_widths : StartingWidths = Config.starting_widths,
+             packing_mode = PackingMode::AutoSized,
              except : (LabelType | Array(LabelType))) # ? = nil)
       except = [except] unless except.is_a?(Array)
       # check if labels in except are valid
@@ -933,13 +938,12 @@ module Tablo
       end
       column_labels = column_registry.keys - except
       columns = column_labels.map { |label| column_registry[label] }
-      packit(width, starting_widths, columns)
+      packit(width, packing_mode, columns)
     end
 
     # `pack` method version 3
     def pack(width : Int32? = nil, *,
-             starting_widths = StartingWidths::AutoSized,
-             # starting_widths : StartingWidths = Config.starting_widths,
+             packing_mode = PackingMode::AutoSized,
              only : (LabelType | Array(LabelType))) # ? = nil)
       only = [only] unless only.is_a?(Array)
       # check if labels in only are valid
@@ -949,10 +953,10 @@ module Tablo
         end
       end
       columns = only.map { |label| column_registry[label] }
-      packit(width, starting_widths, columns)
+      packit(width, packing_mode, columns)
     end
 
-    private def packit(width, starting_widths, columns)
+    private def packit(width, packing_mode, columns)
       return self if columns.empty?
       required_width = case width
                        in Nil
@@ -965,15 +969,15 @@ module Tablo
                          width
                        end
 
-      case starting_widths
-      in StartingWidths::Current
+      case packing_mode
+      in PackingMode::CurrentWidths
         # no change to current column widths before packing
-      in StartingWidths::Initial
+      in PackingMode::InitialWidths
         # all columns, 'except' excepted, have their width reset to their initial value
         columns.each do |c|
           c.width = c.initial_width
         end
-      in StartingWidths::AutoSized # default
+      in PackingMode::AutoSized # default
         # all (selected) columns have their width set to their largest formatted
         # content size --> Implies browsing all source rows
         autosize_columns(columns)

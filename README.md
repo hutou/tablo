@@ -896,10 +896,10 @@ The `pack` method is a welcome aid to table formatting. It accepts
 - `width`: total width required for the formatted table. If no `width` is
   given and if the value of parameter `Config.terminal_capped_width` is true,
   the value of `width` is read from the size of the terminal, otherwise its
-  value is `nil` and in that case, only `starting_widths == AutoSized` has an
+  value is `nil` and in that case, only `packing_mode == AutoSized` has an
   effect.
 
-- `starting_widths` : column widths taken as starting point for resizing,
+- `packing_mode` : column widths taken as starting point for resizing,
   possible values are :
   - `Current` : resizing starts from columns current width
   - `Initial` : current values are reset to their initial values, at column
@@ -963,7 +963,7 @@ But using `pack` with same table width (56) on initial widths values gives
 a significantly poorer result
 
 ```
- puts table.pack(56, starting_widths: Tablo::StartingWidths::Initial)
+ puts table.pack(56, packing_mode: Tablo::PackingMode::InitialWidths)
  +----------+----------+----------+----------+----------+
  |   Primes | Things   | Fruits   | Animals  | Famous   |
  |          |          |          |          | Sites    |
@@ -1048,14 +1048,14 @@ accommodate at least one character. Here, we're asking for a table width of
  +---+---+---+---+---+
 ```
 
-If, with the parameter `starting_widths == Startingwidths::AutoSized` by
-default (set by `Config.starting_widths`), the `pack` method automatically
+If, with the parameter `packing_mode == Startingwidths::AutoSized` by
+default (set by `Config.packing_mode`), the `pack` method automatically
 adapts the width of columns to their largest content (body or header) before
 resizing, this requires you to go through the entire source dataset, which can
 be costly in terms of performance in some cases.
 
 This behavior can be avoided, but possibly with a loss of quality, by changing
-the value of `starting_widths` to `Current` or `Initial`. In this case,
+the value of `packing_mode` to `Current` or `Initial`. In this case,
 however, a value for `width` must be supplied, either directly or by reading
 the terminal size, otherwise `pack` will become a non-operation.
 
@@ -1089,14 +1089,14 @@ puts table.pack
 
 To sum up:
 
-| Type of call                                               | Results, with `StartingWidths::AutoSized` as default and no columns excluded                                                                                                                                |
+| Type of call                                               | Results, with `PackingMode::AutoSized` as default and no columns excluded                                                                                                                                   |
 | :--------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `table.pack`                                               | <ul><li>Automatically adapts columns to their largest content</li><li>Modifies current values of column width</li></ul>                                                                                     |
 | `table.pack(40)`                                           | <ul> <li>Automatically adapts columns to their largest content</li> <li>Modifies current values of column width</li> <li>Reduces or increases column widths to meet total table size requirements</li></ul> |
-| `table.pack(starting_widths: StartingWidths::Current`)     | <ul><li>No-op</li></ul>                                                                                                                                                                                     |
-| `table.pack(40, starting_widths: StartingWidths::Current`) | <ul><li>Reduces or increases column widths to meet total table size requirements</li></ul>                                                                                                                  |
-| `table.pack(starting_widths: StartingWidths::Initial`)     | <ul><li> Only resets current column values to their initial values, no packing is done</li></ul>                                                                                                            |
-| `table.pack(40, starting_widths: StartingWidths::Initial`) | <ul><li> Resets current column values to their initial values</li> <li>Reduces or increases column widths to meet total table size requirements</li></ul>                                                   |
+| `table.pack(packing_mode: PackingMode::CurrentWidths`)     | <ul><li>No-op</li></ul>                                                                                                                                                                                     |
+| `table.pack(40, packing_mode: PackingMode::CurrentWidths`) | <ul><li>Reduces or increases column widths to meet total table size requirements</li></ul>                                                                                                                  |
+| `table.pack(packing_mode: PackingMode::InitialWidths`)     | <ul><li> Only resets current column values to their initial values, no packing is done</li></ul>                                                                                                            |
+| `table.pack(40, packing_mode: PackingMode::InitialWidths`) | <ul><li> Resets current column values to their initial values</li> <li>Reduces or increases column widths to meet total table size requirements</li></ul>                                                   |
 
 ## Summary
 

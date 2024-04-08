@@ -82,7 +82,7 @@ module Tablo
   # end
   # alias TableWidth = GetWidthFrom | Int32
 
-  # enum StartingWidths
+  # enum PackingMode
   #   Initial
   #   Current
   #   AutoSized
