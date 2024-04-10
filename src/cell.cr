@@ -222,57 +222,128 @@ module Tablo
     # (`Heading::Title`, `Heading::SubTitle` and `Heading::Footer`) and group cells
     class Text < Cell
       # The purpose of the formatter is to transform the raw value of a cell
-      # into a formatted character string.
+      # into a formatted character string <br /> (A default formatter (`to_s`) is applied if
+      # none is defined by the user).
       #
-      # Formatter procs for text cell
-      # types (Title, SubTitle, Footer and Group).
+      # For cells of type `Cell::Text` (headings and group), the formatter Proc can
+      # take 2 different forms, as shown below by their commonly used parameter
+      # names  and types: <br />
+      # - 1st form : (value : `Tablo::CellType`, column_width : `Int32`)
+      # - 2nd form : (value : `Tablo::CellType`)
       #
-      # There are 2 of them, as shown below by their commonly used parameter names
-      # and types: <br />
-      # - 1st form : (value : `CellType`, column_width : `Int32`)
-      # - 2nd form : (value : `CellType`)
+      # and the return type is `String` for both.
       #
-      # Return type is String for all of them.
-      #
-      # Any processing can be done on cell value. For example, if the runtime cell
-      # value type is Time, we could format as :
+      # Any processing can be done on cell value. For example, in a group, if the
+      # runtime cell value contains a `Time` type, we could format as :
       # ```
-      # formatter: ->(value : Tablo::CellType) { "Date: " + value.as(Time).to_s("%Y-%m-%d") }
+      # require "tablo"
+      # timestamp = "15/1/2024 12:00:00"
+      # table = Tablo::Table.new([1, 2, 3]) do |t|
+      #   t.add_column("itself", &.itself)
+      #   t.add_group(:g1, header: "Before\n" + timestamp)
+      #   t.add_column("itself x 2", &.*(2))
+      #   t.add_column("itself x 3", &.*(3))
+      #   t.add_group(:g2, header: timestamp, formatter: ->(value : Tablo::CellType) {
+      #     parsed = Time.parse(value.as(String), "%d/%m/%Y %H:%M:%S", Time::Location.local)
+      #     "After\nDate = " + parsed.to_s("%Y-%m-%d") + "\nTime = " + parsed.to_s("%H:%M:%S")
+      #   }, alignment: Tablo::Justify::Left)
+      # end
+      # puts table
+      #  ```
+      # and output would be:
+      # ```
+      # +--------------+-----------------------------+
+      # |    Before    | After                       |
+      # |   15/1/2024  | Date = 2024-01-15           |
+      # |   12:00:00   | Time = 12:00:00             |
+      # +--------------+--------------+--------------+
+      # |       itself |   itself x 2 |   itself x 3 |
+      # +--------------+--------------+--------------+
+      # |            1 |            2 |            3 |
+      # |            2 |            4 |            6 |
+      # |            3 |            6 |            9 |
+      # +--------------+--------------+--------------+
       # ```
       # Another example, to stretch contents of a cell to its maximum width:
       # ```
-      # formatter: ->(value : Tablo::CellType, column_width : Int32) {
-      #               Tablo::Util.stretch(value.as(String), width: column_width) }
+      # require "tablo"
+      # table = Tablo::Table.new([1, 2, 3],
+      #   title: Tablo::Heading::Title.new("My Title",
+      #     frame: Tablo::Frame.new, formatter: ->(value : Tablo::CellType, column_width : Int32) {
+      #     Tablo::Util.stretch(value.as(String), width: column_width)
+      #   })) do |t|
+      #   t.add_column("itself", &.itself)
+      #   t.add_column("itself x 2", &.*(2))
+      #   t.add_column("itself x 3", &.*(3))
+      # end
+      # puts table
+      # ```
+      # outputs is:
+      # ```
+      # +--------------------------------------------+
+      # |    M    y         T    i    t    l    e    |
+      # +--------------+--------------+--------------+
+      # |       itself |   itself x 2 |   itself x 3 |
+      # +--------------+--------------+--------------+
+      # |            1 |            2 |            3 |
+      # |            2 |            4 |            6 |
+      # |            3 |            6 |            9 |
+      # +--------------+--------------+--------------+
       # ```
       alias Formatter = Proc(CellType, Int32, String) |
                         Proc(CellType, String)
 
-      # Styler procs for text cell types.
+      # The purpose of the styler is to apply stylistic effects to
+      # a previously formatted character string. For a terminal without
+      # graphic capabilities, these effects are limited to the use of color
+      # and/or character modes (bold, italic, etc.).
       #
-      # There are 2 of them, as shown below by their commonly used parameter names
-      # and types: <br />
+      # For cells of type Cell::Text (headings and group), the styler Proc
+      # can take 2 different forms, as shown below by their commonly used
+      # parameter names and types:
+      #
       # - 1st form : (content : `String`, line : `Int32`)
       # - 2nd form : (content : `String`)
+      #
+      # and the return type is String for both.
       #
       # `content` is the formatted cell value, after the formatter has been applied.<br />
       # `line` designates the line number in a (multi-line) cell (0..n).
       #
-      # Return type is String for all of them.
-      #
       # The first form allows easy conditional styling. For example, to colorize
-      # differently each line of the cell:
+      # differently each line of multiline cell:
       # ```
-      # styler: ->(content : String, line : Int32) {
-      #   case line
-      #   when 0 then content.colorize(:blue).to_s
-      #   when 1 then content.colorize(:green).to_s
-      #   else        content.colorize(:red).to_s
-      #   end
-      # }
+      # require "tablo"
+      # require "colorize"
+      # table = Tablo::Table.new([1, 2, 3],
+      #   title: Tablo::Heading::Title.new("My\nMultiline\nTitle",
+      #     frame: Tablo::Frame.new,
+      #     styler: ->(content : String, line : Int32) {
+      #       case line
+      #       when 0 then content.colorize(:blue).to_s
+      #       when 1 then content.colorize(:green).to_s
+      #       else        content.colorize(:red).to_s
+      #       end
+      #     })) do |t|
+      #   t.add_column("itself", &.itself)
+      #   t.add_column("itself x 2", &.*(2))
+      #   t.add_column("itself x 3", &.*(3))
+      # end
+      # puts table
       # ```
       #  or, more simply, to style the whole cell, we use the 2nd form:
       # ```
-      # styler: ->(content : String) { content.colorize.fore(:bold).to_s }
+      # require "tablo"
+      # require "colorize"
+      # table = Tablo::Table.new([1, 2, 3],
+      #   title: Tablo::Heading::Title.new("My\nMultiline\nTitle",
+      #     frame: Tablo::Frame.new,
+      #     styler: ->(content : String) { content.colorize.mode(:bold).to_s })) do |t|
+      #   t.add_column("itself", &.itself)
+      #   t.add_column("itself x 2", &.*(2))
+      #   t.add_column("itself x 3", &.*(3))
+      # end
+      # puts table
       # ```
       alias Styler = Proc(String, Int32, String) |
                      Proc(String, String)
