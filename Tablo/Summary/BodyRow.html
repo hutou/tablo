@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="tablo">
-  <title>Tablo::Table::UsedColumns - tablo development</title>
+  <title>Tablo::Summary::BodyRow - tablo development</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -242,7 +242,7 @@
       
     </li>
   
-  <li class="parent " data-id="tablo/Tablo/Summary" data-name="tablo::summary(t, u, v)">
+  <li class="parent open current" data-id="tablo/Tablo/Summary" data-name="tablo::summary(t, u, v)">
       <a href="../../Tablo/Summary.html">Summary</a>
       
         <ul>
@@ -252,7 +252,7 @@
       
     </li>
   
-  <li class=" " data-id="tablo/Tablo/Summary/BodyRow" data-name="tablo::summary::bodyrow">
+  <li class=" current" data-id="tablo/Tablo/Summary/BodyRow" data-name="tablo::summary::bodyrow">
       <a href="../../Tablo/Summary/BodyRow.html">BodyRow</a>
       
     </li>
@@ -272,7 +272,7 @@
       
     </li>
   
-  <li class="parent open current" data-id="tablo/Tablo/Table" data-name="tablo::table(t)">
+  <li class="parent " data-id="tablo/Tablo/Table" data-name="tablo::table(t)">
       <a href="../../Tablo/Table.html">Table</a>
       
         <ul>
@@ -282,7 +282,7 @@
       
     </li>
   
-  <li class=" current" data-id="tablo/Tablo/Table/UsedColumns" data-name="tablo::table::usedcolumns">
+  <li class=" " data-id="tablo/Tablo/Table/UsedColumns" data-name="tablo::table::usedcolumns">
       <a href="../../Tablo/Table/UsedColumns.html">UsedColumns</a>
       
     </li>
@@ -326,15 +326,26 @@
 <div class="main-content">
 <h1 class="type-name">
 
-  <span class="kind">struct</span> Tablo::<wbr>Table::<wbr>UsedColumns
+  <span class="kind">struct</span> Tablo::<wbr>Summary::<wbr>BodyRow
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../Tablo/Table/UsedColumns.html">Tablo::Table::UsedColumns</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../Tablo/Summary/BodyRow.html">Tablo::Summary::BodyRow</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
 
 
 
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>The <code><a href="../../Tablo/Summary/BodyRow.html">Summary::BodyRow</a></code> struct lets you define body rows content</p>
 
 
 
@@ -359,8 +370,8 @@
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/table.cr#L26" target="_blank">
-        table.cr
+      <a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/summary.cr#L539" target="_blank">
+        summary.cr
       </a>
     
     <br/>
@@ -381,7 +392,9 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28reordered%3ABool%2Cindexes%3AArray%28Int32%29%29-class-method" class="signature"><strong>.new</strong>(reordered : Bool, indexes : Array(Int32))</a>
+        <a href="#new%28column%3ALabelType%2Crow%3AInt32%2Ccontent%3ACellType%7CProc%28CellType%29%29-class-method" class="signature"><strong>.new</strong>(column : LabelType, row : Int32, content : CellType | Proc(CellType))</a>
+        
+          <div class="summary"><p>The constructor expects 3 mandatory parameters.</p></div>
         
       </li>
     
@@ -392,38 +405,6 @@
 
 
 
-
-  <h2>
-    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Instance Method Summary
-  </h2>
-  <ul class="list-summary">
-    
-      <li class="entry-summary">
-        <a href="#indexes%3AArray%28Int32%29-instance-method" class="signature"><strong>#indexes</strong> : Array(Int32)</a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#indexes%3D%28indexes%3AArray%28Int32%29%29-instance-method" class="signature"><strong>#indexes=</strong>(indexes : Array(Int32))</a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#reordered%3ABool-instance-method" class="signature"><strong>#reordered</strong> : Bool</a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#reordered%3D%28reordered%3ABool%29-instance-method" class="signature"><strong>#reordered=</strong>(reordered : Bool)</a>
-        
-      </li>
-    
-  </ul>
 
 
 
@@ -480,18 +461,47 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(reordered:Bool,indexes:Array(Int32))-class-method">
+    <div class="entry-detail" id="new(column:LabelType,row:Int32,content:CellType|Proc(CellType))-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(reordered : Bool, indexes : Array(Int32))
+        def self.<strong>new</strong>(column : <a href="../../Tablo/LabelType.html">LabelType</a>, row : Int32, content : <a href="../../Tablo/CellType.html">CellType</a> | Proc(<a href="../../Tablo/CellType.html">CellType</a>))
 
-        <a class="method-permalink" href="#new%28reordered%3ABool%2Cindexes%3AArray%28Int32%29%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28column%3ALabelType%2Crow%3AInt32%2Ccontent%3ACellType%7CProc%28CellType%29%29-class-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>The constructor expects 3 mandatory parameters.</p>
+<ul>
+<li>
+<p><code>column</code> : type is <code><a href="../../Tablo/LabelType.html">LabelType</a></code>, the column identifier</p>
+</li>
+<li>
+<p><code>row</code> : type is <code>Int32</code>, the row number</p>
+</li>
+<li>
+<p><code>content</code> : type is <code><a href="../../Tablo/CellType.html">CellType</a></code> or a Proc returning a <code><a href="../../Tablo/CellType.html">CellType</a></code></p>
+</li>
+</ul>
+<p><code>column</code> and <code>row</code> define the precise location of the aggregated value in the
+Summary table. Row numbers need not be contiguous; what's important is that
+they allow results to be displayed in the desired row order.</p>
+<p>Example of <code>content</code> directly fed by a literal string:</p>
+<pre><code class="language-crystal"><span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="s">&quot;Price&quot;</span>, <span class="n">40</span>, <span class="s">&quot;Tax (20%)&quot;</span>)
+<span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="s">&quot;Price&quot;</span>, <span class="n">60</span>, <span class="s">&quot;Balance due&quot;</span>),</code></pre>
+<p>Example of <code>content</code> fed by a proc returning a <code><a href="../../Tablo/CellType.html">CellType</a></code> value:</p>
+<pre><code class="language-crystal"><span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">40</span>, <span class="o">-&gt;</span>{ <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:tax</span>) }),
+<span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">60</span>, <span class="o">-&gt;</span>{ <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total_due</span>) }),</code></pre>
+<p><strong>Important</strong>:
+Note here the use of the <code><a href="../../Tablo/Summary.html#use%28key%29-class-method">Summary.use</a></code> class method, which retrieves, via
+a Symbol key, an aggregated value previously calculated in
+a <code><a href="../../Tablo/Summary/UserProc.html">Summary::UserProc</a></code>  instance.</p>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/table.cr#L29" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/summary.cr#L569" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -502,80 +512,6 @@
 
 
 
-
-  <h2>
-    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Instance Method Detail
-  </h2>
-  
-    <div class="entry-detail" id="indexes:Array(Int32)-instance-method">
-      <div class="signature">
-        
-        def <strong>indexes</strong> : Array(Int32)
-
-        <a class="method-permalink" href="#indexes%3AArray%28Int32%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/table.cr#L27" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="indexes=(indexes:Array(Int32))-instance-method">
-      <div class="signature">
-        
-        def <strong>indexes=</strong>(indexes : Array(Int32))
-
-        <a class="method-permalink" href="#indexes%3D%28indexes%3AArray%28Int32%29%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/table.cr#L27" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="reordered:Bool-instance-method">
-      <div class="signature">
-        
-        def <strong>reordered</strong> : Bool
-
-        <a class="method-permalink" href="#reordered%3ABool-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/table.cr#L27" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="reordered=(reordered:Bool)-instance-method">
-      <div class="signature">
-        
-        def <strong>reordered=</strong>(reordered : Bool)
-
-        <a class="method-permalink" href="#reordered%3D%28reordered%3ABool%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/table.cr#L27" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
 
 
 </div>

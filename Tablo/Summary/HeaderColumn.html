@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="tablo">
-  <title>Tablo::Table::UsedColumns - tablo development</title>
+  <title>Tablo::Summary::HeaderColumn - tablo development</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -242,7 +242,7 @@
       
     </li>
   
-  <li class="parent " data-id="tablo/Tablo/Summary" data-name="tablo::summary(t, u, v)">
+  <li class="parent open current" data-id="tablo/Tablo/Summary" data-name="tablo::summary(t, u, v)">
       <a href="../../Tablo/Summary.html">Summary</a>
       
         <ul>
@@ -257,7 +257,7 @@
       
     </li>
   
-  <li class=" " data-id="tablo/Tablo/Summary/HeaderColumn" data-name="tablo::summary::headercolumn">
+  <li class=" current" data-id="tablo/Tablo/Summary/HeaderColumn" data-name="tablo::summary::headercolumn">
       <a href="../../Tablo/Summary/HeaderColumn.html">HeaderColumn</a>
       
     </li>
@@ -272,7 +272,7 @@
       
     </li>
   
-  <li class="parent open current" data-id="tablo/Tablo/Table" data-name="tablo::table(t)">
+  <li class="parent " data-id="tablo/Tablo/Table" data-name="tablo::table(t)">
       <a href="../../Tablo/Table.html">Table</a>
       
         <ul>
@@ -282,7 +282,7 @@
       
     </li>
   
-  <li class=" current" data-id="tablo/Tablo/Table/UsedColumns" data-name="tablo::table::usedcolumns">
+  <li class=" " data-id="tablo/Tablo/Table/UsedColumns" data-name="tablo::table::usedcolumns">
       <a href="../../Tablo/Table/UsedColumns.html">UsedColumns</a>
       
     </li>
@@ -326,15 +326,27 @@
 <div class="main-content">
 <h1 class="type-name">
 
-  <span class="kind">struct</span> Tablo::<wbr>Table::<wbr>UsedColumns
+  <span class="kind">struct</span> Tablo::<wbr>Summary::<wbr>HeaderColumn
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../Tablo/Table/UsedColumns.html">Tablo::Table::UsedColumns</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../Tablo/Summary/HeaderColumn.html">Tablo::Summary::HeaderColumn</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
 
 
 
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>The <code><a href="../../Tablo/Summary/HeaderColumn.html">Summary::HeaderColumn</a></code> struct lets you define header content and specific
+alignment, formatting and styling</p>
 
 
 
@@ -359,8 +371,8 @@
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/table.cr#L26" target="_blank">
-        table.cr
+      <a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/summary.cr#L471" target="_blank">
+        summary.cr
       </a>
     
     <br/>
@@ -381,7 +393,9 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28reordered%3ABool%2Cindexes%3AArray%28Int32%29%29-class-method" class="signature"><strong>.new</strong>(reordered : Bool, indexes : Array(Int32))</a>
+        <a href="#new%28column%3ALabelType%7CArray%28LabelType%29%2Ccontent%3AString%2Calignment%3AJustify%7CNil%3Dnil%2Cformatter%3ACell%3A%3AData%3A%3AFormatter%7CNil%3Dnil%2Cstyler%3ACell%3A%3AData%3A%3AStyler%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(column : LabelType | Array(LabelType), content : String, alignment : Justify | Nil = <span class="n">nil</span>, formatter : Cell::Data::Formatter | Nil = <span class="n">nil</span>, styler : Cell::Data::Styler | Nil = <span class="n">nil</span>)</a>
+        
+          <div class="summary"><p>The constructor expects up to 5 parameters, the first 2 being mandatory</p></div>
         
       </li>
     
@@ -392,38 +406,6 @@
 
 
 
-
-  <h2>
-    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Instance Method Summary
-  </h2>
-  <ul class="list-summary">
-    
-      <li class="entry-summary">
-        <a href="#indexes%3AArray%28Int32%29-instance-method" class="signature"><strong>#indexes</strong> : Array(Int32)</a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#indexes%3D%28indexes%3AArray%28Int32%29%29-instance-method" class="signature"><strong>#indexes=</strong>(indexes : Array(Int32))</a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#reordered%3ABool-instance-method" class="signature"><strong>#reordered</strong> : Bool</a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#reordered%3D%28reordered%3ABool%29-instance-method" class="signature"><strong>#reordered=</strong>(reordered : Bool)</a>
-        
-      </li>
-    
-  </ul>
 
 
 
@@ -480,18 +462,43 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(reordered:Bool,indexes:Array(Int32))-class-method">
+    <div class="entry-detail" id="new(column:LabelType|Array(LabelType),content:String,alignment:Justify|Nil=nil,formatter:Cell::Data::Formatter|Nil=nil,styler:Cell::Data::Styler|Nil=nil)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(reordered : Bool, indexes : Array(Int32))
+        def self.<strong>new</strong>(column : <a href="../../Tablo/LabelType.html">LabelType</a> | Array(<a href="../../Tablo/LabelType.html">LabelType</a>), content : String, alignment : <a href="../../Tablo/Justify.html">Justify</a> | Nil = <span class="n">nil</span>, formatter : <a href="../../Tablo/Cell/Data/Formatter.html">Cell::Data::Formatter</a> | Nil = <span class="n">nil</span>, styler : <a href="../../Tablo/Cell/Data/Styler.html">Cell::Data::Styler</a> | Nil = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#new%28reordered%3ABool%2Cindexes%3AArray%28Int32%29%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28column%3ALabelType%7CArray%28LabelType%29%2Ccontent%3AString%2Calignment%3AJustify%7CNil%3Dnil%2Cformatter%3ACell%3A%3AData%3A%3AFormatter%7CNil%3Dnil%2Cstyler%3ACell%3A%3AData%3A%3AStyler%7CNil%3Dnil%29-class-method">#</a>
       </div>
+      
+        <div class="doc">
+          
+          <p>The constructor expects up to 5 parameters, the first 2 being mandatory</p>
+<ul>
+<li>
+<p><code>column</code> : type if <code><a href="../../Tablo/LabelType.html">LabelType</a></code> <br />
+It is the column identifier.</p>
+</li>
+<li>
+<p><code>content</code> : type is String <br />
+(may be empty)</p>
+</li>
+<li>
+<p>The last three are optional (<code>alignment</code>, <code>formatter</code> and <code>styler</code>)</p>
+</li>
+</ul>
+<p>Examples:</p>
+<pre><code class="language-crystal"><span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">HeaderColumn</span>.new(<span class="s">&quot;Price&quot;</span>,
+  content: <span class="s">&quot;Total Invoice&quot;</span>,
+  alignment: <span class="t">Tablo</span><span class="t">::</span><span class="t">Justify</span><span class="t">::</span><span class="t">Right</span>),
+<span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">HeaderColumn</span>.new(<span class="n">:total</span>,
+  content: <span class="s">&quot;Amounts&quot;</span>,
+  styler: <span class="o">-&gt;</span>(s : <span class="t">String</span>) {s.colorize(<span class="n">:red</span>).to_s}),</code></pre>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/table.cr#L29" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/summary.cr#L493" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -502,80 +509,6 @@
 
 
 
-
-  <h2>
-    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Instance Method Detail
-  </h2>
-  
-    <div class="entry-detail" id="indexes:Array(Int32)-instance-method">
-      <div class="signature">
-        
-        def <strong>indexes</strong> : Array(Int32)
-
-        <a class="method-permalink" href="#indexes%3AArray%28Int32%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/table.cr#L27" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="indexes=(indexes:Array(Int32))-instance-method">
-      <div class="signature">
-        
-        def <strong>indexes=</strong>(indexes : Array(Int32))
-
-        <a class="method-permalink" href="#indexes%3D%28indexes%3AArray%28Int32%29%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/table.cr#L27" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="reordered:Bool-instance-method">
-      <div class="signature">
-        
-        def <strong>reordered</strong> : Bool
-
-        <a class="method-permalink" href="#reordered%3ABool-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/table.cr#L27" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="reordered=(reordered:Bool)-instance-method">
-      <div class="signature">
-        
-        def <strong>reordered=</strong>(reordered : Bool)
-
-        <a class="method-permalink" href="#reordered%3D%28reordered%3ABool%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/table.cr#L27" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
 
 
 </div>

@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="tablo">
-  <title>Tablo::Table::UsedColumns - tablo development</title>
+  <title>Tablo::Border::PreSet - tablo development</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -62,12 +62,12 @@
       
         <ul>
   
-  <li class="parent " data-id="tablo/Tablo/Border" data-name="tablo::border">
+  <li class="parent open current" data-id="tablo/Tablo/Border" data-name="tablo::border">
       <a href="../../Tablo/Border.html">Border</a>
       
         <ul>
   
-  <li class=" " data-id="tablo/Tablo/Border/PreSet" data-name="tablo::border::preset">
+  <li class=" current" data-id="tablo/Tablo/Border/PreSet" data-name="tablo::border::preset">
       <a href="../../Tablo/Border/PreSet.html">PreSet</a>
       
     </li>
@@ -272,7 +272,7 @@
       
     </li>
   
-  <li class="parent open current" data-id="tablo/Tablo/Table" data-name="tablo::table(t)">
+  <li class="parent " data-id="tablo/Tablo/Table" data-name="tablo::table(t)">
       <a href="../../Tablo/Table.html">Table</a>
       
         <ul>
@@ -282,7 +282,7 @@
       
     </li>
   
-  <li class=" current" data-id="tablo/Tablo/Table/UsedColumns" data-name="tablo::table::usedcolumns">
+  <li class=" " data-id="tablo/Tablo/Table/UsedColumns" data-name="tablo::table::usedcolumns">
       <a href="../../Tablo/Table/UsedColumns.html">UsedColumns</a>
       
     </li>
@@ -326,15 +326,25 @@
 <div class="main-content">
 <h1 class="type-name">
 
-  <span class="kind">struct</span> Tablo::<wbr>Table::<wbr>UsedColumns
+  <span class="kind">enum</span> Tablo::<wbr>Border::<wbr>PreSet
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../Tablo/Table/UsedColumns.html">Tablo::Table::UsedColumns</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
 
 
 
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p><code><a href="../../Tablo/Border/PreSet.html">PreSet</a></code> is an <code>enum</code> identifying a finite set of strings defining the most
+commonly used table layout templates (see <code><a href="../../Tablo/Border.html#PREDEFINED_BORDERS">PREDEFINED_BORDERS</a></code>).</p>
 
 
 
@@ -359,8 +369,8 @@
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/table.cr#L26" target="_blank">
-        table.cr
+      <a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/border.cr#L107" target="_blank">
+        border.cr
       </a>
     
     <br/>
@@ -368,24 +378,61 @@
 
 
 
-
-
-  <h2>
-    <a id="constructors" class="anchor" href="#constructors">
+  
+    <h2>
+      <a id="enum-members" class="anchor" href="#enum-members">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>
-    Constructors
-  </h2>
-  <ul class="list-summary">
+      Enum Members
+    </h2>
+  
+  <dl>
     
-      <li class="entry-summary">
-        <a href="#new%28reordered%3ABool%2Cindexes%3AArray%28Int32%29%29-class-method" class="signature"><strong>.new</strong>(reordered : Bool, indexes : Array(Int32))</a>
-        
-      </li>
+      <dt class="entry-const" id="Ascii">
+        <strong>Ascii</strong> = <code><span class="n">0</span></code>
+      </dt>
+      
     
-  </ul>
+      <dt class="entry-const" id="ReducedAscii">
+        <strong>ReducedAscii</strong> = <code><span class="n">1</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="ReducedModern">
+        <strong>ReducedModern</strong> = <code><span class="n">2</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Markdown">
+        <strong>Markdown</strong> = <code><span class="n">3</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Modern">
+        <strong>Modern</strong> = <code><span class="n">4</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Fancy">
+        <strong>Fancy</strong> = <code><span class="n">5</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Empty">
+        <strong>Empty</strong> = <code><span class="n">6</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Blank">
+        <strong>Blank</strong> = <code><span class="n">7</span></code>
+      </dt>
+      
+    
+  </dl>
+
+
 
 
 
@@ -404,22 +451,42 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#indexes%3AArray%28Int32%29-instance-method" class="signature"><strong>#indexes</strong> : Array(Int32)</a>
+        <a href="#ascii%3F-instance-method" class="signature"><strong>#ascii?</strong></a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#indexes%3D%28indexes%3AArray%28Int32%29%29-instance-method" class="signature"><strong>#indexes=</strong>(indexes : Array(Int32))</a>
+        <a href="#blank%3F-instance-method" class="signature"><strong>#blank?</strong></a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#reordered%3ABool-instance-method" class="signature"><strong>#reordered</strong> : Bool</a>
+        <a href="#empty%3F-instance-method" class="signature"><strong>#empty?</strong></a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#reordered%3D%28reordered%3ABool%29-instance-method" class="signature"><strong>#reordered=</strong>(reordered : Bool)</a>
+        <a href="#fancy%3F-instance-method" class="signature"><strong>#fancy?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#markdown%3F-instance-method" class="signature"><strong>#markdown?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#modern%3F-instance-method" class="signature"><strong>#modern?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#reduced_ascii%3F-instance-method" class="signature"><strong>#reduced_ascii?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#reduced_modern%3F-instance-method" class="signature"><strong>#reduced_modern?</strong></a>
         
       </li>
     
@@ -468,34 +535,21 @@
 
 
   
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
 </div>
 
-
-  <h2>
-    <a id="constructor-detail" class="anchor" href="#constructor-detail">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Constructor Detail
-  </h2>
-  
-    <div class="entry-detail" id="new(reordered:Bool,indexes:Array(Int32))-class-method">
-      <div class="signature">
-        
-        def self.<strong>new</strong>(reordered : Bool, indexes : Array(Int32))
-
-        <a class="method-permalink" href="#new%28reordered%3ABool%2Cindexes%3AArray%28Int32%29%29-class-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/table.cr#L29" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
 
 
 
@@ -512,66 +566,130 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="indexes:Array(Int32)-instance-method">
+    <div class="entry-detail" id="ascii?-instance-method">
       <div class="signature">
         
-        def <strong>indexes</strong> : Array(Int32)
+        def <strong>ascii?</strong>
 
-        <a class="method-permalink" href="#indexes%3AArray%28Int32%29-instance-method">#</a>
+        <a class="method-permalink" href="#ascii%3F-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/table.cr#L27" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/border.cr#L108" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="indexes=(indexes:Array(Int32))-instance-method">
+    <div class="entry-detail" id="blank?-instance-method">
       <div class="signature">
         
-        def <strong>indexes=</strong>(indexes : Array(Int32))
+        def <strong>blank?</strong>
 
-        <a class="method-permalink" href="#indexes%3D%28indexes%3AArray%28Int32%29%29-instance-method">#</a>
+        <a class="method-permalink" href="#blank%3F-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/table.cr#L27" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/border.cr#L115" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="reordered:Bool-instance-method">
+    <div class="entry-detail" id="empty?-instance-method">
       <div class="signature">
         
-        def <strong>reordered</strong> : Bool
+        def <strong>empty?</strong>
 
-        <a class="method-permalink" href="#reordered%3ABool-instance-method">#</a>
+        <a class="method-permalink" href="#empty%3F-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/table.cr#L27" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/border.cr#L114" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="reordered=(reordered:Bool)-instance-method">
+    <div class="entry-detail" id="fancy?-instance-method">
       <div class="signature">
         
-        def <strong>reordered=</strong>(reordered : Bool)
+        def <strong>fancy?</strong>
 
-        <a class="method-permalink" href="#reordered%3D%28reordered%3ABool%29-instance-method">#</a>
+        <a class="method-permalink" href="#fancy%3F-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/table.cr#L27" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/border.cr#L113" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="markdown?-instance-method">
+      <div class="signature">
+        
+        def <strong>markdown?</strong>
+
+        <a class="method-permalink" href="#markdown%3F-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/border.cr#L111" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="modern?-instance-method">
+      <div class="signature">
+        
+        def <strong>modern?</strong>
+
+        <a class="method-permalink" href="#modern%3F-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/border.cr#L112" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="reduced_ascii?-instance-method">
+      <div class="signature">
+        
+        def <strong>reduced_ascii?</strong>
+
+        <a class="method-permalink" href="#reduced_ascii%3F-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/border.cr#L109" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="reduced_modern?-instance-method">
+      <div class="signature">
+        
+        def <strong>reduced_modern?</strong>
+
+        <a class="method-permalink" href="#reduced_modern%3F-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/border.cr#L110" target="_blank">View source</a>]
         
       </div>
     </div>
