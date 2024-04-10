@@ -344,22 +344,65 @@
   </h2>
 
   <p>The purpose of the formatter is to transform the raw value of a cell
-into a formatted character string.</p>
-<p>Formatter procs for text cell
-types (Title, SubTitle, Footer and Group).</p>
-<p>There are 2 of them, as shown below by their commonly used parameter names
-and types: <br /></p>
+into a formatted character string <br /> (A default formatter (<code>to_s</code>) is applied if
+none is defined by the user).</p>
+<p>For cells of type <code>Cell::Text</code> (headings and group), the formatter Proc can
+take 2 different forms, as shown below by their commonly used parameter
+names  and types: <br /></p>
 <ul>
-<li>1st form : (value : <code>CellType</code>, column_width : <code>Int32</code>)</li>
-<li>2nd form : (value : <code>CellType</code>)</li>
+<li>1st form : (value : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, column_width : <code>Int32</code>)</li>
+<li>2nd form : (value : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>)</li>
 </ul>
-<p>Return type is String for all of them.</p>
-<p>Any processing can be done on cell value. For example, if the runtime cell
-value type is Time, we could format as :</p>
-<pre><code class="language-crystal">formatter: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>) { <span class="s">&quot;Date: &quot;</span> <span class="o">+</span> value.<span class="k">as</span>(<span class="t">Time</span>).to_s(<span class="s">&quot;%Y-%m-%d&quot;</span>) }</code></pre>
+<p>and the return type is <code>String</code> for both.</p>
+<p>Any processing can be done on cell value. For example, in a group, if the
+runtime cell value contains a <code>Time</code> type, we could format as :</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+timestamp <span class="o">=</span> <span class="s">&quot;15/1/2024 12:00:00&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>]) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_group(<span class="n">:g1</span>, header: <span class="s">&quot;Before\n&quot;</span> <span class="o">+</span> timestamp)
+  t.add_column(<span class="s">&quot;itself x 2&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">2</span>))
+  t.add_column(<span class="s">&quot;itself x 3&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">3</span>))
+  t.add_group(<span class="n">:g2</span>, header: timestamp, formatter: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>) {
+    parsed <span class="o">=</span> <span class="t">Time</span>.parse(value.<span class="k">as</span>(<span class="t">String</span>), <span class="s">&quot;%d/%m/%Y %H:%M:%S&quot;</span>, <span class="t">Time</span><span class="t">::</span><span class="t">Location</span>.local)
+    <span class="s">&quot;After\nDate = &quot;</span> <span class="o">+</span> parsed.to_s(<span class="s">&quot;%Y-%m-%d&quot;</span>) <span class="o">+</span> <span class="s">&quot;\nTime = &quot;</span> <span class="o">+</span> parsed.to_s(<span class="s">&quot;%H:%M:%S&quot;</span>)
+  }, alignment: <span class="t">Tablo</span><span class="t">::</span><span class="t">Justify</span><span class="t">::</span><span class="t">Left</span>)
+<span class="k">end</span>
+puts table</code></pre>
+<p>and output would be:</p>
+<pre><code class="language-crystal">+--------------+-----------------------------+
+|    Before    | After                       |
+|   15/1/2024  | Date = 2024-01-15           |
+|   12:00:00   | Time = 12:00:00             |
++--------------+--------------+--------------+
+|       itself |   itself x 2 |   itself x 3 |
++--------------+--------------+--------------+
+|            1 |            2 |            3 |
+|            2 |            4 |            6 |
+|            3 |            6 |            9 |
++--------------+--------------+--------------+</code></pre>
 <p>Another example, to stretch contents of a cell to its maximum width:</p>
-<pre><code class="language-crystal">formatter: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, column_width : <span class="t">Int32</span>) {
-              <span class="t">Tablo</span><span class="t">::</span><span class="t">Util</span>.stretch(value.<span class="k">as</span>(<span class="t">String</span>), width: column_width) }</code></pre>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Title</span>.new(<span class="s">&quot;My Title&quot;</span>,
+    frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Frame</span>.new, formatter: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, column_width : <span class="t">Int32</span>) {
+    <span class="t">Tablo</span><span class="t">::</span><span class="t">Util</span>.stretch(value.<span class="k">as</span>(<span class="t">String</span>), width: column_width)
+  })) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="s">&quot;itself x 2&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">2</span>))
+  t.add_column(<span class="s">&quot;itself x 3&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">3</span>))
+<span class="k">end</span>
+puts table</code></pre>
+<p>outputs is:</p>
+<pre><code class="language-crystal">+--------------------------------------------+
+|    M    y         T    i    t    l    e    |
++--------------+--------------+--------------+
+|       itself |   itself x 2 |   itself x 3 |
++--------------+--------------+--------------+
+|            1 |            2 |            3 |
+|            2 |            4 |            6 |
+|            3 |            6 |            9 |
++--------------+--------------+--------------+</code></pre>
 
 
 
@@ -394,7 +437,7 @@ value type is Time, we could format as :</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/cell.cr#L247" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/2f6c504cf53340d1dbafe41ad63c8c8392f84e33/src/cell.cr#L293" target="_blank">
         cell.cr
       </a>
     

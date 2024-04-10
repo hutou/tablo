@@ -343,27 +343,51 @@
     Overview
   </h2>
 
-  <p>Styler procs for text cell types.</p>
-<p>There are 2 of them, as shown below by their commonly used parameter names
-and types: <br /></p>
+  <p>The purpose of the styler is to apply stylistic effects to
+a previously formatted character string. For a terminal without
+graphic capabilities, these effects are limited to the use of color
+and/or character modes (bold, italic, etc.).</p>
+<p>For cells of type Cell::Text (headings and group), the styler Proc
+can take 2 different forms, as shown below by their commonly used
+parameter names and types:</p>
 <ul>
 <li>1st form : (content : <code>String</code>, line : <code>Int32</code>)</li>
 <li>2nd form : (content : <code>String</code>)</li>
 </ul>
+<p>and the return type is String for both.</p>
 <p><code>content</code> is the formatted cell value, after the formatter has been applied.<br />
 <code>line</code> designates the line number in a (multi-line) cell (0..n).</p>
-<p>Return type is String for all of them.</p>
 <p>The first form allows easy conditional styling. For example, to colorize
-differently each line of the cell:</p>
-<pre><code class="language-crystal">styler: <span class="o">-&gt;</span>(content : <span class="t">String</span>, line : <span class="t">Int32</span>) {
-  <span class="k">case</span> line
-  <span class="k">when</span> <span class="n">0</span> <span class="k">then</span> content.colorize(<span class="n">:blue</span>).to_s
-  <span class="k">when</span> <span class="n">1</span> <span class="k">then</span> content.colorize(<span class="n">:green</span>).to_s
-  <span class="k">else</span>        content.colorize(<span class="n">:red</span>).to_s
-  <span class="k">end</span>
-}</code></pre>
+differently each line of multiline cell:</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+<span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Title</span>.new(<span class="s">&quot;My\nMultiline\nTitle&quot;</span>,
+    frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Frame</span>.new,
+    styler: <span class="o">-&gt;</span>(content : <span class="t">String</span>, line : <span class="t">Int32</span>) {
+      <span class="k">case</span> line
+      <span class="k">when</span> <span class="n">0</span> <span class="k">then</span> content.colorize(<span class="n">:blue</span>).to_s
+      <span class="k">when</span> <span class="n">1</span> <span class="k">then</span> content.colorize(<span class="n">:green</span>).to_s
+      <span class="k">else</span>        content.colorize(<span class="n">:red</span>).to_s
+      <span class="k">end</span>
+    })) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="s">&quot;itself x 2&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">2</span>))
+  t.add_column(<span class="s">&quot;itself x 3&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">3</span>))
+<span class="k">end</span>
+puts table</code></pre>
 <p>or, more simply, to style the whole cell, we use the 2nd form:</p>
-<pre><code class="language-crystal">styler: <span class="o">-&gt;</span>(content : <span class="t">String</span>) { content.colorize.fore(<span class="n">:bold</span>).to_s }</code></pre>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+<span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Title</span>.new(<span class="s">&quot;My\nMultiline\nTitle&quot;</span>,
+    frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Frame</span>.new,
+    styler: <span class="o">-&gt;</span>(content : <span class="t">String</span>) { content.colorize.mode(<span class="n">:bold</span>).to_s })) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="s">&quot;itself x 2&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">2</span>))
+  t.add_column(<span class="s">&quot;itself x 3&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">3</span>))
+<span class="k">end</span>
+puts table</code></pre>
 
 
 
@@ -398,7 +422,7 @@ differently each line of the cell:</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f985f5ff93b4ea19b005095cbd476283e7e07a22/src/cell.cr#L277" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/2f6c504cf53340d1dbafe41ad63c8c8392f84e33/src/cell.cr#L348" target="_blank">
         cell.cr
       </a>
     
