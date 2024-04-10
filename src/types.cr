@@ -88,9 +88,9 @@ module Tablo
   #   AutoSized
   # end
 
-  # an Enum to define cutting modes
-  # - Rune : cutting allowed between graphemes
-  # - Word : cutting between words only
+  # Line break settings :
+  # - Rune: allowed between characters
+  # - Word: allowed between words
   enum WrapMode
     Rune
     Word
@@ -106,8 +106,7 @@ module Tablo
     Footer
   end
 
-  # :nodoc:
-  # Rows position
+  # Row position transitions
   enum Position
     BodyBody
     BodyBottom

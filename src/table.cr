@@ -74,7 +74,7 @@ module Tablo
         @subtitle : Heading::SubTitle = Config.subtitle,
         @footer : Heading::Footer = Config.footer,
         #
-        @border : Border = Border.new(Config.border_type, Config.border_styler),
+        @border : Border = Border.new(Config.border_definition, Config.border_styler),
         #
         @group_alignment : Justify = Config.group_alignment,
         @group_formatter : Cell::Text::Formatter = Config.group_formatter,
@@ -838,7 +838,20 @@ module Tablo
       arlines.join(NEWLINE)
     end
 
-    # `pack` method version 1
+    # `enum` to define how packing is done (see `Table.pack`)
+    enum PackingMode
+      # Packing starts with initial widths, as set by default or at each column
+      # initialization
+      InitialWidths
+      # Packing starts with current widths, as set initially or modified by a
+      # previous pack operation
+      CurrentWidths
+      # Packing optimizes each column width, shroinking or expanding it, so that
+      # it can display whole contents without line break
+      AutoSized
+    end
+
+    # `pack` method (1. all displyable columns)
     #
     # The `pack` method comes in 3 overloaded versions :
     # - Version 1: all columns are selected for packing
@@ -856,14 +869,14 @@ module Tablo
     #
     # - `packing_mode` : column widths taken as starting point for resizing, possible
     #   values are :
-    #   * `Current` : resizing starts from columns current width
-    #   * `Initial` : current values are reset to their initial values, at column
+    #   * `CurrentWidths` : resizing starts from columns current width
+    #   * `InitialWidths` : columns current width is reset to its initial values, at column
     #     definition time
     #   * `AutoSized` : current values are set to their 'best fit' values, ie they are
     #     automatically adapted to their largest content
     #
-    # - `except`: column or array of columns excluded from being resized,
-    #   identified by their label
+    # - `except`: column or array of columns excluded from being resized
+    # - `only`: column or array of columns selected exclusively for resizing
     #
     # The following examples will illustrate the behaviour of the different
     # parameters values, starting from the 'standard' one, with all column widths to
@@ -905,27 +918,13 @@ module Tablo
     # requested table width is reached.<br />
     # This explains why the final result of resizing depends on the starting column
     # widths.
-
-    # enum to define how packing is done
-    enum PackingMode
-      # Packing starts with initial widths, as set by default or at each column
-      # initialization
-      InitialWidths
-      # Packing starts with current widths, as set initially or modified by a
-      # previous pack operation
-      CurrentWidths
-      # Packing optimizes each column width, shroinking or expanding it, so that
-      # it can display whole contents without line break
-      AutoSized
-    end
-
     def pack(width : Int32? = nil, *,
              packing_mode = PackingMode::AutoSized)
       # All columns are selected
       packit(width, packing_mode, column_list)
     end
 
-    # `pack` method version 2
+    # `pack` method (2. displayable columns with exceptions)
     def pack(width : Int32? = nil, *,
              packing_mode = PackingMode::AutoSized,
              except : (LabelType | Array(LabelType))) # ? = nil)
@@ -941,7 +940,7 @@ module Tablo
       packit(width, packing_mode, columns)
     end
 
-    # `pack` method version 3
+    # `pack` method (3. displayable and selected columns only)
     def pack(width : Int32? = nil, *,
              packing_mode = PackingMode::AutoSized,
              only : (LabelType | Array(LabelType))) # ? = nil)

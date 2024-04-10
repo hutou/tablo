@@ -26,7 +26,7 @@ def create_table
   ]
   table = Tablo::Table.new(invoice,
     omit_last_rule: false,
-    border: Tablo::Border.new(Tablo::Border::Name::Fancy),
+    border: Tablo::Border.new(Tablo::Border::PreSet::Fancy),
     title: Tablo::Heading::Title.new("Invoice")) do |t|
     t.add_column("Product",
       &.product)
@@ -68,7 +68,7 @@ def create_table_big
 
   table = Tablo::Table.new(invoice,
     omit_last_rule: true,
-    border: Tablo::Border.new(Tablo::Border::Name::Fancy),
+    border: Tablo::Border.new(Tablo::Border::PreSet::Fancy),
     title: Tablo::Heading::Title.new("\nInvoice\n=======\n"),
     subtitle: Tablo::Heading::SubTitle.new("Details", frame: Tablo::Frame.new)) do |t|
     t.add_column("Product",

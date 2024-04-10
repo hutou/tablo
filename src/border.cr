@@ -2,7 +2,16 @@ require "./types"
 require "./config"
 
 module Tablo
-  # Each `Border` type is defined by a string of exactly 16 characters, which is
+  # The Border class enhances the layout of a data table by separating rows
+  # and columns with interconnected horizontal and vertical lines.
+  #
+  # Various predefined line types are available, but you are free to create your own.
+  #
+  # A border can be styled by a user defined proc, of type `Styler` allowing
+  # for colorized output, either by using ANSI sequences or the "colorize" module
+  # from the stdlib (default: no style).
+  #
+  # A `Border` is defined by a string of exactly 16 characters, which is
   # then converted into 16 strings of up to 1 character each. The definition
   # string can contain any character, but two of them have a special meaning:
   # during conversion, the uppercase E is replaced by an empty string, and the
@@ -33,7 +42,7 @@ module Tablo
   # | ------------------------------ | ---------------  |
   # | CONNECTORS_SINGLE_DOUBLE_MIXED | ╔╤╗╟┼╢╚╧╝║│║═─═- |
   # ```
-  # are not correctly rendered.
+  # may not be correctly rendered.
   #
   # Below is a detailed representation of each position and meaning:
   #
@@ -41,8 +50,8 @@ module Tablo
   # vertical border lines.
   #
   # ```
-  # Pos Connector name     Example (using Fancy border name string)
-  # --- --------------     ----------------------------------------
+  # Pos Connector name     Example (using Fancy border preset)
+  # --- --------------     -----------------------------------
   #  0  top_left           "┌"
   #  1  top_mid            "┬"
   #  2  top_right          "┐"
@@ -74,36 +83,28 @@ module Tablo
   # 15  hdiv_bdy           "⋅"     (body)
   # ```
   #
-  # Eight predefined borders, of type `Name`, can also be used instead of
+  # Eight predefined borders, of type `PreSet`, can also be used instead of
   # a definition string.
   #
   # ```
   # | name          | 16 chars string  |
   # | ------------- | ---------------- |
   # | Ascii         | +++++++++|||---- |
-  # | ReducedAscii  | E EE EE EE E---- |
-  # | ReducedModern | E EE EE EE E──── |
-  # | Markdown      |    |||   |||  -  |
+  # | ReducedAscii  | ESEESEESEESE---- |
+  # | ReducedModern | ESEESEESEESE──── |
+  # | Markdown      | SSS|||SSS|||SS-S |
   # | Modern        | ┌┬┐├┼┤└┴┘│││──── |
   # | Fancy         | ╭┬╮├┼┤╰┴╯│:│─−-⋅ |
   # | Blank         | SSSSSSSSSSSSSSSS |
   # | Empty         | EEEEEEEEEEEEEEEE |
   # ```
   #
-  # For example, the string `"E EE EE EE E───"` is how the `ReducedModern`
+  # For example, the string `"ESEESEESEESE───"` is how the `ReducedModern`
   # style is defined.
-  #
-  # The Border class enhances the layout of a data table by separating rows
-  # and columns with interconnected horizontal and vertical lines.
-  #
-  # Various predefined line types are available, but you are free to create your own.
-  #
-  # A border can be styled by a user defined proc, of type `Styler` allowing
-  # for colorized output, either by using ANSI sequences or the "colorize" module
-  # from the stdlib (default: no style).
   struct Border
-    # Name define allowed keys to access predefined connectors string.
-    enum Name
+    #  `PreSet` is an `enum` identifying a finite set of strings defining the most
+    #  commonly used table layout templates (see `PREDEFINED_BORDERS`).
+    enum PreSet
       Ascii
       ReducedAscii
       ReducedModern
@@ -113,15 +114,21 @@ module Tablo
       Empty
       Blank
     end
-    # A border may be created either by a border predefined
-    # name (`Tablo::Border::Name`) or by a litteral string of 16 characters (see `Tablo::Border`).
-    # alias BorderType = String | Name
-    # Styler Proc for borders<br />
-    # Default : `Config.border_styler`
+    # A border may be styled, either by using ANSI color sequences or using
+    # the stdlib colorize module.
+    #
+    #  `styler` default value is set by `Config.border_styler`
     #
     # Example, to colorize borders in blue :
     # ```
-    # border_styler: ->(b : String) { b.colorize(:blue).to_s }
+    # require "tablo"
+    # require "colorize"
+    # table = Tablo::Table.new([1, 2, 3],
+    #   border: Tablo::Border.new(Tablo::Border::PreSet::Fancy,
+    #     styler: ->(b : String) { b.colorize(:blue).to_s })) do |t|
+    #   t.add_column("itself", &.itself)
+    # end
+    # puts table
     # ```
     alias Styler = Proc(String, String)
 
@@ -134,33 +141,34 @@ module Tablo
 
     private getter styler
 
-    # Border predefined strings, enabled by name, described in `enum Name`.
-    PREDEFINED_BORDERS = {
-      Name::Ascii         => "+++++++++|||----",
-      Name::ReducedAscii  => "E EE EE EE E----",
-      Name::Modern        => "┌┬┐├┼┤└┴┘│││────",
-      Name::ReducedModern => "E EE EE EE E────",
-      Name::Markdown      => "   |||   |||  - ",
-      Name::Fancy         => "╭┬╮├┼┤╰┴╯│:│─−-⋅",
-      Name::Blank         => "SSSSSSSSSSSSSSSS",
-      Name::Empty         => "EEEEEEEEEEEEEEEE",
-    }
+    # `PreSet` border definition hash constant
+    PREDEFINED_BORDERS =
+      {
+        PreSet::Ascii         => "+++++++++|||----",
+        PreSet::ReducedAscii  => "ESEESEESEESE----",
+        PreSet::Modern        => "┌┬┐├┼┤└┴┘│││────",
+        PreSet::ReducedModern => "ESEESEESEESE────",
+        PreSet::Markdown      => "SSS|||SSS|||SS-S",
+        PreSet::Fancy         => "╭┬╮├┼┤╰┴╯│:│─−-⋅",
+        PreSet::Blank         => "SSSSSSSSSSSSSSSS",
+        PreSet::Empty         => "EEEEEEEEEEEEEEEE",
+      }
 
-    # Primary constructor, defined by a string or by a hash of predefined strings
-    # of connectors and a styler proc. <br />
-    # Returns a Border instance.
+    # Border constructor, returning a Border instance.
     #
     # _Optional (named) parameters, with default values_:
     #
-    # - `border_type`: type is `String` | `Name` <br />
-    #   Default value set by `Config.border_type`
+    # - `definition`: type is `String` | `PreSet`
     #
-    # - `styler`: type is `Styler` <br />
-    #   Default value set by `Config.border_styler`
+    #   Default value is set by `Config.border_definition`
+    #
+    # - `styler`: type is `Styler`
+    #
+    #   Default value is set by `Config.border_styler`
     #
     # Examples :
     # ```
-    # border = Tablo::Border.new(Tablo::Border::Name::Fancy,
+    # border = Tablo::Border.new(Tablo::Border::PreSet::Fancy,
     #   styler: ->(s : String) { s.colorize(:yellow).to_s })
     # ```
     # or
@@ -168,24 +176,21 @@ module Tablo
     # border = Tablo::Border.new("┌┬┐├┼┤└┴┘│││────",
     #   styler: ->(s : String) { s.colorize.fore(:blue).mode(:bold).to_s })
     # ```
-    def initialize(@border_type : String | Name = Config.border_type,
+    def initialize(definition : String | PreSet = Config.border_definition,
                    @styler : Styler = Config.border_styler)
-      case @border_type
-      when Name
-        @border_string = PREDEFINED_BORDERS[@border_type]
-      else
-        @border_string = @border_type.as(String)
+      if definition.is_a?(PreSet)
+        definition = PREDEFINED_BORDERS[definition].as(String)
       end
-      raise Error::InvalidBorderDefinition.new "Invalid border definition <#{@border_string}>" \
-                                               "(size != 16)" unless @border_string.size == 16
-
-      ars = @border_string.split("").map { |e|
+      unless definition.size == 16
+        raise Error::InvalidBorderDefinition.new "Invalid border definition " +
+                                                 "<#{definition}> (size != 16)"
+      end
+      ars = definition.split("").map { |e|
         case e
         when "E"
           ""
         when "S"
           " "
-          # TODO double ("D") or triple ("T") mid vertical separator not ready yet !
         else
           e
         end
@@ -235,7 +240,7 @@ module Tablo
     # Returns a tuple of 5 connector strings, depending on the row position.
     private def connectors(position)
       case position
-      # Name::Fancy used as example
+      # PreSet::Fancy used as example
       # (Fifth connector only used when Group involved)
       in Position::BodyBody      then {mid_left, mid_mid, mid_right, hdiv_bdy, ""}              # ├ ┼ ┤ ⋅ E
       in Position::BodyBottom    then {bottom_left, bottom_mid, bottom_right, hdiv_tbs, ""}     # ╰ ┴ ╯ ─ E

@@ -1,8 +1,17 @@
 require "./types"
 
 module Tablo
+  # In Tablo, the Cell class and its subclasses, along with the Table class
+  # itself, form the core of the library's functionality. <br /> However, methods
+  # and classes of the Cell type are mainly for internal use, and generally
+  # have no public interface.
+  #
   # Cell is an abstract class representing a single cell inside a Table.<br />
   # Derived concrete cells are : `Cell::Text` and `Cell::Data`
+  #
+  # It is made up of several attributes and methods, including the `value`
+  # attribute, of type `CellType`, which holds the raw content of each element
+  # in the data source.
   abstract class Cell
     # Common attributes of Cell::Text and Cell::Data
     private getter value
@@ -209,9 +218,14 @@ module Tablo
 
     # :nodoc: kept public for spec tests
 
-    # Subclass of Cell for Cell::Text (Headings, group)
+    # The Text class, derived from Cell, is used to manage the headings
+    # (`Heading::Title`, `Heading::SubTitle` and `Heading::Footer`) and group cells
     class Text < Cell
-      # Formatter procs for text cell types (Title, SubTitle, Footer and Group).
+      # The purpose of the formatter is to transform the raw value of a cell
+      # into a formatted character string.
+      #
+      # Formatter procs for text cell
+      # types (Title, SubTitle, Footer and Group).
       #
       # There are 2 of them, as shown below by their commonly used parameter names
       # and types: <br />
@@ -313,16 +327,17 @@ module Tablo
       end
     end
 
-    # :nodoc: kept public for spec tests
-
-    # Subclass of Cell for Cell::Data (Header, Body)
+    # The Data class, derived from Cell, is used to manage the source data
+    # itself (column body), or those that depend on it (column header).
     class Data < Cell
-      # This data structure is attached to Cell::Data cells and therefore only
-      # concerns Header and Body row types: it is used in particular for
-      # conditional formatting and styling.
+      # The `Coords` `struct` inherits from the `Cell::Data` class and is
+      # essentially intended to enable conditional formatting or styling.  It
+      # is managed internally, but its attributes (`body_value`, `row_index`,
+      # `column_index`), which define the current source data element, are used by
+      # the `Cell::Data::Formatter` and `Cell:Data::Styler` procedures, to be
+      # defined by the user.
       struct Coords
-        # Returns the raw value of the Body Cell (useful when dealing with a
-        # Header cell)
+        # Returns the raw value of the current `Cell::Data`
         getter body_value
 
         # Returns the index of the row (0..n)
@@ -336,40 +351,94 @@ module Tablo
         end
       end
 
-      # Formatter Proc for data cell types (Header and Body).
+      # The purpose of the formatter is to transform the raw value of a cell
+      # into a formatted character string <br /> (A default formatter (`to_s`) is applied if
+      # none is defined by the user).
       #
-      # There are 4 of them, as shown below by their commonly used parameter names
-      # and types: <br />
-      # - 1st form : (value : `CellType`, cell_data : `Cell::Data::Coords`, column_width : `Int32`)
-      # - 2nd form : (value : `CellType`, cell_data : `Cell::Data::Coords`)
+      # For cells of type `Cell::Data`, the Formatter proc can take 4 different
+      # forms, as shown below by their commonly used parameter names  and types: <br />
+      # - 1st form : (value : `CellType`, coords : `Cell::Data::Coords`, column_width : `Int32`)
+      # - 2nd form : (value : `CellType`, coords : `Cell::Data::Coords`)
       # - 3rd form : (value : `CellType`, column_width : `Int32`)
       # - 4th form : (value : `CellType`)
       #
-      # Return type is String for all of them.
+      # and the return type is `String` for all of them.
       #
       # These different forms can be used for conditional formatting.
       #
       # For example, to alternate case after each row, the 2nd form
       # can be used :
       # ```
-      # body_formatter: ->(value : Tablo::CellType, cell_data : Tablo::Cell::Data::Coords) {
-      #  if value.is_a?(String)
-      #    cell_data.row_index % 2 == 0 ? value.as(String).upcase : value.as(String).downcase
-      #  else
-      #    value.to_s
-      #  end
-      # }
+      # require "tablo"
+      # table = Tablo::Table.new(["A", "B", "C"],
+      #   body_formatter: ->(value : Tablo::CellType, coords : Tablo::Cell::Data::Coords) {
+      #     if value.is_a?(String)
+      #       coords.row_index % 2 == 0 ? value.as(String).upcase : value.as(String).downcase
+      #     else
+      #       value.to_s
+      #     end
+      #   }) do |t|
+      #   t.add_column("itself", &.itself)
+      #   t.add_column("itself x 2", &.*(2))
+      #   t.add_column("itself x 3", &.*(3))
+      # end
+      # puts table
       # ```
-      # This will have an impact on all text columns. To limit formatting to the
+      # output is:
+      # ```
+      # +--------------+--------------+--------------+
+      # | itself       | itself x 2   | itself x 3   |
+      # +--------------+--------------+--------------+
+      # | A            | AA           | AAA          |
+      # | b            | bb           | bbb          |
+      # | C            | CC           | CCC          |
+      # +--------------+--------------+--------------+
+      # ```
+      # This has an impact on all text columns. To limit formatting to the
       # second column, for example, you could write:
       # ```
-      # body_formatter: ->(value : Tablo::CellType, cell_data : Tablo::Cell::Data::Coords) {
-      #  if value.is_a?(String) && cell_data.column_index == 1
-      #    cell_data.row_index % 2 == 0 ? value.as(String).upcase : value.as(String).downcase
-      #  else
-      #    value.to_s
-      #  end
-      # }
+      # require "tablo"
+      # table = Tablo::Table.new(["A", "B", "C"],
+      #   body_formatter: ->(value : Tablo::CellType, coords : Tablo::Cell::Data::Coords) {
+      #     if value.is_a?(String) && coords.column_index == 1
+      #       coords.row_index % 2 == 0 ? value.as(String).upcase : value.as(String).downcase
+      #     else
+      #       value.to_s
+      #     end
+      #   }) do |t|
+      #   t.add_column("itself", &.itself)
+      #   t.add_column("itself x 2", &.*(2))
+      #   t.add_column("itself x 3", &.*(3))
+      # end
+      # puts table
+      # ```
+      # or, if formatting is done directly at the column level:
+      # ```
+      # require "tablo"
+      # table = Tablo::Table.new(["A", "B", "C"]) do |t|
+      #   t.add_column("itself", &.itself)
+      #   t.add_column("itself x 2",
+      #     body_formatter: ->(value : Tablo::CellType, coords : Tablo::Cell::Data::Coords) {
+      #       if value.is_a?(String)
+      #         coords.row_index % 2 == 0 ? value.as(String).upcase : value.as(String).downcase
+      #       else
+      #         value.to_s
+      #       end
+      #     }, &.*(2)
+      #   )
+      #   t.add_column("itself x 3", &.*(3))
+      # end
+      # puts table
+      # ```
+      # output is:
+      # ```
+      # +--------------+--------------+--------------+
+      # | itself       | itself x 2   | itself x 3   |
+      # +--------------+--------------+--------------+
+      # | A            | AA           | AAA          |
+      # | B            | bb           | BBB          |
+      # | C            | CC           | CCC          |
+      # +--------------+--------------+--------------+
       # ```
       alias Formatter = Proc(CellType, Cell::Data::Coords, Int32, String) |
                         Proc(CellType, Cell::Data::Coords, String) |
@@ -380,8 +449,8 @@ module Tablo
       #
       # There are 5 of them, as shown below by their commonly used parameter names
       # and types: <br />
-      # - 1st form : (value : `CellType`, cell_data : `Cell::Data::Coords`, content : `String`, line_index : `Int32`)
-      # - 2nd form : (value : `CellType`, cell_data : `Cell::Data::Coords`, content : `String`)
+      # - 1st form : (value : `CellType`, coords : `Cell::Data::Coords`, content : `String`, line_index : `Int32`)
+      # - 2nd form : (value : `CellType`, coords : `Cell::Data::Coords`, content : `String`)
       # - 3rd form : (value : `CellType`, content : `String`)
       # - 4th form : (content : `String`, line_index : `Int32`)
       # - 5th form : (content : `String`)
@@ -393,12 +462,12 @@ module Tablo
       #
       # In a somewhat contrived example, we could write:
       # ```
-      #   body_styler: ->(_value : Tablo::CellType, cell_data : Tablo::Cell::Data::Coords, content : String, line_index : Int32) {
+      #   body_styler: ->(_value : Tablo::CellType, coords : Tablo::Cell::Data::Coords, content : String, line_index : Int32) {
       # if line_index > 0
       #   content.colorize(:magenta).mode(:bold).to_s
       # else
-      #   if cell_data.row_index % 2 == 0
-      #     cell_data.column_index == 0 ? content.colorize(:red).to_s : content.colorize(:yellow).to_s
+      #   if coords.row_index % 2 == 0
+      #     coords.column_index == 0 ? content.colorize(:red).to_s : content.colorize(:yellow).to_s
       #   else
       #     content.colorize(:blue).to_s
       #   end
@@ -425,11 +494,11 @@ module Tablo
                      Proc(String, Int32, String) |
                      Proc(String, String)
       # called from Column
-      protected getter cell_data
+      protected getter coords
 
       # :nodoc:
       def initialize(@value : CellType,
-                     @cell_data : Cell::Data::Coords,
+                     @coords : Cell::Data::Coords,
                      @left_padding : Int32,
                      @right_padding : Int32,
                      @padding_character : String,
@@ -445,9 +514,9 @@ module Tablo
       private def apply_formatter
         case f = formatter
         in Proc(CellType, Cell::Data::Coords, Int32, String)
-          f.call(value, cell_data, width)
+          f.call(value, coords, width)
         in Proc(CellType, Cell::Data::Coords, String)
-          f.call(value, cell_data)
+          f.call(value, coords)
         in Proc(CellType, Int32, String)
           f.call(value, width)
         in Proc(CellType, String)
@@ -460,9 +529,9 @@ module Tablo
         return content unless Util.styler_allowed
         case s = styler
         in Proc(CellType, Cell::Data::Coords, String, Int32, String)
-          s.call(value, cell_data, content, line_index)
+          s.call(value, coords, content, line_index)
         in Proc(CellType, Cell::Data::Coords, String, String)
-          s.call(value, cell_data, content)
+          s.call(value, coords, content)
         in Proc(CellType, String, String)
           s.call(value, content)
         in Proc(String, Int32, String)
@@ -477,7 +546,7 @@ module Tablo
       private def real_alignment
         a = alignment
         return a unless a.nil?
-        case cell_data.body_value
+        case coords.body_value
         when Number
           Justify::Right
         when Bool

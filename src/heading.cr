@@ -1,8 +1,9 @@
 require "./types"
 
 module Tablo
-  # struct Heading::Frame creates a frame around titles, subtitles or footers
-  class Frame
+  # struct Frame creates a frame around titles, subtitles or footers, with
+  # optional line breaks before and after
+  struct Frame
     # Called from RowGroup
     protected getter line_breaks_before, line_breaks_after
 
@@ -28,16 +29,16 @@ module Tablo
     # `line_breaks_before` value of the next, bearing in mind that for Group,
     # Header and Body row types, these values are always equal to 0.
     #
-    # iThe following example:
+    # The following example:
     # ```
-    # Heading::Title.new("My title", Frame.new(1, 1))
-    # Heading::SubTitle.new("Another title", Frame.new(line_breaks_before: 3))
+    # Tablo::Heading::Title.new("My title", Tablo::Frame.new(1, 1))
+    # Tablo::Heading::SubTitle.new("Another title", Tablo::Frame.new(line_breaks_before: 3))
     # ```
     # would result in 3 line breaks between the title and the subtitle (ie
     # 2 blank lines)
     #
     # If the values of `line_breaks_after` and `line_breaks_before` are both equal
-    # to 0, no line break is generated and the 2 frames are joined.
+    # to 0, no line break is generated and the 2 adjacent frames are joined.
     def initialize(@line_breaks_before : Int32 = 0,
                    @line_breaks_after : Int32 = 0)
       unless line_breaks_before.in?(Config.line_breaks_range) &&
@@ -96,7 +97,7 @@ module Tablo
                      @repeated : Bool = false)
       end
 
-      protected def framed?
+      def framed?
         !frame.nil?
       end
     end
@@ -140,7 +141,7 @@ module Tablo
                      @styler : Cell::Text::Styler = Config.heading_styler)
       end
 
-      protected def framed?
+      def framed?
         !frame.nil?
       end
     end
@@ -150,15 +151,20 @@ module Tablo
       protected property value, frame
       # Called from Table
       protected getter alignment, formatter, styler
-      # Called from RowGroup
+      # Called from RowGroup                                        b
       protected property? page_break
 
       # Returns an instance of Footer.
       #
       # Example:
       # ```
-      # Tablo::Table.new((1, 2, 3],
-      #   footer: Tablo::Heading::Footer.new("My footer", frame: Tablo::Frame.new(1, 1), page_break: true)
+      # require "tablo"
+      # table = Tablo::Table.new([1, 2, 3],
+      #   footer: Tablo::Heading::Footer.new("My footer",
+      #     frame: Tablo::Frame.new(1, 1), page_break: true)) do |t|
+      #   t.add_column("itself", &.itself)
+      # end
+      # puts table
       # ```
       #
       # _All (named) parameters are optional, with default values_
@@ -190,7 +196,7 @@ module Tablo
                      @page_break : Bool = false)
       end
 
-      protected def framed?
+      def framed?
         !frame.nil?
       end
     end

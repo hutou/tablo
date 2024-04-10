@@ -103,8 +103,8 @@ module Tablo
 
     # TODO I'm here! TODO
     #
-    class_getter border_type : String | Border::Name
-    class_setter border_type : String | Border::Name = Border::Name::Ascii
+    class_getter border_definition : String | Border::PreSet
+    class_setter border_definition : String | Border::PreSet = Border::PreSet::Ascii
 
     class_getter border_styler : Border::Styler
     class_setter border_styler : Border::Styler = DEFAULT_STYLER

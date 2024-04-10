@@ -13,7 +13,7 @@ require "./spec_helper"
 # end
 
 # define border type for all tests
-Tablo::Config.border_type = Tablo::Border::Name::Fancy
+Tablo::Config.border_definition = Tablo::Border::PreSet::Fancy
 
 test_data_numbers = FloatSamples.new
 

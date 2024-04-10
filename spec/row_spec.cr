@@ -10,10 +10,10 @@ end
 
 describe Tablo::Row do
   # define border type for all tests
-  # Tablo::Config.border_type = Tablo::Border::Name::Ascii
+  # Tablo::Config.border_definition = Tablo::Border::PreSet::Ascii
 
   table = Tablo::Table.new([["A", "B"], ["C", "D"], ["E", "F"], ["G", "H"], ["I", "J"]],
-    border: Tablo::Border.new(Tablo::Border::Name::Ascii),
+    border: Tablo::Border.new(Tablo::Border::PreSet::Ascii),
     header_frequency: 0) do |t|
     t.add_column("N") { |n| n[0] }
     t.add_column("Double") { |n| n[0] * 2 }

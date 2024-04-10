@@ -1,7 +1,7 @@
 require "./spec_helper"
 
 def set_border
-  Tablo::Border.new(Tablo::Border::Name::Fancy)
+  Tablo::Border.new(Tablo::Border::PreSet::Fancy)
 end
 
 def set_title

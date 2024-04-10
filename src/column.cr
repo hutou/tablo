@@ -56,7 +56,7 @@ module Tablo
     protected def header_cell(bodycell)
       Cell::Data.new(
         value: header,
-        cell_data: bodycell.cell_data,
+        coords: bodycell.coords,
         left_padding: left_padding,
         right_padding: right_padding,
         padding_character: padding_character,
@@ -74,10 +74,10 @@ module Tablo
     # Returns a Cell::Data
     protected def body_cell(source, row_index, column_index)
       value = body_cell_value(source, row_index)
-      cell_data = Cell::Data::Coords.new(value, row_index, index)
+      coords = Cell::Data::Coords.new(value, row_index, index)
       Cell::Data.new(
         value: value,
-        cell_data: cell_data,
+        coords: coords,
         left_padding: left_padding,
         right_padding: right_padding,
         padding_character: padding_character,

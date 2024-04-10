@@ -58,8 +58,8 @@ Returns an instance of `Border`
 
 _Optional parameters, with default values_
 
-- `border_type`: type is `String` or `BorderName` <br />
-  Default set by `Config.border_type` <br />
+- `border_definition`: type is `String` or `BorderName` <br />
+  Default set by `Config.border_definition` <br />
 
 - `styler`: type is BorderStyler <br />
   Default set by `Config.border_styler`
