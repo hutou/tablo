@@ -334,6 +334,8 @@ module Tablo
       #
       # Output is:
       #
+      # <img src="../../../assets/images/api_cell_text_styler_1.svg" width="400">
+      #
       #  or, more simply, to style the whole cell, we use the 2nd form:
       # ```
       # require "tablo"
