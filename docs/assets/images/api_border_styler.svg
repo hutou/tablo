@@ -1,0 +1,24 @@
+<svg width="16ch" height="7em" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve">
+    <style>
+        * {
+            font-family: FreeMono, monospace;
+            font-size: 14px;
+        }
+        tspan, text {
+            font-variant-ligatures: none;
+            dominant-baseline: central;
+            white-space: pre;
+            fill: #3e3e3e;
+        }
+        .bg {
+            stroke-width: "0.5px";
+        }
+    </style>
+<text x="0ch" y="0.5em"><tspan>╭──────────────╮</tspan></text>
+<text x="0ch" y="1.5em"><tspan>│       itself │</tspan></text>
+<text x="0ch" y="2.5em"><tspan>├--------------┤</tspan></text>
+<text x="0ch" y="3.5em"><tspan>│            1 │</tspan></text>
+<text x="0ch" y="4.5em"><tspan>│            2 │</tspan></text>
+<text x="0ch" y="5.5em"><tspan>│            3 │</tspan></text>
+<text x="0ch" y="6.5em"><tspan>╰──────────────╯</tspan></text>
+</svg>

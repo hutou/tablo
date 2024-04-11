@@ -130,6 +130,9 @@ module Tablo
     # end
     # puts table
     # ```
+    #
+    # <img src="../../assets/images/api_border_styler.svg" width="400">
+    #
     alias Styler = Proc(String, String)
 
     protected property top_left : String, top_mid : String, top_right : String
