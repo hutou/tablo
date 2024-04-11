@@ -357,17 +357,31 @@ and types: <br /></p>
 Return type is String for all of them.</p>
 <p>These different forms can be used for conditional formatting.</p>
 <p>In a somewhat contrived example, we could write:</p>
-<pre><code class="language-crystal">  body_styler: <span class="o">-&gt;</span>(_value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, coords : <span class="t">Tablo</span><span class="t">::</span><span class="t">Cell</span><span class="t">::</span><span class="t">Data</span><span class="t">::</span><span class="t">Coords</span>, content : <span class="t">String</span>, line_index : <span class="t">Int32</span>) {
-<span class="k">if</span> line_index <span class="o">&gt;</span> <span class="n">0</span>
-  content.colorize(<span class="n">:magenta</span>).mode(<span class="n">:bold</span>).to_s
-<span class="k">else</span>
-  <span class="k">if</span> coords.row_index <span class="o">%</span> <span class="n">2</span> <span class="o">==</span> <span class="n">0</span>
-    coords.column_index <span class="o">==</span> <span class="n">0</span> ? content.colorize(<span class="n">:red</span>).to_s : content.colorize(<span class="n">:yellow</span>).to_s
-  <span class="k">else</span>
-    content.colorize(<span class="n">:blue</span>).to_s
-  <span class="k">end</span>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+<span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
+
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="s">&quot;A&quot;</span>, <span class="s">&quot;B&quot;</span>, <span class="s">&quot;C&quot;</span>],
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Title</span>.new(<span class="s">&quot;My Title&quot;</span>,
+    frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Frame</span>.new),
+  body_styler: <span class="o">-&gt;</span>(_value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, coords : <span class="t">Tablo</span><span class="t">::</span><span class="t">Cell</span><span class="t">::</span><span class="t">Data</span><span class="t">::</span><span class="t">Coords</span>, content : <span class="t">String</span>, line_index : <span class="t">Int32</span>) {
+    <span class="k">if</span> line_index <span class="o">&gt;</span> <span class="n">0</span>
+      content.colorize(<span class="n">:magenta</span>).mode(<span class="n">:bold</span>).to_s
+    <span class="k">else</span>
+      <span class="k">if</span> coords.row_index <span class="o">%</span> <span class="n">2</span> <span class="o">==</span> <span class="n">0</span>
+        coords.column_index <span class="o">==</span> <span class="n">0</span> ? content.colorize(<span class="n">:red</span>).to_s : content.colorize(<span class="n">:green</span>).to_s
+      <span class="k">else</span>
+        content.colorize(<span class="n">:blue</span>).to_s
+      <span class="k">end</span>
+    <span class="k">end</span>
+  }
+) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="s">&quot;itself x 2&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">2</span>))
+  t.add_column(<span class="s">&quot;itself x 3&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">3</span>).chars.join(<span class="s">&quot;\n&quot;</span>))
 <span class="k">end</span>
-}</code></pre>
+
+puts table</code></pre>
+<img src="../../../assets/images/api_cell_data_styler_1.svg" width="400">
 <p>Or, more simply, to better differentiate between negative and positive values:</p>
 <pre><code class="language-crystal">body_styler: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, content : <span class="t">String</span>) {
   <span class="k">if</span> value.<span class="k">is_a?</span>(<span class="t">Float64</span>)
@@ -414,7 +428,7 @@ Return type is String for all of them.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/7237a3862a0faef039f686c579e76c47b803f54a/src/cell.cr#L571" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/8f1369add9ec2a5c39ad428ddb61712277876440/src/cell.cr#L590" target="_blank">
         cell.cr
       </a>
     

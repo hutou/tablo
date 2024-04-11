@@ -350,11 +350,12 @@ the stdlib colorize module.</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
-  border: <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span><span class="t">::</span><span class="t">PreSet</span><span class="t">::</span><span class="t">Fancy</span>,
+  border: <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span><span class="t">::</span><span class="t">PreSet</span><span class="t">::</span><span class="t">Ascii</span>,
     styler: <span class="o">-&gt;</span>(b : <span class="t">String</span>) { b.colorize(<span class="n">:blue</span>).to_s })) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
   t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
 <span class="k">end</span>
 puts table</code></pre>
+<img src="../../assets/images/api_border_styler.svg" width="160">
 
 
 
@@ -389,7 +390,7 @@ puts table</code></pre>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/7237a3862a0faef039f686c579e76c47b803f54a/src/border.cr#L133" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/8f1369add9ec2a5c39ad428ddb61712277876440/src/border.cr#L136" target="_blank">
         border.cr
       </a>
     

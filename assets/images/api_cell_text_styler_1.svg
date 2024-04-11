@@ -1,7 +1,7 @@
 <svg width="46ch" height="11em" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve">
     <style>
         * {
-            font-family: DejaVuSansMono, monospace;
+            font-family: FreeMono, monospace;
             font-size: 14px;
         }
         tspan, text {
