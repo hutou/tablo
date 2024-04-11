@@ -124,14 +124,14 @@ module Tablo
     # require "tablo"
     # require "colorize"
     # table = Tablo::Table.new([1, 2, 3],
-    #   border: Tablo::Border.new(Tablo::Border::PreSet::Fancy,
+    #   border: Tablo::Border.new(Tablo::Border::PreSet::Ascii,
     #     styler: ->(b : String) { b.colorize(:blue).to_s })) do |t|
     #   t.add_column("itself", &.itself)
     # end
     # puts table
     # ```
     #
-    # <img src="../../assets/images/api_border_styler.svg" width="400">
+    # <img src="../../assets/images/api_border_styler.svg" width="160">
     #
     alias Styler = Proc(String, String)
 

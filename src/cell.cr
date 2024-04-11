@@ -216,8 +216,6 @@ module Tablo
       padding_character * amount
     end
 
-    # :nodoc: kept public for spec tests
-
     # The Text class, derived from Cell, is used to manage the headings
     # (`Heading::Title`, `Heading::SubTitle` and `Heading::Footer`) and group cells
     class Text < Cell
@@ -341,14 +339,19 @@ module Tablo
       # ```
       # require "tablo"
       # require "colorize"
+      #
+      # COLORS = [:blue, :red, :green, :magenta, :cyan]
       # table = Tablo::Table.new([1, 2, 3],
-      #   title: Tablo::Heading::Title.new("My\nMultiline\nTitle",
+      #   title: Tablo::Heading::Title.new("My MultiColor Title",
       #     frame: Tablo::Frame.new,
-      #     styler: ->(content : String) { content.colorize.mode(:bold).to_s })) do |t|
+      #     styler: ->(content : String) { content.chars.map { |c|
+      #       c.colorize.fore(COLORS[rand(5)]).to_s
+      #     }.join })) do |t|
       #   t.add_column("itself", &.itself)
       #   t.add_column("itself x 2", &.*(2))
       #   t.add_column("itself x 3", &.*(3))
       # end
+      #
       # puts table
       # ```
       #
@@ -542,18 +545,34 @@ module Tablo
       #
       # In a somewhat contrived example, we could write:
       # ```
+      # require "tablo"
+      # require "colorize"
+      #
+      # table = Tablo::Table.new(["A", "B", "C"],
+      #   title: Tablo::Heading::Title.new("My Title",
+      #     frame: Tablo::Frame.new),
       #   body_styler: ->(_value : Tablo::CellType, coords : Tablo::Cell::Data::Coords, content : String, line_index : Int32) {
-      # if line_index > 0
-      #   content.colorize(:magenta).mode(:bold).to_s
-      # else
-      #   if coords.row_index % 2 == 0
-      #     coords.column_index == 0 ? content.colorize(:red).to_s : content.colorize(:yellow).to_s
-      #   else
-      #     content.colorize(:blue).to_s
-      #   end
+      #     if line_index > 0
+      #       content.colorize(:magenta).mode(:bold).to_s
+      #     else
+      #       if coords.row_index % 2 == 0
+      #         coords.column_index == 0 ? content.colorize(:red).to_s : content.colorize(:green).to_s
+      #       else
+      #         content.colorize(:blue).to_s
+      #       end
+      #     end
+      #   }
+      # ) do |t|
+      #   t.add_column("itself", &.itself)
+      #   t.add_column("itself x 2", &.*(2))
+      #   t.add_column("itself x 3", &.*(3).chars.join("\n"))
       # end
-      # }
+      #
+      # puts table
       # ```
+      #
+      # <img src="../../../assets/images/api_cell_data_styler_1.svg" width="400">
+      #
       # Or, more simply, to better differentiate between negative and positive values:
       # ```
       # body_styler: ->(value : Tablo::CellType, content : String) {

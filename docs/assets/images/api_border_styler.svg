@@ -13,12 +13,14 @@
         .bg {
             stroke-width: "0.5px";
         }
+        <!-- Foreground ANSI colors -->
+        .fa1 { fill: #970b16; }
     </style>
-<text x="0ch" y="0.5em"><tspan>╭──────────────╮</tspan></text>
-<text x="0ch" y="1.5em"><tspan>│       itself │</tspan></text>
-<text x="0ch" y="2.5em"><tspan>├--------------┤</tspan></text>
-<text x="0ch" y="3.5em"><tspan>│            1 │</tspan></text>
-<text x="0ch" y="4.5em"><tspan>│            2 │</tspan></text>
-<text x="0ch" y="5.5em"><tspan>│            3 │</tspan></text>
-<text x="0ch" y="6.5em"><tspan>╰──────────────╯</tspan></text>
+<text x="0ch" y="0.5em"><tspan class="fa1">&#43;--------------&#43;</tspan></text>
+<text x="0ch" y="1.5em"><tspan class="fa1">|       </tspan><tspan>itself </tspan><tspan class="fa1">|</tspan></text>
+<text x="0ch" y="2.5em"><tspan class="fa1">&#43;--------------&#43;</tspan></text>
+<text x="0ch" y="3.5em"><tspan class="fa1">|            </tspan><tspan>1 </tspan><tspan class="fa1">|</tspan></text>
+<text x="0ch" y="4.5em"><tspan class="fa1">|            </tspan><tspan>2 </tspan><tspan class="fa1">|</tspan></text>
+<text x="0ch" y="5.5em"><tspan class="fa1">|            </tspan><tspan>3 </tspan><tspan class="fa1">|</tspan></text>
+<text x="0ch" y="6.5em"><tspan class="fa1">&#43;--------------&#43;</tspan></text>
 </svg>

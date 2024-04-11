@@ -126,7 +126,8 @@ module Tablo
       end
     end
 
-    # First constructor : Table constructor has two versions to initialize a new Table instance, depending on whether a block is given or not.
+    # First constructor : Table constructor has two versions to initialize a new Table
+    # instance, depending on whether a block is given or not.
     #
     #  ```text
     #  Used constants                | Default values
@@ -140,7 +141,8 @@ module Tablo
     # _Mandatory parameters:_
     #
     # - `sources`: type is Enumerable(T)<br />
-    #   Can be any Enumerable data type _(`Range` is currently (Crystal 1.9.2) not correctly supported in this context: use `Range.to_a` instead)_
+    #   Can be any Enumerable data type _(`Range` is currently (Crystal 1.9.2)
+    #   not correctly supported in this context: use `Range.to_a` instead)_
     #
     # _Optional named parameters, with default values_
     #
@@ -182,19 +184,23 @@ module Tablo
     #   Default value is `DEFAULT_DATA_DEPENDENT_STYLER`
     # - `left_padding`: type is `Int32`<br />
     #   Default value is `1` <br />
-    #   Permitted range of values is governed by `Config.padding_width_range` in the `check_padding` method<br />
+    #   Permitted range of values is governed by `Config.padding_width_range` in
+    #   the `check_padding` method<br />
     #   (raises `Error::InvalidValue` runtime exception if value not in range)
     # - `right_padding`: type is `Int32` <br />
     #   Default value is `1` <br />
-    #   Permitted range of values is governed by `Config.padding_width_range` in the `check_padding` method<br />
+    #   Permitted range of values is governed by `Config.padding_width_range` in
+    #   the `check_padding` method<br />
     #   (raises `Error::InvalidValue` runtime exception if value not in range)
     # - `padding_character`: type is `String`<br />
     #   Default value is `" "` <br />
-    #   The `check_padding_character` auxiliairy method ensures the `padding_character` string size is only one <br />
+    #   The `check_padding_character` auxiliairy method ensures the `padding_character`
+    #   string size is only one <br />
     #   (raises an `Error::InvalidValue` runtime exception otherwise)
     # - `truncation_indicator`: type is `String` <br />
     #   Defaut value is `"~"` <br />
-    #   The `check_truncation_indicator` auxiliairy method ensures the `truncation_indicator` string size
+    #   The `check_truncation_indicator` auxiliairy method ensures the
+    #   `truncation_indicator` string size
     #   is only one (raises an `Error::InvalidValue` runtime exception otherwise)
     # - `width`: type is `Int32` <br />
     #   Default value is `12`<br />
@@ -205,7 +211,8 @@ module Tablo
     # - `header_frequency`: type is `Int32?` <br />
     #   Default value is `0` <br />
     #   Permitted range of values is governed by `Config.header_frequency_range` in the
-    #   `check_header_frequency` auxiliary method (raises `Error::InvalidValue` runtime exception
+    #   `check_header_frequency` auxiliary method (raises `Error::InvalidValue`
+    #   runtime exception
     #   unless value in range or `nil`)
     #
     #   - If set to `0`, rows of data other than body are displayed
@@ -217,9 +224,9 @@ module Tablo
     #
     # - `row_divider_frequency`: type is `Int32?` <br />
     #   Default value is `nil` <br />
-    #   Permitted range of values is governed by `Config.row_divider_frequency_range` in the
-    #   `check_row_divider_frequency` auxiliary method (raises `Error::InvalidValue` runtime
-    #   exception unless value in range or `nil`)
+    #   Permitted range of values is governed by `Config.row_divider_frequency_range`
+    #   in the `check_row_divider_frequency` auxiliary method (raises `Error::InvalidValue`
+    #   runtime exception unless value in range or `nil`)
     #
     # - `wrap_mode`: type is `WrapMode` <br />
     #   Default value is `WrapMode::Word`<br />
@@ -253,7 +260,8 @@ module Tablo
     # - `omit_last_rule`: type is `Bool` <br />
     #   Default value is `false` <br />
     #   If `true`, the closing rule of table is not displayed.
-    #   This is useful for custom rendering (and notably for Detail and Summary tables joining)
+    #   This is useful for custom rendering (and notably for Detail and Summary
+    #   tables joining)
     #
     # Returns an instance of `Table(T)`
     initialize(block_given: false)
