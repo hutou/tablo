@@ -350,8 +350,7 @@ module Tablo
       # ```
       # Output is:
       #
-      # <!-- <img src="../../../assets/images/api_cell_text_styler_2.svg" width="400"> -->
-      # <img src="assets/images/api_cell_text_styler_2.svg" width="400">
+      # <img src="../../../assets/images/api_cell_text_styler_2.svg" width="400">
       alias Styler = Proc(String, Int32, String) |
                      Proc(String, String)
       # called from Table
