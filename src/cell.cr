@@ -250,7 +250,7 @@ module Tablo
       # end
       # puts table
       #  ```
-      # and output would be:
+      #
       # ```
       # +--------------+-----------------------------+
       # |    Before    | After                       |
@@ -278,7 +278,7 @@ module Tablo
       # end
       # puts table
       # ```
-      # outputs is:
+      #
       # ```
       # +--------------------------------------------+
       # |    M    y         T    i    t    l    e    |
@@ -332,9 +332,10 @@ module Tablo
       # puts table
       # ```
       #
-      # Output is:
+      #
       #
       # <img src="../../../assets/images/api_cell_text_styler_1.svg" width="400">
+      #
       #
       #  or, more simply, to style the whole cell, we use the 2nd form:
       # ```
@@ -350,9 +351,9 @@ module Tablo
       # end
       # puts table
       # ```
-      # Output is:
       #
       # <img src="../../../assets/images/api_cell_text_styler_2.svg" width="400">
+      #
       alias Styler = Proc(String, Int32, String) |
                      Proc(String, String)
       # called from Table
@@ -463,7 +464,7 @@ module Tablo
       # end
       # puts table
       # ```
-      # output is:
+      #
       # ```
       # +--------------+--------------+--------------+
       # | itself       | itself x 2   | itself x 3   |
@@ -509,7 +510,7 @@ module Tablo
       # end
       # puts table
       # ```
-      # output is:
+      #
       # ```
       # +--------------+--------------+--------------+
       # | itself       | itself x 2   | itself x 3   |
