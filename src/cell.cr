@@ -331,6 +331,9 @@ module Tablo
       # end
       # puts table
       # ```
+      #
+      # Output is:
+      #
       #  or, more simply, to style the whole cell, we use the 2nd form:
       # ```
       # require "tablo"
@@ -345,6 +348,9 @@ module Tablo
       # end
       # puts table
       # ```
+      # Output is:
+      #
+      # <img src="../../../assets/images/api_cell_text_styler_2.svg" width="400">
       alias Styler = Proc(String, Int32, String) |
                      Proc(String, String)
       # called from Table
