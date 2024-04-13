@@ -20,7 +20,7 @@ require "./spec_helper"
 # border transitions between rows
 ##
 # define border type for all tests
-# Tablo::Config.border_definition = Tablo::Border::PreSet::Fancy
+# Tablo::Config::Defaults.border_definition = Tablo::Border::PreSet::Fancy
 
 describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
          "group, header, body and footer", tags: "rowgroup" do

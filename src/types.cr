@@ -1,26 +1,41 @@
-# `CellType` is an empty module, included in every standard scalar type.
+# In each Tablo cell, the `value` attribute contains a raw value, either read from
+# the data source or defined in the program body.
+#
+# This attribute is of type `Tablo::CellType` and can therefore only store
+# values of this type.  To make this possible, each type intended for use in
+# Tablo must include the CellType module, an empty module defined as follows:
+#
 # ```
 # module CellType
+#   btyp
 # end
 # ```
 #
-# These standard types are:
-# - Signed integers : `Int8`, `Int16`, `Int32`, `Int64`, `Int128`
-# - Unsigned integers : `UInt8`, `UInt16`, `UInt32`, `UInt64`, `UInt128`
-# - Floats : `Float32`, `Float64`
-# - Misc : `Char`, `String`, `Bool`, `Nil`, `Symbol`, `Time`
+# In Tablo, most scalar types already benefit from this addition, i.e.
+# :
+# - Signed integers: Int8, Int16, Int32, Int64, Int128
+# - Unsigned integers: UInt8, UInt16, UInt32, UInt64, UInt128
+# - Floats: Float32, Float64
+# - Misc : Char, String, Bool, Nil, Symbol, Time
 #
-#  If other data types are to be used in Tablo, then reopen the type and
-#  include the `CellType` module, as in the case of the `BigDecimal` type:
+# If another data type is to be used in Tablo, we need to reopen the type and
+# include the `Tablo::CellType` module, as in the case of the `BigDecimal` type below:
 # ```
 # struct BigDecimal
 #   include Tablo::CellType
 # end
 # ```
-# After initialization of a Tablo table, when source data are read for
-# processing before display, their type is restricted to CellType, which in
-# most cases requires reverse casting when operations involving them are
-# performed.
+# <span style="color:red">__Important__:</span><br />
+# After initialization of a Tablo table, when data is read for processing
+# before being displayed, its type is therefore restricted to `Tablo::CellType`.
+# So, in most cases, a reverse casting is required when operations are performed
+# on it, such as:
+# ```
+# - value.as(String)
+# - value.as(Float64)
+# - value.as(Int32)
+# - ...
+# ```
 module Tablo::CellType
 end
 
@@ -52,7 +67,10 @@ module Tablo
             {% else %}
               "\n"
             {% end %}
-  DEFAULT_STYLER                = ->(s : String) { s }
+
+  # "do  nothing" default styler
+  DEFAULT_STYLER = ->(s : String) { s }
+
   DEFAULT_DATA_DEPENDENT_STYLER = ->(_c : CellType, s : String) { s }
   DEFAULT_HEADING_ALIGNMENT     = Justify::Center
   DEFAULT_FORMATTER             = ->(c : CellType) { c.to_s }
@@ -145,7 +163,7 @@ module Tablo
     class DuplicateLabel < Error
     end
 
-    # This exception is raised when the column (or group) identifier (LabelType)
+    # This exception is raised when the column (or group) identifier (`LabelType`)
     # does not exist
     class LabelNotFound < Error
     end

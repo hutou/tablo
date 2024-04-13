@@ -20,7 +20,7 @@ module Tablo
     #   Default value is 0
     #
     # Permitted range of values for these 2 parameters is governed by
-    # `Config.line_breaks_range` (an `Error::InvalidValue` exception is raised if not
+    # `Config::Controls.line_breaks_range` (an `Error::InvalidValue` exception is raised if not
     # in range)
     #
     # These 2 parameters help define the number of line breaks between adjacent
@@ -41,10 +41,10 @@ module Tablo
     # to 0, no line break is generated and the 2 adjacent frames are joined.
     def initialize(@line_breaks_before : Int32 = 0,
                    @line_breaks_after : Int32 = 0)
-      unless line_breaks_before.in?(Config.line_breaks_range) &&
-             line_breaks_after.in?(Config.line_breaks_range)
+      unless line_breaks_before.in?(Config::Controls.line_breaks_range) &&
+             line_breaks_after.in?(Config::Controls.line_breaks_range)
         raise Error::InvalidValue.new "Line breaks must be in range " \
-                                      "(#{Config.line_breaks_range})"
+                                      "(#{Config::Controls.line_breaks_range})"
       end
     end
   end
@@ -78,12 +78,12 @@ module Tablo
       #   Default value is `nil` <br />
       #   If a Frame instance is created, the title is framed.
       # - `alignment`: type is `Justify` <br />
-      #   By default, as defined in `Config.heading_alignment` (but this can be
+      #   By default, as defined in `Config::Defaults.heading_alignment` (but this can be
       #   modified), title content is centered.
       # - `formatter`:  a Proc whose type is `Cell::Text::Formatter` <br />
-      #   Default value is set by `Config.heading_formatter`
+      #   Default value is set by `Config::Defaults.heading_formatter`
       # - `styler`:  a Proc whose type is `Cell::Text::Styler` <br />
-      #   Default value is set by `Config.heading_styler`
+      #   Default value is set by `Config::Defaults.heading_styler`
       # - `repeated`: type is `Bool` <br />
       #   Default value is `false` <br />
       #   This attribute governs the repetition of the title and subtitle when the
@@ -91,9 +91,9 @@ module Tablo
       #   are inserted before the repeated group and header rows).
       def initialize(@value : CellType = nil,
                      @frame : Frame? = nil,
-                     @alignment : Justify = Config.heading_alignment,
-                     @formatter : Cell::Text::Formatter = Config.heading_formatter,
-                     @styler : Cell::Text::Styler = Config.heading_styler,
+                     @alignment : Justify = Config::Defaults.heading_alignment,
+                     @formatter : Cell::Text::Formatter = Config::Defaults.heading_formatter,
+                     @styler : Cell::Text::Styler = Config::Defaults.heading_styler,
                      @repeated : Bool = false)
       end
 
@@ -128,17 +128,17 @@ module Tablo
       #   Default value is `nil` <br />
       #   If a Frame instance is created, the subtitle is framed.
       # - `alignment`: type is `Justify` <br />
-      #   By default, as defined in `Config.heading_alignment` (but this can be
+      #   By default, as defined in `Config::Defaults.heading_alignment` (but this can be
       #   modified), subtitle content is centered.
       # - `formatter`:  a Proc whose type is `Cell::Text::Formatter` <br />
-      #   Default value is set by `Config.heading_formatter`
+      #   Default value is set by `Config::Defaults.heading_formatter`
       # - `styler`:  a Proc whose type is `Cell::Text::Styler` <br />
-      #   Default value is set by `Config.heading_styler`
+      #   Default value is set by `Config::Defaults.heading_styler`
       def initialize(@value : CellType = nil,
                      @frame : Frame? = nil,
-                     @alignment : Justify = Config.heading_alignment,
-                     @formatter : Cell::Text::Formatter = Config.heading_formatter,
-                     @styler : Cell::Text::Styler = Config.heading_styler)
+                     @alignment : Justify = Config::Defaults.heading_alignment,
+                     @formatter : Cell::Text::Formatter = Config::Defaults.heading_formatter,
+                     @styler : Cell::Text::Styler = Config::Defaults.heading_styler)
       end
 
       def framed?
@@ -176,12 +176,12 @@ module Tablo
       #   Default value is `nil` <br />
       #   If a Frame instance is created, the footer is framed.
       # - `alignment`: type is `Justify` <br />
-      #   By default, as defined in `Config.heading_alignment` (but this can be
+      #   By default, as defined in `Config::Defaults.heading_alignment` (but this can be
       #   modified), footer content is centered.
       # - `formatter`:  a Proc whose type is `Cell::Text::Formatter` <br />
-      #   Default value is set by `Config.heading_formatter`
+      #   Default value is set by `Config::Defaults.heading_formatter`
       # - `styler`:  a Proc whose type is `Cell::Text::Styler` <br />
-      #   Default value is set by `Config.heading_styler`
+      #   Default value is set by `Config::Defaults.heading_styler`
       # - `page_break`: type is `Bool` <br />
       #   Default value is `false` <br />
       # If true, a page break is inserted after the footer content (or after the
@@ -190,9 +190,9 @@ module Tablo
       # `Table` is `true`).
       def initialize(@value : CellType = nil,
                      @frame : Frame? = nil,
-                     @alignment : Justify = Config.heading_alignment,
-                     @formatter : Cell::Text::Formatter = Config.heading_formatter,
-                     @styler : Cell::Text::Styler = Config.heading_styler,
+                     @alignment : Justify = Config::Defaults.heading_alignment,
+                     @formatter : Cell::Text::Formatter = Config::Defaults.heading_formatter,
+                     @styler : Cell::Text::Styler = Config::Defaults.heading_styler,
                      @page_break : Bool = false)
       end
 

@@ -10,7 +10,7 @@ end
 
 describe Tablo::Row do
   # define border type for all tests
-  # Tablo::Config.border_definition = Tablo::Border::PreSet::Ascii
+  # Tablo::Config::Defaults.border_definition = Tablo::Border::PreSet::Ascii
 
   table = Tablo::Table.new([["A", "B"], ["C", "D"], ["E", "F"], ["G", "H"], ["I", "J"]],
     border: Tablo::Border.new(Tablo::Border::PreSet::Ascii),

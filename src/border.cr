@@ -117,7 +117,7 @@ module Tablo
     # A border may be styled, either by using ANSI color sequences or using
     # the stdlib colorize module.
     #
-    #  `styler` default value is set by `Config.border_styler`
+    #  `styler` default value is set by `Config::Defaults.border_styler`
     #
     # Example, to colorize borders in blue :
     # ```
@@ -163,11 +163,11 @@ module Tablo
     #
     # - `definition`: type is `String` | `PreSet`
     #
-    #   Default value is set by `Config.border_definition`
+    #   Default value is set by `Config::Defaults.border_definition`
     #
     # - `styler`: type is `Styler`
     #
-    #   Default value is set by `Config.border_styler`
+    #   Default value is set by `Config::Defaults.border_styler`
     #
     # Examples :
     # ```
@@ -179,8 +179,8 @@ module Tablo
     # border = Tablo::Border.new("┌┬┐├┼┤└┴┘│││────",
     #   styler: ->(s : String) { s.colorize.fore(:blue).mode(:bold).to_s })
     # ```
-    def initialize(definition : String | PreSet = Config.border_definition,
-                   @styler : Styler = Config.border_styler)
+    def initialize(definition : String | PreSet = Config::Defaults.border_definition,
+                   @styler : Styler = Config::Defaults.border_styler)
       if definition.is_a?(PreSet)
         definition = PREDEFINED_BORDERS[definition].as(String)
       end

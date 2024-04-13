@@ -319,7 +319,7 @@ module Tablo
       #     styler: ->(content : String, line : Int32) {
       #       case line
       #       when 0 then content.colorize(:blue).to_s
-      #       when 1 then content.colorize(:green).to_s
+      #       when 1 then content.colorize(:green).mode(:italic).mode(:bold).to_s
       #       else        content.colorize(:red).to_s
       #       end
       #     })) do |t|
@@ -345,7 +345,7 @@ module Tablo
       #   title: Tablo::Heading::Title.new("My MultiColor Title",
       #     frame: Tablo::Frame.new,
       #     styler: ->(content : String) { content.chars.map { |c|
-      #       c.colorize.fore(COLORS[rand(5)]).to_s
+      #       c.colorize.fore(COLORS[rand(5)]).mode(:bold).to_s
       #     }.join })) do |t|
       #   t.add_column("itself", &.itself)
       #   t.add_column("itself x 2", &.*(2))
@@ -417,7 +417,7 @@ module Tablo
       # essentially intended to enable conditional formatting or styling.  It
       # is managed internally, but its attributes (`body_value`, `row_index`,
       # `column_index`), which define the current source data element, are used by
-      # the `Cell::Data::Formatter` and `Cell:Data::Styler` procedures, to be
+      # the `Cell::Data::Formatter` and `Cell:Data::Styler` procs, to be
       # defined by the user.
       struct Coords
         # Returns the raw value of the current `Cell::Data`
@@ -528,22 +528,31 @@ module Tablo
                         Proc(CellType, Int32, String) |
                         Proc(CellType, String)
 
-      # Styler procs for data cell types.
+      # The purpose of the styler is to apply stylistic effects to a previously
+      # formatted character string. For a terminal without graphic capabilities,
+      # these effects are limited to the use of color and/or character
+      # modes (bold, italic, etc.).
       #
-      # There are 5 of them, as shown below by their commonly used parameter names
-      # and types: <br />
-      # - 1st form : (value : `CellType`, coords : `Cell::Data::Coords`, content : `String`, line_index : `Int32`)
-      # - 2nd form : (value : `CellType`, coords : `Cell::Data::Coords`, content : `String`)
-      # - 3rd form : (value : `CellType`, content : `String`)
+      # For cells of type Cell::Data (header and body), the styler Proc can take
+      # 5 different forms, as shown below by their commonly used parameter names and types:
+      #
+      # - 1st form : (value : `Tablo::CellType`, coords : `Tablo::Cell::Data::Coords`,
+      #              content : `String`, line_index : `Int32`)
+      # - 2nd form : (value : `Tablo::CellType`, coords : `Tablo::Cell::Data::Coords`,
+      #              content : `String`)
+      # - 3rd form : (value : `Tablo::CellType`, content : `String`)
       # - 4th form : (content : `String`, line_index : `Int32`)
       # - 5th form : (content : `String`)
       #
-      # *content* is the formatted value of the cell (after formatter is applied) <br />
-      # Return type is String for all of them.
+      # and the return type is String for all of them.
+      #
+      # - *content* is the formatted value of the cell (after formatter
+      # has been applied) <br />
+      # - *line_index* designates the line number in a (multi-line) cell (0..n).
       #
       # These different forms can be used for conditional formatting.
       #
-      # In a somewhat contrived example, we could write:
+      # In a somewhat contrived example, we could write, using the 1st form:
       # ```
       # require "tablo"
       # require "colorize"
@@ -573,20 +582,34 @@ module Tablo
       #
       # <img src="../../../assets/images/api_cell_data_styler_1.svg" width="400">
       #
-      # Or, more simply, to better differentiate between negative and positive values:
+      # Or, more simply by using the 3rd form, to better differentiate between negative
+      # and positive values:
       # ```
-      # body_styler: ->(value : Tablo::CellType, content : String) {
-      #   if value.is_a?(Float64)
-      #     if value.as(Float64) < 0.0
-      #       content.colorize(:red).to_s
+      # require "tablo"
+      # require "colorize"
+      #
+      # table = Tablo::Table.new([3.14, 2.78, 3.5],
+      #   title: Tablo::Heading::Title.new("My Title",
+      #     frame: Tablo::Frame.new),
+      #   body_styler: ->(value : Tablo::CellType, content : String) {
+      #     if value.is_a?(Float64)
+      #       if value.as(Float64) < 0.0
+      #         content.colorize(:red).to_s
+      #       else
+      #         content.colorize(:green).to_s
+      #       end
       #     else
-      #       content.colorize(:green).to_s
+      #       content
       #     end
-      #   else
-      #     content
-      #   end
-      # }
+      #   }
+      # ) do |t|
+      #   t.add_column("itself", &.itself)
+      #   t.add_column("itself x 2", &.*(2).*(rand(10) < 5 ? -1 : 1))
+      #   t.add_column("itself x 3", &.*(3).*(rand(10) < 5 ? -1 : 1))
+      # end
       # ```
+      #
+      # <img src="../../../assets/images/api_cell_data_styler_3.svg" width="400">
       alias Styler = Proc(CellType, Cell::Data::Coords, String, Int32, String) |
                      Proc(CellType, Cell::Data::Coords, String, String) |
                      Proc(CellType, String, String) |

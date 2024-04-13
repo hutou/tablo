@@ -70,42 +70,42 @@ module Tablo
     macro initialize(block_given)
 
       def initialize(@sources : Enumerable(T), *,
-        @title : Heading::Title = Config.title,
-        @subtitle : Heading::SubTitle = Config.subtitle,
-        @footer : Heading::Footer = Config.footer,
+        @title : Heading::Title = Config::Defaults.title,
+        @subtitle : Heading::SubTitle = Config::Defaults.subtitle,
+        @footer : Heading::Footer = Config::Defaults.footer,
         #
-        @border : Border = Border.new(Config.border_definition, Config.border_styler),
+        @border : Border = Border.new(Config::Defaults.border_definition, Config::Defaults.border_styler),
         #
-        @group_alignment : Justify = Config.group_alignment,
-        @group_formatter : Cell::Text::Formatter = Config.group_formatter,
-        @group_styler : Cell::Text::Styler = Config.group_styler,
+        @group_alignment : Justify = Config::Defaults.group_alignment,
+        @group_formatter : Cell::Text::Formatter = Config::Defaults.group_formatter,
+        @group_styler : Cell::Text::Styler = Config::Defaults.group_styler,
         #
-        @header_alignment : Justify? = Config.header_alignment,
-        @header_formatter : Cell::Data::Formatter = Config.header_formatter,
-        @header_styler : Cell::Data::Styler = Config.header_styler,
+        @header_alignment : Justify? = Config::Defaults.header_alignment,
+        @header_formatter : Cell::Data::Formatter = Config::Defaults.header_formatter,
+        @header_styler : Cell::Data::Styler = Config::Defaults.header_styler,
         #
-        @body_alignment : Justify? = Config.body_alignment,
-        @body_formatter : Cell::Data::Formatter = Config.body_formatter,
-        @body_styler : Cell::Data::Styler = Config.body_styler,
+        @body_alignment : Justify? = Config::Defaults.body_alignment,
+        @body_formatter : Cell::Data::Formatter = Config::Defaults.body_formatter,
+        @body_styler : Cell::Data::Styler = Config::Defaults.body_styler,
         #
-        @left_padding : Int32 = Config.left_padding,
-        @right_padding : Int32 = Config.right_padding,
-        @padding_character : String = Config.padding_character,
-        @truncation_indicator : String = Config.truncation_indicator,
-        @width : Int32 = Config.width,
+        @left_padding : Int32 = Config::Defaults.left_padding,
+        @right_padding : Int32 = Config::Defaults.right_padding,
+        @padding_character : String = Config::Defaults.padding_character,
+        @truncation_indicator : String = Config::Defaults.truncation_indicator,
+        @width : Int32 = Config::Defaults.column_width,
         #
-        @header_frequency : Int32? = Config.header_frequency,
-        @row_divider_frequency : Int32? = Config.row_divider_frequency ,
-        @wrap_mode : WrapMode = Config.wrap_mode,
-        @header_wrap : Int32? = Config.header_wrap,
-        @body_wrap : Int32? = Config.body_wrap,
+        @header_frequency : Int32? = Config::Defaults.header_frequency,
+        @row_divider_frequency : Int32? = Config::Defaults.row_divider_frequency ,
+        @wrap_mode : WrapMode = Config::Defaults.wrap_mode,
+        @header_wrap : Int32? = Config::Defaults.header_wrap,
+        @body_wrap : Int32? = Config::Defaults.body_wrap,
         #
-        @masked_headers  : Bool = Config.masked_headers?,
-        @omit_group_header_rule : Bool = Config.omit_group_header_rule?,
+        @masked_headers  : Bool = Config::Defaults.masked_headers?,
+        @omit_group_header_rule : Bool = Config::Defaults.omit_group_header_rule?,
         {% if block_given %}
-        @omit_last_rule : Bool = Config.omit_last_rule?, &)
+        @omit_last_rule : Bool = Config::Defaults.omit_last_rule?, &)
         {% else %}
-        @omit_last_rule : Bool = Config.omit_last_rule?)
+        @omit_last_rule : Bool = Config::Defaults.omit_last_rule?)
         {% end %}
 
         self.row_count = sources.size
@@ -147,14 +147,14 @@ module Tablo
     # _Optional named parameters, with default values_
     #
     # - `title`: type is `Title`<br />
-    #   Default set by `Config.title`<br />
+    #   Default set by `Config::Defaults.title`<br />
     #   Initializing this class without any argument set its value to `nil`,
     #   so there is nothing to display
     # - `subtitle`: type is `SubTitle`<br />
-    #   Default set by `Config.subtitle`<br />
+    #   Default set by `Config::Defaults.subtitle`<br />
     #   (Initialization: see `title`)
     # - `footer`: type is `Footer`<br />
-    #   Default set by `Config.footer`<br />
+    #   Default set by `Config::Defaults.footer`<br />
     #   (Initialization: see `title`)
     # - `border`: type is `Border`<br />
     #   Initalized by `Config.border`, which defaults to `BorderName::Ascii` <br />
@@ -184,12 +184,12 @@ module Tablo
     #   Default value is `DEFAULT_DATA_DEPENDENT_STYLER`
     # - `left_padding`: type is `Int32`<br />
     #   Default value is `1` <br />
-    #   Permitted range of values is governed by `Config.padding_width_range` in
+    #   Permitted range of values is governed by `Config::Controls.padding_width_range` in
     #   the `check_padding` method<br />
     #   (raises `Error::InvalidValue` runtime exception if value not in range)
     # - `right_padding`: type is `Int32` <br />
     #   Default value is `1` <br />
-    #   Permitted range of values is governed by `Config.padding_width_range` in
+    #   Permitted range of values is governed by `Config::Controls.padding_width_range` in
     #   the `check_padding` method<br />
     #   (raises `Error::InvalidValue` runtime exception if value not in range)
     # - `padding_character`: type is `String`<br />
@@ -204,13 +204,13 @@ module Tablo
     #   is only one (raises an `Error::InvalidValue` runtime exception otherwise)
     # - `width`: type is `Int32` <br />
     #   Default value is `12`<br />
-    #   Permitted range of values is governed by `Config.column_width_range` in the
+    #   Permitted range of values is governed by `Config::Controls.column_width_range` in the
     #   `check_width` auxiliary method (raises `Error::InvalidValue` runtime exception
     #   unless value in range)
     #
     # - `header_frequency`: type is `Int32?` <br />
     #   Default value is `0` <br />
-    #   Permitted range of values is governed by `Config.header_frequency_range` in the
+    #   Permitted range of values is governed by `Config::Controls.header_frequency_range` in the
     #   `check_header_frequency` auxiliary method (raises `Error::InvalidValue`
     #   runtime exception
     #   unless value in range or `nil`)
@@ -224,7 +224,7 @@ module Tablo
     #
     # - `row_divider_frequency`: type is `Int32?` <br />
     #   Default value is `nil` <br />
-    #   Permitted range of values is governed by `Config.row_divider_frequency_range`
+    #   Permitted range of values is governed by `Config::Controls.row_divider_frequency_range`
     #   in the `check_row_divider_frequency` auxiliary method (raises `Error::InvalidValue`
     #   runtime exception unless value in range or `nil`)
     #
@@ -238,13 +238,13 @@ module Tablo
     # - `header_wrap`: type is `Int32?` <br />
     #   Default value is `nil` <br />
     #   Permitted range of values is governed by
-    #   `Config.header_wrap_range` in the `check_header_wrap` auxiliary method
+    #   `Config::Controls.header_wrap_range` in the `check_header_wrap` auxiliary method
     #   (raises `Error::InvalidValue` runtime exception unless value in range or `nil`)
     #
     # - `body_wrap` | `Int32?`<br />
     #   Default value is `nil` <br />
     #   Permitted range of values is governed by
-    #   `Config.body_wrap_range` in the `check_body_wrap` auxiliary method (raises
+    #   `Config::Controls.body_wrap_range` in the `check_body_wrap` auxiliary method (raises
     #   `Error::InvalidValue` runtime exception unless value in range or `nil`)
     #
     # - `masked_headers`: type is `Bool` <br />
@@ -270,70 +270,70 @@ module Tablo
     initialize(block_given: true)
 
     # Checks that the parameter setting for `header_frequency` is within the value
-    # range defined in `Config.header_frequency_range` <br />
+    # range defined in `Config::Controls.header_frequency_range` <br />
     # Raises Error::InvalidValue or returns `nil`
     private def check_header_frequency
       unless (hf = header_frequency).nil?
-        unless hf.in?(Config.header_frequency_range)
+        unless hf.in?(Config::Controls.header_frequency_range)
           raise Error::InvalidValue.new "header frequency must be nil or in range " \
-                                        "(#{Config.header_frequency_range})"
+                                        "(#{Config::Controls.header_frequency_range})"
         end
       end
     end
 
     # Checks that the parameter setting for `row_divider_frequency` is within the value
-    # range defined in `Config.row_divider_frequency_range` <br />
+    # range defined in `Config::Controls.row_divider_frequency_range` <br />
     # Raises Error::InvalidValue or returns `nil`
     private def check_row_divider_frequency
       unless (rdf = row_divider_frequency).nil?
-        unless rdf.in?(Config.row_divider_frequency_range)
+        unless rdf.in?(Config::Controls.row_divider_frequency_range)
           raise Error::InvalidValue.new "row divider frequency must be nil or in range " \
-                                        "(#{Config.row_divider_frequency_range})"
+                                        "(#{Config::Controls.row_divider_frequency_range})"
         end
       end
     end
 
     # Checks that the parameter setting for `header_wrap` is `nil` or within the
-    # value range defined in `Config.header_wrap_range` <br />
+    # value range defined in `Config::Controls.header_wrap_range` <br />
     # Raises Error::InvalidValue or returns `nil`
     private def check_header_wrap
       unless (hw = header_wrap).nil?
-        unless hw.in?(Config.header_wrap_range)
+        unless hw.in?(Config::Controls.header_wrap_range)
           raise Error::InvalidValue.new "header wrap must be nil or in range " \
-                                        "(#{Config.header_wrap_range})"
+                                        "(#{Config::Controls.header_wrap_range})"
         end
       end
     end
 
     # Checks that the parameter setting for `body_wrap` is `nil` or within the
-    # value range defined in `Config.body_wrap_range` <br />
+    # value range defined in `Config::Controls.body_wrap_range` <br />
     # Raises Error::InvalidValue or returns `nil`
     private def check_body_wrap
       unless (bw = body_wrap).nil?
-        unless bw.in?(Config.body_wrap_range)
+        unless bw.in?(Config::Controls.body_wrap_range)
           raise Error::InvalidValue.new "Body wrap must be nil or in range " \
-                                        "(#{Config.body_wrap_range})"
+                                        "(#{Config::Controls.body_wrap_range})"
         end
       end
     end
 
     # Checks that the parameter setting for `width` is within the
-    # value range defined in `Config.column_width_range` <br />
+    # value range defined in `Config::Controls.column_width_range` <br />
     # Raises Error::InvalidValue or returns `nil`
     private def check_width(width)
-      unless width.in?(Config.column_width_range)
+      unless width.in?(Config::Controls.column_width_range)
         raise Error::InvalidValue.new "Column width must be in range " \
-                                      "(#{Config.column_width_range})"
+                                      "(#{Config::Controls.column_width_range})"
       end
     end
 
     # Checks that the parameter setting for `padding` is within the
-    # value range defined in `Config.padding_width_range` <br />
+    # value range defined in `Config::Controls.padding_width_range` <br />
     # Raises Error::InvalidValue or returns `nil`
     private def check_padding(padding)
-      unless padding.in?(Config.padding_width_range)
+      unless padding.in?(Config::Controls.padding_width_range)
         raise Error::InvalidValue.new "Column padding width must be in range " \
-                                      "(#{Config.padding_width_range})"
+                                      "(#{Config::Controls.padding_width_range})"
       end
     end
 

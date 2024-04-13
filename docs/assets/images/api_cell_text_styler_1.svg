@@ -13,6 +13,12 @@
         .bg {
             stroke-width: "0.5px";
         }
+        .bold {
+            font-weight: bold;
+        }
+        .italic {
+            font-style: italic;
+        }
         <!-- Foreground ANSI colors -->
         .fa1 { fill: #970b16; }
         .fa2 { fill: #07962a; }
@@ -20,7 +26,7 @@
     </style>
 <text x="0ch" y="0.5em"><tspan>&#43;--------------------------------------------&#43;</tspan></text>
 <text x="0ch" y="1.5em"><tspan>|                     </tspan><tspan class="fa4">My                     </tspan><tspan>|</tspan></text>
-<text x="0ch" y="2.5em"><tspan>|                  </tspan><tspan class="fa2">Multiline                 </tspan><tspan>|</tspan></text>
+<text x="0ch" y="2.5em"><tspan>|                  </tspan><tspan class="bold italic fa2">Multiline                 </tspan><tspan>|</tspan></text>
 <text x="0ch" y="3.5em"><tspan>|                    </tspan><tspan class="fa1">Title                   </tspan><tspan>|</tspan></text>
 <text x="0ch" y="4.5em"><tspan>&#43;--------------&#43;--------------&#43;--------------&#43;</tspan></text>
 <text x="0ch" y="5.5em"><tspan>|       itself |   itself x 2 |   itself x 3 |</tspan></text>
