@@ -147,8 +147,23 @@
       
     </li>
   
-  <li class=" " data-id="tablo/Tablo/Config" data-name="tablo::config">
+  <li class="parent " data-id="tablo/Tablo/Config" data-name="tablo::config">
       <a href="../../../Tablo/Config.html">Config</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Config/Controls" data-name="tablo::config::controls">
+      <a href="../../../Tablo/Config/Controls.html">Controls</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Config/Defaults" data-name="tablo::config::defaults">
+      <a href="../../../Tablo/Config/Defaults.html">Defaults</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -343,20 +358,29 @@
     Overview
   </h2>
 
-  <p>Styler procs for data cell types.</p>
-<p>There are 5 of them, as shown below by their commonly used parameter names
-and types: <br /></p>
+  <p>The purpose of the styler is to apply stylistic effects to a previously
+formatted character string. For a terminal without graphic capabilities,
+these effects are limited to the use of color and/or character
+modes (bold, italic, etc.).</p>
+<p>For cells of type Cell::Data (header and body), the styler Proc can take
+5 different forms, as shown below by their commonly used parameter names and types:</p>
 <ul>
-<li>1st form : (value : <code>CellType</code>, coords : <code>Cell::Data::Coords</code>, content : <code>String</code>, line_index : <code>Int32</code>)</li>
-<li>2nd form : (value : <code>CellType</code>, coords : <code>Cell::Data::Coords</code>, content : <code>String</code>)</li>
-<li>3rd form : (value : <code>CellType</code>, content : <code>String</code>)</li>
+<li>1st form : (value : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, coords : <code><a href="../../../Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>,
+content : <code>String</code>, line_index : <code>Int32</code>)</li>
+<li>2nd form : (value : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, coords : <code><a href="../../../Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>,
+content : <code>String</code>)</li>
+<li>3rd form : (value : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, content : <code>String</code>)</li>
 <li>4th form : (content : <code>String</code>, line_index : <code>Int32</code>)</li>
 <li>5th form : (content : <code>String</code>)</li>
 </ul>
-<p><em>content</em> is the formatted value of the cell (after formatter is applied) <br />
-Return type is String for all of them.</p>
+<p>and the return type is String for all of them.</p>
+<ul>
+<li><em>content</em> is the formatted value of the cell (after formatter
+has been applied) <br /></li>
+<li><em>line_index</em> designates the line number in a (multi-line) cell (0..n).</li>
+</ul>
 <p>These different forms can be used for conditional formatting.</p>
-<p>In a somewhat contrived example, we could write:</p>
+<p>In a somewhat contrived example, we could write, using the 1st form:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
 
@@ -382,18 +406,31 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
 
 puts table</code></pre>
 <img src="../../../assets/images/api_cell_data_styler_1.svg" width="400">
-<p>Or, more simply, to better differentiate between negative and positive values:</p>
-<pre><code class="language-crystal">body_styler: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, content : <span class="t">String</span>) {
-  <span class="k">if</span> value.<span class="k">is_a?</span>(<span class="t">Float64</span>)
-    <span class="k">if</span> value.<span class="k">as</span>(<span class="t">Float64</span>) <span class="o">&lt;</span> <span class="n">0.0</span>
-      content.colorize(<span class="n">:red</span>).to_s
+<p>Or, more simply by using the 3rd form, to better differentiate between negative
+and positive values:</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+<span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
+
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">3.14</span>, <span class="n">2.78</span>, <span class="n">3.5</span>],
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Title</span>.new(<span class="s">&quot;My Title&quot;</span>,
+    frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Frame</span>.new),
+  body_styler: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, content : <span class="t">String</span>) {
+    <span class="k">if</span> value.<span class="k">is_a?</span>(<span class="t">Float64</span>)
+      <span class="k">if</span> value.<span class="k">as</span>(<span class="t">Float64</span>) <span class="o">&lt;</span> <span class="n">0.0</span>
+        content.colorize(<span class="n">:red</span>).to_s
+      <span class="k">else</span>
+        content.colorize(<span class="n">:green</span>).to_s
+      <span class="k">end</span>
     <span class="k">else</span>
-      content.colorize(<span class="n">:green</span>).to_s
+      content
     <span class="k">end</span>
-  <span class="k">else</span>
-    content
-  <span class="k">end</span>
-}</code></pre>
+  }
+) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="s">&quot;itself x 2&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">2</span>).<span class="o">*</span>(rand(<span class="n">10</span>) <span class="o">&lt;</span> <span class="n">5</span> ? <span class="n">-1</span> : <span class="n">1</span>))
+  t.add_column(<span class="s">&quot;itself x 3&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">3</span>).<span class="o">*</span>(rand(<span class="n">10</span>) <span class="o">&lt;</span> <span class="n">5</span> ? <span class="n">-1</span> : <span class="n">1</span>))
+<span class="k">end</span></code></pre>
+<img src="../../../assets/images/api_cell_data_styler_3.svg" width="400">
 
 
 
@@ -428,7 +465,7 @@ puts table</code></pre>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/8f1369add9ec2a5c39ad428ddb61712277876440/src/cell.cr#L590" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/cell.cr#L613" target="_blank">
         cell.cr
       </a>
     

@@ -147,8 +147,23 @@
       
     </li>
   
-  <li class=" " data-id="tablo/Tablo/Config" data-name="tablo::config">
+  <li class="parent " data-id="tablo/Tablo/Config" data-name="tablo::config">
       <a href="../Tablo/Config.html">Config</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Config/Controls" data-name="tablo::config::controls">
+      <a href="../Tablo/Config/Controls.html">Controls</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Config/Defaults" data-name="tablo::config::defaults">
+      <a href="../Tablo/Config/Defaults.html">Defaults</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -441,7 +456,7 @@ style is defined.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/8f1369add9ec2a5c39ad428ddb61712277876440/src/border.cr#L104" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/border.cr#L104" target="_blank">
         border.cr
       </a>
     
@@ -486,7 +501,7 @@ style is defined.</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28definition%3AString%7CPreSet%3DConfig.border_definition%2Cstyler%3AStyler%3DConfig.border_styler%29-class-method" class="signature"><strong>.new</strong>(definition : String | PreSet = <span class="t">Config</span>.border_definition, styler : Styler = <span class="t">Config</span>.border_styler)</a>
+        <a href="#new%28definition%3AString%7CPreSet%3DConfig%3A%3ADefaults.border_definition%2Cstyler%3AStyler%3DConfig%3A%3ADefaults.border_styler%29-class-method" class="signature"><strong>.new</strong>(definition : String | PreSet = <span class="t">Config</span><span class="t">::</span><span class="t">Defaults</span>.border_definition, styler : Styler = <span class="t">Config</span><span class="t">::</span><span class="t">Defaults</span>.border_styler)</a>
         
           <div class="summary"><p>Border constructor, returning a Border instance.</p></div>
         
@@ -555,12 +570,12 @@ style is defined.</p>
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(definition:String|PreSet=Config.border_definition,styler:Styler=Config.border_styler)-class-method">
+    <div class="entry-detail" id="new(definition:String|PreSet=Config::Defaults.border_definition,styler:Styler=Config::Defaults.border_styler)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(definition : String | <a href="../Tablo/Border/PreSet.html">PreSet</a> = <span class="t">Config</span>.border_definition, styler : <a href="../Tablo/Border/Styler.html">Styler</a> = <span class="t">Config</span>.border_styler)
+        def self.<strong>new</strong>(definition : String | <a href="../Tablo/Border/PreSet.html">PreSet</a> = <span class="t">Config</span><span class="t">::</span><span class="t">Defaults</span>.border_definition, styler : <a href="../Tablo/Border/Styler.html">Styler</a> = <span class="t">Config</span><span class="t">::</span><span class="t">Defaults</span>.border_styler)
 
-        <a class="method-permalink" href="#new%28definition%3AString%7CPreSet%3DConfig.border_definition%2Cstyler%3AStyler%3DConfig.border_styler%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28definition%3AString%7CPreSet%3DConfig%3A%3ADefaults.border_definition%2Cstyler%3AStyler%3DConfig%3A%3ADefaults.border_styler%29-class-method">#</a>
       </div>
       
         <div class="doc">
@@ -570,11 +585,11 @@ style is defined.</p>
 <ul>
 <li>
 <p><code>definition</code>: type is <code>String</code> | <code><a href="../Tablo/Border/PreSet.html">PreSet</a></code></p>
-<p>Default value is set by <code><a href="../Tablo/Config.html#border_definition%3AString%7CBorder%3A%3APreSet-class-method">Config.border_definition</a></code></p>
+<p>Default value is set by <code><a href="../Tablo/Config/Defaults.html#border_definition%3AString%7CBorder%3A%3APreSet-class-method">Config::Defaults.border_definition</a></code></p>
 </li>
 <li>
 <p><code>styler</code>: type is <code><a href="../Tablo/Border/Styler.html">Styler</a></code></p>
-<p>Default value is set by <code><a href="../Tablo/Config.html#border_styler%3ABorder%3A%3AStyler-class-method">Config.border_styler</a></code></p>
+<p>Default value is set by <code><a href="../Tablo/Config/Defaults.html#border_styler%3ABorder%3A%3AStyler-class-method">Config::Defaults.border_styler</a></code></p>
 </li>
 </ul>
 <p>Examples :</p>
@@ -588,7 +603,7 @@ style is defined.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/8f1369add9ec2a5c39ad428ddb61712277876440/src/border.cr#L182" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/border.cr#L182" target="_blank">View source</a>]
         
       </div>
     </div>

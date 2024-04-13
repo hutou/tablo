@@ -147,8 +147,23 @@
       
     </li>
   
-  <li class=" " data-id="tablo/Tablo/Config" data-name="tablo::config">
+  <li class="parent " data-id="tablo/Tablo/Config" data-name="tablo::config">
       <a href="../../../Tablo/Config.html">Config</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Config/Controls" data-name="tablo::config::controls">
+      <a href="../../../Tablo/Config/Controls.html">Controls</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Config/Defaults" data-name="tablo::config::defaults">
+      <a href="../../../Tablo/Config/Defaults.html">Defaults</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -367,7 +382,7 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
     styler: <span class="o">-&gt;</span>(content : <span class="t">String</span>, line : <span class="t">Int32</span>) {
       <span class="k">case</span> line
       <span class="k">when</span> <span class="n">0</span> <span class="k">then</span> content.colorize(<span class="n">:blue</span>).to_s
-      <span class="k">when</span> <span class="n">1</span> <span class="k">then</span> content.colorize(<span class="n">:green</span>).to_s
+      <span class="k">when</span> <span class="n">1</span> <span class="k">then</span> content.colorize(<span class="n">:green</span>).mode(<span class="n">:italic</span>).mode(<span class="n">:bold</span>).to_s
       <span class="k">else</span>        content.colorize(<span class="n">:red</span>).to_s
       <span class="k">end</span>
     })) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
@@ -386,7 +401,7 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
   title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Title</span>.new(<span class="s">&quot;My MultiColor Title&quot;</span>,
     frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Frame</span>.new,
     styler: <span class="o">-&gt;</span>(content : <span class="t">String</span>) { content.chars.map { <span class="o">|</span>c<span class="o">|</span>
-      c.colorize.fore(<span class="t">COLORS</span>[rand(<span class="n">5</span>)]).to_s
+      c.colorize.fore(<span class="t">COLORS</span>[rand(<span class="n">5</span>)]).mode(<span class="n">:bold</span>).to_s
     }.join })) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
   t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
   t.add_column(<span class="s">&quot;itself x 2&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">2</span>))
@@ -429,7 +444,7 @@ puts table</code></pre>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/8f1369add9ec2a5c39ad428ddb61712277876440/src/cell.cr#L360" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/cell.cr#L360" target="_blank">
         cell.cr
       </a>
     

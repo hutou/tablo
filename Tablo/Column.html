@@ -147,8 +147,23 @@
       
     </li>
   
-  <li class=" " data-id="tablo/Tablo/Config" data-name="tablo::config">
+  <li class="parent " data-id="tablo/Tablo/Config" data-name="tablo::config">
       <a href="../Tablo/Config.html">Config</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Config/Controls" data-name="tablo::config::controls">
+      <a href="../Tablo/Config/Controls.html">Controls</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Config/Defaults" data-name="tablo::config::defaults">
+      <a href="../Tablo/Config/Defaults.html">Defaults</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -345,8 +360,11 @@
     Overview
   </h2>
 
-  <p>Attributes and methods of this class define the presentation of each column.
-This class is instantiated internally by the method <code><a href="../Tablo/Table.html#add_column%28label%3ALabelType%2C%2A%2Cheader%3Dlabel.to_s%2Cheader_alignment%3Dheader_alignment%2Cheader_formatter%3Dheader_formatter%2Cheader_styler%3Dheader_styler%2Cbody_alignment%3Dbody_alignment%2Cbody_formatter%3Dbody_formatter%2Cbody_styler%3Dbody_styler%2Cleft_padding%3Dleft_padding%2Cright_padding%3Dright_padding%2Cpadding_character%3Dpadding_character%2Cwidth%3Dwidth%2Ctruncation_indicator%3Dtruncation_indicator%2Cwrap_mode%3Dwrap_mode%2C%26extractor%3AT%2CInt32-%3ECellType%29-instance-method">Table#add_column</a></code></p>
+  <p>The Column class is used internally by the Tablo library and offers no
+public interface to its attributes and methods.</p>
+<p>Its main function is to manage the creation of a table's various columns,
+defined by the <code><a href="../Tablo/Cell/Data.html">Cell::Data</a></code> type (Header and body).</p>
+<p>It is activated by the <code><a href="../Tablo/Table.html#add_column%28label%3ALabelType%2C%2A%2Cheader%3Dlabel.to_s%2Cheader_alignment%3Dheader_alignment%2Cheader_formatter%3Dheader_formatter%2Cheader_styler%3Dheader_styler%2Cbody_alignment%3Dbody_alignment%2Cbody_formatter%3Dbody_formatter%2Cbody_styler%3Dbody_styler%2Cleft_padding%3Dleft_padding%2Cright_padding%3Dright_padding%2Cpadding_character%3Dpadding_character%2Cwidth%3Dwidth%2Ctruncation_indicator%3Dtruncation_indicator%2Cwrap_mode%3Dwrap_mode%2C%26extractor%3AT%2CInt32-%3ECellType%29-instance-method">Table#add_column</a></code> method.</p>
 
 
 
@@ -371,7 +389,7 @@ This class is instantiated internally by the method <code><a href="../Tablo/Tabl
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/8f1369add9ec2a5c39ad428ddb61712277876440/src/column.cr#L7" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/column.cr#L12" target="_blank">
         column.cr
       </a>
     

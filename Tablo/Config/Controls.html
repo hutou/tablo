@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.11.2">
+<meta name="crystal_docs.project_version" content="development">
+<meta name="crystal_docs.project_name" content="tablo">
+
+
+
+<link href="../../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../../js/doc.js"></script>
+
+  <meta name="repository-name" content="tablo">
+  <title>Tablo::Config::Controls - tablo development</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../../index.html">
+          tablo
+        </a>
+      </h1>
+
+      <span class="project-version">
+        development
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="tablo/Tablo" data-name="tablo">
+      <a href="../../Tablo.html">Tablo</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="tablo/Tablo/Border" data-name="tablo::border">
+      <a href="../../Tablo/Border.html">Border</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Border/PreSet" data-name="tablo::border::preset">
+      <a href="../../Tablo/Border/PreSet.html">PreSet</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Border/Styler" data-name="tablo::border::styler">
+      <a href="../../Tablo/Border/Styler.html">Styler</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="tablo/Tablo/Cell" data-name="tablo::cell">
+      <a href="../../Tablo/Cell.html">Cell</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="tablo/Tablo/Cell/Data" data-name="tablo::cell::data">
+      <a href="../../Tablo/Cell/Data.html">Data</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Cell/Data/Coords" data-name="tablo::cell::data::coords">
+      <a href="../../Tablo/Cell/Data/Coords.html">Coords</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Cell/Data/Formatter" data-name="tablo::cell::data::formatter">
+      <a href="../../Tablo/Cell/Data/Formatter.html">Formatter</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Cell/Data/Styler" data-name="tablo::cell::data::styler">
+      <a href="../../Tablo/Cell/Data/Styler.html">Styler</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="tablo/Tablo/Cell/Text" data-name="tablo::cell::text">
+      <a href="../../Tablo/Cell/Text.html">Text</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Cell/Text/Formatter" data-name="tablo::cell::text::formatter">
+      <a href="../../Tablo/Cell/Text/Formatter.html">Formatter</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Cell/Text/Styler" data-name="tablo::cell::text::styler">
+      <a href="../../Tablo/Cell/Text/Styler.html">Styler</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/CellType" data-name="tablo::celltype">
+      <a href="../../Tablo/CellType.html">CellType</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Column" data-name="tablo::column(t)">
+      <a href="../../Tablo/Column.html">Column</a>
+      
+    </li>
+  
+  <li class="parent open current" data-id="tablo/Tablo/Config" data-name="tablo::config">
+      <a href="../../Tablo/Config.html">Config</a>
+      
+        <ul>
+  
+  <li class=" current" data-id="tablo/Tablo/Config/Controls" data-name="tablo::config::controls">
+      <a href="../../Tablo/Config/Controls.html">Controls</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Config/Defaults" data-name="tablo::config::defaults">
+      <a href="../../Tablo/Config/Defaults.html">Defaults</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="tablo/Tablo/Error" data-name="tablo::error">
+      <a href="../../Tablo/Error.html">Error</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Error/DuplicateLabel" data-name="tablo::error::duplicatelabel">
+      <a href="../../Tablo/Error/DuplicateLabel.html">DuplicateLabel</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Error/GroupEmpty" data-name="tablo::error::groupempty">
+      <a href="../../Tablo/Error/GroupEmpty.html">GroupEmpty</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Error/InvalidBorderDefinition" data-name="tablo::error::invalidborderdefinition">
+      <a href="../../Tablo/Error/InvalidBorderDefinition.html">InvalidBorderDefinition</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Error/InvalidColumnIndex" data-name="tablo::error::invalidcolumnindex">
+      <a href="../../Tablo/Error/InvalidColumnIndex.html">InvalidColumnIndex</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Error/InvalidValue" data-name="tablo::error::invalidvalue">
+      <a href="../../Tablo/Error/InvalidValue.html">InvalidValue</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Error/LabelNotFound" data-name="tablo::error::labelnotfound">
+      <a href="../../Tablo/Error/LabelNotFound.html">LabelNotFound</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Frame" data-name="tablo::frame">
+      <a href="../../Tablo/Frame.html">Frame</a>
+      
+    </li>
+  
+  <li class="parent " data-id="tablo/Tablo/Heading" data-name="tablo::heading">
+      <a href="../../Tablo/Heading.html">Heading</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Heading/Footer" data-name="tablo::heading::footer">
+      <a href="../../Tablo/Heading/Footer.html">Footer</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Heading/SubTitle" data-name="tablo::heading::subtitle">
+      <a href="../../Tablo/Heading/SubTitle.html">SubTitle</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Heading/Title" data-name="tablo::heading::title">
+      <a href="../../Tablo/Heading/Title.html">Title</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Justify" data-name="tablo::justify">
+      <a href="../../Tablo/Justify.html">Justify</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/LabelType" data-name="tablo::labeltype">
+      <a href="../../Tablo/LabelType.html">LabelType</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Position" data-name="tablo::position">
+      <a href="../../Tablo/Position.html">Position</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/RowType" data-name="tablo::rowtype">
+      <a href="../../Tablo/RowType.html">RowType</a>
+      
+    </li>
+  
+  <li class="parent " data-id="tablo/Tablo/Summary" data-name="tablo::summary(t, u, v)">
+      <a href="../../Tablo/Summary.html">Summary</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Summary/BodyColumn" data-name="tablo::summary::bodycolumn">
+      <a href="../../Tablo/Summary/BodyColumn.html">BodyColumn</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Summary/BodyRow" data-name="tablo::summary::bodyrow">
+      <a href="../../Tablo/Summary/BodyRow.html">BodyRow</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Summary/HeaderColumn" data-name="tablo::summary::headercolumn">
+      <a href="../../Tablo/Summary/HeaderColumn.html">HeaderColumn</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Summary/UserProc" data-name="tablo::summary::userproc(t)">
+      <a href="../../Tablo/Summary/UserProc.html">UserProc</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="tablo/Tablo/Table" data-name="tablo::table(t)">
+      <a href="../../Tablo/Table.html">Table</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Table/PackingMode" data-name="tablo::table::packingmode">
+      <a href="../../Tablo/Table/PackingMode.html">PackingMode</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Table/UsedColumns" data-name="tablo::table::usedcolumns">
+      <a href="../../Tablo/Table/UsedColumns.html">UsedColumns</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="tablo/Tablo/Util" data-name="tablo::util">
+      <a href="../../Tablo/Util.html">Util</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Util/DotAlign" data-name="tablo::util::dotalign">
+      <a href="../../Tablo/Util/DotAlign.html">DotAlign</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/WrapMode" data-name="tablo::wrapmode">
+      <a href="../../Tablo/WrapMode.html">WrapMode</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">module</span> Tablo::<wbr>Config::<wbr>Controls
+
+</h1>
+
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Default control values for Table and/or Column initialization,
+with associated getters and setters.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/config.cr#L24" target="_blank">
+        config.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+  
+    <h2>
+      <a id="constant-summary" class="anchor" href="#constant-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+      Constant Summary
+    </h2>
+  
+  <dl>
+    
+      <dt class="entry-const" id="BODY_WRAP_RANGE">
+        <strong>BODY_WRAP_RANGE</strong> = <code><span class="n">1</span>..<span class="n">8</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Default range of allowable values for <code>body_wrap</code>  <br />
+Check is done by the <code>Table#check_body_wrap</code> private method, when
+initializing a Table.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="COLUMN_WIDTH_RANGE">
+        <strong>COLUMN_WIDTH_RANGE</strong> = <code><span class="n">1</span>..<span class="n">128</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Default range of allowable values for column <code>width</code>  <br />
+Check is done by the <code>Table#check_width</code> private method, when
+initializing a Table.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="HEADER_FREQUENCY_RANGE">
+        <strong>HEADER_FREQUENCY_RANGE</strong> = <code><span class="n">0</span>..<span class="n">64</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Default range of allowable values for header frequency<br />
+Check is done by the <code>Table#check_header_frequency</code> private method, when
+initializing a Table.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="HEADER_WRAP_RANGE">
+        <strong>HEADER_WRAP_RANGE</strong> = <code><span class="n">1</span>..<span class="n">8</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Default range of allowable values for <code>header_wrap</code>  <br />
+Check is done by the <code>Table#check_header_wrap</code> private method, when
+initializing a Table.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="LINE_BREAKS_RANGE">
+        <strong>LINE_BREAKS_RANGE</strong> = <code><span class="n">0</span>..<span class="n">8</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Default range of allowable values for <code>line_breaks_before</code> and
+<code>line_breaks_after</code> attributes <br />
+Check is done in 'Tablo::Frame` struct</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="PADDING_WIDTH_RANGE">
+        <strong>PADDING_WIDTH_RANGE</strong> = <code><span class="n">0</span>..<span class="n">8</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Default range of allowable values for paddings (left or right)<br />
+Check is done by the <code>Table#check_padding</code> private method, when
+initializing a Table or Column.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="ROW_DIVIDER_FREQUENCY_RANGE">
+        <strong>ROW_DIVIDER_FREQUENCY_RANGE</strong> = <code><span class="n">1</span>..<span class="n">8</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Default range of allowable values for <code>row_divider_frequency</code>  <br />
+Check is done by the <code>Table#check_row_divider_frequency</code> private method, when
+initializing a Table.</p>
+      </dd>
+      
+    
+  </dl>
+
+
+
+
+
+  <h2>
+    <a id="class-method-summary" class="anchor" href="#class-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#body_wrap_range%3ARange%28Int32%2CInt32%29-class-method" class="signature"><strong>.body_wrap_range</strong> : Range(Int32, Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#body_wrap_range%3D%28body_wrap_range%3ARange%28Int32%2CInt32%29%29-class-method" class="signature"><strong>.body_wrap_range=</strong>(body_wrap_range : Range(Int32, Int32))</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#column_width_range%3ARange%28Int32%2CInt32%29-class-method" class="signature"><strong>.column_width_range</strong> : Range(Int32, Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#column_width_range%3D%28column_width_range%3ARange%28Int32%2CInt32%29%29-class-method" class="signature"><strong>.column_width_range=</strong>(column_width_range : Range(Int32, Int32))</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#header_frequency_range%3ARange%28Int32%2CInt32%29-class-method" class="signature"><strong>.header_frequency_range</strong> : Range(Int32, Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#header_frequency_range%3D%28header_frequency_range%3ARange%28Int32%2CInt32%29%29-class-method" class="signature"><strong>.header_frequency_range=</strong>(header_frequency_range : Range(Int32, Int32))</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#header_wrap_range%3ARange%28Int32%2CInt32%29-class-method" class="signature"><strong>.header_wrap_range</strong> : Range(Int32, Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#header_wrap_range%3D%28header_wrap_range%3ARange%28Int32%2CInt32%29%29-class-method" class="signature"><strong>.header_wrap_range=</strong>(header_wrap_range : Range(Int32, Int32))</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#line_breaks_range%3ARange%28Int32%2CInt32%29-class-method" class="signature"><strong>.line_breaks_range</strong> : Range(Int32, Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#line_breaks_range%3D%28line_breaks_range%3ARange%28Int32%2CInt32%29%29-class-method" class="signature"><strong>.line_breaks_range=</strong>(line_breaks_range : Range(Int32, Int32))</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#padding_width_range%3ARange%28Int32%2CInt32%29-class-method" class="signature"><strong>.padding_width_range</strong> : Range(Int32, Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#padding_width_range%3D%28padding_width_range%3ARange%28Int32%2CInt32%29%29-class-method" class="signature"><strong>.padding_width_range=</strong>(padding_width_range : Range(Int32, Int32))</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#row_divider_frequency_range%3ARange%28Int32%2CInt32%29-class-method" class="signature"><strong>.row_divider_frequency_range</strong> : Range(Int32, Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#row_divider_frequency_range%3D%28row_divider_frequency_range%3ARange%28Int32%2CInt32%29%29-class-method" class="signature"><strong>.row_divider_frequency_range=</strong>(row_divider_frequency_range : Range(Int32, Int32))</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+
+
+<div class="methods-inherited">
+  
+</div>
+
+
+
+
+  <h2>
+    <a id="class-method-detail" class="anchor" href="#class-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="body_wrap_range:Range(Int32,Int32)-class-method">
+      <div class="signature">
+        
+        def self.<strong>body_wrap_range</strong> : Range(Int32, Int32)
+
+        <a class="method-permalink" href="#body_wrap_range%3ARange%28Int32%2CInt32%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/config.cr#L53" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="body_wrap_range=(body_wrap_range:Range(Int32,Int32))-class-method">
+      <div class="signature">
+        
+        def self.<strong>body_wrap_range=</strong>(body_wrap_range : Range(Int32, Int32))
+
+        <a class="method-permalink" href="#body_wrap_range%3D%28body_wrap_range%3ARange%28Int32%2CInt32%29%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/config.cr#L53" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="column_width_range:Range(Int32,Int32)-class-method">
+      <div class="signature">
+        
+        def self.<strong>column_width_range</strong> : Range(Int32, Int32)
+
+        <a class="method-permalink" href="#column_width_range%3ARange%28Int32%2CInt32%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/config.cr#L59" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="column_width_range=(column_width_range:Range(Int32,Int32))-class-method">
+      <div class="signature">
+        
+        def self.<strong>column_width_range=</strong>(column_width_range : Range(Int32, Int32))
+
+        <a class="method-permalink" href="#column_width_range%3D%28column_width_range%3ARange%28Int32%2CInt32%29%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/config.cr#L59" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="header_frequency_range:Range(Int32,Int32)-class-method">
+      <div class="signature">
+        
+        def self.<strong>header_frequency_range</strong> : Range(Int32, Int32)
+
+        <a class="method-permalink" href="#header_frequency_range%3ARange%28Int32%2CInt32%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/config.cr#L35" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="header_frequency_range=(header_frequency_range:Range(Int32,Int32))-class-method">
+      <div class="signature">
+        
+        def self.<strong>header_frequency_range=</strong>(header_frequency_range : Range(Int32, Int32))
+
+        <a class="method-permalink" href="#header_frequency_range%3D%28header_frequency_range%3ARange%28Int32%2CInt32%29%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/config.cr#L35" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="header_wrap_range:Range(Int32,Int32)-class-method">
+      <div class="signature">
+        
+        def self.<strong>header_wrap_range</strong> : Range(Int32, Int32)
+
+        <a class="method-permalink" href="#header_wrap_range%3ARange%28Int32%2CInt32%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/config.cr#L47" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="header_wrap_range=(header_wrap_range:Range(Int32,Int32))-class-method">
+      <div class="signature">
+        
+        def self.<strong>header_wrap_range=</strong>(header_wrap_range : Range(Int32, Int32))
+
+        <a class="method-permalink" href="#header_wrap_range%3D%28header_wrap_range%3ARange%28Int32%2CInt32%29%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/config.cr#L47" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="line_breaks_range:Range(Int32,Int32)-class-method">
+      <div class="signature">
+        
+        def self.<strong>line_breaks_range</strong> : Range(Int32, Int32)
+
+        <a class="method-permalink" href="#line_breaks_range%3ARange%28Int32%2CInt32%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/config.cr#L65" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="line_breaks_range=(line_breaks_range:Range(Int32,Int32))-class-method">
+      <div class="signature">
+        
+        def self.<strong>line_breaks_range=</strong>(line_breaks_range : Range(Int32, Int32))
+
+        <a class="method-permalink" href="#line_breaks_range%3D%28line_breaks_range%3ARange%28Int32%2CInt32%29%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/config.cr#L65" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="padding_width_range:Range(Int32,Int32)-class-method">
+      <div class="signature">
+        
+        def self.<strong>padding_width_range</strong> : Range(Int32, Int32)
+
+        <a class="method-permalink" href="#padding_width_range%3ARange%28Int32%2CInt32%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/config.cr#L29" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="padding_width_range=(padding_width_range:Range(Int32,Int32))-class-method">
+      <div class="signature">
+        
+        def self.<strong>padding_width_range=</strong>(padding_width_range : Range(Int32, Int32))
+
+        <a class="method-permalink" href="#padding_width_range%3D%28padding_width_range%3ARange%28Int32%2CInt32%29%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/config.cr#L29" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="row_divider_frequency_range:Range(Int32,Int32)-class-method">
+      <div class="signature">
+        
+        def self.<strong>row_divider_frequency_range</strong> : Range(Int32, Int32)
+
+        <a class="method-permalink" href="#row_divider_frequency_range%3ARange%28Int32%2CInt32%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/config.cr#L41" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="row_divider_frequency_range=(row_divider_frequency_range:Range(Int32,Int32))-class-method">
+      <div class="signature">
+        
+        def self.<strong>row_divider_frequency_range=</strong>(row_divider_frequency_range : Range(Int32, Int32))
+
+        <a class="method-permalink" href="#row_divider_frequency_range%3D%28row_divider_frequency_range%3ARange%28Int32%2CInt32%29%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/config.cr#L41" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+
+
+</div>
+
+</body>
+</html>
