@@ -2,14 +2,12 @@ require "./types"
 
 module Tablo
   # struct Frame creates a frame around titles, subtitles or footers, with
-  # optional line breaks before and after
+  # optional line breaks before and after.
   struct Frame
     # Called from RowGroup
     protected getter line_breaks_before, line_breaks_after
 
-    # Returns a Frame instance
-    #
-    # The Frame struct must be used within a Heading instantiation (see
+    # The Frame struct is to be used within a Heading instantiation (see
     # examples below).
     #
     # _Optional named parameters, with default values_
@@ -27,18 +25,60 @@ module Tablo
     # framed rows.  The value of this number is the greater of the values
     # between the `line_breaks_after` value of one row and the
     # `line_breaks_before` value of the next, bearing in mind that for Group,
-    # Header and Body row types, these values are always equal to 0.
+    # Header and Body row types, or unframed Heading types, these values are always equal to 0.
     #
-    # The following example:
+    # In the following example:
     # ```
-    # Tablo::Heading::Title.new("My title", Tablo::Frame.new(1, 1))
-    # Tablo::Heading::SubTitle.new("Another title", Tablo::Frame.new(line_breaks_before: 3))
+    # require "tablo"
+    # table = Tablo::Table.new([1, 2, 3],
+    #   title: Tablo::Heading::Title.new("My Title",
+    #     frame: Tablo::Frame.new(0, 2))) do |t|
+    #   t.add_column("itself", &.itself)
+    # end
+    # puts table
     # ```
-    # would result in 3 line breaks between the title and the subtitle (ie
-    # 2 blank lines)
+    # we see that the framed title is separated from the table body by one blank line,
+    # but two linebreaks have been issued.
     #
-    # If the values of `line_breaks_after` and `line_breaks_before` are both equal
-    # to 0, no line break is generated and the 2 adjacent frames are joined.
+    # ```
+    # +--------------+
+    # |   My Title   |
+    # +--------------+
+    #
+    # +--------------+
+    # |       itself |
+    # +--------------+
+    # |            1 |
+    # |            2 |
+    # |            3 |
+    # +--------------+
+    # ```
+    # On the contrary, If the values of `line_breaks_after` and
+    # `line_breaks_before` are both equal to 0, no line break is generated and
+    # the 2 adjacent frames are joined.
+    # ```
+    # require "tablo"
+    # table = Tablo::Table.new([1, 2, 3],
+    #   title: Tablo::Heading::Title.new("My Title",
+    #     frame: Tablo::Frame.new(0, line_breaks_after: 0))) do |t|
+    #   t.add_column("itself", &.itself)
+    # end
+    # puts table
+    # ```
+    # Here, `line_breaks_after` is set to 0 for the title Frame, and the
+    # `line_breaks_before` is also equal to 0 (as is always the case for group,
+    # header and body)
+    # ```
+    # +--------------+
+    # |   My Title   |
+    # +--------------+
+    # |       itself |
+    # +--------------+
+    # |            1 |
+    # |            2 |
+    # |            3 |
+    # +--------------+
+    # ```
     def initialize(@line_breaks_before : Int32 = 0,
                    @line_breaks_after : Int32 = 0)
       unless line_breaks_before.in?(Config::Controls.line_breaks_range) &&
