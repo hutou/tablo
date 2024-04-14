@@ -361,7 +361,7 @@
   </h2>
 
   <p>struct Frame creates a frame around titles, subtitles or footers, with
-optional line breaks before and after</p>
+optional line breaks before and after.</p>
 
 
 
@@ -386,7 +386,7 @@ optional line breaks before and after</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/heading.cr#L6" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/ddad9accca3992349309f9a3d82ed04335dba4f6/src/heading.cr#L6" target="_blank">
         heading.cr
       </a>
     
@@ -410,7 +410,7 @@ optional line breaks before and after</p>
       <li class="entry-summary">
         <a href="#new%28line_breaks_before%3AInt32%3D0%2Cline_breaks_after%3AInt32%3D0%29-class-method" class="signature"><strong>.new</strong>(line_breaks_before : Int32 = <span class="n">0</span>, line_breaks_after : Int32 = <span class="n">0</span>)</a>
         
-          <div class="summary"><p>Returns a Frame instance</p></div>
+          <div class="summary"><p>The Frame struct is to be used within a Heading instantiation (see examples below).</p></div>
         
       </li>
     
@@ -487,8 +487,7 @@ optional line breaks before and after</p>
       
         <div class="doc">
           
-          <p>Returns a Frame instance</p>
-<p>The Frame struct must be used within a Heading instantiation (see
+          <p>The Frame struct is to be used within a Heading instantiation (see
 examples below).</p>
 <p><em>Optional named parameters, with default values</em></p>
 <ul>
@@ -504,20 +503,56 @@ in range)</p>
 framed rows.  The value of this number is the greater of the values
 between the <code>line_breaks_after</code> value of one row and the
 <code>line_breaks_before</code> value of the next, bearing in mind that for Group,
-Header and Body row types, these values are always equal to 0.</p>
-<p>The following example:</p>
-<pre><code class="language-crystal"><span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Title</span>.new(<span class="s">&quot;My title&quot;</span>, <span class="t">Tablo</span><span class="t">::</span><span class="t">Frame</span>.new(<span class="n">1</span>, <span class="n">1</span>))
-<span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">SubTitle</span>.new(<span class="s">&quot;Another title&quot;</span>, <span class="t">Tablo</span><span class="t">::</span><span class="t">Frame</span>.new(line_breaks_before: <span class="n">3</span>))</code></pre>
-<p>would result in 3 line breaks between the title and the subtitle (ie
-2 blank lines)</p>
-<p>If the values of <code>line_breaks_after</code> and <code>line_breaks_before</code> are both equal
-to 0, no line break is generated and the 2 adjacent frames are joined.</p>
+Header and Body row types, or unframed Heading types, these values are always equal to 0.</p>
+<p>In the following example:</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Title</span>.new(<span class="s">&quot;My Title&quot;</span>,
+    frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Frame</span>.new(<span class="n">0</span>, <span class="n">2</span>))) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
+<span class="k">end</span>
+puts table</code></pre>
+<p>we see that the framed title is separated from the table body by one blank line,
+but two linebreaks have been issued.</p>
+<pre><code class="language-crystal">+--------------+
+|   My Title   |
++--------------+
+
++--------------+
+|       itself |
++--------------+
+|            1 |
+|            2 |
+|            3 |
++--------------+</code></pre>
+<p>On the contrary, If the values of <code>line_breaks_after</code> and
+<code>line_breaks_before</code> are both equal to 0, no line break is generated and
+the 2 adjacent frames are joined.</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Title</span>.new(<span class="s">&quot;My Title&quot;</span>,
+    frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Frame</span>.new(<span class="n">0</span>, line_breaks_after: <span class="n">0</span>))) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
+<span class="k">end</span>
+puts table</code></pre>
+<p>Here, <code>line_breaks_after</code> is set to 0 for the title Frame, and the
+<code>line_breaks_before</code> is also equal to 0 (as is always the case for group,
+header and body)</p>
+<pre><code class="language-crystal">+--------------+
+|   My Title   |
++--------------+
+|       itself |
++--------------+
+|            1 |
+|            2 |
+|            3 |
++--------------+</code></pre>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/dbda8980e16a253b370355c45f156ed7eb274130/src/heading.cr#L42" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ddad9accca3992349309f9a3d82ed04335dba4f6/src/heading.cr#L82" target="_blank">View source</a>]
         
       </div>
     </div>
