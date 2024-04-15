@@ -56,7 +56,7 @@ module Tablo
     private getter wrap_mode, header_wrap, body_wrap
 
     # Called from RowGroup
-    protected getter title, subtitle, footer
+    getter title, subtitle, footer
     protected getter header_frequency
     protected getter? masked_headers, omit_last_rule, omit_group_header_rule
 

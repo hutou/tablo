@@ -89,16 +89,24 @@ module Tablo
     end
   end
 
+  # The sole purpose of the Heading module is to group together the Title,
+  # SubTitle and Footer structs.
   module Heading
+    protected getter line_breaks_before, line_breaks_after
+    # Called from  Table,RowGroup
+    protected property value, frame
+    # Called from Table
+    protected getter alignment, formatter, styler
+
+    # Called from RowGroup
     #
+    def framed?
+      !frame.nil?
+    end
 
     # struct Title creates a title for the table.
     struct Title
-      # Called from  Table,RowGroup
-      protected property value, frame
-      # Called from Table
-      protected getter alignment, formatter, styler
-      # Called from RowGroup
+      include Heading
       protected property? repeated
 
       # Returns an instance of Title.
@@ -136,19 +144,12 @@ module Tablo
                      @styler : Cell::Text::Styler = Config::Defaults.heading_styler,
                      @repeated : Bool = false)
       end
-
-      def framed?
-        !frame.nil?
-      end
     end
 
     # struct SubTitle creates a subtitle for the table (**but displayed only  if
     # a title has also been defined**)
     struct SubTitle
-      # Called from  Table,RowGroup
-      protected property value, frame
-      # Called from Table
-      protected getter alignment, formatter, styler
+      include Heading
 
       # Returns an instance of SubTitle
       #
@@ -180,18 +181,10 @@ module Tablo
                      @formatter : Cell::Text::Formatter = Config::Defaults.heading_formatter,
                      @styler : Cell::Text::Styler = Config::Defaults.heading_styler)
       end
-
-      def framed?
-        !frame.nil?
-      end
     end
 
     struct Footer
-      # Called from  Table,RowGroup
-      protected property value, frame
-      # Called from Table
-      protected getter alignment, formatter, styler
-      # Called from RowGroup                                        b
+      include Heading
       protected property? page_break
 
       # Returns an instance of Footer.
@@ -234,10 +227,6 @@ module Tablo
                      @formatter : Cell::Text::Formatter = Config::Defaults.heading_formatter,
                      @styler : Cell::Text::Styler = Config::Defaults.heading_styler,
                      @page_break : Bool = false)
-      end
-
-      def framed?
-        !frame.nil?
       end
     end
   end
