@@ -5,15 +5,15 @@ def set_border
 end
 
 def set_title
-  Tablo::Heading::Title.new("This a very long text to be displayed as title heading", frame: Tablo::Frame.new)
+  Tablo::Heading.new("This a very long text to be displayed as title heading", framed: true)
 end
 
 def set_subtitle
-  Tablo::Heading::SubTitle.new("A very simple subtitle", frame: Tablo::Frame.new)
+  Tablo::Heading.new("A very simple subtitle", framed: true)
 end
 
 def set_footer
-  Tablo::Heading::Footer.new("Do you need a footer?", frame: Tablo::Frame.new)
+  Tablo::Heading.new("Do you need a footer?", framed: true)
 end
 
 describe "#{Tablo::Table} -> packing method", tags: "pack" do

@@ -27,7 +27,7 @@ def create_table
   table = Tablo::Table.new(invoice,
     omit_last_rule: false,
     border: Tablo::Border.new(Tablo::Border::PreSet::Fancy),
-    title: Tablo::Heading::Title.new("Invoice")) do |t|
+    title: Tablo::Heading.new("Invoice")) do |t|
     t.add_column("Product",
       &.product)
     t.add_column("Quantity",
@@ -69,8 +69,8 @@ def create_table_big
   table = Tablo::Table.new(invoice,
     omit_last_rule: true,
     border: Tablo::Border.new(Tablo::Border::PreSet::Fancy),
-    title: Tablo::Heading::Title.new("\nInvoice\n=======\n"),
-    subtitle: Tablo::Heading::SubTitle.new("Details", frame: Tablo::Frame.new)) do |t|
+    title: Tablo::Heading.new("\nInvoice\n=======\n"),
+    subtitle: Tablo::Heading.new("Details", framed: true)) do |t|
     t.add_column("Product",
       &.product)
     t.add_column("Quantity",
@@ -580,7 +580,7 @@ describe "#{Tablo::Summary}", tags: "summary" do
         tbl.omit_last_rule = true
         tbl.pack
         tbl.add_summary(invoice_summary_definition_big,
-          title: Tablo::Heading::Title.new("Summary", frame: Tablo::Frame.new)
+          title: Tablo::Heading.new("Summary", framed: true)
         )
         tbl.summary.as(Tablo::Table).pack
         output = tbl.to_s + "\n" + tbl.summary.to_s

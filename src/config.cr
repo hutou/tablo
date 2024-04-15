@@ -72,20 +72,20 @@ module Tablo
       BODY_ALIGNMENT = nil
       class_property body_alignment : Justify? = BODY_ALIGNMENT
 
-      # Creates an instance of `Heading::Title` struct with default parameters <br />
-      # (Default `Heading::Title` `value` attribute is `nil`, so nothing to display)
-      TITLE = Heading::Title.new
-      class_property title : Heading::Title = TITLE
+      # Creates an instance of `Heading` struct with default parameters <br />
+      # (Default `Heading` `value` attribute is `nil`, so nothing to display)
+      TITLE = Heading.new
+      class_property title : Heading = TITLE
 
-      # Creates an instance of `Heading::SubTitle` struct with default parameters <br />
-      # (Default `Heading::SubTitle` `value` attribute is `nil`, so nothing to display)
-      SUBTITLE = Heading::SubTitle.new
-      class_property subtitle : Heading::SubTitle = SUBTITLE
+      # Creates an instance of `Heading` struct with default parameters <br />
+      # (Default `Heading` `value` attribute is `nil`, so nothing to display)
+      SUBTITLE = Heading.new
+      class_property subtitle : Heading = SUBTITLE
 
-      # Creates an instance of `Heading::Footer` struct with default parameters <br />
-      # (Default `Heading::Footer` `value` attribute is `nil`, so nothing to display)
-      FOOTER = Heading::Footer.new
-      class_property footer : Heading::Footer = FOOTER
+      # Creates an instance of `Heading` struct with default parameters <br />
+      # (Default `Heading` `value` attribute is `nil`, so nothing to display)
+      FOOTER = Heading.new
+      class_property footer : Heading = FOOTER
 
       # Default value for Border definition
       BORDER_DEFINITION = Border::PreSet::Ascii

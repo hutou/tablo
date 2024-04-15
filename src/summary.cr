@@ -36,6 +36,7 @@ module Tablo
     #
     # Here is a complete and functional example of Detail and Summary tables
     # "working" together (See relevant infos on usage in structs listed above)
+    #
     # ```
     # require "tablo"
     # require "colorize"
@@ -115,9 +116,9 @@ module Tablo
     #
     # table = Tablo::Table.new(invoice,
     #   omit_last_rule: true,
-    #   border: Tablo::Border.new(Tablo::BorderName::Fancy),
-    #   title: Tablo::Heading::Title.new("\nInvoice\n=======\n"),
-    #   subtitle: Tablo::Heading::SubTitle.new("Details", frame: Tablo::Heading::Frame.new)) do |t|
+    #   border: Tablo::Border.new(Tablo::Border::PreSet::Fancy),
+    #   title: Tablo::Heading.new("\nInvoice\n=======\n"),
+    #   subtitle: Tablo::Heading.new("Details", framed: true)) do |t|
     #   t.add_column("Product",
     #     &.product)
     #   t.add_column("Quantity",
@@ -139,40 +140,14 @@ module Tablo
     #
     # table.pack
     # table.add_summary(invoice_summary_definition,
-    #   title: Tablo::Heading::Title.new("Summary", frame: Tablo::Heading::Frame.new))
+    #   title: Tablo::Heading.new("Summary", framed: true))
     # table.summary.as(Tablo::Table).pack
     # puts table
     # puts table.summary
     # ```
-    # output (styling disabled):
-    # ```
     #
-    #                           Invoice
-    #                           =======
+    # <img src="../assets/images/api_summary.svg" width="540">
     #
-    # ╭────────────────────────────────────────────────────────╮
-    # │                         Details                        │
-    # ├─────────────┬──────────┬────────────────────┬──────────┤
-    # │ Product     : Quantity :              Price :    Total │
-    # ├-------------┼----------┼--------------------┼----------┤
-    # │ Laptop      :        3 :             980.00 :  2940.00 │
-    # │ Printer     :        2 :             154.99 :   309.98 │
-    # │ Router      :        1 :              99.00 :    99.00 │
-    # │ Switch      : N/A      :              45.00 :          │
-    # │ Accessories :        5 :              64.50 :   322.50 │
-    # ├─────────────┴──────────┴────────────────────┴──────────┤
-    # │                         Summary                        │
-    # ├─────────────┬──────────┬────────────────────┬──────────┤
-    # │             :          :      Total Invoice :  Amounts │
-    # ├-------------┼----------┼--------------------┼----------┤
-    # │             :          :           SubTotal :  3671.48 │
-    # │             :          :        Discount 5% :   183.57 │
-    # │             :          : S/T after discount :  3487.91 │
-    # │             :          :          Tax (20%) :   697.58 │
-    # │             :          :                    : ======== │
-    # │             :          :        Balance due :  4185.49 │
-    # ╰─────────────┴──────────┴────────────────────┴──────────╯
-    # ```
     # A few points of note <br />
     # - Use of the `BigDecimal` type (not included in Tablo by default, but made
     #   possible by reopening the `BigDecimal` struct and adding the `include CellType`

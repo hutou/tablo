@@ -238,7 +238,7 @@ initializing the table.
 
 ```crystal
 table = Tablo::Table.new([1, 2, 3],
-        title: Tablo::Heading::Title.new("Data types alignment")) do |t|
+        title: Tablo::Heading.new("Data types alignment")) do |t|
 ```
 
 Output:
@@ -267,7 +267,7 @@ value between the current element's `line_breaks_after` and the next element's
 
 ```crystal
 table = Tablo::Table.new([1, 2, 3],
-  title: Tablo::Heading::Title.new("Data types alignment",
+  title: Tablo::Heading.new("Data types alignment",
     frame: Tablo::Heading::Frame.new(line_breaks_before: 0, line_breaks_after: 2))) do |t|
 ```
 
@@ -324,10 +324,10 @@ An important parameter in table initialization is `header_frequency:`
 ```crystal
 table = Tablo::Table.new([1, 2, 3],
         header_frequency: 0,
-        title: Tablo::Heading::Title.new("Data types alignment",
+        title: Tablo::Heading.new("Data types alignment",
           frame: Tablo::Heading::Frame.new(0, 2)),
-        subtitle: Tablo::Heading::SubTitle.new("Only Booleans are centered by default"),
-        footer: Tablo::Heading::Footer.new("End of page")) do |t|
+        subtitle: Tablo::Heading.new("Only Booleans are centered by default"),
+        footer: Tablo::Heading.new("End of page")) do |t|
 ```
 
 Output:
@@ -408,7 +408,7 @@ subtitle repetition.
 ```crystal
 table = Tablo::Table.new([1, 2, 3],
         header_frequency: 2,
-        title: Tablo::Heading::Title.new("Data types alignment",
+        title: Tablo::Heading.new("Data types alignment",
           frame: Tablo::Heading::Frame.new(0, 2), repeated: true),
 ```
 
@@ -836,8 +836,8 @@ require "tablo"
 require "colorize"
 
 table = Tablo::Table.new([1, 2, 3, 4, 5],
-  title: Tablo::Heading::Title.new("My black and white fancy table", frame: Tablo::Heading::Frame.new),
-  footer: Tablo::Heading::Footer.new("End of data", frame: Tablo::Heading::Frame.new),
+  title: Tablo::Heading.new("My black and white fancy table", frame: Tablo::Heading::Frame.new),
+  footer: Tablo::Heading.new("End of data", frame: Tablo::Heading::Frame.new),
   border: Tablo::Border.new(:fancy, ->(border_char : String) {
     border_char.colorize(:light_gray).to_s
   }),
@@ -1129,7 +1129,7 @@ invoice = [
 table = Tablo::Table.new(invoice,
   omit_last_rule: false,
   border: Tablo::Border.new(Tablo::BorderName::Fancy),
-  title: Tablo::Heading::Title.new("Invoice")) do |t|
+  title: Tablo::Heading.new("Invoice")) do |t|
   t.add_column("Product",
     &.product)
   t.add_column("Quantity",

@@ -70,9 +70,9 @@ module Tablo
     macro initialize(block_given)
 
       def initialize(@sources : Enumerable(T), *,
-        @title : Heading::Title = Config::Defaults.title,
-        @subtitle : Heading::SubTitle = Config::Defaults.subtitle,
-        @footer : Heading::Footer = Config::Defaults.footer,
+        @title : Heading = Config::Defaults.title,
+        @subtitle : Heading = Config::Defaults.subtitle,
+        @footer : Heading = Config::Defaults.footer,
         #
         @border : Border = Border.new(Config::Defaults.border_definition, Config::Defaults.border_styler),
         #
@@ -791,9 +791,9 @@ module Tablo
       subrows = subcell_stacks.transpose.map do |subrow_components|
         case cell = cells.first
         in Cell::Text
-          if cell.row_type == RowType::Title && title.frame.nil? ||
-             cell.row_type == RowType::SubTitle && subtitle.frame.nil? ||
-             cell.row_type == RowType::Footer && footer.frame.nil?
+          if cell.row_type == RowType::Title && !title.framed? ||
+             cell.row_type == RowType::SubTitle && !subtitle.framed? ||
+             cell.row_type == RowType::Footer && !footer.framed?
             # subrow_components is an array of String (size=1), which
             # is not needed here for headings, but needed for other
             # row types (because of border.join_cell_contents which

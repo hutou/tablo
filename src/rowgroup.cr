@@ -26,7 +26,7 @@ module Tablo
   # use on first row of :summary to properly link or not the two tables.
   class RowGroup(T)
     protected class_property rowtype_memory : RowType? = nil
-    protected class_property transition_footer : Heading::Footer? = nil
+    protected class_property transition_footer : Heading? = nil
 
     # Whenever we enter rowgroup, we retrieve the previous rowtype from
     # the recorded value in class variable RowGroup.rowtype_memory
@@ -42,7 +42,9 @@ module Tablo
                    @row_index : Int32)
     end
 
+    # ------------------------------------------------------------------------------
     {% if flag?(:DEBUG_ROWS) %}
+      # ------------------------------------------------------------------------------
       private def add_row(rows, linenum = 0)
         rows.each_line.with_index do |r, i|
           if i == 0
@@ -64,19 +66,228 @@ module Tablo
           ]
         end
       end
+
+      private def fill_page
+        # Add "filler" rows to reach page size (header_frequency)
+        if previous_rowtype == RowType::Body && current_rowtype == RowType::Footer
+          missing_rows.times do
+            add_rule(ROWTYPE_POSITION[{RowType::Body, :filler}],
+              groups: [] of Array(Int32), linenum: __LINE__)
+            # groups: nil, linenum: __LINE__)
+          end
+        end
+      end
+
+      private def apply_rules
+        groups = previous_rowtype == RowType::Group ||
+                 current_rowtype == RowType::Group ? table.column_groups : [] of Array(Int32)
+        # current_rowtype == RowType::Group ? table.column_groups : nil
+        spacing = [line_breaks_after(previous_rowtype), line_breaks_before(current_rowtype)].max
+        case {framed?(previous_rowtype), framed?(current_rowtype)}
+        when {true, true}
+          if spacing.zero?
+            fill_page
+            if summary_first?
+              # Table linking is done if adjacent row types are framed, with no spacing
+              # we must use a specific horizontal rule do separate detail and summary
+              case {previous_rowtype, current_rowtype}
+              when {RowType::Body, RowType::Header}
+                add_rule(Position::SummaryHeader,
+                  groups: groups, linenum: __LINE__)
+              when {RowType::Footer, RowType::Body}
+                add_rule(Position::TitleBody,
+                  groups: groups, linenum: __LINE__)
+              when {RowType::Body, RowType::Body}
+                add_rule(Position::SummaryBody,
+                  groups: groups, linenum: __LINE__)
+              else
+                add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}],
+                  groups: groups, linenum: __LINE__)
+              end
+            else
+              case {previous_rowtype, current_rowtype}
+              when {RowType::Body, RowType::Body}
+                add_rule(Position::BodyBody,
+                  groups: groups, linenum: __LINE__) if row_divider
+              when {RowType::Group, RowType::Header}
+                add_rule(Position::GroupHeader,
+                  groups: groups, linenum: __LINE__) unless table.omit_group_header_rule?
+              else
+                add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}],
+                  groups: groups, linenum: __LINE__)
+              end
+            end
+          else
+            fill_page
+            add_rule(ROWTYPE_POSITION[{previous_rowtype, :bottom}],
+              groups: groups, linenum: __LINE__)
+            # add page break after framed footer
+            if previous_rowtype == RowType::Footer && table.footer.page_break?
+              self.rows[-1] += "\f"
+            end
+            apply_line_spacing(spacing - 1)
+            add_rule(ROWTYPE_POSITION[{current_rowtype, :top}],
+              groups: groups, linenum: __LINE__)
+          end
+        when {true, false}
+          fill_page
+          add_rule(ROWTYPE_POSITION[{previous_rowtype, :bottom}],
+            groups: groups, linenum: __LINE__)
+          apply_line_spacing(line_breaks_after(previous_rowtype) - 1)
+        when {false, true}
+          apply_line_spacing(line_breaks_before(current_rowtype) - 1)
+          add_rule(ROWTYPE_POSITION[{current_rowtype, :top}],
+            groups: groups, linenum: __LINE__)
+        when {false, false}
+        end
+        add_rowtype
+        self.previous_rowtype = current_rowtype
+      end
+
+      private def add_rowtype
+        case current_rowtype
+        when RowType::Title
+          add_row(table.rendered_title_row, linenum: __LINE__)
+        when RowType::SubTitle
+          add_row(table.rendered_subtitle_row, linenum: __LINE__)
+        when RowType::Group
+          add_row(table.rendered_group_row, linenum: __LINE__)
+        when RowType::Header
+          add_row(table.rendered_header_row(source, row_index), linenum: __LINE__)
+        when RowType::Body
+          add_row(table.rendered_body_row(source, row_index), linenum: __LINE__)
+        when RowType::Footer
+          add_row(table.rendered_footer_row(page), linenum: __LINE__)
+          self.rows[-1] += "\f" if table.footer.page_break? && !table.footer.framed?
+        end
+      end
+
+      private def close_table
+        # Only Body and Footer row types are possible
+        case previous_rowtype
+        when RowType::Body
+          add_rule(Position::BodyBottom, linenum: __LINE__)
+        when RowType::Footer
+          add_rule(Position::TitleBottom, linenum: __LINE__) if table.footer.framed?
+          self.rows[-1] += "\f" if table.footer.page_break?
+        end
+        # Clear Table memory for next table display
+        RowGroup.rowtype_memory = nil
+      end
+      # ------------------------------------------------------------------------------
     {% else %}
-      private def add_row(rows, linenum = 0)
+      # ------------------------------------------------------------------------------
+      private def add_row(rows)
         self.rows << rows
       end
 
-      # private def add_rule(position, groups = nil, linenum = 0)
-      private def add_rule(position, groups = [] of Array(Int32), linenum = 0)
+      private def add_rule(position, groups = [] of Array(Int32))
         row = table.horizontal_rule(position, groups)
         unless row.empty?
           self.rows << row
         end
       end
+
+      private def fill_page
+        # Add "filler" rows to reach page size (header_frequency)
+        if previous_rowtype == RowType::Body && current_rowtype == RowType::Footer
+          missing_rows.times do
+            add_rule(ROWTYPE_POSITION[{RowType::Body, :filler}],
+              groups: [] of Array(Int32))
+          end
+        end
+      end
+
+      private def apply_rules
+        groups = previous_rowtype == RowType::Group ||
+                 current_rowtype == RowType::Group ? table.column_groups : [] of Array(Int32)
+        spacing = [line_breaks_after(previous_rowtype), line_breaks_before(current_rowtype)].max
+        case {framed?(previous_rowtype), framed?(current_rowtype)}
+        when {true, true}
+          if spacing.zero?
+            fill_page
+            if summary_first?
+              # Table linking is done if adjacent row types are framed, with no spacing
+              # we must use a specific horizontal rule do separate detail and summary
+              case {previous_rowtype, current_rowtype}
+              when {RowType::Body, RowType::Header}
+                add_rule(Position::SummaryHeader, groups: groups)
+              when {RowType::Footer, RowType::Body}
+                add_rule(Position::TitleBody, groups: groups)
+              when {RowType::Body, RowType::Body}
+                add_rule(Position::SummaryBody, groups: groups)
+              else
+                add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}],
+                  groups: groups)
+              end
+            else
+              case {previous_rowtype, current_rowtype}
+              when {RowType::Body, RowType::Body}
+                add_rule(Position::BodyBody, groups: groups) if row_divider
+              when {RowType::Group, RowType::Header}
+                add_rule(Position::GroupHeader,
+                  groups: groups) unless table.omit_group_header_rule?
+              else
+                add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}],
+                  groups: groups)
+              end
+            end
+          else
+            fill_page
+            add_rule(ROWTYPE_POSITION[{previous_rowtype, :bottom}], groups: groups)
+            # add page break after framed footer
+            if previous_rowtype == RowType::Footer && table.footer.page_break?
+              self.rows[-1] += "\f"
+            end
+            apply_line_spacing(spacing - 1)
+            add_rule(ROWTYPE_POSITION[{current_rowtype, :top}], groups: groups)
+          end
+        when {true, false}
+          fill_page
+          add_rule(ROWTYPE_POSITION[{previous_rowtype, :bottom}], groups: groups)
+          apply_line_spacing(line_breaks_after(previous_rowtype) - 1)
+        when {false, true}
+          apply_line_spacing(line_breaks_before(current_rowtype) - 1)
+          add_rule(ROWTYPE_POSITION[{current_rowtype, :top}], groups: groups)
+        when {false, false}
+        end
+        add_rowtype
+        self.previous_rowtype = current_rowtype
+      end
+
+      private def add_rowtype
+        case current_rowtype
+        when RowType::Title
+          add_row(table.rendered_title_row)
+        when RowType::SubTitle
+          add_row(table.rendered_subtitle_row)
+        when RowType::Group
+          add_row(table.rendered_group_row)
+        when RowType::Header
+          add_row(table.rendered_header_row(source, row_index))
+        when RowType::Body
+          add_row(table.rendered_body_row(source, row_index))
+        when RowType::Footer
+          add_row(table.rendered_footer_row(page))
+          self.rows[-1] += "\f" if table.footer.page_break? && !table.footer.framed?
+        end
+      end
+
+      private def close_table
+        # Only Body and Footer row types are possible
+        case previous_rowtype
+        when RowType::Body
+          add_rule(Position::BodyBottom)
+        when RowType::Footer
+          add_rule(Position::TitleBottom) if table.footer.framed?
+          self.rows[-1] += "\f" if table.footer.page_break?
+        end
+        # Clear Table memory for next table display
+        RowGroup.rowtype_memory = nil
+      end
+      # ------------------------------------------------------------------------------
     {% end %}
+    # ------------------------------------------------------------------------------
 
     private def framed?(rowtype)
       case rowtype
@@ -88,7 +299,7 @@ module Tablo
         table.subtitle.framed?
       when RowType::Footer
         if summary_first?
-          RowGroup.transition_footer.as(Heading::Footer).framed?
+          RowGroup.transition_footer.as(Heading).framed?
         else
           table.footer.framed?
         end
@@ -100,11 +311,11 @@ module Tablo
     private def line_breaks_after(rowtype)
       case rowtype
       when RowType::Title
-        table.title.framed? ? table.title.frame.as(Frame).line_breaks_after : 0
+        table.title.framed? ? table.title.line_breaks_after : 0
       when RowType::SubTitle
-        table.subtitle.framed? ? table.subtitle.frame.as(Frame).line_breaks_after : 0
+        table.subtitle.framed? ? table.subtitle.line_breaks_after : 0
       when RowType::Footer
-        table.footer.framed? ? table.footer.frame.as(Frame).line_breaks_after : 0
+        table.footer.framed? ? table.footer.line_breaks_after : 0
       else
         0
       end
@@ -113,11 +324,11 @@ module Tablo
     private def line_breaks_before(rowtype)
       case rowtype
       when RowType::Title
-        table.title.framed? ? table.title.frame.as(Frame).line_breaks_before : 0
+        table.title.framed? ? table.title.line_breaks_before : 0
       when RowType::SubTitle
-        table.subtitle.framed? ? table.subtitle.frame.as(Frame).line_breaks_before : 0
+        table.subtitle.framed? ? table.subtitle.line_breaks_before : 0
       when RowType::Footer
-        table.footer.framed? ? table.footer.frame.as(Frame).line_breaks_before : 0
+        table.footer.framed? ? table.footer.line_breaks_before : 0
       else
         0
       end
@@ -157,114 +368,6 @@ module Tablo
       {RowType::SubTitle, :top}            => Position::TitleTop,
       {RowType::Title, :top}               => Position::TitleTop,
     }
-
-    private def fill_page
-      # Add "filler" rows to reach page size (header_frequency)
-      if previous_rowtype == RowType::Body && current_rowtype == RowType::Footer
-        missing_rows.times do
-          add_rule(ROWTYPE_POSITION[{RowType::Body, :filler}],
-            groups: [] of Array(Int32), linenum: __LINE__)
-          # groups: nil, linenum: __LINE__)
-        end
-      end
-    end
-
-    private def apply_rules
-      groups = previous_rowtype == RowType::Group ||
-               current_rowtype == RowType::Group ? table.column_groups : [] of Array(Int32)
-      # current_rowtype == RowType::Group ? table.column_groups : nil
-      spacing = [line_breaks_after(previous_rowtype), line_breaks_before(current_rowtype)].max
-      case {framed?(previous_rowtype), framed?(current_rowtype)}
-      when {true, true}
-        if spacing.zero?
-          fill_page
-          if summary_first?
-            # Table linking is done if adjacent row types are framed, with no spacing
-            # we must use a specific horizontal rule do separate detail and summary
-            case {previous_rowtype, current_rowtype}
-            when {RowType::Body, RowType::Header}
-              add_rule(Position::SummaryHeader,
-                groups: groups, linenum: __LINE__)
-            when {RowType::Footer, RowType::Body}
-              add_rule(Position::TitleBody,
-                groups: groups, linenum: __LINE__)
-            when {RowType::Body, RowType::Body}
-              add_rule(Position::SummaryBody,
-                groups: groups, linenum: __LINE__)
-            else
-              add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}],
-                groups: groups, linenum: __LINE__)
-            end
-          else
-            case {previous_rowtype, current_rowtype}
-            when {RowType::Body, RowType::Body}
-              add_rule(Position::BodyBody,
-                groups: groups, linenum: __LINE__) if row_divider
-            when {RowType::Group, RowType::Header}
-              add_rule(Position::GroupHeader,
-                groups: groups, linenum: __LINE__) unless table.omit_group_header_rule?
-            else
-              add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}],
-                groups: groups, linenum: __LINE__)
-            end
-          end
-        else
-          fill_page
-          add_rule(ROWTYPE_POSITION[{previous_rowtype, :bottom}],
-            groups: groups, linenum: __LINE__)
-          # add page break after framed footer
-          if previous_rowtype == RowType::Footer && table.footer.page_break?
-            self.rows[-1] += "\f"
-          end
-          apply_line_spacing(spacing - 1)
-          add_rule(ROWTYPE_POSITION[{current_rowtype, :top}],
-            groups: groups, linenum: __LINE__)
-        end
-      when {true, false}
-        fill_page
-        add_rule(ROWTYPE_POSITION[{previous_rowtype, :bottom}],
-          groups: groups, linenum: __LINE__)
-        apply_line_spacing(line_breaks_after(previous_rowtype) - 1)
-      when {false, true}
-        apply_line_spacing(line_breaks_before(current_rowtype) - 1)
-        add_rule(ROWTYPE_POSITION[{current_rowtype, :top}],
-          groups: groups, linenum: __LINE__)
-      when {false, false}
-      end
-      add_rowtype
-      self.previous_rowtype = current_rowtype
-    end
-
-    private def add_rowtype
-      case current_rowtype
-      when RowType::Title
-        add_row(table.rendered_title_row, linenum: __LINE__)
-      when RowType::SubTitle
-        add_row(table.rendered_subtitle_row, linenum: __LINE__)
-      when RowType::Group
-        add_row(table.rendered_group_row, linenum: __LINE__)
-      when RowType::Header
-        add_row(table.rendered_header_row(source, row_index), linenum: __LINE__)
-      when RowType::Body
-        add_row(table.rendered_body_row(source, row_index), linenum: __LINE__)
-      when RowType::Footer
-        add_row(table.rendered_footer_row(page), linenum: __LINE__)
-        self.rows[-1] += "\f" if table.footer.page_break? && !table.footer.framed?
-      end
-    end
-
-    private def close_table
-      # Only Body and Footer row types are possible
-      case previous_rowtype
-      when RowType::Body
-        add_rule(Position::BodyBottom, linenum: __LINE__)
-      when RowType::Footer
-        add_rule(Position::TitleBottom, linenum: __LINE__) if table.footer.framed?
-        self.rows[-1] += "\f" if table.footer.page_break?
-      end
-      # Clear Table memory for next table display
-      RowGroup.rowtype_memory = nil
-    end
 
     private def process_last_row
       # where are we ?

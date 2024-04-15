@@ -217,7 +217,7 @@ module Tablo
     end
 
     # The Text class, derived from Cell, is used to manage the headings
-    # (`Heading::Title`, `Heading::SubTitle` and `Heading::Footer`) and group cells
+    # (`Heading`, `Heading` and `Heading`) and group cells
     class Text < Cell
       # The purpose of the formatter is to transform the raw value of a cell
       # into a formatted character string <br /> (A default formatter (`to_s`) is applied if
@@ -266,7 +266,7 @@ module Tablo
       # ```
       # require "tablo"
       # table = Tablo::Table.new([1, 2, 3],
-      #   title: Tablo::Heading::Title.new("My Title",
+      #   title: Tablo::Heading.new("My Title",
       #     frame: Tablo::Frame.new, formatter: ->(value : Tablo::CellType, column_width : Int32) {
       #     Tablo::Util.stretch(value.as(String), width: column_width)
       #   })) do |t|
@@ -314,7 +314,7 @@ module Tablo
       # require "tablo"
       # require "colorize"
       # table = Tablo::Table.new([1, 2, 3],
-      #   title: Tablo::Heading::Title.new("My\nMultiline\nTitle",
+      #   title: Tablo::Heading.new("My\nMultiline\nTitle",
       #     frame: Tablo::Frame.new,
       #     styler: ->(content : String, line : Int32) {
       #       case line
@@ -342,7 +342,7 @@ module Tablo
       #
       # COLORS = [:blue, :red, :green, :magenta, :cyan]
       # table = Tablo::Table.new([1, 2, 3],
-      #   title: Tablo::Heading::Title.new("My MultiColor Title",
+      #   title: Tablo::Heading.new("My MultiColor Title",
       #     frame: Tablo::Frame.new,
       #     styler: ->(content : String) { content.chars.map { |c|
       #       c.colorize.fore(COLORS[rand(5)]).mode(:bold).to_s
@@ -558,7 +558,7 @@ module Tablo
       # require "colorize"
       #
       # table = Tablo::Table.new(["A", "B", "C"],
-      #   title: Tablo::Heading::Title.new("My Title",
+      #   title: Tablo::Heading.new("My Title",
       #     frame: Tablo::Frame.new),
       #   body_styler: ->(_value : Tablo::CellType, coords : Tablo::Cell::Data::Coords, content : String, line_index : Int32) {
       #     if line_index > 0
@@ -589,7 +589,7 @@ module Tablo
       # require "colorize"
       #
       # table = Tablo::Table.new([3.14, 2.78, 3.5],
-      #   title: Tablo::Heading::Title.new("My Title",
+      #   title: Tablo::Heading.new("My Title",
       #     frame: Tablo::Frame.new),
       #   body_styler: ->(value : Tablo::CellType, content : String) {
       #     if value.is_a?(Float64)
