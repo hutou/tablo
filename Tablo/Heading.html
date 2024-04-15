@@ -207,33 +207,8 @@
       
     </li>
   
-  <li class=" " data-id="tablo/Tablo/Frame" data-name="tablo::frame">
-      <a href="../Tablo/Frame.html">Frame</a>
-      
-    </li>
-  
-  <li class="parent open current" data-id="tablo/Tablo/Heading" data-name="tablo::heading">
+  <li class=" current" data-id="tablo/Tablo/Heading" data-name="tablo::heading">
       <a href="../Tablo/Heading.html">Heading</a>
-      
-        <ul>
-  
-  <li class=" " data-id="tablo/Tablo/Heading/Footer" data-name="tablo::heading::footer">
-      <a href="../Tablo/Heading/Footer.html">Footer</a>
-      
-    </li>
-  
-  <li class=" " data-id="tablo/Tablo/Heading/SubTitle" data-name="tablo::heading::subtitle">
-      <a href="../Tablo/Heading/SubTitle.html">SubTitle</a>
-      
-    </li>
-  
-  <li class=" " data-id="tablo/Tablo/Heading/Title" data-name="tablo::heading::title">
-      <a href="../Tablo/Heading/Title.html">Title</a>
-      
-    </li>
-  
-</ul>
-
       
     </li>
   
@@ -341,13 +316,30 @@
 <div class="main-content">
 <h1 class="type-name">
 
-  <span class="kind">module</span> Tablo::<wbr>Heading
+  <span class="kind">struct</span> Tablo::<wbr>Heading
 
 </h1>
 
 
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../Tablo/Heading.html">Tablo::Heading</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
 
 
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>The purpose of the Heading struct is to manage page titles, subtitles and
+footers. It will therefore be used to initialize the corresponding
+attributes in Tablo::Table, ie: title, subtitle and footer. <br />
+<em>(Please note, however, that the display of a subtitle is dependent on the
+existence of a title).</em></p>
 
 
 
@@ -372,7 +364,7 @@
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/ddad9accca3992349309f9a3d82ed04335dba4f6/src/heading.cr#L92" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/f97a1376eceb5d9351e4611ab0c3db563846460f/src/heading.cr#L10" target="_blank">
         heading.cr
       </a>
     
@@ -382,6 +374,25 @@
 
 
 
+
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28value%3ACellType%3Dnil%2C%2A%2Cframed%3ABool%3Dfalse%2Cline_breaks_before%3AInt32%3D0%2Cline_breaks_after%3AInt32%3D0%2Calignment%3AJustify%3DConfig%3A%3ADefaults.heading_alignment%2Cformatter%3ACell%3A%3AText%3A%3AFormatter%3DConfig%3A%3ADefaults.heading_formatter%2Cstyler%3ACell%3A%3AText%3A%3AStyler%3DConfig%3A%3ADefaults.heading_styler%2Crepeated%3ABool%3Dfalse%2Cpage_break%3ABool%3Dfalse%29-class-method" class="signature"><strong>.new</strong>(value : CellType = <span class="n">nil</span>, *, framed : Bool = <span class="n">false</span>, line_breaks_before : Int32 = <span class="n">0</span>, line_breaks_after : Int32 = <span class="n">0</span>, alignment : Justify = <span class="t">Config</span><span class="t">::</span><span class="t">Defaults</span>.heading_alignment, formatter : Cell::Text::Formatter = <span class="t">Config</span><span class="t">::</span><span class="t">Defaults</span>.heading_formatter, styler : Cell::Text::Styler = <span class="t">Config</span><span class="t">::</span><span class="t">Defaults</span>.heading_styler, repeated : Bool = <span class="n">false</span>, page_break : Bool = <span class="n">false</span>)</a>
+        
+          <div class="summary"><p>The struct Heading instantiation can accept up to 9 parameters, all of which have a default value.</p></div>
+        
+      </li>
+    
+  </ul>
 
 
 
@@ -393,8 +404,182 @@
 
 <div class="methods-inherited">
   
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
+  
 </div>
 
+
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(value:CellType=nil,*,framed:Bool=false,line_breaks_before:Int32=0,line_breaks_after:Int32=0,alignment:Justify=Config::Defaults.heading_alignment,formatter:Cell::Text::Formatter=Config::Defaults.heading_formatter,styler:Cell::Text::Styler=Config::Defaults.heading_styler,repeated:Bool=false,page_break:Bool=false)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(value : <a href="../Tablo/CellType.html">CellType</a> = <span class="n">nil</span>, *, framed : Bool = <span class="n">false</span>, line_breaks_before : Int32 = <span class="n">0</span>, line_breaks_after : Int32 = <span class="n">0</span>, alignment : <a href="../Tablo/Justify.html">Justify</a> = <span class="t">Config</span><span class="t">::</span><span class="t">Defaults</span>.heading_alignment, formatter : <a href="../Tablo/Cell/Text/Formatter.html">Cell::Text::Formatter</a> = <span class="t">Config</span><span class="t">::</span><span class="t">Defaults</span>.heading_formatter, styler : <a href="../Tablo/Cell/Text/Styler.html">Cell::Text::Styler</a> = <span class="t">Config</span><span class="t">::</span><span class="t">Defaults</span>.heading_styler, repeated : Bool = <span class="n">false</span>, page_break : Bool = <span class="n">false</span>)
+
+        <a class="method-permalink" href="#new%28value%3ACellType%3Dnil%2C%2A%2Cframed%3ABool%3Dfalse%2Cline_breaks_before%3AInt32%3D0%2Cline_breaks_after%3AInt32%3D0%2Calignment%3AJustify%3DConfig%3A%3ADefaults.heading_alignment%2Cformatter%3ACell%3A%3AText%3A%3AFormatter%3DConfig%3A%3ADefaults.heading_formatter%2Cstyler%3ACell%3A%3AText%3A%3AStyler%3DConfig%3A%3ADefaults.heading_styler%2Crepeated%3ABool%3Dfalse%2Cpage_break%3ABool%3Dfalse%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The struct Heading instantiation can accept up to 9 parameters, all of
+which have a default value.</p>
+<ul>
+<li>
+<p><code>value</code>: type is <code><a href="../Tablo/CellType.html">CellType</a></code> <br />
+Default value is <code>nil</code>, which means nothing is displayed <br />
+This is the heading's display content.</p>
+</li>
+<li>
+<p><code>framed</code>: type is <code>Bool</code> <br />
+Default value is <code>false</code> <br />
+If true, the heading's content is framed.</p>
+</li>
+<li>
+<p><code>line_breaks_before</code>: type is <code>Int32</code><br />
+Default value is 0</p>
+</li>
+<li>
+<p><code>line_breaks_after</code>: type is <code>Int32</code><br />
+Default value is 0</p>
+<p>Permitted range of values for these last 2 parameters is governed by
+<code><a href="../Tablo/Config/Controls.html#line_breaks_range%3ARange%28Int32%2CInt32%29-class-method">Config::Controls.line_breaks_range</a></code>. <br />
+(an <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> exception  is raised if not in range. <br />
+(see explanations below for their usage)</p>
+</li>
+<li>
+<p><code>alignment</code>: type is <code><a href="../Tablo/Justify.html">Justify</a></code> <br />
+Default:  defined in <code><a href="../Tablo/Config/Defaults.html#heading_alignment%3AJustify-class-method">Config::Defaults.heading_alignment</a></code></p>
+</li>
+<li>
+<p><code>formatter</code>:  a Proc whose type is <code><a href="../Tablo/Cell/Text/Formatter.html">Cell::Text::Formatter</a></code> <br />
+Default: set by <code><a href="../Tablo/Config/Defaults.html#heading_formatter%3ACell%3A%3AText%3A%3AFormatter-class-method">Config::Defaults.heading_formatter</a></code></p>
+</li>
+<li>
+<p><code>styler</code>:  a Proc whose type is <code><a href="../Tablo/Cell/Text/Styler.html">Cell::Text::Styler</a></code> <br />
+Default: set by <code><a href="../Tablo/Config/Defaults.html#heading_styler%3ACell%3A%3AText%3A%3AStyler-class-method">Config::Defaults.heading_styler</a></code></p>
+</li>
+<li>
+<p><code>repeated</code>: type is <code>Bool</code> <br />
+Default value is <code>false</code> <br />
+This attribute governs the repetition of title and subtitle when the
+<code>header_frequency</code> attribute of <code><a href="../Tablo/Table.html">Table</a></code> is greater than 0 (if <code>true</code>, title and subtitle
+are inserted before the repeated group and header rows). <br />
+<em>-&gt; only applicable to the title attribute</em></p>
+</li>
+<li>
+<p><code>page_break</code>: type is <code>Bool</code> <br />
+Default value is <code>false</code> <br />
+If true, a page break is inserted after the footer content (or after the
+footer frame, but note that in this case, it prevents the join with the
+frame that follows when the value of the <code>omit_last_rule</code> parameter of
+<code><a href="../Tablo/Table.html">Table</a></code> is <code>true</code>). <br />
+<em>-&gt; only applicable to the footer attribute</em></p>
+</li>
+</ul>
+<p>A minimal example could be:</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My title&quot;</span>, framed: <span class="n">true</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
+<span class="k">end</span>
+puts table</code></pre>
+<pre><code class="language-crystal">+--------------+
+|   My title   |
++--------------+
+|       itself |
++--------------+
+|            1 |
+|            2 |
+|            3 |
++--------------+</code></pre>
+<p><strong>Use of <code>line_breaks_before</code> and <code>line_breaks_after</code> parameters</strong></p>
+<p>These 2 parameters help define the number of line breaks between adjacent
+framed rows.  The value of this number is the greater of the values
+between the <code>line_breaks_after</code> value of one row and the
+<code>line_breaks_before</code> value of the next, bearing in mind that for Group,
+Header and Body row types, or unframed Heading types, these values are always equal to 0.</p>
+<p>In the following example:</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My title&quot;</span>, framed: <span class="n">true</span>,
+    line_breaks_after: <span class="n">2</span>),
+  footer: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My footer&quot;</span>, framed: <span class="n">true</span>,
+    line_breaks_before: <span class="n">1</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
+<span class="k">end</span>
+puts table</code></pre>
+<p>we see that the framed title is separated from the table body by one blank line,
+but two line breaks have been issued. We can also see that the footer is not
+joined to the last body row because of the <code>line_breaks_before</code> parameter set to 1.</p>
+<pre><code class="language-crystal">+--------------+
+|   My title   |
++--------------+
+
++--------------+
+|       itself |
++--------------+
+|            1 |
+|            2 |
+|            3 |
++--------------+
++--------------+
+|   My footer  |
++--------------+</code></pre>
+<p>Compare this with the previous example, where no line breaks were generated.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/f97a1376eceb5d9351e4611ab0c3db563846460f/src/heading.cr#L143" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
 
 
 

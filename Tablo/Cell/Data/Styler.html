@@ -207,33 +207,8 @@
       
     </li>
   
-  <li class=" " data-id="tablo/Tablo/Frame" data-name="tablo::frame">
-      <a href="../../../Tablo/Frame.html">Frame</a>
-      
-    </li>
-  
-  <li class="parent " data-id="tablo/Tablo/Heading" data-name="tablo::heading">
+  <li class=" " data-id="tablo/Tablo/Heading" data-name="tablo::heading">
       <a href="../../../Tablo/Heading.html">Heading</a>
-      
-        <ul>
-  
-  <li class=" " data-id="tablo/Tablo/Heading/Footer" data-name="tablo::heading::footer">
-      <a href="../../../Tablo/Heading/Footer.html">Footer</a>
-      
-    </li>
-  
-  <li class=" " data-id="tablo/Tablo/Heading/SubTitle" data-name="tablo::heading::subtitle">
-      <a href="../../../Tablo/Heading/SubTitle.html">SubTitle</a>
-      
-    </li>
-  
-  <li class=" " data-id="tablo/Tablo/Heading/Title" data-name="tablo::heading::title">
-      <a href="../../../Tablo/Heading/Title.html">Title</a>
-      
-    </li>
-  
-</ul>
-
       
     </li>
   
@@ -385,7 +360,7 @@ has been applied) <br /></li>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
 
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="s">&quot;A&quot;</span>, <span class="s">&quot;B&quot;</span>, <span class="s">&quot;C&quot;</span>],
-  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Title</span>.new(<span class="s">&quot;My Title&quot;</span>,
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My Title&quot;</span>,
     frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Frame</span>.new),
   body_styler: <span class="o">-&gt;</span>(_value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, coords : <span class="t">Tablo</span><span class="t">::</span><span class="t">Cell</span><span class="t">::</span><span class="t">Data</span><span class="t">::</span><span class="t">Coords</span>, content : <span class="t">String</span>, line_index : <span class="t">Int32</span>) {
     <span class="k">if</span> line_index <span class="o">&gt;</span> <span class="n">0</span>
@@ -412,7 +387,7 @@ and positive values:</p>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
 
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">3.14</span>, <span class="n">2.78</span>, <span class="n">3.5</span>],
-  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Title</span>.new(<span class="s">&quot;My Title&quot;</span>,
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My Title&quot;</span>,
     frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Frame</span>.new),
   body_styler: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, content : <span class="t">String</span>) {
     <span class="k">if</span> value.<span class="k">is_a?</span>(<span class="t">Float64</span>)
@@ -465,7 +440,7 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/ddad9accca3992349309f9a3d82ed04335dba4f6/src/cell.cr#L613" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/f97a1376eceb5d9351e4611ab0c3db563846460f/src/cell.cr#L613" target="_blank">
         cell.cr
       </a>
     

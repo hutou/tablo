@@ -207,33 +207,8 @@
       
     </li>
   
-  <li class=" " data-id="tablo/Tablo/Frame" data-name="tablo::frame">
-      <a href="Tablo/Frame.html">Frame</a>
-      
-    </li>
-  
-  <li class="parent " data-id="tablo/Tablo/Heading" data-name="tablo::heading">
+  <li class=" " data-id="tablo/Tablo/Heading" data-name="tablo::heading">
       <a href="Tablo/Heading.html">Heading</a>
-      
-        <ul>
-  
-  <li class=" " data-id="tablo/Tablo/Heading/Footer" data-name="tablo::heading::footer">
-      <a href="Tablo/Heading/Footer.html">Footer</a>
-      
-    </li>
-  
-  <li class=" " data-id="tablo/Tablo/Heading/SubTitle" data-name="tablo::heading::subtitle">
-      <a href="Tablo/Heading/SubTitle.html">SubTitle</a>
-      
-    </li>
-  
-  <li class=" " data-id="tablo/Tablo/Heading/Title" data-name="tablo::heading::title">
-      <a href="Tablo/Heading/Title.html">Title</a>
-      
-    </li>
-  
-</ul>
-
       
     </li>
   
@@ -541,7 +516,7 @@ displayed.</p>
 <p>To display a title (or subtitle or footer), simply specify its value when
 initializing the table.</p>
 <pre><code class="language-crystal">table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
-        title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Title</span>.new(<span class="s">&quot;Data types alignment&quot;</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span></code></pre>
+        title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Data types alignment&quot;</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span></code></pre>
 <p>Output:</p>
 <pre><code class="language-crystal">                     Data types alignment
 +-----------------------------+-----------------------------+
@@ -561,7 +536,7 @@ initializing the table.</p>
 value between the current element's <code>line_breaks_after</code> and the next element's
 <code>line_breaks_before</code>.</p>
 <pre><code class="language-crystal">table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
-  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Title</span>.new(<span class="s">&quot;Data types alignment&quot;</span>,
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Data types alignment&quot;</span>,
     frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Frame</span>.new(line_breaks_before: <span class="n">0</span>, line_breaks_after: <span class="n">2</span>))) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span></code></pre>
 <p>Output:</p>
 <pre><code class="language-crystal">+-----------------------------------------------------------+
@@ -612,10 +587,10 @@ only once, at the beginning for titles and headers, at the end for the footer.</
 </ul>
 <pre><code class="language-crystal">table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
         header_frequency: <span class="n">0</span>,
-        title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Title</span>.new(<span class="s">&quot;Data types alignment&quot;</span>,
+        title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Data types alignment&quot;</span>,
           frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Frame</span>.new(<span class="n">0</span>, <span class="n">2</span>)),
-        subtitle: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">SubTitle</span>.new(<span class="s">&quot;Only Booleans are centered by default&quot;</span>),
-        footer: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Footer</span>.new(<span class="s">&quot;End of page&quot;</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span></code></pre>
+        subtitle: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Only Booleans are centered by default&quot;</span>),
+        footer: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;End of page&quot;</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span></code></pre>
 <p>Output:</p>
 <pre><code class="language-crystal">+-----------------------------------------------------------+
 |                    Data types alignment                   |
@@ -676,7 +651,7 @@ rows, as are footers, but titles and subtitles are not repeated.</li>
 subtitle repetition.</p>
 <pre><code class="language-crystal">table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
         header_frequency: <span class="n">2</span>,
-        title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Title</span>.new(<span class="s">&quot;Data types alignment&quot;</span>,
+        title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Data types alignment&quot;</span>,
           frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Frame</span>.new(<span class="n">0</span>, <span class="n">2</span>), repeated: <span class="n">true</span>),</code></pre>
 <p>Output:</p>
 <pre><code class="language-crystal">+-----------------------------------------------------------+
@@ -1009,8 +984,8 @@ to make them easier to read?</p>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
 
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>, <span class="n">4</span>, <span class="n">5</span>],
-  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Title</span>.new(<span class="s">&quot;My black and white fancy table&quot;</span>, frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Frame</span>.new),
-  footer: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Footer</span>.new(<span class="s">&quot;End of data&quot;</span>, frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Frame</span>.new),
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My black and white fancy table&quot;</span>, frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Frame</span>.new),
+  footer: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;End of data&quot;</span>, frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Frame</span>.new),
   border: <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="n">:fancy</span>, <span class="o">-&gt;</span>(border_char : <span class="t">String</span>) {
     border_char.colorize(<span class="n">:light_gray</span>).to_s
   }),
@@ -1253,7 +1228,7 @@ invoice <span class="o">=</span> [
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new(invoice,
   omit_last_rule: <span class="n">false</span>,
   border: <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="t">Tablo</span><span class="t">::</span><span class="t">BorderName</span><span class="t">::</span><span class="t">Fancy</span>),
-  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Title</span>.new(<span class="s">&quot;Invoice&quot;</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Invoice&quot;</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
   t.add_column(<span class="s">&quot;Product&quot;</span>,
     <span class="o">&amp;</span>.product)
   t.add_column(<span class="s">&quot;Quantity&quot;</span>,

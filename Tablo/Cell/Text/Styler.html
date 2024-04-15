@@ -207,33 +207,8 @@
       
     </li>
   
-  <li class=" " data-id="tablo/Tablo/Frame" data-name="tablo::frame">
-      <a href="../../../Tablo/Frame.html">Frame</a>
-      
-    </li>
-  
-  <li class="parent " data-id="tablo/Tablo/Heading" data-name="tablo::heading">
+  <li class=" " data-id="tablo/Tablo/Heading" data-name="tablo::heading">
       <a href="../../../Tablo/Heading.html">Heading</a>
-      
-        <ul>
-  
-  <li class=" " data-id="tablo/Tablo/Heading/Footer" data-name="tablo::heading::footer">
-      <a href="../../../Tablo/Heading/Footer.html">Footer</a>
-      
-    </li>
-  
-  <li class=" " data-id="tablo/Tablo/Heading/SubTitle" data-name="tablo::heading::subtitle">
-      <a href="../../../Tablo/Heading/SubTitle.html">SubTitle</a>
-      
-    </li>
-  
-  <li class=" " data-id="tablo/Tablo/Heading/Title" data-name="tablo::heading::title">
-      <a href="../../../Tablo/Heading/Title.html">Title</a>
-      
-    </li>
-  
-</ul>
-
       
     </li>
   
@@ -377,7 +352,7 @@ differently each line of multiline cell:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
-  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Title</span>.new(<span class="s">&quot;My\nMultiline\nTitle&quot;</span>,
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My\nMultiline\nTitle&quot;</span>,
     frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Frame</span>.new,
     styler: <span class="o">-&gt;</span>(content : <span class="t">String</span>, line : <span class="t">Int32</span>) {
       <span class="k">case</span> line
@@ -398,7 +373,7 @@ puts table</code></pre>
 
 <span class="t">COLORS</span> <span class="o">=</span> [<span class="n">:blue</span>, <span class="n">:red</span>, <span class="n">:green</span>, <span class="n">:magenta</span>, <span class="n">:cyan</span>]
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
-  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Title</span>.new(<span class="s">&quot;My MultiColor Title&quot;</span>,
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My MultiColor Title&quot;</span>,
     frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Frame</span>.new,
     styler: <span class="o">-&gt;</span>(content : <span class="t">String</span>) { content.chars.map { <span class="o">|</span>c<span class="o">|</span>
       c.colorize.fore(<span class="t">COLORS</span>[rand(<span class="n">5</span>)]).mode(<span class="n">:bold</span>).to_s
@@ -444,7 +419,7 @@ puts table</code></pre>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/ddad9accca3992349309f9a3d82ed04335dba4f6/src/cell.cr#L360" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/f97a1376eceb5d9351e4611ab0c3db563846460f/src/cell.cr#L360" target="_blank">
         cell.cr
       </a>
     

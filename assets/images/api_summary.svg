@@ -1,0 +1,47 @@
+<svg width="58ch" height="26em" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve">
+    <style>
+        * {
+            font-family: FreeMono, monospace;
+            font-size: 14px;
+        }
+        tspan, text {
+            font-variant-ligatures: none;
+            dominant-baseline: central;
+            white-space: pre;
+            fill: #3e3e3e;
+        }
+        .bg {
+            stroke-width: "0.5px";
+        }
+        .bold {
+            font-weight: bold;
+        }
+        .italic {
+            font-style: italic;
+        }
+    </style>
+<text x="0ch" y="1.5em"><tspan>                          Invoice                         </tspan></text>
+<text x="0ch" y="2.5em"><tspan>                          =======                         </tspan></text>
+<text x="0ch" y="4.5em"><tspan>╭────────────────────────────────────────────────────────╮</tspan></text>
+<text x="0ch" y="5.5em"><tspan>│                         Details                        │</tspan></text>
+<text x="0ch" y="6.5em"><tspan>├─────────────┬──────────┬────────────────────┬──────────┤</tspan></text>
+<text x="0ch" y="7.5em"><tspan>│ Product     : Quantity :              Price :    Total │</tspan></text>
+<text x="0ch" y="8.5em"><tspan>├-------------┼----------┼--------------------┼----------┤</tspan></text>
+<text x="0ch" y="9.5em"><tspan>│ Laptop      :        3 :             980.00 :  2940.00 │</tspan></text>
+<text x="0ch" y="10.5em"><tspan>│ Printer     :        2 :             154.99 :   309.98 │</tspan></text>
+<text x="0ch" y="11.5em"><tspan>│ Router      :        1 :              99.00 :    99.00 │</tspan></text>
+<text x="0ch" y="12.5em"><tspan>│ Switch      : N/A      :              45.00 :          │</tspan></text>
+<text x="0ch" y="13.5em"><tspan>│ Accessories :        5 :              64.50 :   322.50 │</tspan></text>
+<text x="0ch" y="14.5em"><tspan>├─────────────┴──────────┴────────────────────┴──────────┤</tspan></text>
+<text x="0ch" y="15.5em"><tspan>│                         Summary                        │</tspan></text>
+<text x="0ch" y="16.5em"><tspan>├─────────────┬──────────┬────────────────────┬──────────┤</tspan></text>
+<text x="0ch" y="17.5em"><tspan>│             :          :      Total Invoice :  Amounts │</tspan></text>
+<text x="0ch" y="18.5em"><tspan>├-------------┼----------┼--------------------┼----------┤</tspan></text>
+<text x="0ch" y="19.5em"><tspan>│             :          :           SubTotal :  </tspan><tspan class="bold">3671.48 </tspan><tspan>│</tspan></text>
+<text x="0ch" y="20.5em"><tspan>│             :          :        Discount 5% :   </tspan><tspan class="italic">183.57 </tspan><tspan>│</tspan></text>
+<text x="0ch" y="21.5em"><tspan>│             :          : S/T after discount :  </tspan><tspan class="bold">3487.91 </tspan><tspan>│</tspan></text>
+<text x="0ch" y="22.5em"><tspan>│             :          :          Tax (20%) :   697.58 │</tspan></text>
+<text x="0ch" y="23.5em"><tspan>│             :          :                    : ======== │</tspan></text>
+<text x="0ch" y="24.5em"><tspan>│             :          :        Balance due :  </tspan><tspan class="bold">4185.49 </tspan><tspan>│</tspan></text>
+<text x="0ch" y="25.5em"><tspan>╰─────────────┴──────────┴────────────────────┴──────────╯</tspan></text>
+</svg>
