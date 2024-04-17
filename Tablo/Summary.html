@@ -222,16 +222,6 @@
       
     </li>
   
-  <li class=" " data-id="tablo/Tablo/Position" data-name="tablo::position">
-      <a href="../Tablo/Position.html">Position</a>
-      
-    </li>
-  
-  <li class=" " data-id="tablo/Tablo/RowType" data-name="tablo::rowtype">
-      <a href="../Tablo/RowType.html">RowType</a>
-      
-    </li>
-  
   <li class="parent open current" data-id="tablo/Tablo/Summary" data-name="tablo::summary(t, u, v)">
       <a href="../Tablo/Summary.html">Summary</a>
       
@@ -361,7 +351,7 @@ source data in a dedicated table, closely linked to the main table.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f97a1376eceb5d9351e4611ab0c3db563846460f/src/summary.cr#L7" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/summary.cr#L7" target="_blank">
         summary.cr
       </a>
     
@@ -406,7 +396,7 @@ source data in a dedicated table, closely linked to the main table.</p>
       <li class="entry-summary">
         <a href="#use%28key%29-class-method" class="signature"><strong>.use</strong>(key)</a>
         
-          <div class="summary"><p>Class method to retrieve and use results of saved calculations by key (which is of type Symbol).</p></div>
+          <div class="summary"><p>Class method to retrieve and use results of saved calculations by key (which is of type Symbol).<br /> (see <code><a href="../Tablo/Summary/UserProc.html">Summary::UserProc</a></code>)</p></div>
         
       </li>
     
@@ -476,7 +466,7 @@ source data in a dedicated table, closely linked to the main table.</p>
 This parameter references the main table</p>
 </li>
 <li>
-<p><code>summary_definition</code>: its type is U, as its content is a user defined
+<p><code>summary_definition</code>: its type is U, as it depends on a user defined
 array containing <code>n</code> instances of <code><a href="../Tablo/Summary/UserProc.html">Summary::UserProc</a></code>, <code><a href="../Tablo/Summary/HeaderColumn.html">Summary::HeaderColumn</a></code>,
 <code><a href="../Tablo/Summary/BodyColumn.html">Summary::BodyColumn</a></code>, <code><a href="../Tablo/Summary/BodyRow.html">Summary::BodyRow</a></code> structs)</p>
 </li>
@@ -490,6 +480,8 @@ empty)</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
 <span class="k">require</span> <span class="s">&quot;big&quot;</span>
+
+<span class="t">Tablo</span><span class="t">::</span><span class="t">Config</span>.styler_tty_only <span class="o">=</span> <span class="n">false</span>
 
 <span class="k">struct</span> <span class="t">BigDecimal</span>
   <span class="k">include</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>
@@ -536,11 +528,11 @@ invoice_summary_definition <span class="o">=</span> [
         value.<span class="k">nil?</span> ? <span class="s">&quot;&quot;</span> : <span class="s">&quot;%.2f&quot;</span> <span class="o">%</span> value.<span class="k">as</span>(<span class="t">BigDecimal</span>)
       )
     },
-    styler: <span class="o">-&gt;</span>(_value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, cd : <span class="t">Tablo</span><span class="t">::</span><span class="t">Cell</span><span class="t">::</span><span class="t">Data</span><span class="t">::</span><span class="t">Coords</span>, fc : <span class="t">String</span>) {
-      <span class="k">case</span> cd.row_index
-      <span class="k">when</span> <span class="n">0</span>, <span class="n">2</span>, <span class="n">5</span> <span class="k">then</span> fc.colorize.mode(<span class="n">:bold</span>).to_s
-      <span class="k">when</span> <span class="n">1</span>       <span class="k">then</span> fc.colorize.mode(<span class="n">:italic</span>).to_s
-      <span class="k">else</span>              fc
+    styler: <span class="o">-&gt;</span>(_value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, coords : <span class="t">Tablo</span><span class="t">::</span><span class="t">Cell</span><span class="t">::</span><span class="t">Data</span><span class="t">::</span><span class="t">Coords</span>, content : <span class="t">String</span>) {
+      <span class="k">case</span> coords.row_index
+      <span class="k">when</span> <span class="n">0</span>, <span class="n">2</span>, <span class="n">5</span> <span class="k">then</span> content.colorize.mode(<span class="n">:bold</span>).to_s
+      <span class="k">when</span> <span class="n">1</span>       <span class="k">then</span> content.colorize.mode(<span class="n">:italic</span>).to_s
+      <span class="k">else</span>              content
       <span class="k">end</span>
     }),
   <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">HeaderColumn</span>.new(<span class="s">&quot;Product&quot;</span>, content: <span class="s">&quot;&quot;</span>),
@@ -590,11 +582,11 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
 table.pack
 table.add_summary(invoice_summary_definition,
   title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Summary&quot;</span>, framed: <span class="n">true</span>))
-table.summary.<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>).pack
+table.summary.pack
 puts table
 puts table.summary</code></pre>
 <img src="../assets/images/api_summary.svg" width="540">
-<p>A few points of note <br /></p>
+<p>A few points of note: <br /></p>
 <ul>
 <li>Use of the <code>BigDecimal</code> type (not included in Tablo by default, but made
 possible by reopening the <code>BigDecimal</code> struct and adding the <code>include <a href="../Tablo/CellType.html">CellType</a></code>
@@ -612,7 +604,7 @@ before summary table definition.</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f97a1376eceb5d9351e4611ab0c3db563846460f/src/summary.cr#L162" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/summary.cr#L164" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -640,7 +632,8 @@ before summary table definition.</li>
         <div class="doc">
           
           <p>Class method to retrieve and use results of saved calculations
-by key (which is of type Symbol).</p>
+by key (which is of type Symbol).<br />
+(see <code><a href="../Tablo/Summary/UserProc.html">Summary::UserProc</a></code>)</p>
 <p>For example, to populate row 1 of column <code>:total</code> with the result of
 a previous calculation identified by <code>:total_sum</code>:</p>
 <pre><code class="language-crystal"><span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">1</span>, <span class="o">-&gt;</span>{ <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total_sum</span>) })</code></pre>
@@ -649,7 +642,7 @@ a previous calculation identified by <code>:total_sum</code>:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f97a1376eceb5d9351e4611ab0c3db563846460f/src/summary.cr#L180" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/summary.cr#L183" target="_blank">View source</a>]
         
       </div>
     </div>

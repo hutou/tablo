@@ -222,16 +222,6 @@
       
     </li>
   
-  <li class=" " data-id="tablo/Tablo/Position" data-name="tablo::position">
-      <a href="../../Tablo/Position.html">Position</a>
-      
-    </li>
-  
-  <li class=" " data-id="tablo/Tablo/RowType" data-name="tablo::rowtype">
-      <a href="../../Tablo/RowType.html">RowType</a>
-      
-    </li>
-  
   <li class="parent open current" data-id="tablo/Tablo/Summary" data-name="tablo::summary(t, u, v)">
       <a href="../../Tablo/Summary.html">Summary</a>
       
@@ -361,7 +351,7 @@ alignment, formatting and styling on body columns.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f97a1376eceb5d9351e4611ab0c3db563846460f/src/summary.cr#L478" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/summary.cr#L542" target="_blank">
         summary.cr
       </a>
     
@@ -383,7 +373,7 @@ alignment, formatting and styling on body columns.</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new%28column%3ALabelType%7CArray%28LabelType%29%2Calignment%3AJustify%7CNil%3Dnil%2Cformatter%3ACell%3A%3AData%3A%3AFormatter%7CNil%3Dnil%2Cstyler%3ACell%3A%3AData%3A%3AStyler%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(column : LabelType | Array(LabelType), alignment : Justify | Nil = <span class="n">nil</span>, formatter : Cell::Data::Formatter | Nil = <span class="n">nil</span>, styler : Cell::Data::Styler | Nil = <span class="n">nil</span>)</a>
+        <a href="#new%28column%3ALabelType%7CArray%28LabelType%29%2C%2A%2Calignment%3AJustify%7CNil%3Dnil%2Cformatter%3ACell%3A%3AData%3A%3AFormatter%7CNil%3Dnil%2Cstyler%3ACell%3A%3AData%3A%3AStyler%7CNil%3Dnil%29-class-method" class="signature"><strong>.new</strong>(column : LabelType | Array(LabelType), *, alignment : Justify | Nil = <span class="n">nil</span>, formatter : Cell::Data::Formatter | Nil = <span class="n">nil</span>, styler : Cell::Data::Styler | Nil = <span class="n">nil</span>)</a>
         
           <div class="summary"><p>The constructor expects up to 4 parameters, of which the first, the column identifier, is the only mandatory one (but it goes without saying that at least one of the 3 optional parameters must be defined!)</p></div>
         
@@ -452,12 +442,12 @@ alignment, formatting and styling on body columns.</p>
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(column:LabelType|Array(LabelType),alignment:Justify|Nil=nil,formatter:Cell::Data::Formatter|Nil=nil,styler:Cell::Data::Styler|Nil=nil)-class-method">
+    <div class="entry-detail" id="new(column:LabelType|Array(LabelType),*,alignment:Justify|Nil=nil,formatter:Cell::Data::Formatter|Nil=nil,styler:Cell::Data::Styler|Nil=nil)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(column : <a href="../../Tablo/LabelType.html">LabelType</a> | Array(<a href="../../Tablo/LabelType.html">LabelType</a>), alignment : <a href="../../Tablo/Justify.html">Justify</a> | Nil = <span class="n">nil</span>, formatter : <a href="../../Tablo/Cell/Data/Formatter.html">Cell::Data::Formatter</a> | Nil = <span class="n">nil</span>, styler : <a href="../../Tablo/Cell/Data/Styler.html">Cell::Data::Styler</a> | Nil = <span class="n">nil</span>)
+        def self.<strong>new</strong>(column : <a href="../../Tablo/LabelType.html">LabelType</a> | Array(<a href="../../Tablo/LabelType.html">LabelType</a>), *, alignment : <a href="../../Tablo/Justify.html">Justify</a> | Nil = <span class="n">nil</span>, formatter : <a href="../../Tablo/Cell/Data/Formatter.html">Cell::Data::Formatter</a> | Nil = <span class="n">nil</span>, styler : <a href="../../Tablo/Cell/Data/Styler.html">Cell::Data::Styler</a> | Nil = <span class="n">nil</span>)
 
-        <a class="method-permalink" href="#new%28column%3ALabelType%7CArray%28LabelType%29%2Calignment%3AJustify%7CNil%3Dnil%2Cformatter%3ACell%3A%3AData%3A%3AFormatter%7CNil%3Dnil%2Cstyler%3ACell%3A%3AData%3A%3AStyler%7CNil%3Dnil%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28column%3ALabelType%7CArray%28LabelType%29%2C%2A%2Calignment%3AJustify%7CNil%3Dnil%2Cformatter%3ACell%3A%3AData%3A%3AFormatter%7CNil%3Dnil%2Cstyler%3ACell%3A%3AData%3A%3AStyler%7CNil%3Dnil%29-class-method">#</a>
       </div>
       
         <div class="doc">
@@ -467,11 +457,12 @@ column identifier, is the only mandatory one (but it goes without saying
 that at least one of the 3 optional parameters must be defined!)</p>
 <ul>
 <li>
-<p><code>column</code> : type is <code><a href="../../Tablo/LabelType.html">LabelType</a></code></p>
+<p><code>column</code> : type is <code><a href="../../Tablo/LabelType.html">LabelType</a></code> (or <code>Array(<a href="../../Tablo/LabelType.html">LabelType</a>)</code>, useful if
+several columns have same parameter values)</p>
 </li>
 <li>
-<p>The last three optional parameters are (<code>alignment</code>,
-<code>formatter</code> and <code>styler</code>)</p>
+<p>The last three optional parameters are <code>alignment</code>,
+<code>formatter</code> and <code>styler</code></p>
 </li>
 </ul>
 <p>Example:</p>
@@ -493,7 +484,7 @@ that at least one of the 3 optional parameters must be defined!)</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f97a1376eceb5d9351e4611ab0c3db563846460f/src/summary.cr#L506" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/summary.cr#L571" target="_blank">View source</a>]
         
       </div>
     </div>

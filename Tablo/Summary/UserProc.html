@@ -222,16 +222,6 @@
       
     </li>
   
-  <li class=" " data-id="tablo/Tablo/Position" data-name="tablo::position">
-      <a href="../../Tablo/Position.html">Position</a>
-      
-    </li>
-  
-  <li class=" " data-id="tablo/Tablo/RowType" data-name="tablo::rowtype">
-      <a href="../../Tablo/RowType.html">RowType</a>
-      
-    </li>
-  
   <li class="parent open current" data-id="tablo/Tablo/Summary" data-name="tablo::summary(t, u, v)">
       <a href="../../Tablo/Summary.html">Summary</a>
       
@@ -362,7 +352,7 @@ in order to provide aggregated results.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f97a1376eceb5d9351e4611ab0c3db563846460f/src/summary.cr#L389" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/summary.cr#L392" target="_blank">
         summary.cr
       </a>
     
@@ -465,29 +455,83 @@ in order to provide aggregated results.</p>
           
           <p>The constructor's only parameter is a Proc, which in turn expects
 a Table(T) as its only parameter.</p>
-<p>The Proc must return a hash of results (of type CellType), which are
-automatically saved for future use (See <code><a href="../../Tablo/Summary.html#use%28key%29-class-method">Summary.use</a></code> method
-in <code><a href="../../Tablo/Summary/BodyRow.html">Summary::BodyRow</a></code>).</p>
-<p>Example of accessing data directly from source:</p>
-<pre><code class="language-crystal"><span class="k">struct</span> <span class="t">InvoiceItem</span>
+<p>The <code>table</code> parameter allows the user to access detailed data in two ways:</p>
+<ol>
+<li>by directly accessing the data source (<code>table.sources.each ...</code>)</li>
+<li>by accessing data via column definition: <code>table.column_data(column_label).each....</code></li>
+</ol>
+<p>Note that access via column definition allows access to data not
+directly present in the source, but has the disadvantage of indirect
+access to source data via the user defined <code>extractor</code>.</p>
+<p>The Proc must return a hash of results (of type <code><a href="../../Tablo/CellType.html">Tablo::CellType</a></code>), which, when
+used inside a Summary table definition, are automatically saved for
+future use (see the <code><a href="../../Tablo/Summary.html#use%28key%29-class-method">Summary.use</a></code> method in <code><a href="../../Tablo/Summary/BodyRow.html">Summary::BodyRow</a></code>).</p>
+<p>Example of accessing data directly from source (note that, in this
+reduced example, we don't even need to define any columns):</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+
+<span class="k">struct</span> <span class="t">InvoiceItem</span>
   getter product, quantity, price
 
   <span class="k">def</span> <span class="m">initialize</span>(@product : <span class="t">String</span>, @quantity : <span class="t">Int32</span>?, @price : <span class="t">Int32</span>?)
   <span class="k">end</span>
 <span class="k">end</span>
 
-<span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">UserProc</span>.new(
+invoice <span class="o">=</span> [
+  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Laptop&quot;</span>, <span class="n">3</span>, <span class="n">98000</span>),
+  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Printer&quot;</span>, <span class="n">2</span>, <span class="n">15499</span>),
+  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Router&quot;</span>, <span class="n">1</span>, <span class="n">9900</span>),
+  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Switch&quot;</span>, <span class="n">nil</span>, <span class="n">4500</span>),
+  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Accessories&quot;</span>, <span class="n">5</span>, <span class="n">6450</span>),
+]
+
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new(invoice)
+
+userproc <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">UserProc</span>.new(
   proc: <span class="o">-&gt;</span>(tbl : <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>(<span class="t">InvoiceItem</span>)) {
-    total_sum <span class="o">=</span> <span class="n">0</span>
+    total_sum <span class="o">=</span> total_count <span class="o">=</span> max_price <span class="o">=</span> <span class="n">0</span>
     tbl.sources.each <span class="k">do</span> <span class="o">|</span>row<span class="o">|</span>
       <span class="k">next</span> <span class="k">unless</span> row.quantity.<span class="k">is_a?</span>(<span class="t">Int32</span>) <span class="o">&amp;&amp;</span> row.price.<span class="k">is_a?</span>(<span class="t">Int32</span>)
+      total_count <span class="o">+=</span> <span class="n">1</span>
+      max_price <span class="o">=</span> [max_price, row.price.<span class="k">as</span>(<span class="t">Int32</span>)].max
       total_sum <span class="o">+=</span> row.quantity.<span class="k">as</span>(<span class="t">Int32</span>) <span class="o">*</span> row.price.<span class="k">as</span>(<span class="t">Int32</span>)
     <span class="k">end</span>
-    {<span class="n">:total_sum</span> <span class="o">=&gt;</span> total_sum.<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>)}
-  })</code></pre>
-<p>Another example, this time using column access, with iterators, and
-returning several results.</p>
-<pre><code class="language-crystal"><span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">UserProc</span>.new(
+    {
+      <span class="n">:total_count</span> <span class="o">=&gt;</span> total_count.<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>),
+      <span class="n">:total_sum</span>   <span class="o">=&gt;</span> total_sum.<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>),
+      <span class="n">:max_price</span>   <span class="o">=&gt;</span> max_price.<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>),
+    }
+  })
+
+hash <span class="o">=</span> userproc.proc.call(table)
+
+puts hash[<span class="n">:total_sum</span>]   <span class="c"># =&gt; 367148</span>
+puts hash[<span class="n">:total_count</span>] <span class="c"># =&gt; 4</span>
+puts hash[<span class="n">:max_price</span>]   <span class="c"># =&gt; 98000</span></code></pre>
+<p>Another example, this time using column access via <code><a href="../../Tablo/Table.html#column_data%28column_label%3ALabelType%29-instance-method">Table#column_data</a></code>, with iterators:</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+
+<span class="k">struct</span> <span class="t">InvoiceItem</span>
+  getter product, quantity, price
+
+  <span class="k">def</span> <span class="m">initialize</span>(@product : <span class="t">String</span>, @quantity : <span class="t">Int32</span>?, @price : <span class="t">Int32</span>?)
+  <span class="k">end</span>
+<span class="k">end</span>
+
+invoice <span class="o">=</span> [
+  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Laptop&quot;</span>, <span class="n">3</span>, <span class="n">98000</span>),
+  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Printer&quot;</span>, <span class="n">2</span>, <span class="n">15499</span>),
+  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Router&quot;</span>, <span class="n">1</span>, <span class="n">9900</span>),
+  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Switch&quot;</span>, <span class="n">nil</span>, <span class="n">4500</span>),
+  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Accessories&quot;</span>, <span class="n">5</span>, <span class="n">6450</span>),
+]
+
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new(invoice) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;Quantity&quot;</span>, <span class="o">&amp;</span>.quantity)
+  t.add_column(<span class="s">&quot;Price&quot;</span>, <span class="o">&amp;</span>.price)
+<span class="k">end</span>
+
+userproc <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">UserProc</span>.new(
   proc: <span class="o">-&gt;</span>(tbl : <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>(<span class="t">InvoiceItem</span>)) {
     total_sum <span class="o">=</span> total_count <span class="o">=</span> max_price <span class="o">=</span> <span class="n">0</span>
     iter_quantity <span class="o">=</span> tbl.column_data(<span class="s">&quot;Quantity&quot;</span>).each
@@ -504,13 +548,20 @@ returning several results.</p>
       <span class="n">:total_sum</span>   <span class="o">=&gt;</span> total_sum.<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>),
       <span class="n">:max_price</span>   <span class="o">=&gt;</span> max_price.<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>),
     }
-  })</code></pre>
+  })
+
+hash <span class="o">=</span> userproc.proc.call(table)
+
+puts hash[<span class="n">:total_sum</span>]   <span class="c"># =&gt; 367148</span>
+puts hash[<span class="n">:total_count</span>] <span class="c"># =&gt; 4</span>
+puts hash[<span class="n">:max_price</span>]   <span class="c"># =&gt; 98000</span></code></pre>
+<p>Note that column access is about 3 times slower.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f97a1376eceb5d9351e4611ab0c3db563846460f/src/summary.cr#L440" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/summary.cr#L504" target="_blank">View source</a>]
         
       </div>
     </div>
