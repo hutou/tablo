@@ -7,7 +7,6 @@
 #
 # ```
 # module CellType
-#   btyp
 # end
 # ```
 #
@@ -114,7 +113,9 @@ module Tablo
     Word
   end
 
-  # Types of rows in Table layout
+  # :nodoc:
+  # The RowType type identifies the different types of row in a Table layout
+  # *internal use only*
   enum RowType
     Title
     SubTitle
@@ -124,8 +125,11 @@ module Tablo
     Footer
   end
 
-  # Row position transitions
-  enum Position
+  # :nodoc:
+  # The RuleType type identifies the different cases of transition between row
+  # types, and hence the type of separating rule to be applied.
+  # *internal use only*
+  enum RuleType
     BodyBody
     BodyBottom
     BodyFiller
@@ -147,7 +151,15 @@ module Tablo
     TitleTop
   end
 
-  # Cell justification
+  # Cell contents can be justified in 3 ways: to the left, to the right or centered.
+  #
+  # Justification can be explicit, defined by a dedicated attribute, or
+  # implicit, depending on the cell data type.
+  #
+  # In the latter case, in Tablo, the justification is as follows:
+  # - Right for cells containing numeric data
+  # - Centered for cells containing Boolean data
+  # - Left for all other cases
   enum Justify
     Left
     Center

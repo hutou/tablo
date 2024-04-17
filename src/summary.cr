@@ -27,7 +27,7 @@ module Tablo
     # - `table`: type is Table(T) <br />
     #   This parameter references the main table
     #
-    # - `summary_definition`: its type is U, as its content is a user defined
+    # - `summary_definition`: its type is U, as it depends on a user defined
     # array containing `n` instances of `Summary::UserProc`, `Summary::HeaderColumn`,
     # `Summary::BodyColumn`, `Summary::BodyRow` structs)
     #
@@ -41,6 +41,8 @@ module Tablo
     # require "tablo"
     # require "colorize"
     # require "big"
+    #
+    # Tablo::Config.styler_tty_only = false
     #
     # struct BigDecimal
     #   include Tablo::CellType
@@ -87,11 +89,11 @@ module Tablo
     #         value.nil? ? "" : "%.2f" % value.as(BigDecimal)
     #       )
     #     },
-    #     styler: ->(_value : Tablo::CellType, cd : Tablo::Cell::Data::Coords, fc : String) {
-    #       case cd.row_index
-    #       when 0, 2, 5 then fc.colorize.mode(:bold).to_s
-    #       when 1       then fc.colorize.mode(:italic).to_s
-    #       else              fc
+    #     styler: ->(_value : Tablo::CellType, coords : Tablo::Cell::Data::Coords, content : String) {
+    #       case coords.row_index
+    #       when 0, 2, 5 then content.colorize.mode(:bold).to_s
+    #       when 1       then content.colorize.mode(:italic).to_s
+    #       else              content
     #       end
     #     }),
     #   Tablo::Summary::HeaderColumn.new("Product", content: ""),
@@ -141,14 +143,14 @@ module Tablo
     # table.pack
     # table.add_summary(invoice_summary_definition,
     #   title: Tablo::Heading.new("Summary", framed: true))
-    # table.summary.as(Tablo::Table).pack
+    # table.summary.pack
     # puts table
     # puts table.summary
     # ```
     #
     # <img src="../assets/images/api_summary.svg" width="540">
     #
-    # A few points of note <br />
+    # A few points of note: <br />
     # - Use of the `BigDecimal` type (not included in Tablo by default, but made
     #   possible by reopening the `BigDecimal` struct and adding the `include CellType`
     #   statement).
@@ -170,7 +172,8 @@ module Tablo
     end
 
     # Class method to retrieve and use results of saved calculations
-    # by key (which is of type Symbol).
+    # by key (which is of type Symbol).<br />
+    # (see `Summary::UserProc`)
     #
     # For example, to populate row 1 of column `:total` with the result of
     # a previous calculation identified by `:total_sum`:
@@ -392,12 +395,23 @@ module Tablo
       # The constructor's only parameter is a Proc, which in turn expects
       # a Table(T) as its only parameter.
       #
-      # The Proc must return a hash of results (of type CellType), which are
-      # automatically saved for future use (See `Summary.use` method
-      # in `Summary::BodyRow`).
+      #  The `table` parameter allows the user to access detailed data in two ways:
+      # 1. by directly accessing the data source (`table.sources.each ...`)
+      # 2. by accessing data via column definition: `table.column_data(column_label).each....`
       #
-      # Example of accessing data directly from source:
+      # Note that access via column definition allows access to data not
+      # directly present in the source, but has the disadvantage of indirect
+      # access to source data via the user defined `extractor`.
+      #
+      # The Proc must return a hash of results (of type `Tablo::CellType`), which, when
+      # used inside a Summary table definition, are automatically saved for
+      # future use (see the `Summary.use` method in `Summary::BodyRow`).
+      #
+      # Example of accessing data directly from source (note that, in this
+      # reduced example, we don't even need to define any columns):
       # ```
+      # require "tablo"
+      #
       # struct InvoiceItem
       #   getter product, quantity, price
       #
@@ -405,20 +419,63 @@ module Tablo
       #   end
       # end
       #
-      # Tablo::Summary::UserProc.new(
+      # invoice = [
+      #   InvoiceItem.new("Laptop", 3, 98000),
+      #   InvoiceItem.new("Printer", 2, 15499),
+      #   InvoiceItem.new("Router", 1, 9900),
+      #   InvoiceItem.new("Switch", nil, 4500),
+      #   InvoiceItem.new("Accessories", 5, 6450),
+      # ]
+      #
+      # table = Tablo::Table.new(invoice)
+      #
+      # userproc = Tablo::Summary::UserProc.new(
       #   proc: ->(tbl : Tablo::Table(InvoiceItem)) {
-      #     total_sum = 0
+      #     total_sum = total_count = max_price = 0
       #     tbl.sources.each do |row|
       #       next unless row.quantity.is_a?(Int32) && row.price.is_a?(Int32)
+      #       total_count += 1
+      #       max_price = [max_price, row.price.as(Int32)].max
       #       total_sum += row.quantity.as(Int32) * row.price.as(Int32)
       #     end
-      #     {:total_sum => total_sum.as(Tablo::CellType)}
+      #     {
+      #       :total_count => total_count.as(Tablo::CellType),
+      #       :total_sum   => total_sum.as(Tablo::CellType),
+      #       :max_price   => max_price.as(Tablo::CellType),
+      #     }
       #   })
+      #
+      # hash = userproc.proc.call(table)
+      #
+      # puts hash[:total_sum]   # => 367148
+      # puts hash[:total_count] # => 4
+      # puts hash[:max_price]   # => 98000
       # ```
-      # Another example, this time using column access, with iterators, and
-      # returning several results.
+      # Another example, this time using column access via `Table#column_data`, with iterators:
       # ```
-      # Tablo::Summary::UserProc.new(
+      # require "tablo"
+      #
+      # struct InvoiceItem
+      #   getter product, quantity, price
+      #
+      #   def initialize(@product : String, @quantity : Int32?, @price : Int32?)
+      #   end
+      # end
+      #
+      # invoice = [
+      #   InvoiceItem.new("Laptop", 3, 98000),
+      #   InvoiceItem.new("Printer", 2, 15499),
+      #   InvoiceItem.new("Router", 1, 9900),
+      #   InvoiceItem.new("Switch", nil, 4500),
+      #   InvoiceItem.new("Accessories", 5, 6450),
+      # ]
+      #
+      # table = Tablo::Table.new(invoice) do |t|
+      #   t.add_column("Quantity", &.quantity)
+      #   t.add_column("Price", &.price)
+      # end
+      #
+      # userproc = Tablo::Summary::UserProc.new(
       #   proc: ->(tbl : Tablo::Table(InvoiceItem)) {
       #     total_sum = total_count = max_price = 0
       #     iter_quantity = tbl.column_data("Quantity").each
@@ -436,7 +493,14 @@ module Tablo
       #       :max_price   => max_price.as(Tablo::CellType),
       #     }
       #   })
+      #
+      # hash = userproc.proc.call(table)
+      #
+      # puts hash[:total_sum]   # => 367148
+      # puts hash[:total_count] # => 4
+      # puts hash[:max_price]   # => 98000
       # ```
+      # Note that column access is about 3 times slower.
       def initialize(@proc : Proc(Table(T), Hash(Symbol, CellType)))
       end
     end
@@ -482,10 +546,11 @@ module Tablo
       # column identifier, is the only mandatory one (but it goes without saying
       # that at least one of the 3 optional parameters must be defined!)
       #
-      # - `column` : type is `LabelType`
+      # - `column` : type is `LabelType` (or `Array(LabelType)`, useful if
+      #    several columns have same parameter values)
       #
-      # - The last three optional parameters are (`alignment`,
-      #   `formatter` and `styler`)
+      # - The last three optional parameters are `alignment`,
+      #   `formatter` and `styler`
       #
       # Example:
       # ```
@@ -503,7 +568,7 @@ module Tablo
       #     end
       #   }),
       # ```
-      def initialize(@column : LabelType | Array(LabelType),
+      def initialize(@column : LabelType | Array(LabelType), *,
                      @alignment : Justify? = nil,
                      @formatter : Cell::Data::Formatter? = nil,
                      @styler : Cell::Data::Styler? = nil)

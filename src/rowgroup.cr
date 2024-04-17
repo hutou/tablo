@@ -1,4 +1,4 @@
-require "./types"
+# require "./types"
 require "./heading"
 
 module Tablo
@@ -92,13 +92,13 @@ module Tablo
               # we must use a specific horizontal rule do separate detail and summary
               case {previous_rowtype, current_rowtype}
               when {RowType::Body, RowType::Header}
-                add_rule(Position::SummaryHeader,
+                add_rule(RuleType::SummaryHeader,
                   groups: groups, linenum: __LINE__)
               when {RowType::Footer, RowType::Body}
-                add_rule(Position::TitleBody,
+                add_rule(RuleType::TitleBody,
                   groups: groups, linenum: __LINE__)
               when {RowType::Body, RowType::Body}
-                add_rule(Position::SummaryBody,
+                add_rule(RuleType::SummaryBody,
                   groups: groups, linenum: __LINE__)
               else
                 add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}],
@@ -107,10 +107,10 @@ module Tablo
             else
               case {previous_rowtype, current_rowtype}
               when {RowType::Body, RowType::Body}
-                add_rule(Position::BodyBody,
+                add_rule(RuleType::BodyBody,
                   groups: groups, linenum: __LINE__) if row_divider
               when {RowType::Group, RowType::Header}
-                add_rule(Position::GroupHeader,
+                add_rule(RuleType::GroupHeader,
                   groups: groups, linenum: __LINE__) unless table.omit_group_header_rule?
               else
                 add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}],
@@ -166,9 +166,9 @@ module Tablo
         # Only Body and Footer row types are possible
         case previous_rowtype
         when RowType::Body
-          add_rule(Position::BodyBottom, linenum: __LINE__)
+          add_rule(RuleType::BodyBottom, linenum: __LINE__)
         when RowType::Footer
-          add_rule(Position::TitleBottom, linenum: __LINE__) if table.footer.framed?
+          add_rule(RuleType::TitleBottom, linenum: __LINE__) if table.footer.framed?
           self.rows[-1] += "\f" if table.footer.page_break?
         end
         # Clear Table memory for next table display
@@ -207,15 +207,15 @@ module Tablo
           if spacing.zero?
             fill_page
             if summary_first?
-              # Table linking is done if adjacent row types are framed, with no spacing
+              # Table joining is done if adjacent row types are framed, with no spacing
               # we must use a specific horizontal rule do separate detail and summary
               case {previous_rowtype, current_rowtype}
               when {RowType::Body, RowType::Header}
-                add_rule(Position::SummaryHeader, groups: groups)
+                add_rule(RuleType::SummaryHeader, groups: groups)
               when {RowType::Footer, RowType::Body}
-                add_rule(Position::TitleBody, groups: groups)
+                add_rule(RuleType::TitleBody, groups: groups)
               when {RowType::Body, RowType::Body}
-                add_rule(Position::SummaryBody, groups: groups)
+                add_rule(RuleType::SummaryBody, groups: groups)
               else
                 add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}],
                   groups: groups)
@@ -223,9 +223,9 @@ module Tablo
             else
               case {previous_rowtype, current_rowtype}
               when {RowType::Body, RowType::Body}
-                add_rule(Position::BodyBody, groups: groups) if row_divider
+                add_rule(RuleType::BodyBody, groups: groups) if row_divider
               when {RowType::Group, RowType::Header}
-                add_rule(Position::GroupHeader,
+                add_rule(RuleType::GroupHeader,
                   groups: groups) unless table.omit_group_header_rule?
               else
                 add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}],
@@ -277,9 +277,9 @@ module Tablo
         # Only Body and Footer row types are possible
         case previous_rowtype
         when RowType::Body
-          add_rule(Position::BodyBottom)
+          add_rule(RuleType::BodyBottom)
         when RowType::Footer
-          add_rule(Position::TitleBottom) if table.footer.framed?
+          add_rule(RuleType::TitleBottom) if table.footer.framed?
           self.rows[-1] += "\f" if table.footer.page_break?
         end
         # Clear Table memory for next table display
@@ -336,37 +336,37 @@ module Tablo
 
     private ROWTYPE_POSITION = {
       # previous, current
-      {RowType::Body, RowType::Body}       => Position::BodyBody,
-      {RowType::Body, :bottom}             => Position::BodyBottom,
-      {RowType::Body, :filler}             => Position::BodyFiller,
-      {RowType::Body, RowType::Group}      => Position::BodyGroup,
-      {RowType::Body, RowType::Header}     => Position::BodyHeader,
-      {RowType::Body, RowType::Footer}     => Position::BodyTitle,
-      {RowType::Body, RowType::Title}      => Position::BodyTitle,
-      {RowType::Body, :top}                => Position::BodyTop,
-      {RowType::Group, RowType::Header}    => Position::GroupHeader,
-      {RowType::Group, :top}               => Position::GroupTop,
-      {RowType::Header, RowType::Body}     => Position::HeaderBody,
-      {RowType::Header, :top}              => Position::HeaderTop,
-      {:summary, RowType::Body}            => Position::SummaryBody,
-      {:summary, RowType::Header}          => Position::SummaryHeader,
-      {RowType::Footer, RowType::Body}     => Position::TitleBody,
-      {RowType::Title, RowType::Body}      => Position::TitleBody,
-      {RowType::Footer, :bottom}           => Position::TitleBottom,
-      {RowType::SubTitle, :bottom}         => Position::TitleBottom,
-      {RowType::Title, :bottom}            => Position::TitleBottom,
-      {RowType::Footer, RowType::Group}    => Position::TitleGroup,
-      {RowType::SubTitle, RowType::Group}  => Position::TitleGroup,
-      {RowType::Title, RowType::Group}     => Position::TitleGroup,
-      {RowType::Footer, RowType::Header}   => Position::TitleHeader,
-      {RowType::SubTitle, RowType::Header} => Position::TitleHeader,
-      {RowType::Title, RowType::Header}    => Position::TitleHeader,
-      {RowType::Footer, RowType::Title}    => Position::TitleTitle,
-      {RowType::Title, RowType::SubTitle}  => Position::TitleTitle,
-      {RowType::Title, RowType::Title}     => Position::TitleTitle,
-      {RowType::Footer, :top}              => Position::TitleTop,
-      {RowType::SubTitle, :top}            => Position::TitleTop,
-      {RowType::Title, :top}               => Position::TitleTop,
+      {RowType::Body, RowType::Body}       => RuleType::BodyBody,
+      {RowType::Body, :bottom}             => RuleType::BodyBottom,
+      {RowType::Body, :filler}             => RuleType::BodyFiller,
+      {RowType::Body, RowType::Group}      => RuleType::BodyGroup,
+      {RowType::Body, RowType::Header}     => RuleType::BodyHeader,
+      {RowType::Body, RowType::Footer}     => RuleType::BodyTitle,
+      {RowType::Body, RowType::Title}      => RuleType::BodyTitle,
+      {RowType::Body, :top}                => RuleType::BodyTop,
+      {RowType::Group, RowType::Header}    => RuleType::GroupHeader,
+      {RowType::Group, :top}               => RuleType::GroupTop,
+      {RowType::Header, RowType::Body}     => RuleType::HeaderBody,
+      {RowType::Header, :top}              => RuleType::HeaderTop,
+      {:summary, RowType::Body}            => RuleType::SummaryBody,
+      {:summary, RowType::Header}          => RuleType::SummaryHeader,
+      {RowType::Footer, RowType::Body}     => RuleType::TitleBody,
+      {RowType::Title, RowType::Body}      => RuleType::TitleBody,
+      {RowType::Footer, :bottom}           => RuleType::TitleBottom,
+      {RowType::SubTitle, :bottom}         => RuleType::TitleBottom,
+      {RowType::Title, :bottom}            => RuleType::TitleBottom,
+      {RowType::Footer, RowType::Group}    => RuleType::TitleGroup,
+      {RowType::SubTitle, RowType::Group}  => RuleType::TitleGroup,
+      {RowType::Title, RowType::Group}     => RuleType::TitleGroup,
+      {RowType::Footer, RowType::Header}   => RuleType::TitleHeader,
+      {RowType::SubTitle, RowType::Header} => RuleType::TitleHeader,
+      {RowType::Title, RowType::Header}    => RuleType::TitleHeader,
+      {RowType::Footer, RowType::Title}    => RuleType::TitleTitle,
+      {RowType::Title, RowType::SubTitle}  => RuleType::TitleTitle,
+      {RowType::Title, RowType::Title}     => RuleType::TitleTitle,
+      {RowType::Footer, :top}              => RuleType::TitleTop,
+      {RowType::SubTitle, :top}            => RuleType::TitleTop,
+      {RowType::Title, :top}               => RuleType::TitleTop,
     }
 
     private def process_last_row

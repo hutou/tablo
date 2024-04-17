@@ -3,7 +3,7 @@ require "./spec_helper"
 # Redefine protected and private methods for tests
 module Tablo
   struct Border
-    def horizontal_rule(column_widths, position = Tablo::Position::Bottom,
+    def horizontal_rule(column_widths, position = Tablo::RuleType::Bottom,
                         groups = [] of Array(Int32))
       previous_def
     end
@@ -56,44 +56,44 @@ describe Tablo::Border do
     it "correctly formats line, without grouped columns" do
       border = Tablo::Border.new(Tablo::Border::PreSet::Modern)
       rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        position: Tablo::Position::TitleTop, groups: [] of Array(Int32))
+        position: Tablo::RuleType::TitleTop, groups: [] of Array(Int32))
       rule.should eq("┌────────────────────────────────────────────────────────────┐")
-      border.connectors(Tablo::Position::BodyBody).should eq({"├", "┼", "┤", "─", ""})
+      border.connectors(Tablo::RuleType::BodyBody).should eq({"├", "┼", "┤", "─", ""})
       border.definition.should eq("┌┬┐├┼┤└┴┘│││────")
       rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        position: Tablo::Position::TitleBottom, groups: [] of Array(Int32))
+        position: Tablo::RuleType::TitleBottom, groups: [] of Array(Int32))
       rule.should eq("└────────────────────────────────────────────────────────────┘")
       rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        position: Tablo::Position::TitleHeader, groups: [] of Array(Int32))
+        position: Tablo::RuleType::TitleHeader, groups: [] of Array(Int32))
       rule.should eq("├────────┬──────┬─────┬────────────┬───────────────┬─────────┤")
       rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        position: Tablo::Position::HeaderTop, groups: [] of Array(Int32))
+        position: Tablo::RuleType::HeaderTop, groups: [] of Array(Int32))
       rule.should eq("┌────────┬──────┬─────┬────────────┬───────────────┬─────────┐")
       rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        position: Tablo::Position::HeaderBody, groups: [] of Array(Int32))
+        position: Tablo::RuleType::HeaderBody, groups: [] of Array(Int32))
       rule.should eq("├────────┼──────┼─────┼────────────┼───────────────┼─────────┤")
       rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        position: Tablo::Position::BodyBottom, groups: [] of Array(Int32))
+        position: Tablo::RuleType::BodyBottom, groups: [] of Array(Int32))
       rule.should eq("└────────┴──────┴─────┴────────────┴───────────────┴─────────┘")
     end
     it "correctly formats line, with grouped columns" do
       border = Tablo::Border.new(Tablo::Border::PreSet::Modern)
       rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        # position: Tablo::Position::TitleGroup, groups: [2, 1, 2, 1])
-        position: Tablo::Position::TitleGroup, groups: [1..2, 3..3, 4..5, 6..6])
+        # position: Tablo::RuleType::TitleGroup, groups: [2, 1, 2, 1])
+        position: Tablo::RuleType::TitleGroup, groups: [1..2, 3..3, 4..5, 6..6])
       rule.should eq("├───────────────┬─────┬────────────────────────────┬─────────┤")
       rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        position: Tablo::Position::GroupTop, groups: [1..2, 3..3, 4..5, 6..6])
+        position: Tablo::RuleType::GroupTop, groups: [1..2, 3..3, 4..5, 6..6])
       rule.should eq("┌───────────────┬─────┬────────────────────────────┬─────────┐")
       rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        position: Tablo::Position::GroupHeader, groups: [1..2, 3..3, 4..5, 6..6])
+        position: Tablo::RuleType::GroupHeader, groups: [1..2, 3..3, 4..5, 6..6])
       rule.should eq("├────────┬──────┼─────┼────────────┬───────────────┼─────────┤")
     end
     it "correctly styles line" do
       border = Tablo::Border.new(Tablo::Border::PreSet::Modern,
         styler: ->(s : String) { s.colorize(:red).to_s })
       rule = border.horizontal_rule([8, 6],
-        position: Tablo::Position::GroupHeader, groups: [1..2])
+        position: Tablo::RuleType::GroupHeader, groups: [1..2])
       if Tablo::Util.styler_allowed
         rule.should eq("\e[31m├────────┬──────┤\e[0m")
       else
