@@ -23,7 +23,7 @@ module Tablo
   class Table(T) < ATable
     include Enumerable(Row(T))
 
-    struct UsedColumns
+    private struct UsedColumns
       property reordered, indexes
 
       def initialize(@reordered : Bool, @indexes : Array(Int32))
@@ -46,8 +46,8 @@ module Tablo
 
     protected property row_count : Int32 = 0
 
+    # returns the sources Enumerable(T)
     getter sources
-    private setter sources
 
     private getter group_alignment, group_formatter, group_styler
     private getter left_padding, right_padding, padding_character
@@ -56,7 +56,7 @@ module Tablo
     private getter wrap_mode, header_wrap, body_wrap
 
     # Called from RowGroup
-    getter title, subtitle, footer
+    protected getter title, subtitle, footer
     protected getter header_frequency
     protected getter? masked_headers, omit_last_rule, omit_group_header_rule
 
@@ -150,66 +150,83 @@ module Tablo
     #   Default set by `Config::Defaults.title`<br />
     #   Initializing this class without any argument set its value to `nil`,
     #   so there is nothing to display
+    #
     # - `subtitle`: type is `SubTitle`<br />
     #   Default set by `Config::Defaults.subtitle`<br />
     #   (Initialization: see `title`)
+    #
     # - `footer`: type is `Footer`<br />
     #   Default set by `Config::Defaults.footer`<br />
     #   (Initialization: see `title`)
-    # - `border`: type is `Border`<br />
-    #   Initalized by `Config.border`, which defaults to `BorderName::Ascii` <br />
-    #   Other `BorderName` are `ReducedAscii`, `Modern`,
-    #   `ReducedModern`, `Markdown`, `Fancy` and `Blank`. <br />
-    #   `border` may also be initialized directly by a string of 16 characters.
+    #
+    # - `border`: type is struct`Border`<br />
+    #   Initalized by 2 parameters :
+    #   - `border_definition` (default = `Config::Defaults.border_definition`,
+    #     which itself defaults to `Border::PreSet::Ascii`) <br />
+    #   Other `Border::PreSet` are: `ReducedAscii`, `Modern`,
+    #   `ReducedModern`, `Markdown`, `Fancy`, `Blank` and `Empty`. <br />
+    #   `border_definition` may also be initialized directly by a string of 16 characters.
+    #    - `border_styler` (default = `Config::Defaults.border_styler`)
+    #
     # - `group_alignment`: type is `Justify`<br />
-    #   Default value is `DEFAULT_HEADING_ALIGNMENT`
+    #   Default value is `Config::Defaults.group_alignment`
+    #
     # - `group_formatter`: type is `Cell::Text::Formatter`<br />
-    #   Default value is `DEFAULT_FORMATTER`
+    #   Default value is `Config::Defaults.group_formatter`
+    #
     # - `group_styler`: type is `Cell::Text::Styler` <br />
-    #   Default value is `DEFAULT_STYLER`
+    #   Default value is `Config::Defaults.group_styler`
+    #
     # - `header_alignment`: type is `Justify?` <br />
-    #   Default value is `nil` <br />
-    #   (with `nil` as default, alignment
-    #   depends on the type of the related body cell value)
+    #   Default value is `Config::Defaults.header_alignment`
+    #
     # - `header_formatter`: type is `Cell::Data::Formatter` <br />
-    #   Default value is `DEFAULT_FORMATTER`
+    #   Default value is `Config::Defaults.header_formatter,`
+    #
     # - `header_styler`: type is `Cell::Data::Styler` <br />
-    #   Defaut value is `DEFAULT_DATA_DEPENDENT_STYLER`
+    #   Defaut value is `Config::Defaults.header_styler`
+    #
     # - `body_alignment`: type is `Justify?` <br />
-    #   Default value is `nil` <br />
-    #   (With `nil` as default, alignment depends on the type of its cell value)
+    #   Default value is `Config::Defaults.body_alignment`
+    #
     # - `body_formatter`: type id `Cell::Data::Formatter` <br />
-    #   Default value is `DEFAULT_FORMATTER`
+    #   Default value is `Config::Defaults.body_formatter`
+    #
     # - `body_styler`: type is `Cell::Data::Styler` <br />
-    #   Default value is `DEFAULT_DATA_DEPENDENT_STYLER`
+    #   Default value is `Config::Defaults.body_styler`
+    #
     # - `left_padding`: type is `Int32`<br />
-    #   Default value is `1` <br />
+    #   Default value is `Config::Defaults.left_padding` <br />
     #   Permitted range of values is governed by `Config::Controls.padding_width_range` in
     #   the `check_padding` method<br />
     #   (raises `Error::InvalidValue` runtime exception if value not in range)
+    #
     # - `right_padding`: type is `Int32` <br />
-    #   Default value is `1` <br />
+    #   Default value is `Config::Defaults.right_padding` <br />
     #   Permitted range of values is governed by `Config::Controls.padding_width_range` in
     #   the `check_padding` method<br />
     #   (raises `Error::InvalidValue` runtime exception if value not in range)
+    #
     # - `padding_character`: type is `String`<br />
-    #   Default value is `" "` <br />
+    #   Default value is `Config::Defaults.padding_character` <br />
     #   The `check_padding_character` auxiliairy method ensures the `padding_character`
     #   string size is only one <br />
     #   (raises an `Error::InvalidValue` runtime exception otherwise)
+    #
     # - `truncation_indicator`: type is `String` <br />
-    #   Defaut value is `"~"` <br />
+    #   Defaut value is `Config::Defaults.truncation_indicator` <br />
     #   The `check_truncation_indicator` auxiliairy method ensures the
     #   `truncation_indicator` string size
     #   is only one (raises an `Error::InvalidValue` runtime exception otherwise)
+    #
     # - `width`: type is `Int32` <br />
-    #   Default value is `12`<br />
+    #   Default value is `Config::Defaults.column_width`<br />
     #   Permitted range of values is governed by `Config::Controls.column_width_range` in the
     #   `check_width` auxiliary method (raises `Error::InvalidValue` runtime exception
     #   unless value in range)
     #
     # - `header_frequency`: type is `Int32?` <br />
-    #   Default value is `0` <br />
+    #   Default value is `Config::Defaults.header_frequency` <br />
     #   Permitted range of values is governed by `Config::Controls.header_frequency_range` in the
     #   `check_header_frequency` auxiliary method (raises `Error::InvalidValue`
     #   runtime exception
@@ -223,42 +240,42 @@ module Tablo
     #   - If set to `nil`, only body rows are displayed.
     #
     # - `row_divider_frequency`: type is `Int32?` <br />
-    #   Default value is `nil` <br />
+    #   Default value is `Config::Defaults.row_divider_frequency` <br />
     #   Permitted range of values is governed by `Config::Controls.row_divider_frequency_range`
     #   in the `check_row_divider_frequency` auxiliary method (raises `Error::InvalidValue`
     #   runtime exception unless value in range or `nil`)
     #
     # - `wrap_mode`: type is `WrapMode` <br />
-    #   Default value is `WrapMode::Word`<br />
+    #   Default value is `Config::Defaults.wrap_mode`<br />
     #   The `WrapMode` enum defines 2 modes :
     #
     #   - `Rune` : long lines can be cut between characters (graphemes)
     #   - `Word` : long lines can be cut between words only
     #
     # - `header_wrap`: type is `Int32?` <br />
-    #   Default value is `nil` <br />
+    #   Default value is `Config::Defaults.header_wrap` <br />
     #   Permitted range of values is governed by
     #   `Config::Controls.header_wrap_range` in the `check_header_wrap` auxiliary method
     #   (raises `Error::InvalidValue` runtime exception unless value in range or `nil`)
     #
     # - `body_wrap` | `Int32?`<br />
-    #   Default value is `nil` <br />
+    #   Default value is `Config::Defaults.body_wrap` <br />
     #   Permitted range of values is governed by
     #   `Config::Controls.body_wrap_range` in the `check_body_wrap` auxiliary method (raises
     #   `Error::InvalidValue` runtime exception unless value in range or `nil`)
     #
     # - `masked_headers`: type is `Bool` <br />
-    #   Default value is `false` <br />
+    #   Default value is `Config::Defaults.masked_headers?` <br />
     #   If `true`, groups and column headers are not displayed <br />
     #   (this does not prevent display of title, subtitle and footer)
     #
     # - `omit_group_header_rule`: type is `Bool` <br />
-    #   Default value is `false` <br />
+    #   Default value is `Config::Defaults.omit_group_header_rule?` <br />
     #   If `true`, the rule between Group and Header rows is not displayed.
     #   This is useful for headers custom rendering.
     #
     # - `omit_last_rule`: type is `Bool` <br />
-    #   Default value is `false` <br />
+    #   Default value is `Config::Defaults.omit_last_rule?` <br />
     #   If `true`, the closing rule of table is not displayed.
     #   This is useful for custom rendering (and notably for Detail and Summary
     #   tables joining)
@@ -353,15 +370,11 @@ module Tablo
                                     " *one* character" if truncation_indicator.size != 1
     end
 
-    # Returns the sources enumerable
-    #
     # Replaces existing data source with a new one. <br />
-    # _(This could be seen as a hack to do some special form of pagination !)_
     #
     # _Mandatory positional parameter_
-    #
-    # - `src`: type is `Enumerable(T) (Where T is the same type as at table initialization)
-    def reset_sources(to src : Enumerable(T))
+    # - `src`: type is `Enumerable(T)` Where T is the same type as at table initialization
+    def sources=(src : Enumerable(T))
       self.child = nil
       self.row_count = src.size
       self.sources = src
@@ -372,7 +385,7 @@ module Tablo
     # _Mandatory positional parameter:_
     #
     # - `label`: type is `LabelType`<br />
-    #   The label identifies the column (`LabelType` is an alias of `Int32 | Symbol | String`)
+    #   The label identifies the column
     #
     # _Optional named parameters, with default values_
     #
@@ -616,30 +629,13 @@ module Tablo
     #
     # - `summary_definition`: type is `Array(<structs>)`<br />
     # where `<structs>` may be one or more instances of `Summary::UserProc`,
-    # `Summary::HeaderColumn`, `HeaderRow`, `Summary::BodyColumn` or `Summary::BodyRow` <br />
+    # `Summary::HeaderColumn`, `Summary::BodyColumn` or `Summary::BodyRow` <br />
     #
     # - `summary_options`: type is `NamedTuple(<Table parameters>)` <br />
     # where `<Table parameters>` is a list of any number of Table initializers (may be empty).
     #
-    # Example of `summary_definition` :
-    # ```
-    # summary_definition = [
-    #   Tablo::... TODO
-    #   Tablo::Summary::BodyRow.new(:total, 1, ->{ Tablo::Summary.use(:total_sum) }),
-    #   Tablo::Summary::BodyColumn.new(:total, alignment: Tablo::Justify::Center),
-    # ]
-    # ```
-    # which means :
-    #  1. Sum the `:total` column
-    #  2. populate the Summary table with this result in column `:total`, row 1
-    #  3. and set column alignment to Center
+    # See `Tablo::Summary` for detailed examples and explanations on use.
     #
-    # This method is overloaded on the `summary_options` parameter, which can be given as:
-    # - a named tuple of Table initializers : { ..., ...,  }  (first form)
-    # - a list of Table initializers : ..., ...,  (second form) <br />
-    #   (converted into a named tuple by the ** operator)
-    #
-    # Creates a summary table and sets its parent<br />
     # Returns self (an instance of Table(T)) with an embedded Summary Table
     def add_summary(summary_definition, summary_options)
       self.child = Summary.new(self, summary_definition, summary_options).run
@@ -652,9 +648,9 @@ module Tablo
       self.child.as(ATable).parent = self.as(ATable)
     end
 
-    # Returns a previously defined summary table
+    # Returns a previously defined summary table or `nil`
     def summary
-      self.child.as(ATable)
+      self.child.as(ATable?)
     end
 
     # Returns the table as a formatted string
@@ -813,16 +809,16 @@ module Tablo
     # Produce a horizontal dividing line suitable for printing between
     # rendered rows, so as to customize table output.
     #
-    # For example, to insert a horizontal line at specific tow positions, we
-    # can do :
+    # For example, to insert a horizontal line at specific row positions, here
+    # between some Body rows, we can do :
     # ```
     # table.each_with_index do |row, i|
-    #   puts table.horizontal_rule(Tablo::Position::BodyBody) unless i == 0 || i == 2
+    #   puts table.horizontal_rule(Tablo::RuleType::BodyBody) unless i == 0 || i == 2
     #   puts row
     # end
     # ```
     # - Returns a String representing the formatted horizontal rule
-    def horizontal_rule(position = Position::Bottom, column_groups = [] of Array(Int32)) # nil)
+    def horizontal_rule(position = RuleType::Bottom, column_groups = [] of Array(Int32)) # nil)
       # column_groups = column count per group, eg: [3,1,2,4]
       widths = column_list.map { |column| column.width + column.total_padding }
       border.horizontal_rule(widths, position, groups: column_groups)
@@ -846,20 +842,8 @@ module Tablo
       arlines.join(NEWLINE)
     end
 
-    # `enum` to define how packing is done (see `Table.pack`)
-    enum PackingMode
-      # Packing starts with initial widths, as set by default or at each column
-      # initialization
-      InitialWidths
-      # Packing starts with current widths, as set initially or modified by a
-      # previous pack operation
-      CurrentWidths
-      # Packing optimizes each column width, shroinking or expanding it, so that
-      # it can display whole contents without line break
-      AutoSized
-    end
-
-    # `pack` method (1. all displyable columns)
+    # `pack` method (1. all displayable columns)     <br />
+    # Returns `self` (the current Table instance) after modifying its column widths
     #
     # The `pack` method comes in 3 overloaded versions :
     # - Version 1: all columns are selected for packing
@@ -869,53 +853,137 @@ module Tablo
     # The `pack` method allows for adapting the total width of the table.
     # It accepts 3 parameters, all optional:
     #
-    # - `width`: total width required for the formatted table. If no `width` is
-    #   given and if the value of parameter `Config.terminal_capped_width` is true,
+    # - `width`: type is `Int32?` <br />
+    #   Default value is `nil` <br />
+    #   total width required for the formatted table. If no `width` is
+    #   given and if the value of parameter `Config.terminal_capped_width?` is true,
     #   the value of `width` is read from the size of the terminal, otherwise its
-    #   value is `nil` and in that case, only `packing_mode == AutoSized` has an
-    #   effect.
+    #   value is `nil` and in that case, `pack` has no effect unless `autosize == true` or
+    #   widths are harmonized between the main and summary tables.
     #
-    # - `packing_mode` : column widths taken as starting point for resizing, possible
-    #   values are :
-    #   * `CurrentWidths` : resizing starts from columns current width
-    #   * `InitialWidths` : columns current width is reset to its initial values, at column
-    #     definition time
-    #   * `AutoSized` : current values are set to their 'best fit' values, ie they are
-    #     automatically adapted to their largest content
+    # - `autosize`: type is `Bool` <br />
+    #    Default value is `true` <br />
+    #    if true,  current width values are set to their 'best fit' values,
+    #    ie they are  automatically adapted to their largest content,
+    #    **before** packing
     #
-    # - `except`: column or array of columns excluded from being resized
-    # - `only`: column or array of columns selected exclusively for resizing
+    # - `except`: type is `LabelType` or `Array(LabelType)`  <br />
+    #   Default value: None, but mandatory in overloaded version 2  <br />
+    #   Column or array of columns excluded from being resized
+    #
+    # - `only`: type is `LabelType` or `Array(LabelType)`  <br />
+    #   Default value: None, but mandatory in overloaded version 3  <br />
+    #   Column or array of columns selected exclusively for resizing
     #
     # The following examples will illustrate the behaviour of the different
     # parameters values, starting from the 'standard' one, with all column widths to
     # their default value : 12 characters.
     #
-    # returns the Table itself
+    # ```
+    # require "tablo"
+    # data = [[1, "A long sequence of characters", 123.456789]]
+    # table = Tablo::Table.new(data) do |t|
+    #   t.add_column(:col1, &.[0])
+    #   t.add_column(:col2, &.[1])
+    #   t.add_column(:col3, &.[2])
+    # end
+    # ```
+    # Here are the different results depending on the parameters passed.
     #
-    # Returns `self` (the current Table instance) after modifying its column widths
-    #
-    # _All named parameters are optional, with default values_
-    #
-    # - `width`: type is `Int32?` <br />
-    #   Default value is `nil` <br />
-    #   `width` is the requested total table width. If `nil` and `Config.terminal_capped_width`
-    #   is `true` (and output not redirected), `width` finally takes the value of the terminal size.
-    #
-    # - `packing_mode`: type is `PackingMode` <br />
-    #   Default set by `Config.packing_mode` <br />
-    #   `packing_mode` allows you to specify the starting point for resizing : <br />
-    #
-    #   - either from the current column width value (`PackingMode::CurrentWidths`) <br />
-    #   - or from its initial value (`PackingMode::InitialWidths`) <br />
-    #   - or ignore it and directly perform optimized resizing (`PackingMode::AutoSized`)
-    #
-    # - `except` or `only` (mutually exclusive named parameters) : (array of) column label(s) <br />
-    #
-    #   - to be excluded from resizing (`except` named parameter) <br />
-    #   - to be selected exclusively for packing (`only` named parameter) <br />
-    #
-    #   Default to `nil`
-    #
+    # First, table is printed without any packing
+    # ```
+    # puts table
+    # +--------------+--------------+--------------+
+    # |         col1 | col2         |         col3 |
+    # +--------------+--------------+--------------+
+    # |            1 | A long       |   123.456789 |
+    # |              | sequence of  |              |
+    # |              | characters   |              |
+    # +--------------+--------------+--------------+
+    # Total table width = 46
+    # ```
+    # A packing instruction with no automatic adaptation request
+    # (`autosize=false`), but with a total width to be reached, will modify the
+    # width of each column, starting from its current value, until the target
+    # total width is reached (see explanation
+    # of the packing algorithm below).
+    # ```
+    # puts table.pack(40, autosize: false)
+    # +------------+------------+------------+
+    # |       col1 | col2       |       col3 |
+    # +------------+------------+------------+
+    # |          1 | A long     | 123.456789 |
+    # |            | sequence   |            |
+    # |            | of         |            |
+    # |            | characters |            |
+    # +------------+------------+------------+
+    # Total table width = 40
+    # ```
+    # With autosize = true, column widths are first recalculated to fit the
+    # contents of each cell, then packing is performed to conform to the total
+    # width requested. We can see the "packing quality" is much better.
+    # ```
+    # puts table.pack(40, autosize: true)
+    # +------+------------------+------------+
+    # | col1 | col2             |       col3 |
+    # +------+------------------+------------+
+    # |    1 | A long sequence  | 123.456789 |
+    # |      | of characters    |            |
+    # +------+------------------+------------+
+    # Total table width = 40
+    # ```
+    # Without specifying a total width to be achieved, each column width is
+    # adapted to its largest content.
+    # ```
+    # puts table.pack(autosize: true)
+    # +------+-------------------------------+------------+
+    # | col1 | col2                          |       col3 |
+    # +------+-------------------------------+------------+
+    # |    1 | A long sequence of characters | 123.456789 |
+    # +------+-------------------------------+------------+
+    # Total table width = 53
+    # ```
+    # A packing instruction without automatic adaptation (`autosize=false`) or
+    # total width requested, will produce two different results depending on the
+    # value of the `Config.terminal_capped_width?` parameter:
+    # - if true: the total width requested will be equal to the number of
+    # terminal columns
+    # - if false: column widths will revert to their initial values (as in the
+    # output below)
+    # ```
+    # puts table.pack(autosize: false)
+    # +--------------+--------------+--------------+
+    # |         col1 | col2         |         col3 |
+    # +--------------+--------------+--------------+
+    # |            1 | A long       |   123.456789 |
+    # |              | sequence of  |              |
+    # |              | characters   |              |
+    # +--------------+--------------+--------------+
+    # Total table width = 46
+    # ```
+    # We can also obtain various results using the `except:` or `only:` parameters,
+    # For examples :
+    # ```
+    # puts table.pack(only: :col1
+    # +------+--------------+--------------+
+    # | col1 | col2         |         col3 |
+    # +------+--------------+--------------+
+    # |    1 | A long       |   123.456789 |
+    # |      | sequence of  |              |
+    # |      | characters   |              |
+    # +------+--------------+--------------+
+    # Total table width = 38
+    # ```
+    # or:
+    # ```
+    # puts table.pack(except: :col3)
+    # +------+-------------------------------+--------------+
+    # | col1 | col2                          |         col3 |
+    # +------+-------------------------------+--------------+
+    # |    1 | A long sequence of characters |   123.456789 |
+    # +------+-------------------------------+--------------+
+    # Total table width = 55
+    # ```
     # **Description of the packing algorithm**<br />
     #
     # The resizing algorithm is actually quite simple:<br />
@@ -924,18 +992,20 @@ module Tablo
     # is a reduction or an increase in size. Then, depending on the case, either the
     # widest column is reduced, or the narrowest increased, in steps of 1, until the
     # requested table width is reached.<br />
-    # This explains why the final result of resizing depends on the starting column
-    # widths.
+    # The final result then depends on the value of the column widths **before** the
+    # packing operation, hence the importance of the autosize parameter
+    # in this calculation.
     def pack(width : Int32? = nil, *,
-             packing_mode = PackingMode::AutoSized)
+             autosize = true)
       # All columns are selected
-      packit(width, packing_mode, column_list)
+      packit(width, autosize, column_list)
     end
 
-    # `pack` method (2. displayable columns with exceptions)
+    # `pack` method (2. displayable columns with exceptions)  <br />
+    # Returns `self` (the current Table instance) after modifying its column widths
     def pack(width : Int32? = nil, *,
-             packing_mode = PackingMode::AutoSized,
-             except : (LabelType | Array(LabelType))) # ? = nil)
+             except : (LabelType | Array(LabelType)),
+             autosize = true)
       except = [except] unless except.is_a?(Array)
       # check if labels in except are valid
       except.each do |key|
@@ -945,13 +1015,14 @@ module Tablo
       end
       column_labels = column_registry.keys - except
       columns = column_labels.map { |label| column_registry[label] }
-      packit(width, packing_mode, columns)
+      packit(width, autosize, columns)
     end
 
-    # `pack` method (3. displayable and selected columns only)
+    # `pack` method (3. displayable and selected columns only)   <br />
+    # Returns `self` (the current Table instance) after modifying its column widths
     def pack(width : Int32? = nil, *,
-             packing_mode = PackingMode::AutoSized,
-             only : (LabelType | Array(LabelType))) # ? = nil)
+             only : (LabelType | Array(LabelType)),
+             autosize = true)
       only = [only] unless only.is_a?(Array)
       # check if labels in only are valid
       only.each do |key|
@@ -960,10 +1031,10 @@ module Tablo
         end
       end
       columns = only.map { |label| column_registry[label] }
-      packit(width, packing_mode, columns)
+      packit(width, autosize, columns)
     end
 
-    private def packit(width, packing_mode, columns)
+    private def packit(width, autosize, columns)
       return self if columns.empty?
       required_width = case width
                        in Nil
@@ -976,18 +1047,14 @@ module Tablo
                          width
                        end
 
-      case packing_mode
-      in PackingMode::CurrentWidths
-        # no change to current column widths before packing
-      in PackingMode::InitialWidths
-        # all columns, 'except' excepted, have their width reset to their initial value
+      if autosize
+        # Set column widths to fit contents
+        autosize_columns(columns)
+      elsif required_width.nil?
+        # Reset columns to their initial widths
         columns.each do |c|
           c.width = c.initial_width
         end
-      in PackingMode::AutoSized # default
-        # all (selected) columns have their width set to their largest formatted
-        # content size --> Implies browsing all source rows
-        autosize_columns(columns)
       end
 
       unless required_width.nil?
@@ -1056,15 +1123,9 @@ module Tablo
       end
     end
 
-    # TODO TODO TODO TODO TODO I'm here! TODO TODO TODO TODO TODO
-
-    def transpose(opts)
-      transpose **opts
-    end
-
     # `transpose(opts = {})` returns a Tablo::Table instance
     #
-    # The `transpose` method creates a new Tablo::Table from the current
+    # The `transpose` method creates a new `Tablo::Table` from the current
     # table, transposed, i.e.  rotated 90 degrees with respect to the current
     # table, so that the header names of the current table form the contents
     # of the leftmost column of the new table, and each subsequent column
@@ -1246,6 +1307,11 @@ module Tablo
       table
     end
 
+    # :nodoc:
+    def transpose(opts)
+      transpose **opts
+    end
+
     # returns the total actual width of the table as a whole
     def total_table_width
       widths_sum + padding_widths_sum + border_widths_sum
@@ -1264,10 +1330,66 @@ module Tablo
       end
     end
 
-    def using_columns(*cols, reordered = false)
-      raise Error::InvalidValue.new "No column given" if cols.empty?
+    # Once a table has been defined, the `Table#using_columns` method is used to
+    # select the columns to be displayed, and to reorder them if necessary.
+    #
+    # _Mandatory parameter:_
+    # - `*columns` : type is `LabelType || Tuple{LabelType, LabelType}` <br />
+    #   At least one column (or Tuple) identifier must be given. Column tuples
+    #   define an interval, selecting all the columns it contains.
+    #
+    # _Optional named parameter_
+    # - `reordered` : type is Bool, with a default value of `false` <br />
+    #   If `true`, allows to reorder the selected columns according to the order in which
+    #   they appear in the `*columns` parameter.
+    #
+    # Using the `using_columns` method with reordering (`reordered=true`)
+    # temporarily disables the display of groups.
+    #
+    # Examples:
+    # ```
+    # require "tablo"
+    #
+    # data = [[-1.14, "Abc", "Hello", 4, 5],
+    #         [42.3, "Xyz", "Halo", 33, 42]]
+    #
+    # table = Tablo::Table.new(data) do |t|
+    #   t.add_column(:col1, &.[0])
+    #   t.add_column(:col2, &.[1])
+    #   t.add_group(:group1)
+    #   t.add_column(:col3, &.[2])
+    #   t.add_group(:group2)
+    #   t.add_column(:col4, &.[3])
+    #   t.add_column(:col5, &.[4])
+    #   t.add_group(:group3)
+    # end
+    # ```
+    # Display of the defined table :
+    # ```
+    # puts table
+    # +-----------------------------+--------------+-----------------------------+
+    # |            group1           |    group2    |            group3           |
+    # +--------------+--------------+--------------+--------------+--------------+
+    # |         col1 | col2         | col3         |         col4 |         col5 |
+    # +--------------+--------------+--------------+--------------+--------------+
+    # |        -1.14 | Abc          | Hello        |            4 |            5 |
+    # |         42.3 | Xyz          | Halo         |           33 |           42 |
+    # +--------------+--------------+--------------+--------------+--------------+
+    # ```
+    #  Display all columns in reverse order, group headers are omitted.
+    # ```
+    # puts table.using_columns({:col5,:col1}, reordered: true)
+    # +--------------+--------------+--------------+--------------+--------------+
+    # |         col5 |         col4 | col3         | col2         |         col1 |
+    # +--------------+--------------+--------------+--------------+--------------+
+    # |            5 |            4 | Hello        | Abc          |        -1.14 |
+    # |           42 |           33 | Halo         | Xyz          |         42.3 |
+    # +--------------+--------------+--------------+--------------+--------------+
+    # ```
+    def using_columns(*columns, reordered = false)
+      raise Error::InvalidValue.new "No column given" if columns.empty?
       used_columns.reordered = reordered
-      cols.each do |e|
+      columns.each do |e|
         case e
         when LabelType
           index = column_registry.keys.index(e)
@@ -1293,6 +1415,78 @@ module Tablo
       self
     end
 
+    # Once a table has been defined, the `Table#using_column_indexes` method is used to
+    # select the columns to be displayed by their index in the column registry, and to
+    # reorder them if necessary.
+    #
+    # _Mandatory parameter:_
+    # - `*indexes` : type is `Int32 || Tuple{Int32, Int32}` <br />
+    #   At least one column (or Tuple) identifier must be given. Column tuples
+    #   define an interval, selecting all the columns it contains.
+    #
+    # _Optional named parameter_
+    # - `reordered` : type is Bool, with a default value of `false` <br />
+    #   If `true`, allows to reorder the selected columns according to the order in which
+    #   they appear in the `*indexes` parameter.
+    #
+    # Using the `using_column_indexes` method with reordering (`reordered=true`)
+    # temporarily disables the display of groups.
+    #
+    # Examples:
+    # ```
+    # require "tablo"
+    #
+    # data = [[-1.14, "Abc", "Hello", 4, 5],
+    #         [42.3, "Xyz", "Halo", 33, 42]]
+    #
+    # table = Tablo::Table.new(data) do |t|
+    #   t.add_column(:col1, &.[0])
+    #   t.add_column(:col2, &.[1])
+    #   t.add_group(:group1)
+    #   t.add_column(:col3, &.[2])
+    #   t.add_group(:group2)
+    #   t.add_column(:col4, &.[3])
+    #   t.add_column(:col5, &.[4])
+    #   t.add_group(:group3)
+    # end
+    # ```
+    # Display of the defined table :
+    # ```
+    # puts table
+    # +-----------------------------+--------------+-----------------------------+
+    # |            group1           |    group2    |            group3           |
+    # +--------------+--------------+--------------+--------------+--------------+
+    # |         col1 | col2         | col3         |         col4 |         col5 |
+    # +--------------+--------------+--------------+--------------+--------------+
+    # |        -1.14 | Abc          | Hello        |            4 |            5 |
+    # |         42.3 | Xyz          | Halo         |           33 |           42 |
+    # +--------------+--------------+--------------+--------------+--------------+
+    # ```
+    # Display 3 columns out of 5, without reordering them. <br />
+    # Group headers are kept
+    # ```
+    # puts table.using_column_indexes({1, 2}, 0)
+    # +-----------------------------+--------------+
+    # |            group1           |    group2    |
+    # +--------------+--------------+--------------+
+    # |         col1 | col2         | col3         |
+    # +--------------+--------------+--------------+
+    # |        -1.14 | Abc          | Hello        |
+    # |         42.3 | Xyz          | Halo         |
+    # +--------------+--------------+--------------+
+    # ```
+    # Display 3 columns out of 5, in the order specified in `columns`
+    # parameter. <br />
+    # Group headers are omitted
+    # ```
+    # puts table.using_column_indexes({1, 2}, 0, reordered: true)
+    # +--------------+--------------+--------------+
+    # | col2         | col3         |         col1 |
+    # +--------------+--------------+--------------+
+    # | Abc          | Hello        |        -1.14 |
+    # | Xyz          | Halo         |         42.3 |
+    # +--------------+--------------+--------------+
+    # ```
     def using_column_indexes(*indexes, reordered = false)
       raise Error::InvalidValue.new "No column index given" if indexes.empty?
       used_columns.reordered = reordered
@@ -1422,28 +1616,16 @@ module Tablo
       lines.join(NEWLINE)
     end
 
-    # returns an array of data for a specific column
-    # Used by Summary::UserProc
+    # Returns an array of data for a specific column
+    #
+    # _Mandatory positional parameter:_
+    #
+    # - `column_label`: type is `LabelType`<br />
     def column_data(column_label : LabelType)
       column_data = [] of CellType
       extractor = column_registry[column_label].extractor
       sources.each_with_index do |source, index|
         column_data << extractor.call(source, index)
-      end
-      column_data
-    end
-
-    # returns a hash of array of data for several columns
-    # Used by Summary::UserProc
-    def column_data(column_label : Array(LabelType))
-      column_data = {} of LabelType => Array(CellType)
-      sources.each_with_index do |source, index|
-        column_label.each do |col|
-          unless column_data.has_key?(col)
-            column_data[col] = [] of CellType
-          end
-          column_data[col] << column_registry[col].extractor.call(source, index)
-        end
       end
       column_data
     end

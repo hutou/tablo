@@ -46,7 +46,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                       ├───────┴──────────────┴───────────────────────────┤
                       │               Do you need a footer?              │
                       ╰──────────────────────────────────────────────────╯).gsub(/^ */m, "")
-          table.pack(packing_mode: Tablo::Table::PackingMode::AutoSized).to_s.should eq output
+          # table.pack(packing_mode: Tablo::Table::PackingMode::AutoSized).to_s.should eq output
+          table.pack.to_s.should eq output
         end
       end
     end
@@ -75,7 +76,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                       ├───────┴────────────────────┤
                       │    Do you need a footer?   │
                       ╰────────────────────────────╯).gsub(/^ */m, "")
-          table.pack(requested_size, packing_mode: Tablo::Table::PackingMode::AutoSized)
+          # table.pack(requested_size, packing_mode: Tablo::Table::PackingMode::AutoSized)
+          table.pack(requested_size)
             .to_s.should eq output
         end
       end
@@ -102,8 +104,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                       ├────────────────────────────┴─────────────────────────────┤
                       │                   Do you need a footer?                  │
                       ╰──────────────────────────────────────────────────────────╯).gsub(/^ */m, "")
-          table.pack(requested_size, packing_mode: Tablo::Table::PackingMode::AutoSized)
-            .to_s.should eq output
+          # table.pack(requested_size, packing_mode: Tablo::Table::PackingMode::AutoSized)
+          table.pack(requested_size).to_s.should eq output
         end
       end
     end
@@ -135,8 +137,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                       ├──────────────┴──────────────┤
                       │    Do you need a footer?    │
                       ╰─────────────────────────────╯).gsub(/^ */m, "")
-          table.pack(packing_mode: Tablo::Table::PackingMode::InitialWidths)
-            .to_s.should eq output
+          # table.pack(packing_mode: Tablo::Table::PackingMode::InitialWidths)
+          table.pack(autosize: false).to_s.should eq output
         end
       end
     end
@@ -167,8 +169,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                       ├──────────────┴─────────────┤
                       │    Do you need a footer?   │
                       ╰────────────────────────────╯).gsub(/^ */m, "")
-          table.pack(requested_size, packing_mode: Tablo::Table::PackingMode::InitialWidths)
-            .to_s.should eq output
+          # table.pack(requested_size, packing_mode: Tablo::Table::PackingMode::InitialWidths)
+          table.pack(requested_size, autosize: false).to_s.should eq output
         end
       end
     end
@@ -195,8 +197,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                       ├────────────────────────────┴─────────────────────────────┤
                       │                   Do you need a footer?                  │
                       ╰──────────────────────────────────────────────────────────╯).gsub(/^ */m, "")
-          table.pack(requested_size, packing_mode: Tablo::Table::PackingMode::InitialWidths)
-            .to_s.should eq output
+          # table.pack(requested_size, packing_mode: Tablo::Table::PackingMode::InitialWidths)
+          table.pack(requested_size, autosize: false).to_s.should eq output
         end
       end
     end
@@ -228,8 +230,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                         ├──────────────┴──────────────┤
                         │    Do you need a footer?    │
                         ╰─────────────────────────────╯).gsub(/^ */m, "")
-          table.pack(packing_mode: Tablo::Table::PackingMode::CurrentWidths)
-            .to_s.should eq output
+          # table.pack(packing_mode: Tablo::Table::PackingMode::CurrentWidths)
+          table.pack(autosize: false).to_s.should eq output
         end
       end
     end
@@ -259,8 +261,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                         ├──────────────┴─────────────┤
                         │    Do you need a footer?   │
                         ╰────────────────────────────╯).gsub(/^ */m, "")
-          table.pack(requested_size, packing_mode: Tablo::Table::PackingMode::CurrentWidths)
-            .to_s.should eq output
+          # table.pack(requested_size, packing_mode: Tablo::Table::PackingMode::CurrentWidths)
+          table.pack(requested_size, autosize: false).to_s.should eq output
         end
       end
     end
@@ -286,8 +288,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                         ├────────────────────────────┴─────────────────────────────┤
                         │                   Do you need a footer?                  │
                         ╰──────────────────────────────────────────────────────────╯).gsub(/^ */m, "")
-          table.pack(requested_size, packing_mode: Tablo::Table::PackingMode::CurrentWidths)
-            .to_s.should eq output
+          # table.pack(requested_size, packing_mode: Tablo::Table::PackingMode::CurrentWidths)
+          table.pack(requested_size, autosize: false).to_s.should eq output
         end
       end
     end
@@ -324,8 +326,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                         ├───────┴──────────────┴──────────────┤
                         │        Do you need a footer?        │
                         ╰─────────────────────────────────────╯).gsub(/^ */m, "")
-          table.pack(packing_mode: Tablo::Table::PackingMode::AutoSized,
-            except: "long").to_s.should eq output
+          # table.pack(packing_mode: Tablo::Table::PackingMode::AutoSized,
+          table.pack(except: "long").to_s.should eq output
         end
       end
     end
@@ -360,8 +362,8 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
                       ├──────────────┴──────────────┴───────────────────────────┤
                       │                  Do you need a footer?                  │
                       ╰─────────────────────────────────────────────────────────╯).gsub(/^ */m, "")
-          table.pack(packing_mode: Tablo::Table::PackingMode::AutoSized,
-            only: "long").to_s.should eq output
+          # table.pack(packing_mode: Tablo::Table::PackingMode::AutoSized,
+          table.pack(only: "long").to_s.should eq output
         end
       end
     end
