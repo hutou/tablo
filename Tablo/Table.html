@@ -252,23 +252,8 @@
       
     </li>
   
-  <li class="parent open current" data-id="tablo/Tablo/Table" data-name="tablo::table(t)">
+  <li class=" current" data-id="tablo/Tablo/Table" data-name="tablo::table(t)">
       <a href="../Tablo/Table.html">Table</a>
-      
-        <ul>
-  
-  <li class=" " data-id="tablo/Tablo/Table/PackingMode" data-name="tablo::table::packingmode">
-      <a href="../Tablo/Table/PackingMode.html">PackingMode</a>
-      
-    </li>
-  
-  <li class=" " data-id="tablo/Tablo/Table/UsedColumns" data-name="tablo::table::usedcolumns">
-      <a href="../Tablo/Table/UsedColumns.html">UsedColumns</a>
-      
-    </li>
-  
-</ul>
-
       
     </li>
   
@@ -366,7 +351,7 @@ the data source and column definitions.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L23" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L23" target="_blank">
         table.cr
       </a>
     
@@ -469,14 +454,7 @@ the data source and column definitions.</p>
       <li class="entry-summary">
         <a href="#column_data%28column_label%3ALabelType%29-instance-method" class="signature"><strong>#column_data</strong>(column_label : LabelType)</a>
         
-          <div class="summary"><p>returns an array of data for a specific column Used by Summary::UserProc</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#column_data%28column_label%3AArray%28LabelType%29%29-instance-method" class="signature"><strong>#column_data</strong>(column_label : Array(LabelType))</a>
-        
-          <div class="summary"><p>returns a hash of array of data for several columns Used by Summary::UserProc</p></div>
+          <div class="summary"><p>Returns an array of data for a specific column</p></div>
         
       </li>
     
@@ -488,70 +466,51 @@ the data source and column definitions.</p>
       </li>
     
       <li class="entry-summary">
-        <a href="#footer-instance-method" class="signature"><strong>#footer</strong></a>
-        
-          <div class="summary"><p>Called from RowGroup</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#horizontal_rule%28position%3DPosition%3A%3ABottom%2Ccolumn_groups%3D%5B%5DofArray%28Int32%29%29-instance-method" class="signature"><strong>#horizontal_rule</strong>(position = <span class="t">Position</span><span class="t">::</span><span class="t">Bottom</span>, column_groups = <span class="o">[]</span> <span class="k">of</span> <span class="t">Array</span>(<span class="t">Int32</span>))</a>
+        <a href="#horizontal_rule%28position%3DRuleType%3A%3ABottom%2Ccolumn_groups%3D%5B%5DofArray%28Int32%29%29-instance-method" class="signature"><strong>#horizontal_rule</strong>(position = <span class="t">RuleType</span><span class="t">::</span><span class="t">Bottom</span>, column_groups = <span class="o">[]</span> <span class="k">of</span> <span class="t">Array</span>(<span class="t">Int32</span>))</a>
         
           <div class="summary"><p>Produce a horizontal dividing line suitable for printing between rendered rows, so as to customize table output.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cpacking_mode%3DPackingMode%3A%3AAutoSized%29-instance-method" class="signature"><strong>#pack</strong>(width : Int32 | Nil = <span class="n">nil</span>, *, packing_mode = <span class="t">PackingMode</span><span class="t">::</span><span class="t">AutoSized</span>)</a>
+        <a href="#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cautosize%3Dtrue%29-instance-method" class="signature"><strong>#pack</strong>(width : Int32 | Nil = <span class="n">nil</span>, *, autosize = <span class="n">true</span>)</a>
         
-          <div class="summary"><p><code><a href="../Tablo/Table.html#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cpacking_mode%3DPackingMode%3A%3AAutoSized%29-instance-method">#pack</a></code> method (1.</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cpacking_mode%3DPackingMode%3A%3AAutoSized%2Cexcept%3ALabelType%7CArray%28LabelType%29%29-instance-method" class="signature"><strong>#pack</strong>(width : Int32 | Nil = <span class="n">nil</span>, *, packing_mode = <span class="t">PackingMode</span><span class="t">::</span><span class="t">AutoSized</span>, except : LabelType | Array(LabelType))</a>
-        
-          <div class="summary"><p><code><a href="../Tablo/Table.html#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cpacking_mode%3DPackingMode%3A%3AAutoSized%29-instance-method">#pack</a></code> method (2.</p></div>
+          <div class="summary"><p><code><a href="../Tablo/Table.html#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cautosize%3Dtrue%29-instance-method">#pack</a></code> method (1.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cpacking_mode%3DPackingMode%3A%3AAutoSized%2Conly%3ALabelType%7CArray%28LabelType%29%29-instance-method" class="signature"><strong>#pack</strong>(width : Int32 | Nil = <span class="n">nil</span>, *, packing_mode = <span class="t">PackingMode</span><span class="t">::</span><span class="t">AutoSized</span>, only : LabelType | Array(LabelType))</a>
+        <a href="#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cexcept%3ALabelType%7CArray%28LabelType%29%2Cautosize%3Dtrue%29-instance-method" class="signature"><strong>#pack</strong>(width : Int32 | Nil = <span class="n">nil</span>, *, except : LabelType | Array(LabelType), autosize = <span class="n">true</span>)</a>
         
-          <div class="summary"><p><code><a href="../Tablo/Table.html#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cpacking_mode%3DPackingMode%3A%3AAutoSized%29-instance-method">#pack</a></code> method (3.</p></div>
+          <div class="summary"><p><code><a href="../Tablo/Table.html#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cautosize%3Dtrue%29-instance-method">#pack</a></code> method (2.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#reset_sources%28tosrc%3AEnumerable%28T%29%29-instance-method" class="signature"><strong>#reset_sources</strong>(to src : Enumerable(T))</a>
+        <a href="#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Conly%3ALabelType%7CArray%28LabelType%29%2Cautosize%3Dtrue%29-instance-method" class="signature"><strong>#pack</strong>(width : Int32 | Nil = <span class="n">nil</span>, *, only : LabelType | Array(LabelType), autosize = <span class="n">true</span>)</a>
         
-          <div class="summary"><p>Returns the sources enumerable</p></div>
+          <div class="summary"><p><code><a href="../Tablo/Table.html#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cautosize%3Dtrue%29-instance-method">#pack</a></code> method (3.</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#sources-instance-method" class="signature"><strong>#sources</strong></a>
         
+          <div class="summary"><p>returns the sources Enumerable(T)</p></div>
+        
       </li>
     
       <li class="entry-summary">
-        <a href="#subtitle-instance-method" class="signature"><strong>#subtitle</strong></a>
+        <a href="#sources%3D%28src%3AEnumerable%28T%29%29-instance-method" class="signature"><strong>#sources=</strong>(src : Enumerable(T))</a>
         
-          <div class="summary"><p>Called from RowGroup</p></div>
+          <div class="summary"><p>Replaces existing data source with a new one.</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#summary-instance-method" class="signature"><strong>#summary</strong></a>
         
-          <div class="summary"><p>Returns a previously defined summary table</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#title-instance-method" class="signature"><strong>#title</strong></a>
-        
-          <div class="summary"><p>Called from RowGroup</p></div>
+          <div class="summary"><p>Returns a previously defined summary table or <code>nil</code></p></div>
         
       </li>
     
@@ -570,24 +529,23 @@ the data source and column definitions.</p>
       </li>
     
       <li class="entry-summary">
-        <a href="#transpose%28opts%29-instance-method" class="signature"><strong>#transpose</strong>(opts)</a>
-        
-      </li>
-    
-      <li class="entry-summary">
         <a href="#transpose%28%2A%2Aopts%29-instance-method" class="signature"><strong>#transpose</strong>(**opts)</a>
         
-          <div class="summary"><p><code><a href="../Tablo/Table.html#transpose%28opts%29-instance-method">#transpose(opts = {})</a></code> returns a Tablo::Table instance</p></div>
+          <div class="summary"><p><code>transpose(opts = {})</code> returns a Tablo::Table instance</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#using_column_indexes%28%2Aindexes%2Creordered%3Dfalse%29-instance-method" class="signature"><strong>#using_column_indexes</strong>(*indexes, reordered = <span class="n">false</span>)</a>
         
+          <div class="summary"><p>Once a table has been defined, the <code><a href="../Tablo/Table.html#using_column_indexes%28%2Aindexes%2Creordered%3Dfalse%29-instance-method">Table#using_column_indexes</a></code> method is used to select the columns to be displayed by their index in the column registry, and to reorder them if necessary.</p></div>
+        
       </li>
     
       <li class="entry-summary">
-        <a href="#using_columns%28%2Acols%2Creordered%3Dfalse%29-instance-method" class="signature"><strong>#using_columns</strong>(*cols, reordered = <span class="n">false</span>)</a>
+        <a href="#using_columns%28%2Acolumns%2Creordered%3Dfalse%29-instance-method" class="signature"><strong>#using_columns</strong>(*columns, reordered = <span class="n">false</span>)</a>
+        
+          <div class="summary"><p>Once a table has been defined, the <code><a href="../Tablo/Table.html#using_columns%28%2Acolumns%2Creordered%3Dfalse%29-instance-method">Table#using_columns</a></code> method is used to select the columns to be displayed, and to reorder them if necessary.</p></div>
         
       </li>
     
@@ -688,105 +646,107 @@ not correctly supported in this context: use <code>Range.to_a</code> instead)</e
 <p><em>Optional named parameters, with default values</em></p>
 <ul>
 <li>
-<p><code><a href="../Tablo/Table.html#title-instance-method">#title</a></code>: type is <code>Title</code><br />
+<p><code>title</code>: type is <code>Title</code><br />
 Default set by <code><a href="../Tablo/Config/Defaults.html#title%3AHeading-class-method">Config::Defaults.title</a></code><br />
 Initializing this class without any argument set its value to <code>nil</code>,
 so there is nothing to display</p>
 </li>
 <li>
-<p><code><a href="../Tablo/Table.html#subtitle-instance-method">#subtitle</a></code>: type is <code>SubTitle</code><br />
+<p><code>subtitle</code>: type is <code>SubTitle</code><br />
 Default set by <code><a href="../Tablo/Config/Defaults.html#subtitle%3AHeading-class-method">Config::Defaults.subtitle</a></code><br />
-(Initialization: see <code><a href="../Tablo/Table.html#title-instance-method">#title</a></code>)</p>
+(Initialization: see <code>title</code>)</p>
 </li>
 <li>
-<p><code><a href="../Tablo/Table.html#footer-instance-method">#footer</a></code>: type is <code>Footer</code><br />
+<p><code>footer</code>: type is <code>Footer</code><br />
 Default set by <code><a href="../Tablo/Config/Defaults.html#footer%3AHeading-class-method">Config::Defaults.footer</a></code><br />
-(Initialization: see <code><a href="../Tablo/Table.html#title-instance-method">#title</a></code>)</p>
+(Initialization: see <code>title</code>)</p>
 </li>
 <li>
-<p><code>border</code>: type is <code><a href="../Tablo/Border.html">Border</a></code><br />
-Initalized by <code>Config.border</code>, which defaults to <code>BorderName::Ascii</code> <br />
-Other <code>BorderName</code> are <code>ReducedAscii</code>, <code>Modern</code>,
-<code>ReducedModern</code>, <code>Markdown</code>, <code>Fancy</code> and <code>Blank</code>. <br />
-<code>border</code> may also be initialized directly by a string of 16 characters.</p>
+<p><code>border</code>: type is struct<code><a href="../Tablo/Border.html">Border</a></code><br />
+Initalized by 2 parameters :</p>
+<ul>
+<li><code>border_definition</code> (default = <code><a href="../Tablo/Config/Defaults.html#border_definition%3AString%7CBorder%3A%3APreSet-class-method">Config::Defaults.border_definition</a></code>,
+which itself defaults to <code><a href="../Tablo/Border/PreSet.html#Ascii">Border::PreSet::Ascii</a></code>) <br />
+Other <code><a href="../Tablo/Border/PreSet.html">Border::PreSet</a></code> are: <code>ReducedAscii</code>, <code>Modern</code>,
+<code>ReducedModern</code>, <code>Markdown</code>, <code>Fancy</code>, <code>Blank</code> and <code>Empty</code>. <br />
+<code>border_definition</code> may also be initialized directly by a string of 16 characters.</li>
+<li><code>border_styler</code> (default = <code><a href="../Tablo/Config/Defaults.html#border_styler%3ABorder%3A%3AStyler-class-method">Config::Defaults.border_styler</a></code>)</li>
+</ul>
 </li>
 <li>
 <p><code>group_alignment</code>: type is <code><a href="../Tablo/Justify.html">Justify</a></code><br />
-Default value is <code><a href="../Tablo.html#DEFAULT_HEADING_ALIGNMENT">DEFAULT_HEADING_ALIGNMENT</a></code></p>
+Default value is <code><a href="../Tablo/Config/Defaults.html#group_alignment%3AJustify-class-method">Config::Defaults.group_alignment</a></code></p>
 </li>
 <li>
 <p><code>group_formatter</code>: type is <code><a href="../Tablo/Cell/Text/Formatter.html">Cell::Text::Formatter</a></code><br />
-Default value is <code><a href="../Tablo.html#DEFAULT_FORMATTER">DEFAULT_FORMATTER</a></code></p>
+Default value is <code><a href="../Tablo/Config/Defaults.html#group_formatter%3ACell%3A%3AText%3A%3AFormatter-class-method">Config::Defaults.group_formatter</a></code></p>
 </li>
 <li>
 <p><code>group_styler</code>: type is <code><a href="../Tablo/Cell/Text/Styler.html">Cell::Text::Styler</a></code> <br />
-Default value is <code><a href="../Tablo.html#DEFAULT_STYLER">DEFAULT_STYLER</a></code></p>
+Default value is <code><a href="../Tablo/Config/Defaults.html#group_styler%3ACell%3A%3AText%3A%3AStyler-class-method">Config::Defaults.group_styler</a></code></p>
 </li>
 <li>
 <p><code>header_alignment</code>: type is <code><a href="../Tablo/Justify.html">Justify</a>?</code> <br />
-Default value is <code>nil</code> <br />
-(with <code>nil</code> as default, alignment
-depends on the type of the related body cell value)</p>
+Default value is <code><a href="../Tablo/Config/Defaults.html#header_alignment%3AJustify%7CNil-class-method">Config::Defaults.header_alignment</a></code></p>
 </li>
 <li>
 <p><code>header_formatter</code>: type is <code><a href="../Tablo/Cell/Data/Formatter.html">Cell::Data::Formatter</a></code> <br />
-Default value is <code><a href="../Tablo.html#DEFAULT_FORMATTER">DEFAULT_FORMATTER</a></code></p>
+Default value is <code><a href="../Tablo/Config/Defaults.html#header_formatter%3ACell%3A%3AData%3A%3AFormatter-class-method">Config::Defaults.header_formatter</a>,</code></p>
 </li>
 <li>
 <p><code>header_styler</code>: type is <code><a href="../Tablo/Cell/Data/Styler.html">Cell::Data::Styler</a></code> <br />
-Defaut value is <code><a href="../Tablo.html#DEFAULT_DATA_DEPENDENT_STYLER">DEFAULT_DATA_DEPENDENT_STYLER</a></code></p>
+Defaut value is <code><a href="../Tablo/Config/Defaults.html#header_styler%3ACell%3A%3AData%3A%3AStyler-class-method">Config::Defaults.header_styler</a></code></p>
 </li>
 <li>
 <p><code>body_alignment</code>: type is <code><a href="../Tablo/Justify.html">Justify</a>?</code> <br />
-Default value is <code>nil</code> <br />
-(With <code>nil</code> as default, alignment depends on the type of its cell value)</p>
+Default value is <code><a href="../Tablo/Config/Defaults.html#body_alignment%3AJustify%7CNil-class-method">Config::Defaults.body_alignment</a></code></p>
 </li>
 <li>
 <p><code>body_formatter</code>: type id <code><a href="../Tablo/Cell/Data/Formatter.html">Cell::Data::Formatter</a></code> <br />
-Default value is <code><a href="../Tablo.html#DEFAULT_FORMATTER">DEFAULT_FORMATTER</a></code></p>
+Default value is <code><a href="../Tablo/Config/Defaults.html#body_formatter%3ACell%3A%3AData%3A%3AFormatter-class-method">Config::Defaults.body_formatter</a></code></p>
 </li>
 <li>
 <p><code>body_styler</code>: type is <code><a href="../Tablo/Cell/Data/Styler.html">Cell::Data::Styler</a></code> <br />
-Default value is <code><a href="../Tablo.html#DEFAULT_DATA_DEPENDENT_STYLER">DEFAULT_DATA_DEPENDENT_STYLER</a></code></p>
+Default value is <code><a href="../Tablo/Config/Defaults.html#body_styler%3ACell%3A%3AData%3A%3AStyler-class-method">Config::Defaults.body_styler</a></code></p>
 </li>
 <li>
 <p><code>left_padding</code>: type is <code>Int32</code><br />
-Default value is <code>1</code> <br />
+Default value is <code><a href="../Tablo/Config/Defaults.html#left_padding%3AInt32-class-method">Config::Defaults.left_padding</a></code> <br />
 Permitted range of values is governed by <code><a href="../Tablo/Config/Controls.html#padding_width_range%3ARange%28Int32%2CInt32%29-class-method">Config::Controls.padding_width_range</a></code> in
 the <code>check_padding</code> method<br />
 (raises <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> runtime exception if value not in range)</p>
 </li>
 <li>
 <p><code>right_padding</code>: type is <code>Int32</code> <br />
-Default value is <code>1</code> <br />
+Default value is <code><a href="../Tablo/Config/Defaults.html#right_padding%3AInt32-class-method">Config::Defaults.right_padding</a></code> <br />
 Permitted range of values is governed by <code><a href="../Tablo/Config/Controls.html#padding_width_range%3ARange%28Int32%2CInt32%29-class-method">Config::Controls.padding_width_range</a></code> in
 the <code>check_padding</code> method<br />
 (raises <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> runtime exception if value not in range)</p>
 </li>
 <li>
 <p><code>padding_character</code>: type is <code>String</code><br />
-Default value is <code>&quot; &quot;</code> <br />
+Default value is <code><a href="../Tablo/Config/Defaults.html#padding_character%3AString-class-method">Config::Defaults.padding_character</a></code> <br />
 The <code>check_padding_character</code> auxiliairy method ensures the <code>padding_character</code>
 string size is only one <br />
 (raises an <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> runtime exception otherwise)</p>
 </li>
 <li>
 <p><code>truncation_indicator</code>: type is <code>String</code> <br />
-Defaut value is <code>&quot;~&quot;</code> <br />
+Defaut value is <code><a href="../Tablo/Config/Defaults.html#truncation_indicator%3AString-class-method">Config::Defaults.truncation_indicator</a></code> <br />
 The <code>check_truncation_indicator</code> auxiliairy method ensures the
 <code>truncation_indicator</code> string size
 is only one (raises an <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> runtime exception otherwise)</p>
 </li>
 <li>
 <p><code>width</code>: type is <code>Int32</code> <br />
-Default value is <code>12</code><br />
+Default value is <code><a href="../Tablo/Config/Defaults.html#column_width%3AInt32-class-method">Config::Defaults.column_width</a></code><br />
 Permitted range of values is governed by <code><a href="../Tablo/Config/Controls.html#column_width_range%3ARange%28Int32%2CInt32%29-class-method">Config::Controls.column_width_range</a></code> in the
 <code>check_width</code> auxiliary method (raises <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> runtime exception
 unless value in range)</p>
 </li>
 <li>
 <p><code>header_frequency</code>: type is <code>Int32?</code> <br />
-Default value is <code>0</code> <br />
+Default value is <code><a href="../Tablo/Config/Defaults.html#header_frequency%3AInt32%7CNil-class-method">Config::Defaults.header_frequency</a></code> <br />
 Permitted range of values is governed by <code><a href="../Tablo/Config/Controls.html#header_frequency_range%3ARange%28Int32%2CInt32%29-class-method">Config::Controls.header_frequency_range</a></code> in the
 <code>check_header_frequency</code> auxiliary method (raises <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code>
 runtime exception
@@ -802,14 +762,14 @@ title <code>repeated</code> attribute is set to <code>true</code>)</li>
 </li>
 <li>
 <p><code>row_divider_frequency</code>: type is <code>Int32?</code> <br />
-Default value is <code>nil</code> <br />
+Default value is <code><a href="../Tablo/Config/Defaults.html#row_divider_frequency%3AInt32%7CNil-class-method">Config::Defaults.row_divider_frequency</a></code> <br />
 Permitted range of values is governed by <code><a href="../Tablo/Config/Controls.html#row_divider_frequency_range%3ARange%28Int32%2CInt32%29-class-method">Config::Controls.row_divider_frequency_range</a></code>
 in the <code>check_row_divider_frequency</code> auxiliary method (raises <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code>
 runtime exception unless value in range or <code>nil</code>)</p>
 </li>
 <li>
 <p><code>wrap_mode</code>: type is <code><a href="../Tablo/WrapMode.html">WrapMode</a></code> <br />
-Default value is <code><a href="../Tablo/WrapMode.html#Word">WrapMode::Word</a></code><br />
+Default value is <code><a href="../Tablo/Config/Defaults.html#wrap_mode%3AWrapMode-class-method">Config::Defaults.wrap_mode</a></code><br />
 The <code><a href="../Tablo/WrapMode.html">WrapMode</a></code> enum defines 2 modes :</p>
 <ul>
 <li><code>Rune</code> : long lines can be cut between characters (graphemes)</li>
@@ -818,33 +778,33 @@ The <code><a href="../Tablo/WrapMode.html">WrapMode</a></code> enum defines 2 mo
 </li>
 <li>
 <p><code>header_wrap</code>: type is <code>Int32?</code> <br />
-Default value is <code>nil</code> <br />
+Default value is <code><a href="../Tablo/Config/Defaults.html#header_wrap%3AInt32%7CNil-class-method">Config::Defaults.header_wrap</a></code> <br />
 Permitted range of values is governed by
 <code><a href="../Tablo/Config/Controls.html#header_wrap_range%3ARange%28Int32%2CInt32%29-class-method">Config::Controls.header_wrap_range</a></code> in the <code>check_header_wrap</code> auxiliary method
 (raises <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> runtime exception unless value in range or <code>nil</code>)</p>
 </li>
 <li>
 <p><code>body_wrap</code> | <code>Int32?</code><br />
-Default value is <code>nil</code> <br />
+Default value is <code><a href="../Tablo/Config/Defaults.html#body_wrap%3AInt32%7CNil-class-method">Config::Defaults.body_wrap</a></code> <br />
 Permitted range of values is governed by
 <code><a href="../Tablo/Config/Controls.html#body_wrap_range%3ARange%28Int32%2CInt32%29-class-method">Config::Controls.body_wrap_range</a></code> in the <code>check_body_wrap</code> auxiliary method (raises
 <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> runtime exception unless value in range or <code>nil</code>)</p>
 </li>
 <li>
 <p><code>masked_headers</code>: type is <code>Bool</code> <br />
-Default value is <code>false</code> <br />
+Default value is <code><a href="../Tablo/Config/Defaults.html#masked_headers%3F%3ABool-class-method">Config::Defaults.masked_headers?</a></code> <br />
 If <code>true</code>, groups and column headers are not displayed <br />
 (this does not prevent display of title, subtitle and footer)</p>
 </li>
 <li>
 <p><code>omit_group_header_rule</code>: type is <code>Bool</code> <br />
-Default value is <code>false</code> <br />
+Default value is <code><a href="../Tablo/Config/Defaults.html#omit_group_header_rule%3F%3ABool-class-method">Config::Defaults.omit_group_header_rule?</a></code> <br />
 If <code>true</code>, the rule between Group and Header rows is not displayed.
 This is useful for headers custom rendering.</p>
 </li>
 <li>
 <p><code>omit_last_rule</code>: type is <code>Bool</code> <br />
-Default value is <code>false</code> <br />
+Default value is <code><a href="../Tablo/Config/Defaults.html#omit_last_rule%3F%3ABool-class-method">Config::Defaults.omit_last_rule?</a></code> <br />
 If <code>true</code>, the closing rule of table is not displayed.
 This is useful for custom rendering (and notably for Detail and Summary
 tables joining)</p>
@@ -856,7 +816,7 @@ tables joining)</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L267" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L284" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -877,7 +837,7 @@ tables joining)</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L270" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L287" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -913,7 +873,7 @@ and one with block_given = false</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L70" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L70" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -944,7 +904,7 @@ and one with block_given = false</p>
 <p><em>Mandatory positional parameter:</em></p>
 <ul>
 <li><code>label</code>: type is <code><a href="../Tablo/LabelType.html">LabelType</a></code><br />
-The label identifies the column (<code><a href="../Tablo/LabelType.html">LabelType</a></code> is an alias of <code>Int32 | Symbol | String</code>)</li>
+The label identifies the column</li>
 </ul>
 <p><em>Optional named parameters, with default values</em></p>
 <ul>
@@ -1012,7 +972,7 @@ Captured block for extracting data from source</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L423" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L436" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1073,7 +1033,7 @@ By default, inherits from table <code>wrap_mode</code> initializer</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L510" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L523" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1094,39 +1054,21 @@ By default, inherits from table <code>wrap_mode</code> initializer</p>
 <li>
 <p><code>summary_definition</code>: type is <code>Array(&lt;structs&gt;)</code><br />
 where <code>&lt;structs&gt;</code> may be one or more instances of <code><a href="../Tablo/Summary/UserProc.html">Summary::UserProc</a></code>,
-<code><a href="../Tablo/Summary/HeaderColumn.html">Summary::HeaderColumn</a></code>, <code>HeaderRow</code>, <code><a href="../Tablo/Summary/BodyColumn.html">Summary::BodyColumn</a></code> or <code><a href="../Tablo/Summary/BodyRow.html">Summary::BodyRow</a></code> <br /></p>
+<code><a href="../Tablo/Summary/HeaderColumn.html">Summary::HeaderColumn</a></code>, <code><a href="../Tablo/Summary/BodyColumn.html">Summary::BodyColumn</a></code> or <code><a href="../Tablo/Summary/BodyRow.html">Summary::BodyRow</a></code> <br /></p>
 </li>
 <li>
 <p><code>summary_options</code>: type is <code>NamedTuple(&lt;<a href="../Tablo/Table.html">Table</a> parameters&gt;)</code> <br />
 where <code>&lt;<a href="../Tablo/Table.html">Table</a> parameters&gt;</code> is a list of any number of Table initializers (may be empty).</p>
 </li>
 </ul>
-<p>Example of <code>summary_definition</code> :</p>
-<pre><code class="language-crystal">summary_definition <span class="o">=</span> [
-  <span class="t">Tablo</span><span class="t">::</span>... <span class="t">TODO</span>
-  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">1</span>, <span class="o">-&gt;</span>{ <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total_sum</span>) }),
-  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyColumn</span>.new(<span class="n">:total</span>, alignment: <span class="t">Tablo</span><span class="t">::</span><span class="t">Justify</span><span class="t">::</span><span class="t">Center</span>),
-]</code></pre>
-<p>which means :</p>
-<ol>
-<li>Sum the <code>:total</code> column</li>
-<li>populate the Summary table with this result in column <code>:total</code>, row 1</li>
-<li>and set column alignment to Center</li>
-</ol>
-<p>This method is overloaded on the <code>summary_options</code> parameter, which can be given as:</p>
-<ul>
-<li>a named tuple of Table initializers : { ..., ...,  }  (first form)</li>
-<li>a list of Table initializers : ..., ...,  (second form) <br />
-(converted into a named tuple by the ** operator)</li>
-</ul>
-<p>Creates a summary table and sets its parent<br />
-Returns self (an instance of Table(T)) with an embedded Summary Table</p>
+<p>See <code><a href="../Tablo/Summary.html">Tablo::Summary</a></code> for detailed examples and explanations on use.</p>
+<p>Returns self (an instance of Table(T)) with an embedded Summary Table</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L644" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L640" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1147,7 +1089,7 @@ Returns self (an instance of Table(T)) with an embedded Summary Table</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L650" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L646" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1162,36 +1104,17 @@ Returns self (an instance of Table(T)) with an embedded Summary Table</p>
       
         <div class="doc">
           
-          <p>returns an array of data for a specific column
-Used by Summary::UserProc</p>
+          <p>Returns an array of data for a specific column</p>
+<p><em>Mandatory positional parameter:</em></p>
+<ul>
+<li><code>column_label</code>: type is <code><a href="../Tablo/LabelType.html">LabelType</a></code><br /></li>
+</ul>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L1427" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="column_data(column_label:Array(LabelType))-instance-method">
-      <div class="signature">
-        
-        def <strong>column_data</strong>(column_label : Array(<a href="../Tablo/LabelType.html">LabelType</a>))
-
-        <a class="method-permalink" href="#column_data%28column_label%3AArray%28LabelType%29%29-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>returns a hash of array of data for several columns
-Used by Summary::UserProc</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L1438" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L1624" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1219,48 +1142,27 @@ according to the <code>header_frequency</code> value.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L702" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L698" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="footer-instance-method">
+    <div class="entry-detail" id="horizontal_rule(position=RuleType::Bottom,column_groups=[]ofArray(Int32))-instance-method">
       <div class="signature">
         
-        def <strong>footer</strong>
+        def <strong>horizontal_rule</strong>(position = <span class="t">RuleType</span><span class="t">::</span><span class="t">Bottom</span>, column_groups = <span class="o">[]</span> <span class="k">of</span> <span class="t">Array</span>(<span class="t">Int32</span>))
 
-        <a class="method-permalink" href="#footer-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Called from RowGroup</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L59" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="horizontal_rule(position=Position::Bottom,column_groups=[]ofArray(Int32))-instance-method">
-      <div class="signature">
-        
-        def <strong>horizontal_rule</strong>(position = <span class="t">Position</span><span class="t">::</span><span class="t">Bottom</span>, column_groups = <span class="o">[]</span> <span class="k">of</span> <span class="t">Array</span>(<span class="t">Int32</span>))
-
-        <a class="method-permalink" href="#horizontal_rule%28position%3DPosition%3A%3ABottom%2Ccolumn_groups%3D%5B%5DofArray%28Int32%29%29-instance-method">#</a>
+        <a class="method-permalink" href="#horizontal_rule%28position%3DRuleType%3A%3ABottom%2Ccolumn_groups%3D%5B%5DofArray%28Int32%29%29-instance-method">#</a>
       </div>
       
         <div class="doc">
           
           <p>Produce a horizontal dividing line suitable for printing between
 rendered rows, so as to customize table output.</p>
-<p>For example, to insert a horizontal line at specific tow positions, we
-can do :</p>
+<p>For example, to insert a horizontal line at specific row positions, here
+between some Body rows, we can do :</p>
 <pre><code class="language-crystal">table.each_with_index <span class="k">do</span> <span class="o">|</span>row, i<span class="o">|</span>
-  puts table.horizontal_rule(<span class="t">Tablo</span><span class="t">::</span><span class="t">Position</span><span class="t">::</span><span class="t">BodyBody</span>) <span class="k">unless</span> i <span class="o">==</span> <span class="n">0</span> <span class="o">||</span> i <span class="o">==</span> <span class="n">2</span>
+  puts table.horizontal_rule(<span class="t">Tablo</span><span class="t">::</span><span class="t">RuleType</span><span class="t">::</span><span class="t">BodyBody</span>) <span class="k">unless</span> i <span class="o">==</span> <span class="n">0</span> <span class="o">||</span> i <span class="o">==</span> <span class="n">2</span>
   puts row
 <span class="k">end</span></code></pre>
 <ul>
@@ -1271,88 +1173,152 @@ can do :</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L825" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L821" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="pack(width:Int32|Nil=nil,*,packing_mode=PackingMode::AutoSized)-instance-method">
+    <div class="entry-detail" id="pack(width:Int32|Nil=nil,*,autosize=true)-instance-method">
       <div class="signature">
         
-        def <strong>pack</strong>(width : Int32 | Nil = <span class="n">nil</span>, *, packing_mode = <span class="t">PackingMode</span><span class="t">::</span><span class="t">AutoSized</span>)
+        def <strong>pack</strong>(width : Int32 | Nil = <span class="n">nil</span>, *, autosize = <span class="n">true</span>)
 
-        <a class="method-permalink" href="#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cpacking_mode%3DPackingMode%3A%3AAutoSized%29-instance-method">#</a>
+        <a class="method-permalink" href="#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cautosize%3Dtrue%29-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p><code><a href="../Tablo/Table.html#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cpacking_mode%3DPackingMode%3A%3AAutoSized%29-instance-method">#pack</a></code> method (1. all displyable columns)</p>
-<p>The <code><a href="../Tablo/Table.html#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cpacking_mode%3DPackingMode%3A%3AAutoSized%29-instance-method">#pack</a></code> method comes in 3 overloaded versions :</p>
+          <p><code><a href="../Tablo/Table.html#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cautosize%3Dtrue%29-instance-method">#pack</a></code> method (1. all displayable columns)     <br />
+Returns <code>self</code> (the current Table instance) after modifying its column widths</p>
+<p>The <code><a href="../Tablo/Table.html#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cautosize%3Dtrue%29-instance-method">#pack</a></code> method comes in 3 overloaded versions :</p>
 <ul>
 <li>Version 1: all columns are selected for packing</li>
 <li>Version 2: some columns are excluded (<code>except</code> parameter)</li>
 <li>Version 3: only certain columns are selected (<code>only</code> parameter)</li>
 </ul>
-<p>The <code><a href="../Tablo/Table.html#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cpacking_mode%3DPackingMode%3A%3AAutoSized%29-instance-method">#pack</a></code> method allows for adapting the total width of the table.
+<p>The <code><a href="../Tablo/Table.html#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cautosize%3Dtrue%29-instance-method">#pack</a></code> method allows for adapting the total width of the table.
 It accepts 3 parameters, all optional:</p>
 <ul>
 <li>
-<p><code>width</code>: total width required for the formatted table. If no <code>width</code> is
-given and if the value of parameter <code>Config.terminal_capped_width</code> is true,
+<p><code>width</code>: type is <code>Int32?</code> <br />
+Default value is <code>nil</code> <br />
+total width required for the formatted table. If no <code>width</code> is
+given and if the value of parameter <code><a href="../Tablo/Config.html#terminal_capped_width%3F%3ABool-class-method">Config.terminal_capped_width?</a></code> is true,
 the value of <code>width</code> is read from the size of the terminal, otherwise its
-value is <code>nil</code> and in that case, only <code>packing_mode == AutoSized</code> has an
-effect.</p>
+value is <code>nil</code> and in that case, <code><a href="../Tablo/Table.html#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cautosize%3Dtrue%29-instance-method">#pack</a></code> has no effect unless <code>autosize == true</code> or
+widths are harmonized between the main and summary tables.</p>
 </li>
 <li>
-<p><code>packing_mode</code> : column widths taken as starting point for resizing, possible
-values are :</p>
-<ul>
-<li><code>CurrentWidths</code> : resizing starts from columns current width</li>
-<li><code>InitialWidths</code> : columns current width is reset to its initial values, at column
-definition time</li>
-<li><code>AutoSized</code> : current values are set to their 'best fit' values, ie they are
-automatically adapted to their largest content</li>
-</ul>
+<p><code>autosize</code>: type is <code>Bool</code> <br />
+Default value is <code>true</code> <br />
+if true,  current width values are set to their 'best fit' values,
+ie they are  automatically adapted to their largest content,
+<strong>before</strong> packing</p>
 </li>
 <li>
-<p><code>except</code>: column or array of columns excluded from being resized</p>
+<p><code>except</code>: type is <code><a href="../Tablo/LabelType.html">LabelType</a></code> or <code>Array(<a href="../Tablo/LabelType.html">LabelType</a>)</code>  <br />
+Default value: None, but mandatory in overloaded version 2  <br />
+Column or array of columns excluded from being resized</p>
 </li>
 <li>
-<p><code>only</code>: column or array of columns selected exclusively for resizing</p>
+<p><code>only</code>: type is <code><a href="../Tablo/LabelType.html">LabelType</a></code> or <code>Array(<a href="../Tablo/LabelType.html">LabelType</a>)</code>  <br />
+Default value: None, but mandatory in overloaded version 3  <br />
+Column or array of columns selected exclusively for resizing</p>
 </li>
 </ul>
 <p>The following examples will illustrate the behaviour of the different
 parameters values, starting from the 'standard' one, with all column widths to
 their default value : 12 characters.</p>
-<p>returns the Table itself</p>
-<p>Returns <code>self</code> (the current Table instance) after modifying its column widths</p>
-<p><em>All named parameters are optional, with default values</em></p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+data <span class="o">=</span> [[<span class="n">1</span>, <span class="s">&quot;A long sequence of characters&quot;</span>, <span class="n">123.456789</span>]]
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new(data) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="n">:col1</span>, <span class="o">&amp;</span>.[<span class="n">0</span>])
+  t.add_column(<span class="n">:col2</span>, <span class="o">&amp;</span>.[<span class="n">1</span>])
+  t.add_column(<span class="n">:col3</span>, <span class="o">&amp;</span>.[<span class="n">2</span>])
+<span class="k">end</span></code></pre>
+<p>Here are the different results depending on the parameters passed.</p>
+<p>First, table is printed without any packing</p>
+<pre><code class="language-crystal">puts table
++--------------+--------------+--------------+
+|         col1 | col2         |         col3 |
++--------------+--------------+--------------+
+|            1 | A long       |   123.456789 |
+|              | sequence of  |              |
+|              | characters   |              |
++--------------+--------------+--------------+
+Total table width = 46</code></pre>
+<p>A packing instruction with no automatic adaptation request
+(<code>autosize=false</code>), but with a total width to be reached, will modify the
+width of each column, starting from its current value, until the target
+total width is reached (see explanation
+of the packing algorithm below).</p>
+<pre><code class="language-crystal">puts table.pack(40, autosize: false)
++------------+------------+------------+
+|       col1 | col2       |       col3 |
++------------+------------+------------+
+|          1 | A long     | 123.456789 |
+|            | sequence   |            |
+|            | of         |            |
+|            | characters |            |
++------------+------------+------------+
+Total table width = 40</code></pre>
+<p>With autosize = true, column widths are first recalculated to fit the
+contents of each cell, then packing is performed to conform to the total
+width requested. We can see the &quot;packing quality&quot; is much better.</p>
+<pre><code class="language-crystal">puts table.pack(40, autosize: true)
++------+------------------+------------+
+| col1 | col2             |       col3 |
++------+------------------+------------+
+|    1 | A long sequence  | 123.456789 |
+|      | of characters    |            |
++------+------------------+------------+
+Total table width = 40</code></pre>
+<p>Without specifying a total width to be achieved, each column width is
+adapted to its largest content.</p>
+<pre><code class="language-crystal">puts table.pack(autosize: true)
++------+-------------------------------+------------+
+| col1 | col2                          |       col3 |
++------+-------------------------------+------------+
+|    1 | A long sequence of characters | 123.456789 |
++------+-------------------------------+------------+
+Total table width = 53</code></pre>
+<p>A packing instruction without automatic adaptation (<code>autosize=false</code>) or
+total width requested, will produce two different results depending on the
+value of the <code><a href="../Tablo/Config.html#terminal_capped_width%3F%3ABool-class-method">Config.terminal_capped_width?</a></code> parameter:</p>
 <ul>
-<li>
-<p><code>width</code>: type is <code>Int32?</code> <br />
-Default value is <code>nil</code> <br />
-<code>width</code> is the requested total table width. If <code>nil</code> and <code>Config.terminal_capped_width</code>
-is <code>true</code> (and output not redirected), <code>width</code> finally takes the value of the terminal size.</p>
-</li>
-<li>
-<p><code>packing_mode</code>: type is <code><a href="../Tablo/Table/PackingMode.html">PackingMode</a></code> <br />
-Default set by <code>Config.packing_mode</code> <br />
-<code>packing_mode</code> allows you to specify the starting point for resizing : <br /></p>
-<ul>
-<li>either from the current column width value (<code><a href="../Tablo/Table/PackingMode.html#CurrentWidths">PackingMode::CurrentWidths</a></code>) <br /></li>
-<li>or from its initial value (<code><a href="../Tablo/Table/PackingMode.html#InitialWidths">PackingMode::InitialWidths</a></code>) <br /></li>
-<li>or ignore it and directly perform optimized resizing (<code><a href="../Tablo/Table/PackingMode.html#AutoSized">PackingMode::AutoSized</a></code>)</li>
+<li>if true: the total width requested will be equal to the number of
+terminal columns</li>
+<li>if false: column widths will revert to their initial values (as in the
+output below)</li>
 </ul>
-</li>
-<li>
-<p><code>except</code> or <code>only</code> (mutually exclusive named parameters) : (array of) column label(s) <br /></p>
-<ul>
-<li>to be excluded from resizing (<code>except</code> named parameter) <br /></li>
-<li>to be selected exclusively for packing (<code>only</code> named parameter) <br /></li>
-</ul>
-<p>Default to <code>nil</code></p>
-</li>
-</ul>
+<pre><code class="language-crystal">puts table.pack(autosize: false)
++--------------+--------------+--------------+
+|         col1 | col2         |         col3 |
++--------------+--------------+--------------+
+|            1 | A long       |   123.456789 |
+|              | sequence of  |              |
+|              | characters   |              |
++--------------+--------------+--------------+
+Total table width = 46</code></pre>
+<p>We can also obtain various results using the <code>except:</code> or <code>only:</code> parameters,
+For examples :</p>
+<pre><code class="language-crystal">puts table.pack(only: :col1
++------+--------------+--------------+
+| col1 | col2         |         col3 |
++------+--------------+--------------+
+|    1 | A long       |   123.456789 |
+|      | sequence of  |              |
+|      | characters   |              |
++------+--------------+--------------+
+Total table width = 38</code></pre>
+<p>or:</p>
+<pre><code class="language-crystal">puts table.pack(except: :col3)
++------+-------------------------------+--------------+
+| col1 | col2                          |         col3 |
++------+-------------------------------+--------------+
+|    1 | A long sequence of characters |   123.456789 |
++------+-------------------------------+--------------+
+Total table width = 55</code></pre>
 <p><strong>Description of the packing algorithm</strong><br /></p>
 <p>The resizing algorithm is actually quite simple:<br />
 If the final value of the <code>width</code> parameter is not <code>nil</code>, it first compares
@@ -1360,83 +1326,59 @@ the table's current width with the requested width, to determine whether this
 is a reduction or an increase in size. Then, depending on the case, either the
 widest column is reduced, or the narrowest increased, in steps of 1, until the
 requested table width is reached.<br />
-This explains why the final result of resizing depends on the starting column
-widths.</p>
+The final result then depends on the value of the column widths <strong>before</strong> the
+packing operation, hence the importance of the autosize parameter
+in this calculation.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L929" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L998" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="pack(width:Int32|Nil=nil,*,packing_mode=PackingMode::AutoSized,except:LabelType|Array(LabelType))-instance-method">
+    <div class="entry-detail" id="pack(width:Int32|Nil=nil,*,except:LabelType|Array(LabelType),autosize=true)-instance-method">
       <div class="signature">
         
-        def <strong>pack</strong>(width : Int32 | Nil = <span class="n">nil</span>, *, packing_mode = <span class="t">PackingMode</span><span class="t">::</span><span class="t">AutoSized</span>, except : <a href="../Tablo/LabelType.html">LabelType</a> | Array(<a href="../Tablo/LabelType.html">LabelType</a>))
+        def <strong>pack</strong>(width : Int32 | Nil = <span class="n">nil</span>, *, except : <a href="../Tablo/LabelType.html">LabelType</a> | Array(<a href="../Tablo/LabelType.html">LabelType</a>), autosize = <span class="n">true</span>)
 
-        <a class="method-permalink" href="#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cpacking_mode%3DPackingMode%3A%3AAutoSized%2Cexcept%3ALabelType%7CArray%28LabelType%29%29-instance-method">#</a>
+        <a class="method-permalink" href="#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cexcept%3ALabelType%7CArray%28LabelType%29%2Cautosize%3Dtrue%29-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p><code><a href="../Tablo/Table.html#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cpacking_mode%3DPackingMode%3A%3AAutoSized%29-instance-method">#pack</a></code> method (2. displayable columns with exceptions)</p>
+          <p><code><a href="../Tablo/Table.html#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cautosize%3Dtrue%29-instance-method">#pack</a></code> method (2. displayable columns with exceptions)  <br />
+Returns <code>self</code> (the current Table instance) after modifying its column widths</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L936" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L1006" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="pack(width:Int32|Nil=nil,*,packing_mode=PackingMode::AutoSized,only:LabelType|Array(LabelType))-instance-method">
+    <div class="entry-detail" id="pack(width:Int32|Nil=nil,*,only:LabelType|Array(LabelType),autosize=true)-instance-method">
       <div class="signature">
         
-        def <strong>pack</strong>(width : Int32 | Nil = <span class="n">nil</span>, *, packing_mode = <span class="t">PackingMode</span><span class="t">::</span><span class="t">AutoSized</span>, only : <a href="../Tablo/LabelType.html">LabelType</a> | Array(<a href="../Tablo/LabelType.html">LabelType</a>))
+        def <strong>pack</strong>(width : Int32 | Nil = <span class="n">nil</span>, *, only : <a href="../Tablo/LabelType.html">LabelType</a> | Array(<a href="../Tablo/LabelType.html">LabelType</a>), autosize = <span class="n">true</span>)
 
-        <a class="method-permalink" href="#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cpacking_mode%3DPackingMode%3A%3AAutoSized%2Conly%3ALabelType%7CArray%28LabelType%29%29-instance-method">#</a>
+        <a class="method-permalink" href="#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Conly%3ALabelType%7CArray%28LabelType%29%2Cautosize%3Dtrue%29-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p><code><a href="../Tablo/Table.html#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cpacking_mode%3DPackingMode%3A%3AAutoSized%29-instance-method">#pack</a></code> method (3. displayable and selected columns only)</p>
+          <p><code><a href="../Tablo/Table.html#pack%28width%3AInt32%7CNil%3Dnil%2C%2A%2Cautosize%3Dtrue%29-instance-method">#pack</a></code> method (3. displayable and selected columns only)   <br />
+Returns <code>self</code> (the current Table instance) after modifying its column widths</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L952" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="reset_sources(tosrc:Enumerable(T))-instance-method">
-      <div class="signature">
-        
-        def <strong>reset_sources</strong>(to src : Enumerable(T))
-
-        <a class="method-permalink" href="#reset_sources%28tosrc%3AEnumerable%28T%29%29-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Returns the sources enumerable</p>
-<p>Replaces existing data source with a new one. <br />
-<em>(This could be seen as a hack to do some special form of pagination !)</em></p>
-<p><em>Mandatory positional parameter</em></p>
-<ul>
-<li><code>src</code>: type is `Enumerable(T) (Where T is the same type as at table initialization)</li>
-</ul>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L364" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L1023" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1449,31 +1391,40 @@ widths.</p>
         <a class="method-permalink" href="#sources-instance-method">#</a>
       </div>
       
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L49" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="subtitle-instance-method">
-      <div class="signature">
-        
-        def <strong>subtitle</strong>
-
-        <a class="method-permalink" href="#subtitle-instance-method">#</a>
-      </div>
-      
         <div class="doc">
           
-          <p>Called from RowGroup</p>
+          <p>returns the sources Enumerable(T)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L59" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L50" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="sources=(src:Enumerable(T))-instance-method">
+      <div class="signature">
+        
+        def <strong>sources=</strong>(src : Enumerable(T))
+
+        <a class="method-permalink" href="#sources%3D%28src%3AEnumerable%28T%29%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Replaces existing data source with a new one. <br /></p>
+<p><em>Mandatory positional parameter</em></p>
+<ul>
+<li><code>src</code>: type is <code>Enumerable(T)</code> Where T is the same type as at table initialization</li>
+</ul>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L377" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1488,34 +1439,13 @@ widths.</p>
       
         <div class="doc">
           
-          <p>Returns a previously defined summary table</p>
+          <p>Returns a previously defined summary table or <code>nil</code></p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L656" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="title-instance-method">
-      <div class="signature">
-        
-        def <strong>title</strong>
-
-        <a class="method-permalink" href="#title-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Called from RowGroup</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L59" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L652" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1536,7 +1466,7 @@ widths.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L661" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L657" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1557,23 +1487,7 @@ widths.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L1250" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="transpose(opts)-instance-method">
-      <div class="signature">
-        
-        def <strong>transpose</strong>(opts)
-
-        <a class="method-permalink" href="#transpose%28opts%29-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L1061" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L1316" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1588,8 +1502,8 @@ widths.</p>
       
         <div class="doc">
           
-          <p><code><a href="../Tablo/Table.html#transpose%28opts%29-instance-method">#transpose(opts = {})</a></code> returns a Tablo::Table instance</p>
-<p>The <code><a href="../Tablo/Table.html#transpose%28%2A%2Aopts%29-instance-method">#transpose</a></code> method creates a new Tablo::Table from the current
+          <p><code>transpose(opts = {})</code> returns a Tablo::Table instance</p>
+<p>The <code><a href="../Tablo/Table.html#transpose%28%2A%2Aopts%29-instance-method">#transpose</a></code> method creates a new <code><a href="../Tablo/Table.html">Tablo::Table</a></code> from the current
 table, transposed, i.e.  rotated 90 degrees with respect to the current
 table, so that the header names of the current table form the contents
 of the leftmost column of the new table, and each subsequent column
@@ -1665,7 +1579,7 @@ puts table</code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L1150" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L1211" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1678,26 +1592,148 @@ puts table</code></pre>
         <a class="method-permalink" href="#using_column_indexes%28%2Aindexes%2Creordered%3Dfalse%29-instance-method">#</a>
       </div>
       
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L1296" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="using_columns(*cols,reordered=false)-instance-method">
-      <div class="signature">
-        
-        def <strong>using_columns</strong>(*cols, reordered = <span class="n">false</span>)
+        <div class="doc">
+          
+          <p>Once a table has been defined, the <code><a href="../Tablo/Table.html#using_column_indexes%28%2Aindexes%2Creordered%3Dfalse%29-instance-method">Table#using_column_indexes</a></code> method is used to
+select the columns to be displayed by their index in the column registry, and to
+reorder them if necessary.</p>
+<p><em>Mandatory parameter:</em></p>
+<ul>
+<li><code>*indexes</code> : type is <code>Int32 || Tuple{Int32, Int32}</code> <br />
+At least one column (or Tuple) identifier must be given. Column tuples
+define an interval, selecting all the columns it contains.</li>
+</ul>
+<p><em>Optional named parameter</em></p>
+<ul>
+<li><code>reordered</code> : type is Bool, with a default value of <code>false</code> <br />
+If <code>true</code>, allows to reorder the selected columns according to the order in which
+they appear in the <code>*indexes</code> parameter.</li>
+</ul>
+<p>Using the <code><a href="../Tablo/Table.html#using_column_indexes%28%2Aindexes%2Creordered%3Dfalse%29-instance-method">#using_column_indexes</a></code> method with reordering (<code>reordered=true</code>)
+temporarily disables the display of groups.</p>
+<p>Examples:</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 
-        <a class="method-permalink" href="#using_columns%28%2Acols%2Creordered%3Dfalse%29-instance-method">#</a>
-      </div>
+data <span class="o">=</span> [[<span class="n">-1.14</span>, <span class="s">&quot;Abc&quot;</span>, <span class="s">&quot;Hello&quot;</span>, <span class="n">4</span>, <span class="n">5</span>],
+        [<span class="n">42.3</span>, <span class="s">&quot;Xyz&quot;</span>, <span class="s">&quot;Halo&quot;</span>, <span class="n">33</span>, <span class="n">42</span>]]
+
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new(data) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="n">:col1</span>, <span class="o">&amp;</span>.[<span class="n">0</span>])
+  t.add_column(<span class="n">:col2</span>, <span class="o">&amp;</span>.[<span class="n">1</span>])
+  t.add_group(<span class="n">:group1</span>)
+  t.add_column(<span class="n">:col3</span>, <span class="o">&amp;</span>.[<span class="n">2</span>])
+  t.add_group(<span class="n">:group2</span>)
+  t.add_column(<span class="n">:col4</span>, <span class="o">&amp;</span>.[<span class="n">3</span>])
+  t.add_column(<span class="n">:col5</span>, <span class="o">&amp;</span>.[<span class="n">4</span>])
+  t.add_group(<span class="n">:group3</span>)
+<span class="k">end</span></code></pre>
+<p>Display of the defined table :</p>
+<pre><code class="language-crystal">puts table
++-----------------------------+--------------+-----------------------------+
+|            group1           |    group2    |            group3           |
++--------------+--------------+--------------+--------------+--------------+
+|         col1 | col2         | col3         |         col4 |         col5 |
++--------------+--------------+--------------+--------------+--------------+
+|        -1.14 | Abc          | Hello        |            4 |            5 |
+|         42.3 | Xyz          | Halo         |           33 |           42 |
++--------------+--------------+--------------+--------------+--------------+</code></pre>
+<p>Display 3 columns out of 5, without reordering them. <br />
+Group headers are kept</p>
+<pre><code class="language-crystal">puts table.using_column_indexes({1, 2}, 0)
++-----------------------------+--------------+
+|            group1           |    group2    |
++--------------+--------------+--------------+
+|         col1 | col2         | col3         |
++--------------+--------------+--------------+
+|        -1.14 | Abc          | Hello        |
+|         42.3 | Xyz          | Halo         |
++--------------+--------------+--------------+</code></pre>
+<p>Display 3 columns out of 5, in the order specified in <code>columns</code>
+parameter. <br />
+Group headers are omitted</p>
+<pre><code class="language-crystal">puts table.using_column_indexes({1, 2}, 0, reordered: true)
++--------------+--------------+--------------+
+| col2         | col3         |         col1 |
++--------------+--------------+--------------+
+| Abc          | Hello        |        -1.14 |
+| Xyz          | Halo         |         42.3 |
++--------------+--------------+--------------+</code></pre>
+        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/90fcdc24c65f353a32012f16047462c49208d6d5/src/table.cr#L1267" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L1490" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="using_columns(*columns,reordered=false)-instance-method">
+      <div class="signature">
+        
+        def <strong>using_columns</strong>(*columns, reordered = <span class="n">false</span>)
+
+        <a class="method-permalink" href="#using_columns%28%2Acolumns%2Creordered%3Dfalse%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Once a table has been defined, the <code><a href="../Tablo/Table.html#using_columns%28%2Acolumns%2Creordered%3Dfalse%29-instance-method">Table#using_columns</a></code> method is used to
+select the columns to be displayed, and to reorder them if necessary.</p>
+<p><em>Mandatory parameter:</em></p>
+<ul>
+<li><code>*columns</code> : type is <code><a href="../Tablo/LabelType.html">LabelType</a> || Tuple{<a href="../Tablo/LabelType.html">LabelType</a>, <a href="../Tablo/LabelType.html">LabelType</a>}</code> <br />
+At least one column (or Tuple) identifier must be given. Column tuples
+define an interval, selecting all the columns it contains.</li>
+</ul>
+<p><em>Optional named parameter</em></p>
+<ul>
+<li><code>reordered</code> : type is Bool, with a default value of <code>false</code> <br />
+If <code>true</code>, allows to reorder the selected columns according to the order in which
+they appear in the <code>*columns</code> parameter.</li>
+</ul>
+<p>Using the <code><a href="../Tablo/Table.html#using_columns%28%2Acolumns%2Creordered%3Dfalse%29-instance-method">#using_columns</a></code> method with reordering (<code>reordered=true</code>)
+temporarily disables the display of groups.</p>
+<p>Examples:</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+
+data <span class="o">=</span> [[<span class="n">-1.14</span>, <span class="s">&quot;Abc&quot;</span>, <span class="s">&quot;Hello&quot;</span>, <span class="n">4</span>, <span class="n">5</span>],
+        [<span class="n">42.3</span>, <span class="s">&quot;Xyz&quot;</span>, <span class="s">&quot;Halo&quot;</span>, <span class="n">33</span>, <span class="n">42</span>]]
+
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new(data) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="n">:col1</span>, <span class="o">&amp;</span>.[<span class="n">0</span>])
+  t.add_column(<span class="n">:col2</span>, <span class="o">&amp;</span>.[<span class="n">1</span>])
+  t.add_group(<span class="n">:group1</span>)
+  t.add_column(<span class="n">:col3</span>, <span class="o">&amp;</span>.[<span class="n">2</span>])
+  t.add_group(<span class="n">:group2</span>)
+  t.add_column(<span class="n">:col4</span>, <span class="o">&amp;</span>.[<span class="n">3</span>])
+  t.add_column(<span class="n">:col5</span>, <span class="o">&amp;</span>.[<span class="n">4</span>])
+  t.add_group(<span class="n">:group3</span>)
+<span class="k">end</span></code></pre>
+<p>Display of the defined table :</p>
+<pre><code class="language-crystal">puts table
++-----------------------------+--------------+-----------------------------+
+|            group1           |    group2    |            group3           |
++--------------+--------------+--------------+--------------+--------------+
+|         col1 | col2         | col3         |         col4 |         col5 |
++--------------+--------------+--------------+--------------+--------------+
+|        -1.14 | Abc          | Hello        |            4 |            5 |
+|         42.3 | Xyz          | Halo         |           33 |           42 |
++--------------+--------------+--------------+--------------+--------------+</code></pre>
+<p>Display all columns in reverse order, group headers are omitted.</p>
+<pre><code class="language-crystal">puts table.using_columns({:col5,:col1}, reordered: true)
++--------------+--------------+--------------+--------------+--------------+
+|         col5 |         col4 | col3         | col2         |         col1 |
++--------------+--------------+--------------+--------------+--------------+
+|            5 |            4 | Hello        | Abc          |        -1.14 |
+|           42 |           33 | Halo         | Xyz          |         42.3 |
++--------------+--------------+--------------+--------------+--------------+</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/table.cr#L1389" target="_blank">View source</a>]
         
       </div>
     </div>
