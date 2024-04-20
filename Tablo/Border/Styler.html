@@ -310,13 +310,13 @@
 
   <p>A border may be styled, either by using ANSI color sequences or using
 the stdlib colorize module.</p>
-<p><code>styler</code> default value is set by <code>Config::Defaults.border_styler</code></p>
+<p><code>styler</code> default value is set by <code><a href="../../Tablo/Config/Defaults.html#border_styler%3ABorder%3A%3AStyler-class-method">Tablo::Config::Defaults.border_styler</a></code></p>
 <p>Example, to colorize borders in blue :</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
   border: <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span><span class="t">::</span><span class="t">PreSet</span><span class="t">::</span><span class="t">Ascii</span>,
-    styler: <span class="o">-&gt;</span>(b : <span class="t">String</span>) { b.colorize(<span class="n">:blue</span>).to_s })) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+    styler: <span class="o">-&gt;</span>(connector : <span class="t">String</span>) { connector.colorize(<span class="n">:red</span>).to_s })) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
   t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
 <span class="k">end</span>
 puts table</code></pre>
@@ -355,7 +355,7 @@ puts table</code></pre>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/border.cr#L136" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/b773dc98561fae9ffb80509cd9beb8aa5ceb0a09/src/border.cr#L136" target="_blank">
         border.cr
       </a>
     

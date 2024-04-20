@@ -312,12 +312,14 @@
 a previously formatted character string. For a terminal without
 graphic capabilities, these effects are limited to the use of color
 and/or character modes (bold, italic, etc.).</p>
-<p>For cells of type Cell::Text (headings and group), the styler Proc
+<p>For cells of type Cell::Text (heading and group), the styler Proc
 can take 2 different forms, as shown below by their commonly used
 parameter names and types:</p>
 <ul>
 <li>1st form : (content : <code>String</code>, line : <code>Int32</code>)</li>
-<li>2nd form : (content : <code>String</code>)</li>
+<li>2nd form : (content : <code>String</code>) <br />
+Default styler, defined by<code><a href="../../../Tablo/Config/Defaults.html#heading_styler%3ACell%3A%3AText%3A%3AStyler-class-method">Tablo::Config::Defaults.heading_styler</a></code> (or
+<code><a href="../../../Tablo/Config/Defaults.html#group_styler%3ACell%3A%3AText%3A%3AStyler-class-method">Tablo::Config::Defaults.group_styler</a></code>)</li>
 </ul>
 <p>and the return type is String for both.</p>
 <p><code>content</code> is the formatted cell value, after the formatter has been applied.<br />
@@ -394,7 +396,7 @@ puts table</code></pre>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/cell.cr#L360" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/b773dc98561fae9ffb80509cd9beb8aa5ceb0a09/src/cell.cr#L364" target="_blank">
         cell.cr
       </a>
     

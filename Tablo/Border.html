@@ -342,7 +342,7 @@ difficulties.</em></p>
 | ------------------------------ | ---------------  |
 | CONNECTORS_SINGLE_DOUBLE_MIXED | ╔╤╗╟┼╢╚╧╝║│║═─═- |</code></pre>
 <p>may not be correctly rendered.</p>
-<p>Below is a detailed representation of each position and meaning:</p>
+<p>Below is a detailed representation of each ruletype and meaning:</p>
 <p>The first 9 characters define the junction or intersection of horizontal and
 vertical border lines.</p>
 <pre><code class="language-crystal">Pos Connector name     Example (using Fancy border preset)
@@ -406,7 +406,7 @@ style is defined.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/border.cr#L104" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/b773dc98561fae9ffb80509cd9beb8aa5ceb0a09/src/border.cr#L104" target="_blank">
         border.cr
       </a>
     
@@ -544,16 +544,16 @@ style is defined.</p>
 </ul>
 <p>Examples :</p>
 <pre><code class="language-crystal">border <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span><span class="t">::</span><span class="t">PreSet</span><span class="t">::</span><span class="t">Fancy</span>,
-  styler: <span class="o">-&gt;</span>(s : <span class="t">String</span>) { s.colorize(<span class="n">:yellow</span>).to_s })</code></pre>
+  styler: <span class="o">-&gt;</span>(connector : <span class="t">String</span>) { connector.colorize(<span class="n">:yellow</span>).to_s })</code></pre>
 <p>or</p>
 <pre><code class="language-crystal">border <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="s">&quot;┌┬┐├┼┤└┴┘│││────&quot;</span>,
-  styler: <span class="o">-&gt;</span>(s : <span class="t">String</span>) { s.colorize.fore(<span class="n">:blue</span>).mode(<span class="n">:bold</span>).to_s })</code></pre>
+  styler: <span class="o">-&gt;</span>(connector : <span class="t">String</span>) { connector.colorize.fore(<span class="n">:blue</span>).mode(<span class="n">:bold</span>).to_s })</code></pre>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/border.cr#L182" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/b773dc98561fae9ffb80509cd9beb8aa5ceb0a09/src/border.cr#L182" target="_blank">View source</a>]
         
       </div>
     </div>

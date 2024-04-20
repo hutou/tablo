@@ -317,7 +317,9 @@ forms, as shown below by their commonly used parameter names  and types: <br /><
 <li>1st form : (value : <code>CellType</code>, coords : <code>Cell::Data::Coords</code>, column_width : <code>Int32</code>)</li>
 <li>2nd form : (value : <code>CellType</code>, coords : <code>Cell::Data::Coords</code>)</li>
 <li>3rd form : (value : <code>CellType</code>, column_width : <code>Int32</code>)</li>
-<li>4th form : (value : <code>CellType</code>)</li>
+<li>4th form : (value : <code>CellType</code>) <br />
+Default formatter, defined by<code><a href="../../../Tablo/Config/Defaults.html#body_formatter%3ACell%3A%3AData%3A%3AFormatter-class-method">Tablo::Config::Defaults.body_formatter</a></code> (or
+<code><a href="../../../Tablo/Config/Defaults.html#header_formatter%3ACell%3A%3AData%3A%3AFormatter-class-method">Tablo::Config::Defaults.header_formatter</a></code>)</li>
 </ul>
 <p>and the return type is <code>String</code> for all of them.</p>
 <p>These different forms can be used for conditional formatting.</p>
@@ -417,7 +419,7 @@ puts table</code></pre>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/4ce95de4be22a627b700101c05c02adc7070556f/src/cell.cr#L526" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/b773dc98561fae9ffb80509cd9beb8aa5ceb0a09/src/cell.cr#L532" target="_blank">
         cell.cr
       </a>
     
