@@ -67,12 +67,9 @@ module Tablo
               "\n"
             {% end %}
 
-  # "do  nothing" default styler
-  DEFAULT_STYLER = ->(s : String) { s }
-
-  DEFAULT_DATA_DEPENDENT_STYLER = ->(_c : CellType, s : String) { s }
-  DEFAULT_HEADING_ALIGNMENT     = Justify::Center
-  DEFAULT_FORMATTER             = ->(c : CellType) { c.to_s }
+  DEFAULT_FORMATTER         = ->(c : CellType) { c.to_s }
+  DEFAULT_STYLER            = ->(s : String) { s }
+  DEFAULT_HEADING_ALIGNMENT = Justify::Center
 
   # ---------- LabelType ----------------------------------------------------------
   #

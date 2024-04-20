@@ -62,7 +62,7 @@ describe Tablo::Row do
   end
 
   describe "#to_s" do
-    pending "row.to_s generates a spec failure... To be investigated !" do
+    context "row.to_s generates a spec failure... To be investigated ! *** NOT ANYMORE ! ***" do
       context "when row has header attached" do
         it "returns a string showing the column headers and the row contents" do
           row_with_header.to_s.should eq \

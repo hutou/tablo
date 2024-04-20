@@ -44,7 +44,7 @@ module Tablo
   # ```
   # may not be correctly rendered.
   #
-  # Below is a detailed representation of each position and meaning:
+  # Below is a detailed representation of each ruletype and meaning:
   #
   # The first 9 characters define the junction or intersection of horizontal and
   # vertical border lines.
@@ -117,7 +117,7 @@ module Tablo
     # A border may be styled, either by using ANSI color sequences or using
     # the stdlib colorize module.
     #
-    #  `styler` default value is set by `Config::Defaults.border_styler`
+    #  `styler` default value is set by `Tablo::Config::Defaults.border_styler`
     #
     # Example, to colorize borders in blue :
     # ```
@@ -125,7 +125,7 @@ module Tablo
     # require "colorize"
     # table = Tablo::Table.new([1, 2, 3],
     #   border: Tablo::Border.new(Tablo::Border::PreSet::Ascii,
-    #     styler: ->(b : String) { b.colorize(:blue).to_s })) do |t|
+    #     styler: ->(connector : String) { connector.colorize(:red).to_s })) do |t|
     #   t.add_column("itself", &.itself)
     # end
     # puts table
@@ -172,12 +172,12 @@ module Tablo
     # Examples :
     # ```
     # border = Tablo::Border.new(Tablo::Border::PreSet::Fancy,
-    #   styler: ->(s : String) { s.colorize(:yellow).to_s })
+    #   styler: ->(connector : String) { connector.colorize(:yellow).to_s })
     # ```
     # or
     # ```
     # border = Tablo::Border.new("┌┬┐├┼┤└┴┘│││────",
-    #   styler: ->(s : String) { s.colorize.fore(:blue).mode(:bold).to_s })
+    #   styler: ->(connector : String) { connector.colorize.fore(:blue).mode(:bold).to_s })
     # ```
     def initialize(definition : String | PreSet = Config::Defaults.border_definition,
                    @styler : Styler = Config::Defaults.border_styler)
@@ -185,8 +185,9 @@ module Tablo
         definition = PREDEFINED_BORDERS[definition].as(String)
       end
       unless definition.size == 16
-        raise Error::InvalidBorderDefinition.new "Invalid border definition " +
-                                                 "<#{definition}> (size != 16)"
+        raise Error::InvalidBorderDefinition.new(
+          "Invalid border definition size" +
+          " <#{definition.size}> (definition size must be exactly 16)")
       end
       ars = definition.split("").map { |e|
         case e
@@ -206,11 +207,11 @@ module Tablo
       @hdiv_bdy = ars[15]
     end
 
-    # Renders a horizontal rule, depending on its position.
+    # Renders a horizontal rule, depending on its ruletype.
     # (cannot be private, because of call from table.cr)
-    protected def horizontal_rule(column_widths, position = RuleType::Bottom,
+    protected def horizontal_rule(column_widths, ruletype = RuleType::Bottom,
                                   groups = [] of Array(Int32)) # nil)
-      left, middle, right, segment, altmiddle = connectors(position)
+      left, middle, right, segment, altmiddle = connectors(ruletype)
       segments = column_widths.map { |width| segment * width }
       # Purpose of the line below ???  Use case not clear, but doesn't hurt though!
       left = right = middle = altmiddle = "" if segments.all?(&.empty?)
@@ -240,9 +241,9 @@ module Tablo
       styled_edge_left + cells.join(styled_divider_vertical) + styled_edge_right
     end
 
-    # Returns a tuple of 5 connector strings, depending on the row position.
-    private def connectors(position)
-      case position
+    # Returns a tuple of 5 connector strings, depending on the row ruletype.
+    private def connectors(ruletype)
+      case ruletype
       # PreSet::Fancy used as example
       # (Fifth connector only used when Group involved)
       in RuleType::BodyBody      then {mid_left, mid_mid, mid_right, hdiv_bdy, ""}              # ├ ┼ ┤ ⋅ E

@@ -91,8 +91,9 @@ module Tablo
       BORDER_DEFINITION = Border::PreSet::Ascii
       class_property border_definition : String | Border::PreSet = Border::PreSet::Ascii
 
-      # Default styler for Border
+      # (see `DEFAULT_STYLER`)
       BORDER_STYLER = DEFAULT_STYLER
+      # Default styler for Border (see `BORDER_STYLER`)
       class_property border_styler : Border::Styler = BORDER_STYLER
 
       # Default heading alignment
@@ -108,36 +109,44 @@ module Tablo
       HEADER_ALIGNMENT = nil
       class_property header_alignment : Justify? = HEADER_ALIGNMENT
 
-      # Default heading formatter
+      # (see `DEFAULT_FORMATTER`)
       HEADING_FORMATTER = DEFAULT_FORMATTER
+      # Default formatter for Heading (see `HEADING_FORMATTER`)
       class_property heading_formatter : Cell::Text::Formatter = HEADING_FORMATTER
 
-      # Default group formatter
+      # (see `DEFAULT_FORMATTER`)
       GROUP_FORMATTER = DEFAULT_FORMATTER
+      # Default formatter for Group (see `GROUP_FORMATTER`)
       class_property group_formatter : Cell::Text::Formatter = GROUP_FORMATTER
 
-      # Default header formatter
+      # (see `DEFAULT_FORMATTER`)
       HEADER_FORMATTER = DEFAULT_FORMATTER
+      # Default formatter for Header (see `HEADER_FORMATTER`)
       class_property header_formatter : Cell::Data::Formatter = HEADER_FORMATTER
 
-      # Default body formatter
+      # (see `DEFAULT_FORMATTER`)
       BODY_FORMATTER = DEFAULT_FORMATTER
+      # Default formatter for Body (see `BODY_FORMATTER`)
       class_property body_formatter : Cell::Data::Formatter = BODY_FORMATTER
 
-      # Default heading styler
+      # (see `DEFAULT_STYLER`)
       HEADING_STYLER = DEFAULT_STYLER
+      # Default styler for Heading (see `HEADING_STYLER`)
       class_property heading_styler : Cell::Text::Styler = HEADING_STYLER
 
-      # Default group styler
+      # (see `DEFAULT_STYLER`)
       GROUP_STYLER = DEFAULT_STYLER
+      # Default styler for Group (see `GROUP_STYLER`)
       class_property group_styler : Cell::Text::Styler = GROUP_STYLER
 
-      # Default header styler
-      HEADER_STYLER = DEFAULT_DATA_DEPENDENT_STYLER
+      # (see `DEFAULT_STYLER`)
+      HEADER_STYLER = DEFAULT_STYLER
+      # Default styler for Header (see `HEADER_STYLER`)
       class_property header_styler : Cell::Data::Styler = HEADER_STYLER
 
-      # Default body styler
-      BODY_STYLER = DEFAULT_DATA_DEPENDENT_STYLER
+      # (see `DEFAULT_STYLER`)
+      BODY_STYLER = DEFAULT_STYLER
+      # Default styler for Body (see `BODY_STYLER`)
       class_property body_styler : Cell::Data::Styler = BODY_STYLER
 
       # Default left padding

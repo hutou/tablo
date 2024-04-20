@@ -216,8 +216,8 @@ module Tablo
       padding_character * amount
     end
 
-    # The Text class, derived from Cell, is used to manage the headings
-    # (`Heading`, `Heading` and `Heading`) and group cells
+    # The Text class, derived from Cell, is used to manage Heading and
+    #  Group cells
     class Text < Cell
       # The purpose of the formatter is to transform the raw value of a cell
       # into a formatted character string <br /> (A default formatter (`to_s`) is applied if
@@ -227,7 +227,9 @@ module Tablo
       # take 2 different forms, as shown below by their commonly used parameter
       # names  and types: <br />
       # - 1st form : (value : `Tablo::CellType`, column_width : `Int32`)
-      # - 2nd form : (value : `Tablo::CellType`)
+      # - 2nd form : (value : `Tablo::CellType`) <br />
+      #   Default formatter, defined by`Tablo::Config::Defaults.heading_formatter` (or
+      #                   `Tablo::Config::Defaults.group_formatter`)
       #
       # and the return type is `String` for both.
       #
@@ -296,12 +298,14 @@ module Tablo
       # graphic capabilities, these effects are limited to the use of color
       # and/or character modes (bold, italic, etc.).
       #
-      # For cells of type Cell::Text (headings and group), the styler Proc
+      # For cells of type Cell::Text (heading and group), the styler Proc
       # can take 2 different forms, as shown below by their commonly used
       # parameter names and types:
       #
       # - 1st form : (content : `String`, line : `Int32`)
-      # - 2nd form : (content : `String`)
+      # - 2nd form : (content : `String`) <br />
+      #   Default styler, defined by`Tablo::Config::Defaults.heading_styler` (or
+      #                   `Tablo::Config::Defaults.group_styler`)
       #
       # and the return type is String for both.
       #
@@ -443,7 +447,9 @@ module Tablo
       # - 1st form : (value : `CellType`, coords : `Cell::Data::Coords`, column_width : `Int32`)
       # - 2nd form : (value : `CellType`, coords : `Cell::Data::Coords`)
       # - 3rd form : (value : `CellType`, column_width : `Int32`)
-      # - 4th form : (value : `CellType`)
+      # - 4th form : (value : `CellType`) <br />
+      #   Default formatter, defined by`Tablo::Config::Defaults.body_formatter` (or
+      #                   `Tablo::Config::Defaults.header_formatter`)
       #
       # and the return type is `String` for all of them.
       #
@@ -542,7 +548,9 @@ module Tablo
       #              content : `String`)
       # - 3rd form : (value : `Tablo::CellType`, content : `String`)
       # - 4th form : (content : `String`, line_index : `Int32`)
-      # - 5th form : (content : `String`)
+      # - 5th form : (content : `String`) <br />
+      #   Default styler, defined by`Tablo::Config::Defaults.body_styler` (or
+      #                   `Tablo::Config::Defaults.header_styler`)
       #
       # and the return type is String for all of them.
       #

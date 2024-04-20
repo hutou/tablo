@@ -1344,7 +1344,7 @@ module Tablo
     #   they appear in the `*columns` parameter.
     #
     # Using the `using_columns` method with reordering (`reordered=true`)
-    # temporarily disables the display of groups.
+    # temporarily disables the display of group headers.
     #
     # Examples:
     # ```
@@ -1430,7 +1430,7 @@ module Tablo
     #   they appear in the `*indexes` parameter.
     #
     # Using the `using_column_indexes` method with reordering (`reordered=true`)
-    # temporarily disables the display of groups.
+    # temporarily disables the display of group headers.
     #
     # Examples:
     # ```
