@@ -171,8 +171,6 @@ module Tablo
           add_rule(RuleType::TitleBottom, linenum: __LINE__) if table.footer.framed?
           self.rows[-1] += "\f" if table.footer.page_break?
         end
-        # Clear Table memory for next table display
-        RowGroup.rowtype_memory = nil
       end
       # ------------------------------------------------------------------------------
     {% else %}
@@ -282,8 +280,6 @@ module Tablo
           add_rule(RuleType::TitleBottom) if table.footer.framed?
           self.rows[-1] += "\f" if table.footer.page_break?
         end
-        # Clear Table memory for next table display
-        RowGroup.rowtype_memory = nil
       end
       # ------------------------------------------------------------------------------
     {% end %}
@@ -397,6 +393,7 @@ module Tablo
           else
             # No linking requested, we can close table
             close_table
+            RowGroup.rowtype_memory = nil
           end
           RowGroup.transition_footer = current_rowtype == RowType::Footer ? table.footer : nil
         else
@@ -410,11 +407,13 @@ module Tablo
           else
             # No linking requested, we can close table
             close_table
+            RowGroup.rowtype_memory = nil
           end
         end
       when :summary
         # Okay, we are done, clear transition_data for next runs
         close_table unless table.omit_last_rule?
+        RowGroup.rowtype_memory = nil
       end
     end
 
@@ -471,7 +470,8 @@ module Tablo
 
     private def apply_line_spacing(count)
       count.times do
-        self.rows << " " # min one space char, otherwise row if rejected !
+        # self.rows << " " # min one space char, otherwise row if rejected !
+        self.rows << "" # empty string seems Ok now !
       end
     end
 

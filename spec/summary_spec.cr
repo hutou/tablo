@@ -3,7 +3,6 @@ require "big"
 
 # create or Redefine protected and private methods for tests
 class Tablo::Table(T)
-  getter sources
   setter omit_last_rule
 end
 
@@ -19,7 +18,6 @@ def create_table
   invoice = [
     InvoiceItem.new("Laptop", 3, 98000),
     InvoiceItem.new("Printer", 2, 15499),
-    # InvoiceItem.new("FAKE", nil, nil),
     InvoiceItem.new("Router", 1, 9900),
     InvoiceItem.new("Switch", nil, 4500),
     InvoiceItem.new("Accessories", 5, 6450),
@@ -249,202 +247,225 @@ invoice_summary_definition_big = [
   Tablo::Summary::BodyRow.new(:total, 60, ->{ Tablo::Summary.use(:total_due) }),
 ]
 
-invoice_layout_0 =
-  "                          Invoice                         \n" +
-    "╭─────────────┬──────────┬────────────────────┬──────────╮\n" +
-    "│ Product     : Quantity :              Price :    Total │\n" +
-    "├-------------┼----------┼--------------------┼----------┤\n" +
-    "│ Laptop      :        3 :             980.00 :  2940.00 │\n" +
-    "│ Printer     :        2 :             154.99 :   309.98 │\n" +
-    "│ Router      :        1 :              99.00 :    99.00 │\n" +
-    "│ Switch      : N/A      :              45.00 :          │\n" +
-    "│ Accessories :        5 :              64.50 :   322.50 │\n" +
-    "╰─────────────┴──────────┴────────────────────┴──────────╯\n" +
-    if Tablo::Util.styler_allowed
-      "                                     SubTotal    \e[1m3671.48\e[0m  \n" +
-        "                                  Discount 5%     \e[3m183.57\e[0m  \n" +
-        "                           S/T after discount    \e[1m3487.91\e[0m  \n" +
-        "                                    Tax (20%)     697.58  \n" +
-        "                                                ========  \n" +
-        "                                  Balance due    \e[1m4185.49\e[0m  "
-    else
-      "                                     SubTotal    3671.48  \n" +
-        "                                  Discount 5%     183.57  \n" +
-        "                           S/T after discount    3487.91  \n" +
-        "                                    Tax (20%)     697.58  \n" +
-        "                                                ========  \n" +
-        "                                  Balance due    4185.49  "
-    end
+invoice_layout_0 = <<-EOS
+                            Invoice                         
+  ╭─────────────┬──────────┬────────────────────┬──────────╮
+  │ Product     : Quantity :              Price :    Total │
+  ├-------------┼----------┼--------------------┼----------┤
+  │ Laptop      :        3 :             980.00 :  2940.00 │
+  │ Printer     :        2 :             154.99 :   309.98 │
+  │ Router      :        1 :              99.00 :    99.00 │
+  │ Switch      : N/A      :              45.00 :          │
+  │ Accessories :        5 :              64.50 :   322.50 │
+  ╰─────────────┴──────────┴────────────────────┴──────────╯
+  EOS
+invoice_layout_0 += "\n" + if Tablo::Util.styler_allowed
+  <<-EOS
+                                       SubTotal    \e[1m3671.48\e[0m  
+                                    Discount 5%     \e[3m183.57\e[0m  
+                             S/T after discount    \e[1m3487.91\e[0m  
+                                      Tax (20%)     697.58  
+                                                  ========  
+                                    Balance due    \e[1m4185.49\e[0m  
+  EOS
+else
+  <<-EOS
+                                       SubTotal    3671.48  
+                                    Discount 5%     183.57  
+                             S/T after discount    3487.91  
+                                      Tax (20%)     697.58  
+                                                  ========  
+                                    Balance due    4185.49  
+  EOS
+end
 
 invoice_layout1 =
-  "                           Invoice                           \n" +
-    "╭──────────────┬──────────────┬──────────────┬──────────────╮\n" +
-    "│ Product      :     Quantity :        Price :        Total │\n" +
-    "├--------------┼--------------┼--------------┼--------------┤\n" +
-    "│ Laptop       :            3 :       980.00 :      2940.00 │\n" +
-    "│ Printer      :            2 :       154.99 :       309.98 │\n" +
-    "│ Router       :            1 :        99.00 :        99.00 │\n" +
-    "│ Switch       : N/A          :        45.00 :              │\n" +
-    "│ Accessories  :            5 :        64.50 :       322.50 │\n" +
-    "╰──────────────┴──────────────┴──────────────┴──────────────╯\n" +
-    if Tablo::Util.styler_allowed
-      "╭──────────────┬──────────────┬──────────────┬──────────────╮\n" +
-        "│              :              :     SubTotal :      \e[1m3671.48\e[0m │\n" +
-        "│              :              :  Discount 5% :       \e[3m183.57\e[0m │\n" +
-        "│              :              :    S/T after :      \e[1m3487.91\e[0m │\n" +
-        "│              :              :     discount :              │\n" +
-        "│              :              :    Tax (20%) :       697.58 │\n" +
-        "│              :              :              :     ======== │\n" +
-        "│              :              :  Balance due :      \e[1m4185.49\e[0m │\n" +
-        "╰──────────────┴──────────────┴──────────────┴──────────────╯"
-    else
-      "╭──────────────┬──────────────┬──────────────┬──────────────╮\n" +
-        "│              :              :     SubTotal :      3671.48 │\n" +
-        "│              :              :  Discount 5% :       183.57 │\n" +
-        "│              :              :    S/T after :      3487.91 │\n" +
-        "│              :              :     discount :              │\n" +
-        "│              :              :    Tax (20%) :       697.58 │\n" +
-        "│              :              :              :     ======== │\n" +
-        "│              :              :  Balance due :      4185.49 │\n" +
-        "╰──────────────┴──────────────┴──────────────┴──────────────╯"
-    end
+  <<-EOS
+                             Invoice                           
+  ╭──────────────┬──────────────┬──────────────┬──────────────╮
+  │ Product      :     Quantity :        Price :        Total │
+  ├--------------┼--------------┼--------------┼--------------┤
+  │ Laptop       :            3 :       980.00 :      2940.00 │
+  │ Printer      :            2 :       154.99 :       309.98 │
+  │ Router       :            1 :        99.00 :        99.00 │
+  │ Switch       : N/A          :        45.00 :              │
+  │ Accessories  :            5 :        64.50 :       322.50 │
+  ╰──────────────┴──────────────┴──────────────┴──────────────╯
+  EOS
+invoice_layout1 += "\n" + if Tablo::Util.styler_allowed
+  <<-EOS
+  ╭──────────────┬──────────────┬──────────────┬──────────────╮
+  │              :              :     SubTotal :      \e[1m3671.48\e[0m │
+  │              :              :  Discount 5% :       \e[3m183.57\e[0m │
+  │              :              :    S/T after :      \e[1m3487.91\e[0m │
+  │              :              :     discount :              │
+  │              :              :    Tax (20%) :       697.58 │
+  │              :              :              :     ======== │
+  │              :              :  Balance due :      \e[1m4185.49\e[0m │
+  ╰──────────────┴──────────────┴──────────────┴──────────────╯
+  EOS
+else
+  <<-EOS
+  ╭──────────────┬──────────────┬──────────────┬──────────────╮
+  │              :              :     SubTotal :      3671.48 │
+  │              :              :  Discount 5% :       183.57 │
+  │              :              :    S/T after :      3487.91 │
+  │              :              :     discount :              │
+  │              :              :    Tax (20%) :       697.58 │
+  │              :              :              :     ======== │
+  │              :              :  Balance due :      4185.49 │
+  ╰──────────────┴──────────────┴──────────────┴──────────────╯
+  EOS
+end
 
-invoice_layout2 =
-  "                              Invoice                              \n" +
-    "╭──────────────┬──────────────┬────────────────────┬──────────────╮\n" +
-    "│ Product      :     Quantity :              Price :        Total │\n" +
-    "├--------------┼--------------┼--------------------┼--------------┤\n" +
-    "│ Laptop       :            3 :             980.00 :      2940.00 │\n" +
-    "│ Printer      :            2 :             154.99 :       309.98 │\n" +
-    "│ Router       :            1 :              99.00 :        99.00 │\n" +
-    "│ Switch       : N/A          :              45.00 :              │\n" +
-    "│ Accessories  :            5 :              64.50 :       322.50 │\n" +
-    "╰──────────────┴──────────────┴────────────────────┴──────────────╯\n" +
-    if Tablo::Util.styler_allowed
-      "╭──────────────┬──────────────┬────────────────────┬──────────────╮\n" +
-        "│              :              :           SubTotal :      \e[1m3671.48\e[0m │\n" +
-        "│              :              :        Discount 5% :       \e[3m183.57\e[0m │\n" +
-        "│              :              : S/T after discount :      \e[1m3487.91\e[0m │\n" +
-        "│              :              :          Tax (20%) :       697.58 │\n" +
-        "│              :              :                    :     ======== │\n" +
-        "│              :              :        Balance due :      \e[1m4185.49\e[0m │\n" +
-        "╰──────────────┴──────────────┴────────────────────┴──────────────╯"
-    else
-      "╭──────────────┬──────────────┬────────────────────┬──────────────╮\n" +
-        "│              :              :           SubTotal :      3671.48 │\n" +
-        "│              :              :        Discount 5% :       183.57 │\n" +
-        "│              :              : S/T after discount :      3487.91 │\n" +
-        "│              :              :          Tax (20%) :       697.58 │\n" +
-        "│              :              :                    :     ======== │\n" +
-        "│              :              :        Balance due :      4185.49 │\n" +
-        "╰──────────────┴──────────────┴────────────────────┴──────────────╯"
-    end
+invoice_layout2 = <<-EOS
+                                Invoice                              
+  ╭──────────────┬──────────────┬────────────────────┬──────────────╮
+  │ Product      :     Quantity :              Price :        Total │
+  ├--------------┼--------------┼--------------------┼--------------┤
+  │ Laptop       :            3 :             980.00 :      2940.00 │
+  │ Printer      :            2 :             154.99 :       309.98 │
+  │ Router       :            1 :              99.00 :        99.00 │
+  │ Switch       : N/A          :              45.00 :              │
+  │ Accessories  :            5 :              64.50 :       322.50 │
+  ╰──────────────┴──────────────┴────────────────────┴──────────────╯
+  EOS
+invoice_layout2 += "\n" + if Tablo::Util.styler_allowed
+  <<-EOS
+  ╭──────────────┬──────────────┬────────────────────┬──────────────╮
+  │              :              :           SubTotal :      \e[1m3671.48\e[0m │
+  │              :              :        Discount 5% :       \e[3m183.57\e[0m │
+  │              :              : S/T after discount :      \e[1m3487.91\e[0m │
+  │              :              :          Tax (20%) :       697.58 │
+  │              :              :                    :     ======== │
+  │              :              :        Balance due :      \e[1m4185.49\e[0m │
+  ╰──────────────┴──────────────┴────────────────────┴──────────────╯
+  EOS
+else
+  <<-EOS
+  ╭──────────────┬──────────────┬────────────────────┬──────────────╮
+  │              :              :           SubTotal :      3671.48 │
+  │              :              :        Discount 5% :       183.57 │
+  │              :              : S/T after discount :      3487.91 │
+  │              :              :          Tax (20%) :       697.58 │
+  │              :              :                    :     ======== │
+  │              :              :        Balance due :      4185.49 │
+  ╰──────────────┴──────────────┴────────────────────┴──────────────╯
+  EOS
+end
 
-invoice_layout3 =
-  "                          Invoice                         \n" +
-    "╭─────────────┬──────────┬────────────────────┬──────────╮\n" +
-    "│ Product     : Quantity :              Price :    Total │\n" +
-    "├-------------┼----------┼--------------------┼----------┤\n" +
-    "│ Laptop      :        3 :             980.00 :  2940.00 │\n" +
-    "│ Printer     :        2 :             154.99 :   309.98 │\n" +
-    "│ Router      :        1 :              99.00 :    99.00 │\n" +
-    "│ Switch      : N/A      :              45.00 :          │\n" +
-    "│ Accessories :        5 :              64.50 :   322.50 │\n" +
-    "╰─────────────┴──────────┴────────────────────┴──────────╯\n" +
-    if Tablo::Util.styler_allowed
-      "╭─────────────┬──────────┬────────────────────┬──────────╮\n" +
-        "│             :          :           SubTotal :  \e[1m3671.48\e[0m │\n" +
-        "│             :          :        Discount 5% :   \e[3m183.57\e[0m │\n" +
-        "│             :          : S/T after discount :  \e[1m3487.91\e[0m │\n" +
-        "│             :          :          Tax (20%) :   697.58 │\n" +
-        "│             :          :                    : ======== │\n" +
-        "│             :          :        Balance due :  \e[1m4185.49\e[0m │\n" +
-        "╰─────────────┴──────────┴────────────────────┴──────────╯"
-    else
-      "╭─────────────┬──────────┬────────────────────┬──────────╮\n" +
-        "│             :          :           SubTotal :  3671.48 │\n" +
-        "│             :          :        Discount 5% :   183.57 │\n" +
-        "│             :          : S/T after discount :  3487.91 │\n" +
-        "│             :          :          Tax (20%) :   697.58 │\n" +
-        "│             :          :                    : ======== │\n" +
-        "│             :          :        Balance due :  4185.49 │\n" +
-        "╰─────────────┴──────────┴────────────────────┴──────────╯"
-    end
+invoice_layout3 = <<-EOS
+                            Invoice                         
+  ╭─────────────┬──────────┬────────────────────┬──────────╮
+  │ Product     : Quantity :              Price :    Total │
+  ├-------------┼----------┼--------------------┼----------┤
+  │ Laptop      :        3 :             980.00 :  2940.00 │
+  │ Printer     :        2 :             154.99 :   309.98 │
+  │ Router      :        1 :              99.00 :    99.00 │
+  │ Switch      : N/A      :              45.00 :          │
+  │ Accessories :        5 :              64.50 :   322.50 │
+  ╰─────────────┴──────────┴────────────────────┴──────────╯
+  EOS
+invoice_layout3 += "\n" + if Tablo::Util.styler_allowed
+  <<-EOS
+  ╭─────────────┬──────────┬────────────────────┬──────────╮
+  │             :          :           SubTotal :  \e[1m3671.48\e[0m │
+  │             :          :        Discount 5% :   \e[3m183.57\e[0m │
+  │             :          : S/T after discount :  \e[1m3487.91\e[0m │
+  │             :          :          Tax (20%) :   697.58 │
+  │             :          :                    : ======== │
+  │             :          :        Balance due :  \e[1m4185.49\e[0m │
+  ╰─────────────┴──────────┴────────────────────┴──────────╯
+  EOS
+else
+  <<-EOS
+  ╭─────────────┬──────────┬────────────────────┬──────────╮
+  │             :          :           SubTotal :  3671.48 │
+  │             :          :        Discount 5% :   183.57 │
+  │             :          : S/T after discount :  3487.91 │
+  │             :          :          Tax (20%) :   697.58 │
+  │             :          :                    : ======== │
+  │             :          :        Balance due :  4185.49 │
+  ╰─────────────┴──────────┴────────────────────┴──────────╯
+  EOS
+end
 
-invoice_layout4 =
-  "                          Invoice                         \n" +
-    "╭─────────────┬──────────┬────────────────────┬──────────╮\n" +
-    "│ Product     : Quantity :              Price :    Total │\n" +
-    "├-------------┼----------┼--------------------┼----------┤\n" +
-    "│ Laptop      :        3 :             980.00 :  2940.00 │\n" +
-    "│ Printer     :        2 :             154.99 :   309.98 │\n" +
-    "│ Router      :        1 :              99.00 :    99.00 │\n" +
-    "│ Switch      : N/A      :              45.00 :          │\n" +
-    "│ Accessories :        5 :              64.50 :   322.50 │\n" +
-    "├─────────────┼──────────┼────────────────────┼──────────┤\n" +
-    if Tablo::Util.styler_allowed
-      "│             :          :           SubTotal :  \e[1m3671.48\e[0m │\n" +
-        "│             :          :        Discount 5% :   \e[3m183.57\e[0m │\n" +
-        "│             :          : S/T after discount :  \e[1m3487.91\e[0m │\n" +
-        "│             :          :          Tax (20%) :   697.58 │\n" +
-        "│             :          :                    : ======== │\n" +
-        "│             :          :        Balance due :  \e[1m4185.49\e[0m │\n" +
-        "╰─────────────┴──────────┴────────────────────┴──────────╯"
-    else
-      "│             :          :           SubTotal :  3671.48 │\n" +
-        "│             :          :        Discount 5% :   183.57 │\n" +
-        "│             :          : S/T after discount :  3487.91 │\n" +
-        "│             :          :          Tax (20%) :   697.58 │\n" +
-        "│             :          :                    : ======== │\n" +
-        "│             :          :        Balance due :  4185.49 │\n" +
-        "╰─────────────┴──────────┴────────────────────┴──────────╯"
-    end
+invoice_layout4 = <<-EOS
+                            Invoice                         
+  ╭─────────────┬──────────┬────────────────────┬──────────╮
+  │ Product     : Quantity :              Price :    Total │
+  ├-------------┼----------┼--------------------┼----------┤
+  │ Laptop      :        3 :             980.00 :  2940.00 │
+  │ Printer     :        2 :             154.99 :   309.98 │
+  │ Router      :        1 :              99.00 :    99.00 │
+  │ Switch      : N/A      :              45.00 :          │
+  │ Accessories :        5 :              64.50 :   322.50 │
+  ├─────────────┼──────────┼────────────────────┼──────────┤
+  EOS
+invoice_layout4 += "\n" + if Tablo::Util.styler_allowed
+  <<-EOS
+  │             :          :           SubTotal :  \e[1m3671.48\e[0m │
+  │             :          :        Discount 5% :   \e[3m183.57\e[0m │
+  │             :          : S/T after discount :  \e[1m3487.91\e[0m │
+  │             :          :          Tax (20%) :   697.58 │
+  │             :          :                    : ======== │
+  │             :          :        Balance due :  \e[1m4185.49\e[0m │
+  ╰─────────────┴──────────┴────────────────────┴──────────╯
+  EOS
+else
+  <<-EOS
+  │             :          :           SubTotal :  3671.48 │
+  │             :          :        Discount 5% :   183.57 │
+  │             :          : S/T after discount :  3487.91 │
+  │             :          :          Tax (20%) :   697.58 │
+  │             :          :                    : ======== │
+  │             :          :        Balance due :  4185.49 │
+  ╰─────────────┴──────────┴────────────────────┴──────────╯
+  EOS
+end
 
-invoice_layout_big =
-  "                                                          \n" +
-    "                          Invoice                         \n" +
-    "                          =======                         \n" +
-    "                                                          \n" +
-    "╭────────────────────────────────────────────────────────╮\n" +
-    "│                         Details                        │\n" +
-    "├─────────────┬──────────┬────────────────────┬──────────┤\n" +
-    "│ Product     : Quantity :              Price :    Total │\n" +
-    "├-------------┼----------┼--------------------┼----------┤\n" +
-    "│ Laptop      :        3 :             980.00 :  2940.00 │\n" +
-    "│ Printer     :        2 :             154.99 :   309.98 │\n" +
-    "│ Router      :        1 :              99.00 :    99.00 │\n" +
-    "│ Switch      : N/A      :              45.00 :          │\n" +
-    "│ Accessories :        5 :              64.50 :   322.50 │\n" +
-    "├─────────────┴──────────┴────────────────────┴──────────┤\n" +
-    "│                         Summary                        │\n" +
-    "├─────────────┬──────────┬────────────────────┬──────────┤\n" +
-    "│             :          :      Total Invoice :  Amounts │\n" +
-    "├-------------┼----------┼--------------------┼----------┤\n" +
-    if Tablo::Util.styler_allowed
-      "│             :          :           SubTotal :  \e[1m3671.48\e[0m │\n" +
-        "│             :          :        Discount 5% :   \e[3m183.57\e[0m │\n" +
-        "│             :          : S/T after discount :  \e[1m3487.91\e[0m │\n" +
-        "│             :          :          Tax (20%) :   697.58 │\n" +
-        "│             :          :                    : ======== │\n" +
-        "│             :          :        Balance due :  \e[1m4185.49\e[0m │\n" +
-        "╰─────────────┴──────────┴────────────────────┴──────────╯"
-    else
-      "│             :          :           SubTotal :  3671.48 │\n" +
-        "│             :          :        Discount 5% :   183.57 │\n" +
-        "│             :          : S/T after discount :  3487.91 │\n" +
-        "│             :          :          Tax (20%) :   697.58 │\n" +
-        "│             :          :                    : ======== │\n" +
-        "│             :          :        Balance due :  4185.49 │\n" +
-        "╰─────────────┴──────────┴────────────────────┴──────────╯"
-    end
-
-# describe "zzz" do
-#   it "works" do
-#     create_table_big
-#   end
-# end
-
-# exit
+invoice_layout_big = <<-EOS
+                                                            
+                            Invoice                         
+                            =======                         
+                                                            
+  ╭────────────────────────────────────────────────────────╮
+  │                         Details                        │
+  ├─────────────┬──────────┬────────────────────┬──────────┤
+  │ Product     : Quantity :              Price :    Total │
+  ├-------------┼----------┼--------------------┼----------┤
+  │ Laptop      :        3 :             980.00 :  2940.00 │
+  │ Printer     :        2 :             154.99 :   309.98 │
+  │ Router      :        1 :              99.00 :    99.00 │
+  │ Switch      : N/A      :              45.00 :          │
+  │ Accessories :        5 :              64.50 :   322.50 │
+  ├─────────────┴──────────┴────────────────────┴──────────┤
+  │                         Summary                        │
+  ├─────────────┬──────────┬────────────────────┬──────────┤
+  │             :          :      Total Invoice :  Amounts │
+  ├-------------┼----------┼--------------------┼----------┤
+  EOS
+invoice_layout_big += "\n" + if Tablo::Util.styler_allowed
+  <<-EOS
+  │             :          :           SubTotal :  \e[1m3671.48\e[0m │
+  │             :          :        Discount 5% :   \e[3m183.57\e[0m │
+  │             :          : S/T after discount :  \e[1m3487.91\e[0m │
+  │             :          :          Tax (20%) :   697.58 │
+  │             :          :                    : ======== │
+  │             :          :        Balance due :  \e[1m4185.49\e[0m │
+  ╰─────────────┴──────────┴────────────────────┴──────────╯
+  EOS
+else
+  <<-EOS
+  │             :          :           SubTotal :  3671.48 │
+  │             :          :        Discount 5% :   183.57 │
+  │             :          : S/T after discount :  3487.91 │
+  │             :          :          Tax (20%) :   697.58 │
+  │             :          :                    : ======== │
+  │             :          :        Balance due :  4185.49 │
+  ╰─────────────┴──────────┴────────────────────┴──────────╯
+  EOS
+end
 
 describe "#{Tablo::Summary}", tags: "summary" do
   describe "#{Tablo::Summary} Calculations and summary rows arrangement, with no border" do
@@ -458,8 +479,7 @@ describe "#{Tablo::Summary}", tags: "summary" do
             masked_headers: true,
             border:         Tablo::Border.new("EEESSSEEESSSESSS"),
           })
-        # tbl.summary.as(Tablo::Table(Array(Tablo::CellType))).pack(only: ["Price", :total])
-        tbl.summary.pack(only: ["Price", :total])
+        tbl.summary.as(Tablo::Table).pack(only: ["Price", :total])
         output = tbl.to_s + "\n" + tbl.summary.to_s
         {% if flag?(:DEBUG) %}
           puts "\n#{output}"
@@ -477,7 +497,7 @@ describe "#{Tablo::Summary}", tags: "summary" do
             masked_headers: true,
             border:         Tablo::Border.new("EEESSSEEESSSESSS"),
           })
-        tbl.summary.pack(only: ["Price", :total])
+        tbl.summary.as(Tablo::Table).pack(only: ["Price", :total])
         output = tbl.to_s + "\n" + tbl.summary.to_s
         {% if flag?(:DEBUG) %}
           puts "\n#{output}"
@@ -495,7 +515,7 @@ describe "#{Tablo::Summary}", tags: "summary" do
             masked_headers: true,
             border:         Tablo::Border.new("EEESSSEEESSSESSS"),
           })
-        tbl.summary.pack(only: ["Price", :total])
+        tbl.summary.as(Tablo::Table).pack(only: ["Price", :total])
         output = tbl.to_s + "\n" + tbl.summary.to_s
         {% if flag?(:DEBUG) %}
           puts "\n#{output}"
@@ -529,7 +549,7 @@ describe "#{Tablo::Summary}", tags: "summary" do
             masked_headers: true,
           })
         tbl.pack
-        tbl.summary.pack(only: ["Price", :total])
+        tbl.summary.as(Tablo::Table).pack(only: ["Price", :total])
         output = tbl.to_s + "\n" + tbl.summary.to_s
         {% if flag?(:DEBUG) %}
           puts "\n#{output}"
@@ -546,7 +566,7 @@ describe "#{Tablo::Summary}", tags: "summary" do
           {
             masked_headers: true,
           })
-        tbl.summary.pack(only: ["Price", :total])
+        tbl.summary.as(Tablo::Table).pack(only: ["Price", :total])
         output = tbl.to_s + "\n" + tbl.summary.to_s
         {% if flag?(:DEBUG) %}
           puts "\n#{output}"
@@ -564,7 +584,7 @@ describe "#{Tablo::Summary}", tags: "summary" do
           {
             masked_headers: true,
           })
-        tbl.summary.pack(only: ["Price", :total])
+        tbl.summary.as(Tablo::Table).pack(only: ["Price", :total])
         output = tbl.to_s + "\n" + tbl.summary.to_s
         {% if flag?(:DEBUG) %}
           puts "\n#{output}"

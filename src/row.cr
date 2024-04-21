@@ -53,7 +53,9 @@ module Tablo
         rows = RowGroup.new(@table, @source, @divider, @index).run
         # rows = RowGroup.new(@table, @source, @divider, @index).run
         # io << @table.join_lines(rows.reject &.empty?)
-        io << (rows.reject &.empty?).join(NEWLINE)
+        # io << (rows.reject &.empty?).join(NEWLINE)
+        # io << (rows.reject &.empty?).map { |e| e == " " ? "" : e }.join(NEWLINE)
+        io << rows.join(NEWLINE)
         # io << @table.all_rendered_rows(@source, @divider, @index)
       else
         io << ""
