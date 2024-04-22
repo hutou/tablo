@@ -1,18 +1,5 @@
 require "./spec_helper"
 
-# class FloatSamples
-#   include Enumerable(Float64)
-
-#   def each(&)
-#     yield 0.0
-#     yield -10.3
-#     yield 43.606
-#     yield -909.0302
-#     yield 1024.0
-#   end
-# end
-
-# define border type for all tests
 Tablo::Config::Defaults.border_definition = Tablo::Border::PreSet::Fancy
 
 test_data_numbers = FloatSamples.new
@@ -26,17 +13,18 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
         t.add_column("itself", &.itself)
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
-      output = "    MY TITLE    \n" +
-               %q( ╭──────────────╮
-                   │       itself │
-                   ├--------------┤
-                   │          0.0 │
-                   │        -10.3 │
-                   │       43.606 │
-                   │    -909.0302 │
-                   │       1024.0 │
-                   ╰──────────────╯).gsub(/^ */m, "")
-
+      output = <<-EOS
+            MY TITLE    
+        ╭──────────────╮
+        │       itself │
+        ├--------------┤
+        │          0.0 │
+        │        -10.3 │
+        │       43.606 │
+        │    -909.0302 │
+        │       1024.0 │
+        ╰──────────────╯
+        EOS
       table.to_s.should eq output
     end
 
@@ -49,21 +37,19 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
           })) do |t|
         t.add_column("itself", width: 15, &.itself)
       end
-
-      # ../tablo_doc/scripts/create_overview.cr:13:      Tablo::Util.stretch(c.to_s.titleize, width: column_width,
-      # ../tablo_doc/scripts/create_overview.cr-14-        insert_char: ' ', gap: 2, margin: 4)
-
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
-      output = "  m-y- -t-i-t-l-e  \n" +
-               %q( ╭─────────────────╮
-                   │          itself │
-                   ├-----------------┤
-                   │             0.0 │
-                   │           -10.3 │
-                   │          43.606 │
-                   │       -909.0302 │
-                   │          1024.0 │
-                   ╰─────────────────╯).gsub(/^ */m, "")
+      output = <<-EOS
+          m-y- -t-i-t-l-e  
+        ╭─────────────────╮
+        │          itself │
+        ├-----------------┤
+        │             0.0 │
+        │           -10.3 │
+        │          43.606 │
+        │       -909.0302 │
+        │          1024.0 │
+        ╰─────────────────╯
+        EOS
       table.to_s.should eq output
     end
 
@@ -75,18 +61,20 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
         t.add_column("itself", width: 16, &.itself)
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
-      output = %q( ╭──────────────────╮
-                   │           itself │
-                   ├------------------┤
-                   │              0.0 │
-                   │            -10.3 │
-                   │           43.606 │
-                   │        -909.0302 │
-                   │           1024.0 │
-                   ╰──────────────────╯
-                   ╭──────────────────╮
-                   │ F  o  o  t  e  r │
-                   ╰──────────────────╯).gsub(/^ */m, "")
+      output = <<-EOS
+        ╭──────────────────╮
+        │           itself │
+        ├------------------┤
+        │              0.0 │
+        │            -10.3 │
+        │           43.606 │
+        │        -909.0302 │
+        │           1024.0 │
+        ╰──────────────────╯
+        ╭──────────────────╮
+        │ F  o  o  t  e  r │
+        ╰──────────────────╯
+        EOS
       table.to_s.should eq output
     end
   end
@@ -98,28 +86,33 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
         t.add_column("itself", width: 15, &.itself)
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
+      # \e[34mmy title\e[0m     \n
       if Tablo::Util.styler_allowed
-        output = "      \e[34mmy title\e[0m     \n" +
-                 %q( ╭─────────────────╮
-                   │          itself │
-                   ├-----------------┤
-                   │             0.0 │
-                   │           -10.3 │
-                   │          43.606 │
-                   │       -909.0302 │
-                   │          1024.0 │
-                   ╰─────────────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+                \e[34mmy title\e[0m     
+          ╭─────────────────╮
+          │          itself │
+          ├-----------------┤
+          │             0.0 │
+          │           -10.3 │
+          │          43.606 │
+          │       -909.0302 │
+          │          1024.0 │
+          ╰─────────────────╯
+          EOS
       else
-        output = "      my title     \n" +
-                 %q( ╭─────────────────╮
-                   │          itself │
-                   ├-----------------┤
-                   │             0.0 │
-                   │           -10.3 │
-                   │          43.606 │
-                   │       -909.0302 │
-                   │          1024.0 │
-                   ╰─────────────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+                my title     
+          ╭─────────────────╮
+          │          itself │
+          ├-----------------┤
+          │             0.0 │
+          │           -10.3 │
+          │          43.606 │
+          │       -909.0302 │
+          │          1024.0 │
+          ╰─────────────────╯
+          EOS
       end
       table.to_s.should eq output
     end
@@ -141,31 +134,35 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
       if Tablo::Util.styler_allowed
-        output = "     \e[34mThis is a\e[0m     \n" +
-                 "    \e[32mvery, very,\e[0m    \n" +
-                 "  \e[31mvery long title\e[0m  \n" +
-                 %q( ╭─────────────────╮
-                   │          itself │
-                   ├-----------------┤
-                   │             0.0 │
-                   │           -10.3 │
-                   │          43.606 │
-                   │       -909.0302 │
-                   │          1024.0 │
-                   ╰─────────────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+               \e[34mThis is a\e[0m     
+              \e[32mvery, very,\e[0m    
+            \e[31mvery long title\e[0m  
+          ╭─────────────────╮
+          │          itself │
+          ├-----------------┤
+          │             0.0 │
+          │           -10.3 │
+          │          43.606 │
+          │       -909.0302 │
+          │          1024.0 │
+          ╰─────────────────╯
+          EOS
       else
-        output = "     This is a     \n" +
-                 "    very, very,    \n" +
-                 "  very long title  \n" +
-                 %q( ╭─────────────────╮
-                   │          itself │
-                   ├-----------------┤
-                   │             0.0 │
-                   │           -10.3 │
-                   │          43.606 │
-                   │       -909.0302 │
-                   │          1024.0 │
-                   ╰─────────────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+               This is a     
+              very, very,    
+            very long title  
+          ╭─────────────────╮
+          │          itself │
+          ├-----------------┤
+          │             0.0 │
+          │           -10.3 │
+          │          43.606 │
+          │       -909.0302 │
+          │          1024.0 │
+          ╰─────────────────╯
+          EOS
       end
       table.to_s.should eq output
     end
@@ -186,31 +183,35 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
       if Tablo::Util.styler_allowed
-        output = "    \e[34mTitle line 1\e[0m   \n" +
-                 "    \e[32mTitle line 2\e[0m   \n" +
-                 "    \e[31mTitle line 3\e[0m   \n" +
-                 %q( ╭─────────────────╮
-                   │          itself │
-                   ├-----------------┤
-                   │             0.0 │
-                   │           -10.3 │
-                   │          43.606 │
-                   │       -909.0302 │
-                   │          1024.0 │
-                   ╰─────────────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+              \e[34mTitle line 1\e[0m   
+              \e[32mTitle line 2\e[0m   
+              \e[31mTitle line 3\e[0m   
+          ╭─────────────────╮
+          │          itself │
+          ├-----------------┤
+          │             0.0 │
+          │           -10.3 │
+          │          43.606 │
+          │       -909.0302 │
+          │          1024.0 │
+          ╰─────────────────╯
+          EOS
       else
-        output = "    Title line 1   \n" +
-                 "    Title line 2   \n" +
-                 "    Title line 3   \n" +
-                 %q( ╭─────────────────╮
-                   │          itself │
-                   ├-----------------┤
-                   │             0.0 │
-                   │           -10.3 │
-                   │          43.606 │
-                   │       -909.0302 │
-                   │          1024.0 │
-                   ╰─────────────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+              Title line 1   
+              Title line 2   
+              Title line 3   
+          ╭─────────────────╮
+          │          itself │
+          ├-----------------┤
+          │             0.0 │
+          │           -10.3 │
+          │          43.606 │
+          │       -909.0302 │
+          │          1024.0 │
+          ╰─────────────────╯
+          EOS
       end
       table.to_s.should eq output
     end
@@ -229,15 +230,17 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
             width: column_width, insert_char: ' ', gap: nil) })
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
-      output = %q(╭─────────────────────────────┬──────────────╮
-                  │  N   u   m   e   r   i   c  :  S t r i n g │
-                  ├−−−−−−−−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−┤
-                  │       itself :       double : stringified  │
-                  ├--------------┼--------------┼--------------┤
-                  │            1 :            2 : 1111111      │
-                  │            2 :            4 : 2222222      │
-                  │            3 :            6 : 3333333      │
-                  ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+      output = <<-EOS
+        ╭─────────────────────────────┬──────────────╮
+        │  N   u   m   e   r   i   c  :  S t r i n g │
+        ├−−−−−−−−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−┤
+        │       itself :       double : stringified  │
+        ├--------------┼--------------┼--------------┤
+        │            1 :            2 : 1111111      │
+        │            2 :            4 : 2222222      │
+        │            3 :            6 : 3333333      │
+        ╰──────────────┴──────────────┴──────────────╯
+        EOS
       table.to_s.should eq output
     end
   end
@@ -269,25 +272,29 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
       if Tablo::Util.styler_allowed
-        output = %Q( ╭─────────────────────────────┬──────────────╮
-                   │  \e[32;1mN\e[0m   \e[32;1mu\e[0m   \e[34;1mm\e[0m   \e[34;1me\e[0m   \e[32;1mr\e[0m   \e[32;1mi\e[0m   \e[34;1mc\e[0m  :  S t r i n g │
-                   ├−−−−−−−−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−┤
-                   │       itself :       double : stringified  │
-                   ├--------------┼--------------┼--------------┤
-                   │            1 :            2 : 1111111      │
-                   │            2 :            4 : 2222222      │
-                   │            3 :            6 : 3333333      │
-                   ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+        ╭─────────────────────────────┬──────────────╮
+        │  \e[32;1mN\e[0m   \e[32;1mu\e[0m   \e[34;1mm\e[0m   \e[34;1me\e[0m   \e[32;1mr\e[0m   \e[32;1mi\e[0m   \e[34;1mc\e[0m  :  S t r i n g │
+        ├−−−−−−−−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−┤
+        │       itself :       double : stringified  │
+        ├--------------┼--------------┼--------------┤
+        │            1 :            2 : 1111111      │
+        │            2 :            4 : 2222222      │
+        │            3 :            6 : 3333333      │
+        ╰──────────────┴──────────────┴──────────────╯
+        EOS
       else
-        output = %Q( ╭─────────────────────────────┬──────────────╮
-                   │  N   u   m   e   r   i   c  :  S t r i n g │
-                   ├−−−−−−−−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−┤
-                   │       itself :       double : stringified  │
-                   ├--------------┼--------------┼--------------┤
-                   │            1 :            2 : 1111111      │
-                   │            2 :            4 : 2222222      │
-                   │            3 :            6 : 3333333      │
-                   ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+        ╭─────────────────────────────┬──────────────╮
+        │  N   u   m   e   r   i   c  :  S t r i n g │
+        ├−−−−−−−−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−┤
+        │       itself :       double : stringified  │
+        ├--------------┼--------------┼--------------┤
+        │            1 :            2 : 1111111      │
+        │            2 :            4 : 2222222      │
+        │            3 :            6 : 3333333      │
+        ╰──────────────┴──────────────┴──────────────╯
+        EOS
       end
       table.to_s.should eq output
     end
@@ -304,15 +311,17 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
         t.add_column("Strings") { |n| n[0] }
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
-      output = %Q(╭────────────────────────────────────────────╮
-                  │             Justifying headers             │
-                  ├──────────────┬──────────────┬──────────────┤
-                  │       number :   Booleans   :      Strings │
-                  ├--------------┼--------------┼--------------┤
-                  │            1 :     false    :            1 │
-                  │            2 :     true     :            2 │
-                  │            3 :     true     :            3 │
-                  ╰──────────────┴──────────────┴──────────────╯).gsub(/^ */m, "")
+      output = <<-EOS
+          ╭────────────────────────────────────────────╮
+          │             Justifying headers             │
+          ├──────────────┬──────────────┬──────────────┤
+          │       number :   Booleans   :      Strings │
+          ├--------------┼--------------┼--------------┤
+          │            1 :     false    :            1 │
+          │            2 :     true     :            2 │
+          │            3 :     true     :            3 │
+          ╰──────────────┴──────────────┴──────────────╯
+          EOS
       table.to_s.should eq output
     end
   end
@@ -329,18 +338,20 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
           &.itself)
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
-      output = %Q(╭─────────────────╮
-                  │  Floating point │
-                  │    formatting   │
-                  ├─────────────────┤
-                  │          itself │
-                  ├-----------------┤
-                  │            0.00 │
-                  │          -10.30 │
-                  │           43.61 │
-                  │         -909.03 │
-                  │         1024.00 │
-                  ╰─────────────────╯).gsub(/^ */m, "")
+      output = <<-EOS
+        ╭─────────────────╮
+        │  Floating point │
+        │    formatting   │
+        ├─────────────────┤
+        │          itself │
+        ├-----------------┤
+        │            0.00 │
+        │          -10.30 │
+        │           43.61 │
+        │         -909.03 │
+        │         1024.00 │
+        ╰─────────────────╯
+        EOS
       table.to_s.should eq output
     end
     it "align floating point numbers on decimal point (empty)" do
@@ -351,18 +362,20 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
           &.itself)
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
-      output = %q( ╭─────────────────╮
-                   │  Floating point │
-                   │  align (empty)  │
-                   ├─────────────────┤
-                   │          itself │
-                   ├-----------------┤
-                   │                 │
-                   │        -10.3    │
-                   │         43.606  │
-                   │       -909.0302 │
-                   │       1024      │
-                   ╰─────────────────╯).gsub(/^ */m, "")
+      output = <<-EOS
+        ╭─────────────────╮
+        │  Floating point │
+        │  align (empty)  │
+        ├─────────────────┤
+        │          itself │
+        ├-----------------┤
+        │                 │
+        │        -10.3    │
+        │         43.606  │
+        │       -909.0302 │
+        │       1024      │
+        ╰─────────────────╯
+        EOS
       table.to_s.should eq output
     end
     it "align floating point numbers on decimal point (dot_zero)" do
@@ -373,18 +386,20 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
           &.itself)
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
-      output = %q( ╭──────────────────╮
-                   │  Floating point  │
-                   │ align (dot_zero) │
-                   ├──────────────────┤
-                   │           itself │
-                   ├------------------┤
-                   │           0.0    │
-                   │         -10.3    │
-                   │          43.606  │
-                   │        -909.0302 │
-                   │        1024.0    │
-                   ╰──────────────────╯).gsub(/^ */m, "")
+      output = <<-EOS
+        ╭──────────────────╮
+        │  Floating point  │
+        │ align (dot_zero) │
+        ├──────────────────┤
+        │           itself │
+        ├------------------┤
+        │           0.0    │
+        │         -10.3    │
+        │          43.606  │
+        │        -909.0302 │
+        │        1024.0    │
+        ╰──────────────────╯
+        EOS
       table.to_s.should eq output
     end
     pending "formatting body" do
@@ -401,31 +416,35 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
       if Tablo::Util.styler_allowed
-        output = %Q(╭──────────────────╮
-                  │  Body in color,  │
-                  │   blank aligned  │
-                  ├──────────────────┤
-                  │           itself │
-                  ├------------------┤
-                  │           \e[31m0     \e[0m │
-                  │         \e[31m-10.3   \e[0m │
-                  │          \e[31m43.606 \e[0m │
-                  │        \e[31m-909.0302\e[0m │
-                  │        \e[31m1024     \e[0m │
-                  ╰──────────────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+          ╭──────────────────╮
+          │  Body in color,  │
+          │   blank aligned  │
+          ├──────────────────┤
+          │           itself │
+          ├------------------┤
+          │           \e[31m0     \e[0m │
+          │         \e[31m-10.3   \e[0m │
+          │          \e[31m43.606 \e[0m │
+          │        \e[31m-909.0302\e[0m │
+          │        \e[31m1024     \e[0m │
+          ╰──────────────────╯
+          EOS
       else
-        output = %Q(╭──────────────────╮
-                  │  Body in color,  │
-                  │   blank aligned  │
-                  ├──────────────────┤
-                  │           itself │
-                  ├------------------┤
-                  │           0      │
-                  │         -10.3    │
-                  │          43.606  │
-                  │        -909.0302 │
-                  │        1024      │
-                  ╰──────────────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+          ╭──────────────────╮
+          │  Body in color,  │
+          │   blank aligned  │
+          ├──────────────────┤
+          │           itself │
+          ├------------------┤
+          │           0      │
+          │         -10.3    │
+          │          43.606  │
+          │        -909.0302 │
+          │        1024      │
+          ╰──────────────────╯
+          EOS
       end
       table.to_s.should eq output
     end
@@ -445,31 +464,35 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
       if Tablo::Util.styler_allowed
-        output = %Q(╭──────────────────╮
-                  │  Body in color,  │
-                  │   blank aligned  │
-                  ├──────────────────┤
-                  │           itself │
-                  ├------------------┤
-                  │           \e[32m0     \e[0m │
-                  │         \e[31m-10.3   \e[0m │
-                  │          \e[32m43.606 \e[0m │
-                  │        \e[31m-909.0302\e[0m │
-                  │        \e[32m1024     \e[0m │
-                  ╰──────────────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+          ╭──────────────────╮
+          │  Body in color,  │
+          │   blank aligned  │
+          ├──────────────────┤
+          │           itself │
+          ├------------------┤
+          │           \e[32m0     \e[0m │
+          │         \e[31m-10.3   \e[0m │
+          │          \e[32m43.606 \e[0m │
+          │        \e[31m-909.0302\e[0m │
+          │        \e[32m1024     \e[0m │
+          ╰──────────────────╯
+          EOS
       else
-        output = %Q(╭──────────────────╮
-                  │  Body in color,  │
-                  │   blank aligned  │
-                  ├──────────────────┤
-                  │           itself │
-                  ├------------------┤
-                  │           0      │
-                  │         -10.3    │
-                  │          43.606  │
-                  │        -909.0302 │
-                  │        1024      │
-                  ╰──────────────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+          ╭──────────────────╮
+          │  Body in color,  │
+          │   blank aligned  │
+          ├──────────────────┤
+          │           itself │
+          ├------------------┤
+          │           0      │
+          │         -10.3    │
+          │          43.606  │
+          │        -909.0302 │
+          │        1024      │
+          ╰──────────────────╯
+          EOS
       end
       table.to_s.should eq output
     end
@@ -489,31 +512,35 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
       if Tablo::Util.styler_allowed
-        output = %Q(╭──────────────────╮
-                  │  Body in color,  │
-                  │    dot aligned   │
-                  ├──────────────────┤
-                  │           itself │
-                  ├------------------┤
-                  │           \e[34m0.    \e[0m │
-                  │         \e[35m-10.3   \e[0m │
-                  │          \e[34m43.606 \e[0m │
-                  │        \e[35m-909.0302\e[0m │
-                  │        \e[34m1024.    \e[0m │
-                  ╰──────────────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+          ╭──────────────────╮
+          │  Body in color,  │
+          │    dot aligned   │
+          ├──────────────────┤
+          │           itself │
+          ├------------------┤
+          │           \e[34m0.    \e[0m │
+          │         \e[35m-10.3   \e[0m │
+          │          \e[34m43.606 \e[0m │
+          │        \e[35m-909.0302\e[0m │
+          │        \e[34m1024.    \e[0m │
+          ╰──────────────────╯
+          EOS
       else
-        output = %Q(╭──────────────────╮
-                  │  Body in color,  │
-                  │    dot aligned   │
-                  ├──────────────────┤
-                  │           itself │
-                  ├------------------┤
-                  │           0.     │
-                  │         -10.3    │
-                  │          43.606  │
-                  │        -909.0302 │
-                  │        1024.     │
-                  ╰──────────────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+          ╭──────────────────╮
+          │  Body in color,  │
+          │    dot aligned   │
+          ├──────────────────┤
+          │           itself │
+          ├------------------┤
+          │           0.     │
+          │         -10.3    │
+          │          43.606  │
+          │        -909.0302 │
+          │        1024.     │
+          ╰──────────────────╯
+          EOS
       end
       table.to_s.should eq output
     end
@@ -536,29 +563,33 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
       if Tablo::Util.styler_allowed
-        output = %Q( ╭─────────────────────────────────────╮
-                   │      Body in color, dot aligned     │
-                   ├──────────────────┬──────────────────┤
-                   │           itself :           Double │
-                   ├------------------┼------------------┤
-                   │           \e[31m0.    \e[0m :           \e[31m0.    \e[0m │
-                   │         \e[34m-10.3   \e[0m :         \e[34m-20.6   \e[0m │
-                   │          \e[31m43.606 \e[0m :          \e[31m87.212 \e[0m │
-                   │        \e[34m-909.0302\e[0m :       \e[34m-1818.0604\e[0m │
-                   │        \e[31m1024.    \e[0m :        \e[31m2048.    \e[0m │
-                   ╰──────────────────┴──────────────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+          ╭─────────────────────────────────────╮
+          │      Body in color, dot aligned     │
+          ├──────────────────┬──────────────────┤
+          │           itself :           Double │
+          ├------------------┼------------------┤
+          │           \e[31m0.    \e[0m :           \e[31m0.    \e[0m │
+          │         \e[34m-10.3   \e[0m :         \e[34m-20.6   \e[0m │
+          │          \e[31m43.606 \e[0m :          \e[31m87.212 \e[0m │
+          │        \e[34m-909.0302\e[0m :       \e[34m-1818.0604\e[0m │
+          │        \e[31m1024.    \e[0m :        \e[31m2048.    \e[0m │
+          ╰──────────────────┴──────────────────╯
+          EOS
       else
-        output = %Q( ╭─────────────────────────────────────╮
-                   │      Body in color, dot aligned     │
-                   ├──────────────────┬──────────────────┤
-                   │           itself :           Double │
-                   ├------------------┼------------------┤
-                   │           0.     :           0.     │
-                   │         -10.3    :         -20.6    │
-                   │          43.606  :          87.212  │
-                   │        -909.0302 :       -1818.0604 │
-                   │        1024.     :        2048.     │
-                   ╰──────────────────┴──────────────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+          ╭─────────────────────────────────────╮
+          │      Body in color, dot aligned     │
+          ├──────────────────┬──────────────────┤
+          │           itself :           Double │
+          ├------------------┼------------------┤
+          │           0.     :           0.     │
+          │         -10.3    :         -20.6    │
+          │          43.606  :          87.212  │
+          │        -909.0302 :       -1818.0604 │
+          │        1024.     :        2048.     │
+          ╰──────────────────┴──────────────────╯
+          EOS
       end
       table.to_s.should eq output
     end
@@ -585,29 +616,33 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
       if Tablo::Util.styler_allowed
-        output = %Q( ╭─────────────────────────────────────╮
-                   │      Body in color, dot aligned     │
-                   ├──────────────────┬──────────────────┤
-                   │           itself :           Double │
-                   ├------------------┼------------------┤
-                   │           \e[31m0.    \e[0m :           \e[33m0.    \e[0m │
-                   │         \e[34m-10.3   \e[0m :         \e[34m-20.6   \e[0m │
-                   │          \e[31m43.606 \e[0m :          \e[33m87.212 \e[0m │
-                   │        \e[34m-909.0302\e[0m :       \e[34m-1818.0604\e[0m │
-                   │        \e[31m1024.    \e[0m :        \e[33m2048.    \e[0m │
-                   ╰──────────────────┴──────────────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+          ╭─────────────────────────────────────╮
+          │      Body in color, dot aligned     │
+          ├──────────────────┬──────────────────┤
+          │           itself :           Double │
+          ├------------------┼------------------┤
+          │           \e[31m0.    \e[0m :           \e[33m0.    \e[0m │
+          │         \e[34m-10.3   \e[0m :         \e[34m-20.6   \e[0m │
+          │          \e[31m43.606 \e[0m :          \e[33m87.212 \e[0m │
+          │        \e[34m-909.0302\e[0m :       \e[34m-1818.0604\e[0m │
+          │        \e[31m1024.    \e[0m :        \e[33m2048.    \e[0m │
+          ╰──────────────────┴──────────────────╯
+          EOS
       else
-        output = %Q( ╭─────────────────────────────────────╮
-                   │      Body in color, dot aligned     │
-                   ├──────────────────┬──────────────────┤
-                   │           itself :           Double │
-                   ├------------------┼------------------┤
-                   │           0.     :           0.     │
-                   │         -10.3    :         -20.6    │
-                   │          43.606  :          87.212  │
-                   │        -909.0302 :       -1818.0604 │
-                   │        1024.     :        2048.     │
-                   ╰──────────────────┴──────────────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+          ╭─────────────────────────────────────╮
+          │      Body in color, dot aligned     │
+          ├──────────────────┬──────────────────┤
+          │           itself :           Double │
+          ├------------------┼------------------┤
+          │           0.     :           0.     │
+          │         -10.3    :         -20.6    │
+          │          43.606  :          87.212  │
+          │        -909.0302 :       -1818.0604 │
+          │        1024.     :        2048.     │
+          ╰──────────────────┴──────────────────╯
+          EOS
       end
       table.to_s.should eq output
     end
@@ -638,35 +673,39 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
       if Tablo::Util.styler_allowed
-        output = %Q(╭───────────────────────────╮
-                  │       Body in color       │
-                  │  2nd line of cell in bold │
-                  ├──────────────────┬────────┤
-                  │           itself : Double │
-                  ├------------------┼--------┤
-                  │           \e[31m0.    \e[0m :   \e[33m0.00\e[0m │
-                  │         \e[34m-10.3   \e[0m : \e[34m-20.60\e[0m │
-                  │          \e[31m43.606 \e[0m :  \e[33m87.21\e[0m │
-                  │        \e[34m-909.0302\e[0m : \e[34m-1818.\e[0m │
-                  │                  :     \e[35;1m06\e[0m │
-                  │        \e[31m1024.    \e[0m : \e[33m2048.0\e[0m │
-                  │                  :      \e[35;1m0\e[0m │
-                  ╰──────────────────┴────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+          ╭───────────────────────────╮
+          │       Body in color       │
+          │  2nd line of cell in bold │
+          ├──────────────────┬────────┤
+          │           itself : Double │
+          ├------------------┼--------┤
+          │           \e[31m0.    \e[0m :   \e[33m0.00\e[0m │
+          │         \e[34m-10.3   \e[0m : \e[34m-20.60\e[0m │
+          │          \e[31m43.606 \e[0m :  \e[33m87.21\e[0m │
+          │        \e[34m-909.0302\e[0m : \e[34m-1818.\e[0m │
+          │                  :     \e[35;1m06\e[0m │
+          │        \e[31m1024.    \e[0m : \e[33m2048.0\e[0m │
+          │                  :      \e[35;1m0\e[0m │
+          ╰──────────────────┴────────╯
+          EOS
       else
-        output = %Q(╭───────────────────────────╮
-                  │       Body in color       │
-                  │  2nd line of cell in bold │
-                  ├──────────────────┬────────┤
-                  │           itself : Double │
-                  ├------------------┼--------┤
-                  │           0.     :   0.00 │
-                  │         -10.3    : -20.60 │
-                  │          43.606  :  87.21 │
-                  │        -909.0302 : -1818. │
-                  │                  :     06 │
-                  │        1024.     : 2048.0 │
-                  │                  :      0 │
-                  ╰──────────────────┴────────╯).gsub(/^ */m, "")
+        output = <<-EOS
+          ╭───────────────────────────╮
+          │       Body in color       │
+          │  2nd line of cell in bold │
+          ├──────────────────┬────────┤
+          │           itself : Double │
+          ├------------------┼--------┤
+          │           0.     :   0.00 │
+          │         -10.3    : -20.60 │
+          │          43.606  :  87.21 │
+          │        -909.0302 : -1818. │
+          │                  :     06 │
+          │        1024.     : 2048.0 │
+          │                  :      0 │
+          ╰──────────────────┴────────╯
+          EOS
       end
       table.to_s.should eq output
     end

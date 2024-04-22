@@ -16,7 +16,7 @@ describe Tablo::Row do
     t.add_column("Triple") { |n| n[0] * 3 }
   end
 
-  body_row = ""
+  body_row = nil
   header_row = ""
   test_row = nil
   table.each_with_index do |row, idx|
@@ -25,10 +25,6 @@ describe Tablo::Row do
     elsif idx == 3
       body_row = row.to_s
       test_row = row
-    else
-      row.to_s # **MANDATORY** so that RowGroup be happy !
-      # A possible solution : check in RowGroup the sequence of source rows
-      # They must be contiguous !!!
     end
   end
 

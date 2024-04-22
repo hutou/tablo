@@ -72,8 +72,8 @@ module Tablo
         if previous_rowtype == RowType::Body && current_rowtype == RowType::Footer
           missing_rows.times do
             add_rule(ROWTYPE_POSITION[{RowType::Body, :filler}],
-              groups: [] of Array(Int32), linenum: __LINE__)
-            # groups: nil, linenum: __LINE__)
+              groups: [] of Array(Int32), linenum: {{__LINE__}})
+            # groups: nil, linenum: {{__LINE__}})
           end
         end
       end
@@ -93,51 +93,51 @@ module Tablo
               case {previous_rowtype, current_rowtype}
               when {RowType::Body, RowType::Header}
                 add_rule(RuleType::SummaryHeader,
-                  groups: groups, linenum: __LINE__)
+                  groups: groups, linenum: {{__LINE__}})
               when {RowType::Footer, RowType::Body}
                 add_rule(RuleType::TitleBody,
-                  groups: groups, linenum: __LINE__)
+                  groups: groups, linenum: {{__LINE__}})
               when {RowType::Body, RowType::Body}
                 add_rule(RuleType::SummaryBody,
-                  groups: groups, linenum: __LINE__)
+                  groups: groups, linenum: {{__LINE__}})
               else
                 add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}],
-                  groups: groups, linenum: __LINE__)
+                  groups: groups, linenum: {{__LINE__}})
               end
             else
               case {previous_rowtype, current_rowtype}
               when {RowType::Body, RowType::Body}
                 add_rule(RuleType::BodyBody,
-                  groups: groups, linenum: __LINE__) if row_divider
+                  groups: groups, linenum: {{__LINE__}}) if row_divider
               when {RowType::Group, RowType::Header}
                 add_rule(RuleType::GroupHeader,
-                  groups: groups, linenum: __LINE__) unless table.omit_group_header_rule?
+                  groups: groups, linenum: {{__LINE__}}) unless table.omit_group_header_rule?
               else
                 add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}],
-                  groups: groups, linenum: __LINE__)
+                  groups: groups, linenum: {{__LINE__}})
               end
             end
           else
             fill_page
             add_rule(ROWTYPE_POSITION[{previous_rowtype, :bottom}],
-              groups: groups, linenum: __LINE__)
+              groups: groups, linenum: {{__LINE__}})
             # add page break after framed footer
             if previous_rowtype == RowType::Footer && table.footer.page_break?
               self.rows[-1] += "\f"
             end
             apply_line_spacing(spacing - 1)
             add_rule(ROWTYPE_POSITION[{current_rowtype, :top}],
-              groups: groups, linenum: __LINE__)
+              groups: groups, linenum: {{__LINE__}})
           end
         when {true, false}
           fill_page
           add_rule(ROWTYPE_POSITION[{previous_rowtype, :bottom}],
-            groups: groups, linenum: __LINE__)
+            groups: groups, linenum: {{__LINE__}})
           apply_line_spacing(line_breaks_after(previous_rowtype) - 1)
         when {false, true}
           apply_line_spacing(line_breaks_before(current_rowtype) - 1)
           add_rule(ROWTYPE_POSITION[{current_rowtype, :top}],
-            groups: groups, linenum: __LINE__)
+            groups: groups, linenum: {{__LINE__}})
         when {false, false}
         end
         add_rowtype
@@ -147,17 +147,17 @@ module Tablo
       private def add_rowtype
         case current_rowtype
         when RowType::Title
-          add_row(table.rendered_title_row, linenum: __LINE__)
+          add_row(table.rendered_title_row, linenum: {{__LINE__}})
         when RowType::SubTitle
-          add_row(table.rendered_subtitle_row, linenum: __LINE__)
+          add_row(table.rendered_subtitle_row, linenum: {{__LINE__}})
         when RowType::Group
-          add_row(table.rendered_group_row, linenum: __LINE__)
+          add_row(table.rendered_group_row, linenum: {{__LINE__}})
         when RowType::Header
-          add_row(table.rendered_header_row(source, row_index), linenum: __LINE__)
+          add_row(table.rendered_header_row(source, row_index), linenum: {{__LINE__}})
         when RowType::Body
-          add_row(table.rendered_body_row(source, row_index), linenum: __LINE__)
+          add_row(table.rendered_body_row(source, row_index), linenum: {{__LINE__}})
         when RowType::Footer
-          add_row(table.rendered_footer_row(page), linenum: __LINE__)
+          add_row(table.rendered_footer_row(page), linenum: {{__LINE__}})
           self.rows[-1] += "\f" if table.footer.page_break? && !table.footer.framed?
         end
       end
@@ -166,9 +166,9 @@ module Tablo
         # Only Body and Footer row types are possible
         case previous_rowtype
         when RowType::Body
-          add_rule(RuleType::BodyBottom, linenum: __LINE__)
+          add_rule(RuleType::BodyBottom, linenum: {{__LINE__}})
         when RowType::Footer
-          add_rule(RuleType::TitleBottom, linenum: __LINE__) if table.footer.framed?
+          add_rule(RuleType::TitleBottom, linenum: {{__LINE__}}) if table.footer.framed?
           self.rows[-1] += "\f" if table.footer.page_break?
         end
       end
@@ -426,6 +426,10 @@ module Tablo
           # Linking allowed
           self.previous_rowtype = RowGroup.transition_footer.nil? ? RowType::Body : RowType::Footer
         end
+      elsif main_first?
+        # We forget previous rowtype, if any
+        # (fix problem with `table.each {|row| ...` when last row not reached)
+        self.previous_rowtype = nil
       end
 
       if has_title?
@@ -484,7 +488,11 @@ module Tablo
     end
 
     private def summary_first?
-      first_row? && table.name == :summary ? true : false
+      first_row? && table.name == :summary # ? true : false
+    end
+
+    private def main_first?
+      first_row? && table.name == :main
     end
 
     private def has_title?

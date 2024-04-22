@@ -36,13 +36,13 @@ describe "#{Tablo::Table} -> Initialization with different types of Enumerable" 
         table.should be_a(Tablo::Table(Tuple(String, Int32)))
       end
     end
-    pending "from a Range(Int32). Ranges are not supported yet (issue #10518)" do
-      # it "correctly create a new table from Range(Int32..Int32)" do
-      #   table = Tablo::Table.new(test_data_range_int32) do |t|
-      #     t.add_column("itself") { |n| n }
-      #   end
-      #   table.should be_a(Tablo::Table(Int32))
-      # end
+    context "from a Range(Int32)" do
+      it "correctly create a new table from Range(Int32..Int32)" do
+        table = Tablo::Table.new(test_data_range_int32) do |t|
+          t.add_column("itself") { |n| n }
+        end
+        table.should be_a(Tablo::Table(Int32))
+      end
     end
     context "from an array of Struct" do
       it "correctly create a new table from Array(Person)" do
@@ -80,13 +80,12 @@ describe "#{Tablo::Table} -> Initialization with different types of Enumerable" 
         table.should be_a(Tablo::Table(Tuple(String, Int32)))
       end
     end
-    pending "from a Range(Int32). Ranges are not supported yet (issue #10518)" do
-      # context "from a Range(Int32)" do
-      #   it "correctly create a new table from Range(Int32..Int32)" do
-      #     table = Tablo::Table.new(test_data_range_int32)
-      #     table.add_column("itself") { |n| n }
-      #     table.should be_a(Tablo::Table(Int32))
-      #   end
+    context "from a Range(Int32)" do
+      it "correctly create a new table from Range(Int32..Int32)" do
+        table = Tablo::Table.new(test_data_range_int32)
+        table.add_column("itself") { |n| n }
+        table.should be_a(Tablo::Table(Int32))
+      end
     end
     context "from an array of Struct" do
       it "correctly create a new table from Array(Person)" do

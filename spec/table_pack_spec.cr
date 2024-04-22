@@ -32,21 +32,22 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
             t.add_group("Long")
           end
           {% if flag?(:DEBUG) %} puts "\n#{table.pack}" {% end %}
-          output = %q(╭──────────────────────────────────────────────────╮
-                      │  This a very long text to be displayed as title  │
-                      │                      heading                     │
-                      ├──────────────────────────────────────────────────┤
-                      │              A very simple subtitle              │
-                      ├──────────────────────┬───────────────────────────┤
-                      │   Short and medium   :            Long           │
-                      ├−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−−−−−−−−−−−−−−┤
-                      │ short : medium       : long                      │
-                      ├-------┼--------------┼---------------------------┤
-                      │ abc   : not so large : Very long column contents │
-                      ├───────┴──────────────┴───────────────────────────┤
-                      │               Do you need a footer?              │
-                      ╰──────────────────────────────────────────────────╯).gsub(/^ */m, "")
-          # table.pack(packing_mode: Tablo::Table::PackingMode::AutoSized).to_s.should eq output
+          output = <<-EOS
+            ╭──────────────────────────────────────────────────╮
+            │  This a very long text to be displayed as title  │
+            │                      heading                     │
+            ├──────────────────────────────────────────────────┤
+            │              A very simple subtitle              │
+            ├──────────────────────┬───────────────────────────┤
+            │   Short and medium   :            Long           │
+            ├−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−−−−−−−−−−−−−−┤
+            │ short : medium       : long                      │
+            ├-------┼--------------┼---------------------------┤
+            │ abc   : not so large : Very long column contents │
+            ├───────┴──────────────┴───────────────────────────┤
+            │               Do you need a footer?              │
+            ╰──────────────────────────────────────────────────╯
+            EOS
           table.pack.to_s.should eq output
         end
       end
@@ -62,23 +63,23 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
             t.add_column("long") { |n| n[1] }
           end
           {% if flag?(:DEBUG) %} puts "\n#{table.pack(requested_size)}" {% end %}
-          output = %q(╭────────────────────────────╮
-                      │  This a very long text to  │
-                      │    be displayed as title   │
-                      │           heading          │
-                      ├────────────────────────────┤
-                      │   A very simple subtitle   │
-                      ├───────┬────────────────────┤
-                      │ short : long               │
-                      ├-------┼--------------------┤
-                      │ abc   : Very long column   │
-                      │       : contents           │
-                      ├───────┴────────────────────┤
-                      │    Do you need a footer?   │
-                      ╰────────────────────────────╯).gsub(/^ */m, "")
-          # table.pack(requested_size, packing_mode: Tablo::Table::PackingMode::AutoSized)
-          table.pack(requested_size)
-            .to_s.should eq output
+          output = <<-EOS
+            ╭────────────────────────────╮
+            │  This a very long text to  │
+            │    be displayed as title   │
+            │           heading          │
+            ├────────────────────────────┤
+            │   A very simple subtitle   │
+            ├───────┬────────────────────┤
+            │ short : long               │
+            ├-------┼--------------------┤
+            │ abc   : Very long column   │
+            │       : contents           │
+            ├───────┴────────────────────┤
+            │    Do you need a footer?   │
+            ╰────────────────────────────╯
+            EOS
+          table.pack(requested_size).to_s.should eq output
         end
       end
     end
@@ -93,18 +94,19 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
             t.add_column("long") { |n| n[1] }
           end
           {% if flag?(:DEBUG) %} puts "\n#{table.pack(requested_size)}" {% end %}
-          output = %q(╭──────────────────────────────────────────────────────────╮
-                      │  This a very long text to be displayed as title heading  │
-                      ├──────────────────────────────────────────────────────────┤
-                      │                  A very simple subtitle                  │
-                      ├────────────────────────────┬─────────────────────────────┤
-                      │ short                      : long                        │
-                      ├----------------------------┼-----------------------------┤
-                      │ abc                        : Very long column contents   │
-                      ├────────────────────────────┴─────────────────────────────┤
-                      │                   Do you need a footer?                  │
-                      ╰──────────────────────────────────────────────────────────╯).gsub(/^ */m, "")
-          # table.pack(requested_size, packing_mode: Tablo::Table::PackingMode::AutoSized)
+          output = <<-EOS
+            ╭──────────────────────────────────────────────────────────╮
+            │  This a very long text to be displayed as title heading  │
+            ├──────────────────────────────────────────────────────────┤
+            │                  A very simple subtitle                  │
+            ├────────────────────────────┬─────────────────────────────┤
+            │ short                      : long                        │
+            ├----------------------------┼-----------------------------┤
+            │ abc                        : Very long column contents   │
+            ├────────────────────────────┴─────────────────────────────┤
+            │                   Do you need a footer?                  │
+            ╰──────────────────────────────────────────────────────────╯
+            EOS
           table.pack(requested_size).to_s.should eq output
         end
       end
@@ -122,21 +124,23 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
             t.add_column("long") { |n| n[1] }
           end
           {% if flag?(:DEBUG) %} puts "\n#{table.pack}" {% end %}
-          output = %q(╭─────────────────────────────╮
-                      │   This a very long text to  │
-                      │    be displayed as title    │
-                      │           heading           │
-                      ├─────────────────────────────┤
-                      │    A very simple subtitle   │
-                      ├──────────────┬──────────────┤
-                      │ short        : long         │
-                      ├--------------┼--------------┤
-                      │ abc          : Very long    │
-                      │              : column       │
-                      │              : contents     │
-                      ├──────────────┴──────────────┤
-                      │    Do you need a footer?    │
-                      ╰─────────────────────────────╯).gsub(/^ */m, "")
+          output = <<-EOS
+            ╭─────────────────────────────╮
+            │   This a very long text to  │
+            │    be displayed as title    │
+            │           heading           │
+            ├─────────────────────────────┤
+            │    A very simple subtitle   │
+            ├──────────────┬──────────────┤
+            │ short        : long         │
+            ├--------------┼--------------┤
+            │ abc          : Very long    │
+            │              : column       │
+            │              : contents     │
+            ├──────────────┴──────────────┤
+            │    Do you need a footer?    │
+            ╰─────────────────────────────╯
+            EOS
           # table.pack(packing_mode: Tablo::Table::PackingMode::InitialWidths)
           table.pack(autosize: false).to_s.should eq output
         end
@@ -154,21 +158,23 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
             t.add_column("long") { |n| n[1] }
           end
           {% if flag?(:DEBUG) %} puts "\n#{table.pack(requested_size)}" {% end %}
-          output = %q(╭────────────────────────────╮
-                      │  This a very long text to  │
-                      │    be displayed as title   │
-                      │           heading          │
-                      ├────────────────────────────┤
-                      │   A very simple subtitle   │
-                      ├──────────────┬─────────────┤
-                      │ short        : long        │
-                      ├--------------┼-------------┤
-                      │ abc          : Very long   │
-                      │              : column      │
-                      │              : contents    │
-                      ├──────────────┴─────────────┤
-                      │    Do you need a footer?   │
-                      ╰────────────────────────────╯).gsub(/^ */m, "")
+          output = <<-EOS
+            ╭────────────────────────────╮
+            │  This a very long text to  │
+            │    be displayed as title   │
+            │           heading          │
+            ├────────────────────────────┤
+            │   A very simple subtitle   │
+            ├──────────────┬─────────────┤
+            │ short        : long        │
+            ├--------------┼-------------┤
+            │ abc          : Very long   │
+            │              : column      │
+            │              : contents    │
+            ├──────────────┴─────────────┤
+            │    Do you need a footer?   │
+            ╰────────────────────────────╯
+            EOS
           # table.pack(requested_size, packing_mode: Tablo::Table::PackingMode::InitialWidths)
           table.pack(requested_size, autosize: false).to_s.should eq output
         end
@@ -186,17 +192,19 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
             t.add_column("long") { |n| n[1] }
           end
           {% if flag?(:DEBUG) %} puts "\n#{table.pack(requested_size)}" {% end %}
-          output = %q(╭──────────────────────────────────────────────────────────╮
-                      │  This a very long text to be displayed as title heading  │
-                      ├──────────────────────────────────────────────────────────┤
-                      │                  A very simple subtitle                  │
-                      ├────────────────────────────┬─────────────────────────────┤
-                      │ short                      : long                        │
-                      ├----------------------------┼-----------------------------┤
-                      │ abc                        : Very long column contents   │
-                      ├────────────────────────────┴─────────────────────────────┤
-                      │                   Do you need a footer?                  │
-                      ╰──────────────────────────────────────────────────────────╯).gsub(/^ */m, "")
+          output = <<-EOS
+            ╭──────────────────────────────────────────────────────────╮
+            │  This a very long text to be displayed as title heading  │
+            ├──────────────────────────────────────────────────────────┤
+            │                  A very simple subtitle                  │
+            ├────────────────────────────┬─────────────────────────────┤
+            │ short                      : long                        │
+            ├----------------------------┼-----------------------------┤
+            │ abc                        : Very long column contents   │
+            ├────────────────────────────┴─────────────────────────────┤
+            │                   Do you need a footer?                  │
+            ╰──────────────────────────────────────────────────────────╯
+            EOS
           # table.pack(requested_size, packing_mode: Tablo::Table::PackingMode::InitialWidths)
           table.pack(requested_size, autosize: false).to_s.should eq output
         end
@@ -215,21 +223,23 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
             t.add_column("long") { |n| n[1] }
           end
           {% if flag?(:DEBUG) %} puts "\n#{table.pack}" {% end %}
-          output = %q(╭─────────────────────────────╮
-                        │   This a very long text to  │
-                        │    be displayed as title    │
-                        │           heading           │
-                        ├─────────────────────────────┤
-                        │    A very simple subtitle   │
-                        ├──────────────┬──────────────┤
-                        │ short        : long         │
-                        ├--------------┼--------------┤
-                        │ abc          : Very long    │
-                        │              : column       │
-                        │              : contents     │
-                        ├──────────────┴──────────────┤
-                        │    Do you need a footer?    │
-                        ╰─────────────────────────────╯).gsub(/^ */m, "")
+          output = <<-EOS
+            ╭─────────────────────────────╮
+            │   This a very long text to  │
+            │    be displayed as title    │
+            │           heading           │
+            ├─────────────────────────────┤
+            │    A very simple subtitle   │
+            ├──────────────┬──────────────┤
+            │ short        : long         │
+            ├--------------┼--------------┤
+            │ abc          : Very long    │
+            │              : column       │
+            │              : contents     │
+            ├──────────────┴──────────────┤
+            │    Do you need a footer?    │
+            ╰─────────────────────────────╯
+            EOS
           # table.pack(packing_mode: Tablo::Table::PackingMode::CurrentWidths)
           table.pack(autosize: false).to_s.should eq output
         end
@@ -246,21 +256,23 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
             t.add_column("long") { |n| n[1] }
           end
           {% if flag?(:DEBUG) %} puts "\n#{table.pack(requested_size)}" {% end %}
-          output = %q(╭────────────────────────────╮
-                        │  This a very long text to  │
-                        │    be displayed as title   │
-                        │           heading          │
-                        ├────────────────────────────┤
-                        │   A very simple subtitle   │
-                        ├──────────────┬─────────────┤
-                        │ short        : long        │
-                        ├--------------┼-------------┤
-                        │ abc          : Very long   │
-                        │              : column      │
-                        │              : contents    │
-                        ├──────────────┴─────────────┤
-                        │    Do you need a footer?   │
-                        ╰────────────────────────────╯).gsub(/^ */m, "")
+          output = <<-EOS
+            ╭────────────────────────────╮
+            │  This a very long text to  │
+            │    be displayed as title   │
+            │           heading          │
+            ├────────────────────────────┤
+            │   A very simple subtitle   │
+            ├──────────────┬─────────────┤
+            │ short        : long        │
+            ├--------------┼-------------┤
+            │ abc          : Very long   │
+            │              : column      │
+            │              : contents    │
+            ├──────────────┴─────────────┤
+            │    Do you need a footer?   │
+            ╰────────────────────────────╯
+            EOS
           # table.pack(requested_size, packing_mode: Tablo::Table::PackingMode::CurrentWidths)
           table.pack(requested_size, autosize: false).to_s.should eq output
         end
@@ -277,17 +289,19 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
             t.add_column("long") { |n| n[1] }
           end
           {% if flag?(:DEBUG) %} puts "\n#{table.pack(requested_size)}" {% end %}
-          output = %q(╭──────────────────────────────────────────────────────────╮
-                        │  This a very long text to be displayed as title heading  │
-                        ├──────────────────────────────────────────────────────────┤
-                        │                  A very simple subtitle                  │
-                        ├────────────────────────────┬─────────────────────────────┤
-                        │ short                      : long                        │
-                        ├----------------------------┼-----------------------------┤
-                        │ abc                        : Very long column contents   │
-                        ├────────────────────────────┴─────────────────────────────┤
-                        │                   Do you need a footer?                  │
-                        ╰──────────────────────────────────────────────────────────╯).gsub(/^ */m, "")
+          output = <<-EOS
+            ╭──────────────────────────────────────────────────────────╮
+            │  This a very long text to be displayed as title heading  │
+            ├──────────────────────────────────────────────────────────┤
+            │                  A very simple subtitle                  │
+            ├────────────────────────────┬─────────────────────────────┤
+            │ short                      : long                        │
+            ├----------------------------┼-----------------------------┤
+            │ abc                        : Very long column contents   │
+            ├────────────────────────────┴─────────────────────────────┤
+            │                   Do you need a footer?                  │
+            ╰──────────────────────────────────────────────────────────╯
+            EOS
           # table.pack(requested_size, packing_mode: Tablo::Table::PackingMode::CurrentWidths)
           table.pack(requested_size, autosize: false).to_s.should eq output
         end
@@ -310,22 +324,24 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
             t.add_group("Long")
           end
           {% if flag?(:DEBUG) %} puts %(\n#{table.pack(except: "long")}) {% end %}
-          output = %q(╭─────────────────────────────────────╮
-                        │     This a very long text to be     │
-                        │      displayed as title heading     │
-                        ├─────────────────────────────────────┤
-                        │        A very simple subtitle       │
-                        ├──────────────────────┬──────────────┤
-                        │   Short and medium   :     Long     │
-                        ├−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−┤
-                        │ short : medium       : long         │
-                        ├-------┼--------------┼--------------┤
-                        │ abc   : not so large : Very long    │
-                        │       :              : column       │
-                        │       :              : contents     │
-                        ├───────┴──────────────┴──────────────┤
-                        │        Do you need a footer?        │
-                        ╰─────────────────────────────────────╯).gsub(/^ */m, "")
+          output = <<-EOS
+            ╭─────────────────────────────────────╮
+            │     This a very long text to be     │
+            │      displayed as title heading     │
+            ├─────────────────────────────────────┤
+            │        A very simple subtitle       │
+            ├──────────────────────┬──────────────┤
+            │   Short and medium   :     Long     │
+            ├−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−┤
+            │ short : medium       : long         │
+            ├-------┼--------------┼--------------┤
+            │ abc   : not so large : Very long    │
+            │       :              : column       │
+            │       :              : contents     │
+            ├───────┴──────────────┴──────────────┤
+            │        Do you need a footer?        │
+            ╰─────────────────────────────────────╯
+            EOS
           # table.pack(packing_mode: Tablo::Table::PackingMode::AutoSized,
           table.pack(except: "long").to_s.should eq output
         end
@@ -349,19 +365,21 @@ describe "#{Tablo::Table} -> packing method", tags: "pack" do
           {% if flag?(:DEBUG) %}
             puts %(\n#{table.pack(only: "long")})
           {% end %}
-          output = %q(╭─────────────────────────────────────────────────────────╮
-                      │  This a very long text to be displayed as title heading │
-                      ├─────────────────────────────────────────────────────────┤
-                      │                  A very simple subtitle                 │
-                      ├─────────────────────────────┬───────────────────────────┤
-                      │       Short and medium      :            Long           │
-                      ├−−−−−−−−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−−−−−−−−−−−−−−┤
-                      │ short        : medium       : long                      │
-                      ├--------------┼--------------┼---------------------------┤
-                      │ abc          : not so large : Very long column contents │
-                      ├──────────────┴──────────────┴───────────────────────────┤
-                      │                  Do you need a footer?                  │
-                      ╰─────────────────────────────────────────────────────────╯).gsub(/^ */m, "")
+          output = <<-EOS
+            ╭─────────────────────────────────────────────────────────╮
+            │  This a very long text to be displayed as title heading │
+            ├─────────────────────────────────────────────────────────┤
+            │                  A very simple subtitle                 │
+            ├─────────────────────────────┬───────────────────────────┤
+            │       Short and medium      :            Long           │
+            ├−−−−−−−−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−−−−−−−−−−−−−−┤
+            │ short        : medium       : long                      │
+            ├--------------┼--------------┼---------------------------┤
+            │ abc          : not so large : Very long column contents │
+            ├──────────────┴──────────────┴───────────────────────────┤
+            │                  Do you need a footer?                  │
+            ╰─────────────────────────────────────────────────────────╯
+            EOS
           # table.pack(packing_mode: Tablo::Table::PackingMode::AutoSized,
           table.pack(only: "long").to_s.should eq output
         end
