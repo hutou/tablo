@@ -63,6 +63,11 @@ module Tablo
       #  Check is done in 'Tablo::Frame` struct
       LINE_BREAKS_RANGE = 0..8
       class_property line_breaks_range : Range(Int32, Int32) = LINE_BREAKS_RANGE
+
+      # Default range of allowable values for rounding in `Tablo.dot_align` <br />
+      #  Check is done inside `Tablo.dot_align` method
+      ROUNDING_RANGE = -8..8
+      class_property rounding_range : Range(Int32, Int32) = ROUNDING_RANGE
     end
 
     # Default values for Table and/or Column initialization,

@@ -7,10 +7,10 @@ module Tablo
   # all trailing decimal zeroes are replaced by spaces. <br />
   #
   # special formatting is further applied depending on enum values:
-  # - Blank   = whole field is blank if value == 0
-  # - NoDot   = decimal part of field (including dot) is blank if all decimals are zeroes
-  # - DotOnly = decimal part of field is blank if all decimals are zeroes
-  # - DotZero = decimal part of field is blank if all decimals are zeroes, except first (.0)
+  # - `Blank`   = whole field is blank if value == 0
+  # - `NoDot`   = decimal part of field (including dot) is blank if all decimals are zeroes
+  # - `DotOnly` = decimal part of field is blank if all decimals are zeroes
+  # - `DotZero` = decimal part of field is blank if all decimals are zeroes, except first (.0)
   enum DotAlign
     Blank
     NoDot
@@ -21,12 +21,12 @@ module Tablo
   # Method to align floats on decimal point, where non significant zeroes are
   # replaced by spaces (see `DotAlign`)
   #
-  # Parameters are:
-  # - value
-  # - decimals
-  # - Formatting enum value
+  # Mandatory parameters are:
+  # - `value` : type is a Float`
+  # - `dec` : type is Int32 : the number of decimals
+  # - `mode` : a formatting enum DotAlign value (defaults to DotZero)
   #
-  # Example with default DotAlign::DotZero
+  # Example with default `DotAlign::DotZero`
   # ```
   # require "tablo"
   #
@@ -37,6 +37,7 @@ module Tablo
   #       Tablo.dot_align(value, 3, :dot_zero)
   #     }, &.itself)
   # end
+  # puts table
   # ```
   #     +--------------+
   #     |       Floats |
@@ -47,42 +48,29 @@ module Tablo
   #     |       42.21  |
   #     |        7.9   |
   #     +--------------+
-  def self.dot_align(value, dec, mode : DotAlign = DotAlign::DotZero)
-    dec = 1 if dec <= 0 # default to 1 if invalid
-    bytes = ("%.#{dec}f" % value).to_slice.dup
-    pos = bytes.size - 1
-    chr = bytes[pos]
-    loop do
-      chr_prev = bytes[pos - 1]
-      if chr == 48_u8
-        if chr_prev == 48_u8
-          bytes[pos] = 32_u8
-        elsif chr_prev == 46_u8
-          case mode
-          in DotAlign::DotZero
-            break
-          in DotAlign::DotOnly
-            bytes[pos] = 32_u8
-            break
-          in DotAlign::Blank, DotAlign::NoDot
-            bytes[pos] = 32_u8
-            bytes[pos - 1] = 32_u8
-            if mode == DotAlign::Blank
-              bytes[pos - 2] = 32_u8 if bytes[pos - 2] == 48_u8 &&
-                                        pos - 2 == 0
-            end
-            break
-          end
-        else
-          bytes[pos] = 32_u8
-          break
-        end
-      else
-        break
-      end
-      pos -= 1
-      chr = chr_prev
+  def self.dot_align(value : Float, dec : Int32, mode : DotAlign = DotAlign::DotZero)
+    unless dec.in?(Config::Controls.rounding_range)
+      raise Error::InvalidValue.new "Number of decimals must be in range " +
+                                    "(#{Config::Controls.rounding_range})"
     end
-    String.new(bytes)
+    snum = value.round(dec).to_s
+    dec = 1 if dec <= 0
+    ipart, fpart = snum.split(".")
+    if fpart == "0"
+      case mode
+      in DotAlign::DotZero
+        ipart + ".0" + " " * (dec - 1)
+      in DotAlign::DotOnly
+        ipart + "." + " " * dec
+      in DotAlign::NoDot, DotAlign::Blank
+        if value.zero? && mode == DotAlign::Blank
+          " " * (dec + 1)
+        else
+          ipart + " " * (dec + 1)
+        end
+      end
+    else
+      ipart + "." + fpart + " " * (dec - fpart.size)
+    end
   end
 end
