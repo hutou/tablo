@@ -189,50 +189,50 @@ module Tablo
       arrout.join(NEWLINE)
     end
 
-    enum DotAlign # All trailing decimal zeroes are replaced by spaces
-      Empty       # Field is blank if value == 0
-      Blank       # decimal part of field (including dot) is blank if zeroes
-      Dot         # decimal part of field is blank if zeroes
-      DotZero     # decimal part of field is blank if zeroes, except first (.0)
-    end
+    # enum DotAlign # All trailing decimal zeroes are replaced by spaces
+    #   Empty       # Field is blank if value == 0
+    #   Blank       # decimal part of field (including dot) is blank if zeroes
+    #   Dot         # decimal part of field is blank if zeroes
+    #   DotZero     # decimal part of field is blank if zeroes, except first (.0)
+    # end
 
-    def self.dot_align(value, dec, mode : DotAlign = DotAlign::DotZero)
-      dec = 1 if dec <= 0 # default to 1 if invalid
-      bytes = ("%.#{dec}f" % value).to_slice.dup
-      pos = bytes.size - 1
-      chr = bytes[pos]
-      loop do
-        chr_prev = bytes[pos - 1]
-        if chr == 48_u8
-          if chr_prev == 48_u8
-            bytes[pos] = 32_u8
-          elsif chr_prev == 46_u8
-            case mode
-            in DotAlign::DotZero
-              break
-            in DotAlign::Dot
-              bytes[pos] = 32_u8
-              break
-            in DotAlign::Blank, DotAlign::Empty
-              bytes[pos] = 32_u8
-              bytes[pos - 1] = 32_u8
-              if mode == DotAlign::Empty
-                bytes[pos - 2] = 32_u8 if bytes[pos - 2] == 48_u8 &&
-                                          pos - 2 == 0
-              end
-              break
-            end
-          else
-            bytes[pos] = 32_u8
-            break
-          end
-        else
-          break
-        end
-        pos -= 1
-        chr = chr_prev
-      end
-      String.new(bytes)
-    end
+    # def self.dot_align(value, dec, mode : DotAlign = DotAlign::DotZero)
+    #   dec = 1 if dec <= 0 # default to 1 if invalid
+    #   bytes = ("%.#{dec}f" % value).to_slice.dup
+    #   pos = bytes.size - 1
+    #   chr = bytes[pos]
+    #   loop do
+    #     chr_prev = bytes[pos - 1]
+    #     if chr == 48_u8
+    #       if chr_prev == 48_u8
+    #         bytes[pos] = 32_u8
+    #       elsif chr_prev == 46_u8
+    #         case mode
+    #         in DotAlign::DotZero
+    #           break
+    #         in DotAlign::Dot
+    #           bytes[pos] = 32_u8
+    #           break
+    #         in DotAlign::Blank, DotAlign::Empty
+    #           bytes[pos] = 32_u8
+    #           bytes[pos - 1] = 32_u8
+    #           if mode == DotAlign::Empty
+    #             bytes[pos - 2] = 32_u8 if bytes[pos - 2] == 48_u8 &&
+    #                                       pos - 2 == 0
+    #           end
+    #           break
+    #         end
+    #       else
+    #         bytes[pos] = 32_u8
+    #         break
+    #       end
+    #     else
+    #       break
+    #     end
+    #     pos -= 1
+    #     chr = chr_prev
+    #   end
+    #   String.new(bytes)
+    # end
   end
 end
