@@ -329,7 +329,7 @@ with associated getters and setters.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/6f230e861b0de143ee63fe09466c7828e9460768/src/config.cr#L24" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/d295cd6ff487d011a1fccfdfcafbf0a44c450141/src/config.cr#L24" target="_blank">
         config.cr
       </a>
     
@@ -413,6 +413,16 @@ Check is done in 'Tablo::Frame` struct</p>
         <p>Default range of allowable values for paddings (left or right)<br />
 Check is done by the <code>Table#check_padding</code> private method, when
 initializing a Table or Column.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="ROUNDING_RANGE">
+        <strong>ROUNDING_RANGE</strong> = <code><span class="n">-8</span>..<span class="n">8</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Default range of allowable values for rounding in <code><a href="../../Tablo.html#dot_align%28value%3AFloat%2Cdec%3AInt32%2Cmode%3ADotAlign%3DDotAlign%3A%3ADotZero%29-class-method">Tablo.dot_align</a></code> <br />
+Check is done inside <code><a href="../../Tablo.html#dot_align%28value%3AFloat%2Cdec%3AInt32%2Cmode%3ADotAlign%3DDotAlign%3A%3ADotZero%29-class-method">Tablo.dot_align</a></code> method</p>
       </dd>
       
     
@@ -504,6 +514,16 @@ initializing a Table.</p>
       </li>
     
       <li class="entry-summary">
+        <a href="#rounding_range%3ARange%28Int32%2CInt32%29-class-method" class="signature"><strong>.rounding_range</strong> : Range(Int32, Int32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#rounding_range%3D%28rounding_range%3ARange%28Int32%2CInt32%29%29-class-method" class="signature"><strong>.rounding_range=</strong>(rounding_range : Range(Int32, Int32))</a>
+        
+      </li>
+    
+      <li class="entry-summary">
         <a href="#row_divider_frequency_range%3ARange%28Int32%2CInt32%29-class-method" class="signature"><strong>.row_divider_frequency_range</strong> : Range(Int32, Int32)</a>
         
       </li>
@@ -548,7 +568,7 @@ initializing a Table.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/6f230e861b0de143ee63fe09466c7828e9460768/src/config.cr#L53" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/d295cd6ff487d011a1fccfdfcafbf0a44c450141/src/config.cr#L53" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -564,7 +584,7 @@ initializing a Table.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/6f230e861b0de143ee63fe09466c7828e9460768/src/config.cr#L53" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/d295cd6ff487d011a1fccfdfcafbf0a44c450141/src/config.cr#L53" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -580,7 +600,7 @@ initializing a Table.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/6f230e861b0de143ee63fe09466c7828e9460768/src/config.cr#L59" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/d295cd6ff487d011a1fccfdfcafbf0a44c450141/src/config.cr#L59" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -596,7 +616,7 @@ initializing a Table.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/6f230e861b0de143ee63fe09466c7828e9460768/src/config.cr#L59" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/d295cd6ff487d011a1fccfdfcafbf0a44c450141/src/config.cr#L59" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -612,7 +632,7 @@ initializing a Table.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/6f230e861b0de143ee63fe09466c7828e9460768/src/config.cr#L35" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/d295cd6ff487d011a1fccfdfcafbf0a44c450141/src/config.cr#L35" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -628,7 +648,7 @@ initializing a Table.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/6f230e861b0de143ee63fe09466c7828e9460768/src/config.cr#L35" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/d295cd6ff487d011a1fccfdfcafbf0a44c450141/src/config.cr#L35" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -644,7 +664,7 @@ initializing a Table.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/6f230e861b0de143ee63fe09466c7828e9460768/src/config.cr#L47" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/d295cd6ff487d011a1fccfdfcafbf0a44c450141/src/config.cr#L47" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -660,7 +680,7 @@ initializing a Table.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/6f230e861b0de143ee63fe09466c7828e9460768/src/config.cr#L47" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/d295cd6ff487d011a1fccfdfcafbf0a44c450141/src/config.cr#L47" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -676,7 +696,7 @@ initializing a Table.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/6f230e861b0de143ee63fe09466c7828e9460768/src/config.cr#L65" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/d295cd6ff487d011a1fccfdfcafbf0a44c450141/src/config.cr#L65" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -692,7 +712,7 @@ initializing a Table.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/6f230e861b0de143ee63fe09466c7828e9460768/src/config.cr#L65" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/d295cd6ff487d011a1fccfdfcafbf0a44c450141/src/config.cr#L65" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -708,7 +728,7 @@ initializing a Table.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/6f230e861b0de143ee63fe09466c7828e9460768/src/config.cr#L29" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/d295cd6ff487d011a1fccfdfcafbf0a44c450141/src/config.cr#L29" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -724,7 +744,39 @@ initializing a Table.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/6f230e861b0de143ee63fe09466c7828e9460768/src/config.cr#L29" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/d295cd6ff487d011a1fccfdfcafbf0a44c450141/src/config.cr#L29" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rounding_range:Range(Int32,Int32)-class-method">
+      <div class="signature">
+        
+        def self.<strong>rounding_range</strong> : Range(Int32, Int32)
+
+        <a class="method-permalink" href="#rounding_range%3ARange%28Int32%2CInt32%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/d295cd6ff487d011a1fccfdfcafbf0a44c450141/src/config.cr#L70" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rounding_range=(rounding_range:Range(Int32,Int32))-class-method">
+      <div class="signature">
+        
+        def self.<strong>rounding_range=</strong>(rounding_range : Range(Int32, Int32))
+
+        <a class="method-permalink" href="#rounding_range%3D%28rounding_range%3ARange%28Int32%2CInt32%29%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/d295cd6ff487d011a1fccfdfcafbf0a44c450141/src/config.cr#L70" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -740,7 +792,7 @@ initializing a Table.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/6f230e861b0de143ee63fe09466c7828e9460768/src/config.cr#L41" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/d295cd6ff487d011a1fccfdfcafbf0a44c450141/src/config.cr#L41" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -756,7 +808,7 @@ initializing a Table.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/6f230e861b0de143ee63fe09466c7828e9460768/src/config.cr#L41" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/d295cd6ff487d011a1fccfdfcafbf0a44c450141/src/config.cr#L41" target="_blank">View source</a>]
         
       </div>
     </div>
