@@ -23,7 +23,8 @@ module Tablo
   #
   # Mandatory parameters are:
   # - `value` : type is a Float`
-  # - `dec` : type is Int32 : the number of decimals
+  # - `dec` : type is Int32 : the number of decimals i<br />
+  #   (Valid range set in `Config::Controls.rounding_range`)
   # - `mode` : a formatting enum DotAlign value (defaults to DotZero)
   #
   # Example with default `DotAlign::DotZero`

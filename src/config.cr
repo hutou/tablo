@@ -26,47 +26,55 @@ module Tablo
       # Check is done by the `Table#check_padding` private method, when
       # initializing a Table or Column.
       PADDING_WIDTH_RANGE = 0..8
+      # See `PADDING_WIDTH_RANGE`
       class_property padding_width_range : Range(Int32, Int32) = PADDING_WIDTH_RANGE
 
       # Default range of allowable values for header frequency<br />
       # Check is done by the `Table#check_header_frequency` private method, when
       # initializing a Table.
       HEADER_FREQUENCY_RANGE = 0..64
+      # See `HEADER_FREQUENCY_RANGE`
       class_property header_frequency_range : Range(Int32, Int32) = HEADER_FREQUENCY_RANGE
 
       # Default range of allowable values for `row_divider_frequency`  <br />
       # Check is done by the `Table#check_row_divider_frequency` private method, when
       # initializing a Table.
       ROW_DIVIDER_FREQUENCY_RANGE = 1..8
+      # See `ROW_DIVIDER_FREQUENCY_RANGE`
       class_property row_divider_frequency_range : Range(Int32, Int32) = ROW_DIVIDER_FREQUENCY_RANGE
 
       # Default range of allowable values for `header_wrap`  <br />
       # Check is done by the `Table#check_header_wrap` private method, when
       # initializing a Table.
       HEADER_WRAP_RANGE = 1..8
+      # See `HEADER_WRAP_RANGE`
       class_property header_wrap_range : Range(Int32, Int32) = HEADER_WRAP_RANGE
 
       # Default range of allowable values for `body_wrap`  <br />
       # Check is done by the `Table#check_body_wrap` private method, when
       # initializing a Table.
       BODY_WRAP_RANGE = 1..8
+      # See `BODY_WRAP_RANGE`
       class_property body_wrap_range : Range(Int32, Int32) = BODY_WRAP_RANGE
 
       # Default range of allowable values for column `width`  <br />
       # Check is done by the `Table#check_width` private method, when
       # initializing a Table.
       COLUMN_WIDTH_RANGE = 1..128
+      # See `COLUMN_WIDTH_RANGE`
       class_property column_width_range : Range(Int32, Int32) = COLUMN_WIDTH_RANGE
 
       # Default range of allowable values for `line_breaks_before` and
       # `line_breaks_after` attributes <br />
       #  Check is done in 'Tablo::Frame` struct
       LINE_BREAKS_RANGE = 0..8
+      # See `LINE_BREAKS_RANGE`
       class_property line_breaks_range : Range(Int32, Int32) = LINE_BREAKS_RANGE
 
       # Default range of allowable values for rounding in `Tablo.dot_align` <br />
       #  Check is done inside `Tablo.dot_align` method
       ROUNDING_RANGE = -8..8
+      # see `ROUNDING_RANGE`
       class_property rounding_range : Range(Int32, Int32) = ROUNDING_RANGE
     end
 
