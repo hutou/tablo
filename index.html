@@ -262,11 +262,6 @@
       
     </li>
   
-  <li class=" " data-id="tablo/Tablo/Util" data-name="tablo::util">
-      <a href="Tablo/Util.html">Util</a>
-      
-    </li>
-  
   <li class=" " data-id="tablo/Tablo/WrapMode" data-name="tablo::wrapmode">
       <a href="Tablo/WrapMode.html">WrapMode</a>
       
@@ -774,7 +769,7 @@ transformation (which is also the one applied by default) is simply a call to
 the <code>to_s</code> method.</p>
 <p>Using a proc <code>formatter</code> allows you to customize formatting in a variety of
 ways, from using <code>sprintf</code> formatting strings for numeric values to various
-<code>String</code> methods for text and specific <code><a href="Tablo/Util.html">Tablo::Util</a></code> methods for both.</p>
+<code>String</code> methods for text and specific <code>Tablo::Util</code> methods for both.</p>
 <p>A formatter proc can take four forms : the first two apply equally to TextCell
 and DataCell and are applied unconditionally on <code>value</code>.</p>
 <p>The first form expects one parameter (<code>value</code>) and the second two: <code>value</code> and
@@ -853,7 +848,7 @@ puts table</code></pre>
 +--------------+--------------+--------------+--------------+</code></pre>
 <p>Form 3 and form 4 apply only on DataCell cell types, as they use the
 <code>coords</code> parameter to conditionnally format the <code>value</code>.</p>
-<p>Here is an exemple of form 3 with another method from <code><a href="Tablo/Util.html">Tablo::Util</a></code>, which use
+<p>Here is an exemple of form 3 with another method from <code>Tablo::Util</code>, which use
 the <code>column_index</code> as formatting condition.</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 
