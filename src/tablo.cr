@@ -51,7 +51,7 @@ module Tablo
   #     +--------------+
   def self.dot_align(value : Float, dec : Int32, mode : DotAlign = DotAlign::DotZero)
     unless dec.in?(Config::Controls.rounding_range)
-      raise Error::InvalidValue.new "Number of decimals must be in range " +
+      raise Error::InvalidValue.new "dot_align: number of decimals must be in range " +
                                     "(#{Config::Controls.rounding_range})"
     end
     snum = value.round(dec).to_s
@@ -73,5 +73,87 @@ module Tablo
     else
       ipart + "." + fpart + " " * (dec - fpart.size)
     end
+  end
+
+  # TODO Doc to be completed !!!
+  #
+  # The stretch method is designed to optimize the filling of a text area,
+  # possibly multi-line, by inserting one or more separators (by default
+  # a space) between each character of the initial string.
+  def self.stretch(text : String, target_width : Int32,
+                   prefix : String = "", suffix : String = "",
+                   justification : Justify = Justify::Center,
+                   fill_char : Char = ' ',
+                   max_fill : Int32 = Int32::MAX) : String
+    stretched_text = [] of String
+
+    if max_fill < 0
+      raise Error::InvalidValue.new "stretch: filler size cannot be negative"
+    end
+    if (fb = prefix.index('{')) && (lb = prefix.rindex('}'))
+      prefix_fixed, prefix_variable, prefix_head =
+        prefix[0..fb - 1], prefix[fb + 1..lb - 1], prefix[lb + 1..-1]
+    else
+      prefix_fixed, prefix_variable, prefix_head = prefix, "", ""
+    end
+    if (fb = suffix.index('{')) && (lb = suffix.rindex('}'))
+      suffix_head, suffix_variable, suffix_fixed =
+        suffix[0..fb - 1], suffix[fb + 1..lb - 1], suffix[lb + 1..-1]
+    else
+      suffix_fixed, suffix_variable, suffix_head = suffix, "", ""
+    end
+
+    max_line_size = text.lines.map(&.strip.size).max
+    intervals = max_line_size - 1
+
+    margins_max = (prefix_fixed + prefix_variable + prefix_head +
+                   suffix_fixed + suffix_variable + suffix_head).size
+    margins_min = margins_max - (prefix_variable + suffix_variable).size
+    space_chars_avail_min = target_width - margins_max - max_line_size
+    space_chars_avail_max = target_width - margins_min - max_line_size
+
+    spaces_between_chars_max = space_chars_avail_max // intervals
+    spaces_between_chars_min = space_chars_avail_min // intervals
+
+    prefix_variable_size = prefix_variable.size
+    suffix_variable_size = suffix_variable.size
+    variable_size = prefix_variable_size + suffix_variable_size
+
+    spaces_between_chars_min = 0 if spaces_between_chars_min < 0
+    spaces_between_chars = spaces_between_chars_min
+    spaces_between_chars_max.downto [spaces_between_chars_min, max_fill].min do |spaces_between|
+      next if spaces_between > max_fill
+      reduce = prefix_variable_size + suffix_variable_size -
+               (target_width - (prefix_fixed + prefix_head).size -
+                (suffix_fixed + suffix_head).size - spaces_between *
+                                                    intervals - max_line_size)
+      if reduce > 0
+        reduce_left = reduce * prefix_variable_size // variable_size
+        reduce_right = reduce - reduce_left
+        prefix_variable = prefix_variable[0..-(1 + reduce_left)]
+        suffix_variable = suffix_variable[reduce_right..-1]
+      end
+      spaces_between_chars = spaces_between
+      break
+    end
+
+    margin_left = prefix_fixed + prefix_variable + prefix_head
+    margin_right = suffix_head + suffix_variable + suffix_fixed
+    margins_size = (margin_left + margin_right).size
+    text.each_line do |line|
+      line = line.strip
+      central_part = line.chars.join(fill_char.to_s * spaces_between_chars)
+      central_part_justified = case justification
+                               when Justify::Left
+                                 central_part.ljust(target_width - margins_size)
+                               when Justify::Right
+                                 central_part.rjust(target_width - margins_size)
+                               else
+                                 central_part.center(target_width - margins_size)
+                               end
+      final_line = margin_left + central_part_justified + margin_right
+      stretched_text << final_line
+    end
+    stretched_text.join("\n")
   end
 end

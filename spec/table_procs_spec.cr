@@ -32,8 +32,8 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
       table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Heading.new("my title",
           formatter: ->(c : Tablo::CellType, column_width : Int32) {
-            Tablo::Util.stretch(c.as(String),
-              width: column_width, insert_char: '-', gap: 1)
+            Tablo.stretch(c.as(String),
+              target_width: column_width, fill_char: '-', max_fill: 1)
           })) do |t|
         t.add_column("itself", width: 15, &.itself)
       end
@@ -56,8 +56,8 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
     it "stretches the footer with spaces" do
       table = Tablo::Table.new(FloatSamples.new,
         footer: Tablo::Heading.new("Footer", framed: true, line_breaks_before: 1,
-          formatter: ->(c : Tablo::CellType, column_width : Int32) { Tablo::Util.stretch(c.as(String),
-            width: column_width, insert_char: ' ', gap: 2) })) do |t|
+          formatter: ->(c : Tablo::CellType, column_width : Int32) { Tablo.stretch(c.as(String),
+            target_width: column_width, fill_char: ' ', max_fill: 2) })) do |t|
         t.add_column("itself", width: 16, &.itself)
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
@@ -222,12 +222,12 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
         t.add_column("itself", &.itself)
         t.add_column("double") { |n| n * 2 }
         t.add_group("Numeric",
-          formatter: ->(c : Tablo::CellType, column_width : Int32) { Tablo::Util.stretch(c.as(String),
-            width: column_width, insert_char: ' ', gap: nil) })
+          formatter: ->(c : Tablo::CellType, column_width : Int32) { Tablo.stretch(c.as(String),
+            target_width: column_width, fill_char: ' ') })
         t.add_column("stringified") { |n| n.to_s * 7 }
         t.add_group("String",
-          formatter: ->(c : Tablo::CellType, column_width : Int32) { Tablo::Util.stretch(c.as(String),
-            width: column_width, insert_char: ' ', gap: nil) })
+          formatter: ->(c : Tablo::CellType, column_width : Int32) { Tablo.stretch(c.as(String),
+            target_width: column_width, fill_char: ' ') })
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
       output = <<-EOS
@@ -250,7 +250,8 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
         t.add_column("itself", &.itself)
         t.add_column("double") { |n| n * 2 }
         t.add_group("Numeric",
-          formatter: ->(c : Tablo::CellType) { Tablo::Util.stretch(c.as(String), 25, ' ') },
+          formatter: ->(c : Tablo::CellType) { Tablo.stretch(c.as(String), 25,
+            fill_char: ' ') },
           styler: ->(s : String) {
             colors = [:blue, :red, :green, :yellow]
             index = 0
@@ -268,7 +269,8 @@ describe "#{Tablo::Table} -> Headings and groups formatting and styling" do
           })
         t.add_column("stringified") { |n| n.to_s * 7 }
         t.add_group("String",
-          formatter: ->(c : Tablo::CellType) { Tablo::Util.stretch(c.as(String), 11, ' ') })
+          formatter: ->(c : Tablo::CellType) { Tablo.stretch(c.as(String), 11,
+            fill_char: ' ') })
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
       if Tablo::Util.styler_allowed
