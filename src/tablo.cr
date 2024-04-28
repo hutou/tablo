@@ -80,6 +80,32 @@ module Tablo
   # The stretch method is designed to optimize the filling of a text area,
   # possibly multi-line, by inserting one or more separators (by default
   # a space) between each character of the initial string.
+  #
+  # If the constraints cannot be met, return the text unchanged.
+  # ```
+  # require "tablo"
+  # table = Tablo::Table.new([1, 2, 3]) do |t|
+  #   t.add_column("integer", &.itself)
+  #   t.add_column("Float", &.**(0.5).round(2))
+  #   t.add_group("Numbers", formatter: ->(value : Tablo::CellType, width : Int32) {
+  #     Tablo.stretch(value.as(String), width, fill_char: '.', max_fill: 1,
+  #       prefix: "<--{------} ", suffix: " {------}-->")
+  #   })
+  # end
+  # puts table
+  # ```
+  # In this exmaple, ....
+  # ```
+  # +-----------------------------+
+  # | <----- N.u.m.b.e.r.s -----> |
+  # +--------------+--------------+
+  # |      integer |        Float |
+  # +--------------+--------------+
+  # |            1 |          1.0 |
+  # |            2 |         1.41 |
+  # |            3 |         1.73 |
+  # +--------------+--------------+
+  # ```
   def self.stretch(text : String, target_width : Int32,
                    prefix : String = "", suffix : String = "",
                    justification : Justify = Justify::Center,
@@ -111,6 +137,10 @@ module Tablo
     margins_min = margins_max - (prefix_variable + suffix_variable).size
     space_chars_avail_min = target_width - margins_max - max_line_size
     space_chars_avail_max = target_width - margins_min - max_line_size
+
+    # Check if any stretching can be done. If not, return the
+    # text value unchanged
+    return text if space_chars_avail_max < 0
 
     spaces_between_chars_max = space_chars_avail_max // intervals
     spaces_between_chars_min = space_chars_avail_min // intervals
