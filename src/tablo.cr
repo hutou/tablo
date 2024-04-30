@@ -105,7 +105,7 @@ module Tablo
   #   t.add_column("integer", &.itself)
   #   t.add_column("Float", &.**(0.5).round(2))
   #   t.add_group("Numbers", formatter: ->(value : Tablo::CellType, width : Int32) {
-  #     Tablo.stretch(value.as(`String`), width, fill_char: '.', max_fill: 1,
+  #     Tablo.stretch(value.as(String), width, fill_char: '.', max_fill: 1,
   #       prefix: "<--{------} ", suffix: " {------}-->")
   #   })
   # end

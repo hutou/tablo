@@ -100,6 +100,7 @@ module Tablo
 
       # Default value for Border definition
       BORDER_DEFINITION = Border::PreSet::Ascii
+      # Default definition  for Border (see `BORDER_DEFINITION`)
       class_property border_definition : String | Border::PreSet = Border::PreSet::Ascii
 
       # (see `DEFAULT_STYLER`)

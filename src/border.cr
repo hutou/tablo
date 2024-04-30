@@ -2,27 +2,27 @@ require "./config"
 require "./util"
 
 module Tablo
-  # The Border class enhances the layout of a data table by separating rows
+  # The `Border` class enhances the layout of a data table by separating rows
   # and columns with interconnected horizontal and vertical lines.
   #
   # Various predefined line types are available, but you are free to create your own.
   #
   # A border can be styled by a user defined proc, of type `Styler` allowing
-  # for colorized output, either by using ANSI sequences or the "colorize" module
+  # for colorized output, either by using ANSI sequences or the colorize module
   # from the stdlib (default: no style).
   #
-  # A `Border` is defined by a string of exactly 16 characters, which is
+  # A border is defined by a string of exactly 16 characters, which is
   # then converted into 16 strings of up to 1 character each. The definition
   # string can contain any character, but two of them have a special meaning:
-  # during conversion, the uppercase E is replaced by an empty string, and the
-  # uppercase S character is replaced by a space (a simple space may also be used,
+  # during conversion, the uppercase **E** is replaced by an empty string, and the
+  # uppercase **S** is replaced by a space (a simple space may also be used,
   # of course).
   #
-  # _Please note that using the capital E character may cause alignment
+  # _Please note that using the capital E may cause alignment
   # difficulties._
   #
   # Examples of text or graphic connectors:
-  # ```
+  # ```plain
   # | Name                           | 16 chars string  |
   # | ------------------------------ | ---------------  |
   # | CONNECTORS_SINGLE_ROUNDED      | ╭┬╮├┼┤╰┴╯│││──── |
@@ -37,7 +37,7 @@ module Tablo
   #
   # ```
   # Mixed graphic character sets, such as:
-  # ```
+  # ```plain
   # | Name                           | 16 chars string  |
   # | ------------------------------ | ---------------  |
   # | CONNECTORS_SINGLE_DOUBLE_MIXED | ╔╤╗╟┼╢╚╧╝║│║═─═- |
@@ -49,7 +49,7 @@ module Tablo
   # The first 9 characters define the junction or intersection of horizontal and
   # vertical border lines.
   #
-  # ```
+  # ```plain
   # Pos Connector name     Example (using Fancy border preset)
   # --- --------------     -----------------------------------
   #  0  top_left           "┌"
@@ -67,7 +67,7 @@ module Tablo
   #
   # The next three characters define vertical separators in data rows.
   #
-  # ```
+  # ```plain
   #  9  vdiv_left          "│"
   # 10  vdiv_mid           ":"
   # 11  vdiv_right         "│"
@@ -76,7 +76,7 @@ module Tablo
   # And finally, the last four characters define the different types of horizontal
   # border, depending on the type of data row or types of adjacent data rows.
   #
-  # ```
+  # ```plain
   # 12  hdiv_tbs           "─"     (title or top or bottom or summary)
   # 13  hdiv_grp           "−"     (group)
   # 14  hdiv_hdr           "-"     (header)
@@ -86,7 +86,7 @@ module Tablo
   # Eight predefined borders, of type `PreSet`, can also be used instead of
   # a definition string.
   #
-  # ```
+  # ```plain
   # | name          | 16 chars string  |
   # | ------------- | ---------------- |
   # | Ascii         | +++++++++|||---- |
@@ -99,7 +99,7 @@ module Tablo
   # | Empty         | EEEEEEEEEEEEEEEE |
   # ```
   #
-  # For example, the string `"ESEESEESEESE───"` is how the `ReducedModern`
+  # For example, the string `"ESEESEESEESE───"` is how the `PreSet::ReducedModern`
   # style is defined.
   struct Border
     #  `PreSet` is an `enum` identifying a finite set of strings defining the most
@@ -117,9 +117,9 @@ module Tablo
     # A border may be styled, either by using ANSI color sequences or using
     # the stdlib colorize module.
     #
-    #  `styler` default value is set by `Tablo::Config::Defaults.border_styler`
+    #  Styler default value is set by `Tablo::Config::Defaults.border_styler`
     #
-    # Example, to colorize borders in blue :
+    # Example, to colorize borders in red :
     # ```
     # require "tablo"
     # require "colorize"
@@ -157,27 +157,25 @@ module Tablo
         PreSet::Empty         => "EEEEEEEEEEEEEEEE",
       }
 
-    # Border constructor, returning a Border instance.
+    # Creates a Border.
     #
     # _Optional (named) parameters, with default values_:
     #
-    # - `definition`: type is `String` | `PreSet`
+    # - *definition*: set of border connectors to use <br />
+    #   Default value set by `Config::Defaults.border_definition`
     #
-    #   Default value is set by `Config::Defaults.border_definition`
-    #
-    # - `styler`: type is `Styler`
-    #
-    #   Default value is set by `Config::Defaults.border_styler`
+    # - *Styler*: a user defined proc <br />
+    #   Default value set by `Config::Defaults.border_styler`
     #
     # Examples :
     # ```
     # border = Tablo::Border.new(Tablo::Border::PreSet::Fancy,
-    #   styler: ->(connector : String) { connector.colorize(:yellow).to_s })
+    #   styler: ->(connectors : String) { connectors.colorize(:yellow).to_s })
     # ```
     # or
     # ```
     # border = Tablo::Border.new("┌┬┐├┼┤└┴┘│││────",
-    #   styler: ->(connector : String) { connector.colorize.fore(:blue).mode(:bold).to_s })
+    #   styler: ->(connectors : String) { connectors.colorize.fore(:blue).mode(:bold).to_s })
     # ```
     def initialize(definition : String | PreSet = Config::Defaults.border_definition,
                    @styler : Styler = Config::Defaults.border_styler)
