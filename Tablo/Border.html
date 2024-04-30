@@ -300,22 +300,22 @@
     Overview
   </h2>
 
-  <p>The Border class enhances the layout of a data table by separating rows
+  <p>The <code><a href="../Tablo/Border.html">Border</a></code> class enhances the layout of a data table by separating rows
 and columns with interconnected horizontal and vertical lines.</p>
 <p>Various predefined line types are available, but you are free to create your own.</p>
 <p>A border can be styled by a user defined proc, of type <code><a href="../Tablo/Border/Styler.html">Styler</a></code> allowing
-for colorized output, either by using ANSI sequences or the &quot;colorize&quot; module
+for colorized output, either by using ANSI sequences or the colorize module
 from the stdlib (default: no style).</p>
-<p>A <code><a href="../Tablo/Border.html">Border</a></code> is defined by a string of exactly 16 characters, which is
+<p>A border is defined by a string of exactly 16 characters, which is
 then converted into 16 strings of up to 1 character each. The definition
 string can contain any character, but two of them have a special meaning:
-during conversion, the uppercase E is replaced by an empty string, and the
-uppercase S character is replaced by a space (a simple space may also be used,
+during conversion, the uppercase <strong>E</strong> is replaced by an empty string, and the
+uppercase <strong>S</strong> is replaced by a space (a simple space may also be used,
 of course).</p>
-<p><em>Please note that using the capital E character may cause alignment
+<p><em>Please note that using the capital E may cause alignment
 difficulties.</em></p>
 <p>Examples of text or graphic connectors:</p>
-<pre><code class="language-crystal">| Name                           | 16 chars string  |
+<pre><code class="language-plain">| Name                           | 16 chars string  |
 | ------------------------------ | ---------------  |
 | CONNECTORS_SINGLE_ROUNDED      | ╭┬╮├┼┤╰┴╯│││──── |
 | CONNECTORS_SINGLE              | ┌┬┐├┼┤└┴┘│││──── |
@@ -328,14 +328,14 @@ difficulties.</em></p>
 | CONNECTORS_TEXT_CLASSIC        | +++++++++|||---- |
 </code></pre>
 <p>Mixed graphic character sets, such as:</p>
-<pre><code class="language-crystal">| Name                           | 16 chars string  |
+<pre><code class="language-plain">| Name                           | 16 chars string  |
 | ------------------------------ | ---------------  |
 | CONNECTORS_SINGLE_DOUBLE_MIXED | ╔╤╗╟┼╢╚╧╝║│║═─═- |</code></pre>
 <p>may not be correctly rendered.</p>
 <p>Below is a detailed representation of each ruletype and meaning:</p>
 <p>The first 9 characters define the junction or intersection of horizontal and
 vertical border lines.</p>
-<pre><code class="language-crystal">Pos Connector name     Example (using Fancy border preset)
+<pre><code class="language-plain">Pos Connector name     Example (using Fancy border preset)
 --- --------------     -----------------------------------
  0  top_left           &quot;┌&quot;
  1  top_mid            &quot;┬&quot;
@@ -349,18 +349,18 @@ vertical border lines.</p>
  7  bottom_mid         &quot;┴&quot;
  8  bottom_right       &quot;┘&quot;</code></pre>
 <p>The next three characters define vertical separators in data rows.</p>
-<pre><code class="language-crystal"> <span class="n">9</span>  vdiv_left          <span class="s">&quot;│&quot;</span>
-<span class="n">10</span>  vdiv_mid           <span class="s">&quot;:&quot;</span>
-<span class="n">11</span>  vdiv_right         <span class="s">&quot;│&quot;</span></code></pre>
+<pre><code class="language-plain"> 9  vdiv_left          &quot;│&quot;
+10  vdiv_mid           &quot;:&quot;
+11  vdiv_right         &quot;│&quot;</code></pre>
 <p>And finally, the last four characters define the different types of horizontal
 border, depending on the type of data row or types of adjacent data rows.</p>
-<pre><code class="language-crystal"><span class="n">12</span>  hdiv_tbs           <span class="s">&quot;─&quot;</span>     (title or top or bottom or summary)
-<span class="n">13</span>  hdiv_grp           <span class="s">&quot;−&quot;</span>     (group)
-<span class="n">14</span>  hdiv_hdr           <span class="s">&quot;-&quot;</span>     (header)
-<span class="n">15</span>  hdiv_bdy           <span class="s">&quot;⋅&quot;</span>     (body)</code></pre>
+<pre><code class="language-plain">12  hdiv_tbs           &quot;─&quot;     (title or top or bottom or summary)
+13  hdiv_grp           &quot;−&quot;     (group)
+14  hdiv_hdr           &quot;-&quot;     (header)
+15  hdiv_bdy           &quot;⋅&quot;     (body)</code></pre>
 <p>Eight predefined borders, of type <code><a href="../Tablo/Border/PreSet.html">PreSet</a></code>, can also be used instead of
 a definition string.</p>
-<pre><code class="language-crystal">| name          | 16 chars string  |
+<pre><code class="language-plain">| name          | 16 chars string  |
 | ------------- | ---------------- |
 | Ascii         | +++++++++|||---- |
 | ReducedAscii  | ESEESEESEESE---- |
@@ -370,7 +370,7 @@ a definition string.</p>
 | Fancy         | ╭┬╮├┼┤╰┴╯│:│─−-⋅ |
 | Blank         | SSSSSSSSSSSSSSSS |
 | Empty         | EEEEEEEEEEEEEEEE |</code></pre>
-<p>For example, the string <code>&quot;ESEESEESEESE───&quot;</code> is how the <code>ReducedModern</code>
+<p>For example, the string <code>&quot;ESEESEESEESE───&quot;</code> is how the <code><a href="../Tablo/Border/PreSet.html#ReducedModern">PreSet::ReducedModern</a></code>
 style is defined.</p>
 
 
@@ -396,7 +396,7 @@ style is defined.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/67445036b8bff14b153a64e95394bd9e88984a31/src/border.cr#L104" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/f01445560a53c587d8af7345bf02efd71ec57ff3/src/border.cr#L104" target="_blank">
         border.cr
       </a>
     
@@ -443,7 +443,7 @@ style is defined.</p>
       <li class="entry-summary">
         <a href="#new%28definition%3AString%7CPreSet%3DConfig%3A%3ADefaults.border_definition%2Cstyler%3AStyler%3DConfig%3A%3ADefaults.border_styler%29-class-method" class="signature"><strong>.new</strong>(definition : String | PreSet = <span class="t">Config</span><span class="t">::</span><span class="t">Defaults</span>.border_definition, styler : Styler = <span class="t">Config</span><span class="t">::</span><span class="t">Defaults</span>.border_styler)</a>
         
-          <div class="summary"><p>Border constructor, returning a Border instance.</p></div>
+          <div class="summary"><p>Creates a Border.</p></div>
         
       </li>
     
@@ -520,30 +520,30 @@ style is defined.</p>
       
         <div class="doc">
           
-          <p>Border constructor, returning a Border instance.</p>
+          <p>Creates a Border.</p>
 <p><em>Optional (named) parameters, with default values</em>:</p>
 <ul>
 <li>
-<p><code>definition</code>: type is <code>String</code> | <code><a href="../Tablo/Border/PreSet.html">PreSet</a></code></p>
-<p>Default value is set by <code><a href="../Tablo/Config/Defaults.html#border_definition%3AString%7CBorder%3A%3APreSet-class-method">Config::Defaults.border_definition</a></code></p>
+<p><em>definition</em>: set of border connectors to use <br />
+Default value set by <code><a href="../Tablo/Config/Defaults.html#border_definition%3AString%7CBorder%3A%3APreSet-class-method">Config::Defaults.border_definition</a></code></p>
 </li>
 <li>
-<p><code>styler</code>: type is <code><a href="../Tablo/Border/Styler.html">Styler</a></code></p>
-<p>Default value is set by <code><a href="../Tablo/Config/Defaults.html#border_styler%3ABorder%3A%3AStyler-class-method">Config::Defaults.border_styler</a></code></p>
+<p><em>Styler</em>: a user defined proc <br />
+Default value set by <code><a href="../Tablo/Config/Defaults.html#border_styler%3ABorder%3A%3AStyler-class-method">Config::Defaults.border_styler</a></code></p>
 </li>
 </ul>
 <p>Examples :</p>
 <pre><code class="language-crystal">border <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span><span class="t">::</span><span class="t">PreSet</span><span class="t">::</span><span class="t">Fancy</span>,
-  styler: <span class="o">-&gt;</span>(connector : <span class="t">String</span>) { connector.colorize(<span class="n">:yellow</span>).to_s })</code></pre>
+  styler: <span class="o">-&gt;</span>(connectors : <span class="t">String</span>) { connectors.colorize(<span class="n">:yellow</span>).to_s })</code></pre>
 <p>or</p>
 <pre><code class="language-crystal">border <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="s">&quot;┌┬┐├┼┤└┴┘│││────&quot;</span>,
-  styler: <span class="o">-&gt;</span>(connector : <span class="t">String</span>) { connector.colorize.fore(<span class="n">:blue</span>).mode(<span class="n">:bold</span>).to_s })</code></pre>
+  styler: <span class="o">-&gt;</span>(connectors : <span class="t">String</span>) { connectors.colorize.fore(<span class="n">:blue</span>).mode(<span class="n">:bold</span>).to_s })</code></pre>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/67445036b8bff14b153a64e95394bd9e88984a31/src/border.cr#L182" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f01445560a53c587d8af7345bf02efd71ec57ff3/src/border.cr#L180" target="_blank">View source</a>]
         
       </div>
     </div>
