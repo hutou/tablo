@@ -125,7 +125,7 @@ module Tablo
     # require "colorize"
     # table = Tablo::Table.new([1, 2, 3],
     #   border: Tablo::Border.new(Tablo::Border::PreSet::Ascii,
-    #     styler: ->(connector : String) { connector.colorize(:red).to_s })) do |t|
+    #     styler: ->(connectors : String) { connectors.colorize(:red).to_s })) do |t|
     #   t.add_column("itself", &.itself)
     # end
     # puts table

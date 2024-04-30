@@ -1,5 +1,3 @@
-# require "./types"
-
 module Tablo
   # In Tablo, the Cell class and its subclasses, along with the Table class
   # itself, form the core of the library's functionality. <br /> However, methods
@@ -9,8 +7,8 @@ module Tablo
   # Cell is an abstract class representing a single cell inside a Table.<br />
   # Derived concrete cells are : `Cell::Text` and `Cell::Data`
   #
-  # It is made up of several attributes and methods, including the `value`
-  # attribute, of type `CellType`, which holds the raw content of each element
+  # It is made up of several attributes and methods, including the *value*
+  # attribute, of type `Tablo::CellType`, which holds the raw content of each element
   # in the data source.
   abstract class Cell
     # Common attributes of Cell::Text and Cell::Data
@@ -220,18 +218,18 @@ module Tablo
     #  Group cells
     class Text < Cell
       # The purpose of the formatter is to transform the raw value of a cell
-      # into a formatted character string <br /> (A default formatter (`to_s`) is applied if
-      # none is defined by the user).
+      # into a formatted character string <br />
+      # (`Tablo::DEFAULT_FORMATTER` is applied if none is defined by the user).
       #
-      # For cells of type `Cell::Text` (headings and group), the formatter Proc can
+      # For cells of type `Tablo::Cell::Text` (headings and group), the formatter Proc can
       # take 2 different forms, as shown below by their commonly used parameter
       # names  and types: <br />
-      # - 1st form : (value : `Tablo::CellType`, column_width : `Int32`)
-      # - 2nd form : (value : `Tablo::CellType`) <br />
+      # - 1st form : (*value* : `Tablo::CellType`, *column_width* : `Int32`)
+      # - 2nd form : (*value* : `Tablo::CellType`) <br />
       #   Default formatter, defined by`Tablo::Config::Defaults.heading_formatter` (or
       #                   `Tablo::Config::Defaults.group_formatter`)
       #
-      # and the return type is `String` for both.
+      # and the return type is String for both.
       #
       # Any processing can be done on cell value. For example, in a group, if the
       # runtime cell value contains a `Time` type, we could format as :
@@ -268,10 +266,10 @@ module Tablo
       # ```
       # require "tablo"
       # table = Tablo::Table.new([1, 2, 3],
-      #   title: Tablo::Heading.new("My Title",
-      #     frame: Tablo::Frame.new, formatter: ->(value : Tablo::CellType, column_width : Int32) {
-      #     Tablo::Util.stretch(value.as(String), width: column_width)
-      #   })) do |t|
+      #   title: Tablo::Heading.new("My Title", framed: true,
+      #     formatter: ->(value : Tablo::CellType, column_width : Int32) {
+      #       Tablo.stretch(value.as(String), target_width: column_width)
+      #     })) do |t|
       #   t.add_column("itself", &.itself)
       #   t.add_column("itself x 2", &.*(2))
       #   t.add_column("itself x 3", &.*(3))
@@ -298,19 +296,19 @@ module Tablo
       # graphic capabilities, these effects are limited to the use of color
       # and/or character modes (bold, italic, etc.).
       #
-      # For cells of type Cell::Text (heading and group), the styler Proc
+      # For cells of type `Tablo::Cell::Text` (heading and group), the styler Proc
       # can take 2 different forms, as shown below by their commonly used
       # parameter names and types:
       #
-      # - 1st form : (content : `String`, line : `Int32`)
-      # - 2nd form : (content : `String`) <br />
+      # - 1st form : (*content* : `String`, *line* : `Int32`)
+      # - 2nd form : (*content* : `String`) <br />
       #   Default styler, defined by`Tablo::Config::Defaults.heading_styler` (or
       #                   `Tablo::Config::Defaults.group_styler`)
       #
       # and the return type is String for both.
       #
-      # `content` is the formatted cell value, after the formatter has been applied.<br />
-      # `line` designates the line number in a (multi-line) cell (0..n).
+      # *content* is the formatted cell value, after the formatter has been applied.<br />
+      # *line* designates the line number in a (multi-line) cell (0..n).
       #
       # The first form allows easy conditional styling. For example, to colorize
       # differently each line of multiline cell:
@@ -318,8 +316,7 @@ module Tablo
       # require "tablo"
       # require "colorize"
       # table = Tablo::Table.new([1, 2, 3],
-      #   title: Tablo::Heading.new("My\nMultiline\nTitle",
-      #     frame: Tablo::Frame.new,
+      #   title: Tablo::Heading.new("My\nMultiline\nTitle", framed: true,
       #     styler: ->(content : String, line : Int32) {
       #       case line
       #       when 0 then content.colorize(:blue).to_s
@@ -343,11 +340,9 @@ module Tablo
       # ```
       # require "tablo"
       # require "colorize"
-      #
       # COLORS = [:blue, :red, :green, :magenta, :cyan]
       # table = Tablo::Table.new([1, 2, 3],
-      #   title: Tablo::Heading.new("My MultiColor Title",
-      #     frame: Tablo::Frame.new,
+      #   title: Tablo::Heading.new("My MultiColor Title", framed: true,
       #     styler: ->(content : String) { content.chars.map { |c|
       #       c.colorize.fore(COLORS[rand(5)]).mode(:bold).to_s
       #     }.join })) do |t|
@@ -355,7 +350,6 @@ module Tablo
       #   t.add_column("itself x 2", &.*(2))
       #   t.add_column("itself x 3", &.*(3))
       # end
-      #
       # puts table
       # ```
       #
@@ -417,14 +411,13 @@ module Tablo
     # The Data class, derived from Cell, is used to manage the source data
     # itself (column body), or those that depend on it (column header).
     class Data < Cell
-      # The `Coords` `struct` inherits from the `Cell::Data` class and is
-      # essentially intended to enable conditional formatting or styling.  It
-      # is managed internally, but its attributes (`body_value`, `row_index`,
-      # `column_index`), which define the current source data element, are used by
-      # the `Cell::Data::Formatter` and `Cell:Data::Styler` procs, to be
-      # defined by the user.
+      # The `Coords` struct is essentially intended to enable conditional
+      # formatting or styling.  It is managed internally, but its attributes
+      # (*body_value*, *row_index*, *column_index*), which define the related
+      # source data element, are used by the `Cell::Data::Formatter` and
+      # `Cell:Data::Styler` user-defined procs.
       struct Coords
-        # Returns the raw value of the current `Cell::Data`
+        # Returns the raw value of the current cell
         getter body_value
 
         # Returns the index of the row (0..n)
@@ -433,25 +426,33 @@ module Tablo
         # Returns the index of the column (0..n)
         getter column_index
 
-        # Constructor with 3 mandatory parameters.
+        # Creates a Coords struct
+        #
+        # _Mandatory (named) parameters_:
+        #
+        # - *body_value*: raw value of the body cell
+        #
+        # - *row_index*: The position in the Enumerable source (0..n)
+        #
+        # - *column_index*: The position in the column registry (0..n)
         def initialize(@body_value : CellType, @row_index : Int32, @column_index : Int32)
         end
       end
 
       # The purpose of the formatter is to transform the raw value of a cell
-      # into a formatted character string <br /> (A default formatter (`to_s`) is applied if
-      # none is defined by the user).
+      # into a formatted character string <br />
+      # (`Tablo::DEFAULT_FORMATTER` is applied if none is defined by the user).
       #
-      # For cells of type `Cell::Data`, the Formatter proc can take 4 different
+      # For cells of type `Tablo::Cell::Data`, the Formatter Proc can take 4 different
       # forms, as shown below by their commonly used parameter names  and types: <br />
-      # - 1st form : (value : `CellType`, coords : `Cell::Data::Coords`, column_width : `Int32`)
-      # - 2nd form : (value : `CellType`, coords : `Cell::Data::Coords`)
-      # - 3rd form : (value : `CellType`, column_width : `Int32`)
-      # - 4th form : (value : `CellType`) <br />
+      # - 1st form : (*value* : `Tablo::CellType`, *coords* : `Tablo::Cell::Data::Coords`, *column_width* : `Int32`)
+      # - 2nd form : (*value* : `Tablo::CellType`, *coords* : `Tablo::Cell::Data::Coords`)
+      # - 3rd form : (*value* : `Tablo::CellType`, *column_width* : `Int32`)
+      # - 4th form : (*value* : `Tablo::CellType`) <br />
       #   Default formatter, defined by`Tablo::Config::Defaults.body_formatter` (or
       #                   `Tablo::Config::Defaults.header_formatter`)
       #
-      # and the return type is `String` for all of them.
+      # and the return type is String for all of them.
       #
       # These different forms can be used for conditional formatting.
       #
@@ -539,16 +540,16 @@ module Tablo
       # these effects are limited to the use of color and/or character
       # modes (bold, italic, etc.).
       #
-      # For cells of type Cell::Data (header and body), the styler Proc can take
+      # For cells of type  `Tablo::Cell::Data` (header and body), the styler Proc can take
       # 5 different forms, as shown below by their commonly used parameter names and types:
       #
-      # - 1st form : (value : `Tablo::CellType`, coords : `Tablo::Cell::Data::Coords`,
-      #              content : `String`, line_index : `Int32`)
-      # - 2nd form : (value : `Tablo::CellType`, coords : `Tablo::Cell::Data::Coords`,
-      #              content : `String`)
-      # - 3rd form : (value : `Tablo::CellType`, content : `String`)
-      # - 4th form : (content : `String`, line_index : `Int32`)
-      # - 5th form : (content : `String`) <br />
+      # - 1st form : (*value* : `Tablo::CellType`, *coords* : `Tablo::Cell::Data::Coords`,
+      #              *content* : `String`, *line_index* : `Int32`)
+      # - 2nd form : (*value* : `Tablo::CellType`, *coords* : `Tablo::Cell::Data::Coords`,
+      #              *content* : `String`)
+      # - 3rd form : (*value* : `Tablo::CellType`, *content* : `String`)
+      # - 4th form : (*content* : `String`, *line_index* : `Int32`)
+      # - 5th form : (*content* : `String`) <br />
       #   Default styler, defined by`Tablo::Config::Defaults.body_styler` (or
       #                   `Tablo::Config::Defaults.header_styler`)
       #
@@ -564,10 +565,8 @@ module Tablo
       # ```
       # require "tablo"
       # require "colorize"
-      #
       # table = Tablo::Table.new(["A", "B", "C"],
-      #   title: Tablo::Heading.new("My Title",
-      #     frame: Tablo::Frame.new),
+      #   title: Tablo::Heading.new("My Title", framed: true),
       #   body_styler: ->(_value : Tablo::CellType, coords : Tablo::Cell::Data::Coords, content : String, line_index : Int32) {
       #     if line_index > 0
       #       content.colorize(:magenta).mode(:bold).to_s
@@ -584,7 +583,6 @@ module Tablo
       #   t.add_column("itself x 2", &.*(2))
       #   t.add_column("itself x 3", &.*(3).chars.join("\n"))
       # end
-      #
       # puts table
       # ```
       #
@@ -595,10 +593,8 @@ module Tablo
       # ```
       # require "tablo"
       # require "colorize"
-      #
       # table = Tablo::Table.new([3.14, 2.78, 3.5],
-      #   title: Tablo::Heading.new("My Title",
-      #     frame: Tablo::Frame.new),
+      #   title: Tablo::Heading.new("My Title", framed: true),
       #   body_styler: ->(value : Tablo::CellType, content : String) {
       #     if value.is_a?(Float64)
       #       if value.as(Float64) < 0.0
@@ -615,6 +611,7 @@ module Tablo
       #   t.add_column("itself x 2", &.*(2).*(rand(10) < 5 ? -1 : 1))
       #   t.add_column("itself x 3", &.*(3).*(rand(10) < 5 ? -1 : 1))
       # end
+      # puts table
       # ```
       #
       # <img src="../../../assets/images/api_cell_data_styler_3.svg" width="400">
