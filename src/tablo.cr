@@ -11,7 +11,7 @@ module Tablo
   # - *NoDot*: Decimal part of field (including dot) is blank if all decimals are zeroes
   # - *DotOnly*: Decimal part of field is blank if all decimals are zeroes
   # - *DotZero*: Decimal part of field is blank if all decimals are zeroes, except first (.0)
-  enum DotAlign
+  enum AlignOnDot
     Blank
     NoDot
     DotOnly
@@ -19,14 +19,14 @@ module Tablo
   end
 
   # Method to align floats on decimal point, where non significant zeroes are
-  # replaced by spaces (see `DotAlign`)
+  # replaced by spaces (see `AlignOnDot`)
   #
   # Mandatory parameters are:
   # - *value*: The number to align on decimal point
   # - *dec*: Number of decimal places (can be negative: see valid interval in
   # `Config::Controls.rounding_range`)
   # - *mode*: Defines format type for decimal point alignment
-  #    (defaults to `DotAlign::DotZero`)
+  #    (defaults to `AlignOnDot::DotZero`)
   #
   # Example:
   # ```
@@ -50,7 +50,7 @@ module Tablo
   #     |       42.21  |
   #     |        7.9   |
   #     +--------------+
-  def self.align_on_dot(value : Float, dec : Int32, mode : DotAlign = DotAlign::DotZero)
+  def self.align_on_dot(value : Float, dec : Int32, mode : AlignOnDot = AlignOnDot::DotZero)
     unless dec.in?(Config::Controls.rounding_range)
       raise Error::InvalidValue.new "align_on_dot: number of decimals must be in range " +
                                     "(#{Config::Controls.rounding_range})"
@@ -60,12 +60,12 @@ module Tablo
     ipart, fpart = snum.split(".")
     if fpart == "0"
       case mode
-      in DotAlign::DotZero
+      in AlignOnDot::DotZero
         ipart + ".0" + " " * (dec - 1)
-      in DotAlign::DotOnly
+      in AlignOnDot::DotOnly
         ipart + "." + " " * dec
-      in DotAlign::NoDot, DotAlign::Blank
-        if value.zero? && mode == DotAlign::Blank
+      in AlignOnDot::NoDot, AlignOnDot::Blank
+        if value.zero? && mode == AlignOnDot::Blank
           " " * (dec + 1)
         else
           ipart + " " * (dec + 1)
