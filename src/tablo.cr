@@ -3,7 +3,7 @@ require "./table"
 module Tablo
   VERSION = "0.90.0"
 
-  # Used by `Tablo.dot_align` class method for floats formatting, where
+  # Used by `Tablo.align_on_dot` class method for floats formatting, where
   # all trailing decimal zeroes are replaced by spaces. <br />
   #
   # Special formatting is further applied depending on enum values:
@@ -36,7 +36,7 @@ module Tablo
   # table = Tablo::Table.new(ar) do |t|
   #   t.add_column("Floats",
   #     body_formatter: ->(value : Tablo::CellType) {
-  #       Tablo.dot_align(value, 3, :dot_zero)
+  #       Tablo.align_on_dot(value, 3, :dot_zero)
   #     }, &.itself)
   # end
   # puts table
@@ -50,9 +50,9 @@ module Tablo
   #     |       42.21  |
   #     |        7.9   |
   #     +--------------+
-  def self.dot_align(value : Float, dec : Int32, mode : DotAlign = DotAlign::DotZero)
+  def self.align_on_dot(value : Float, dec : Int32, mode : DotAlign = DotAlign::DotZero)
     unless dec.in?(Config::Controls.rounding_range)
-      raise Error::InvalidValue.new "dot_align: number of decimals must be in range " +
+      raise Error::InvalidValue.new "align_on_dot: number of decimals must be in range " +
                                     "(#{Config::Controls.rounding_range})"
     end
     snum = value.round(dec).to_s

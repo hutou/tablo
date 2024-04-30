@@ -719,10 +719,10 @@ require "tablo"
 table = Tablo::Table.new([-30.00001, -3.14159, 0.0, 1.470001, 5.78707, 10.0],
   body_formatter: ->(value : Tablo::CellType, coords : Tablo::Cell::Data::Coords) {
     case coords.column_index
-    when 1 then Tablo::Util.dot_align(value.as(Float), 4, Tablo::Util::DotAlign::Empty)
-    when 2 then Tablo::Util.dot_align(value.as(Float), 4, Tablo::Util::DotAlign::Blank)
-    when 3 then Tablo::Util.dot_align(value.as(Float), 4, Tablo::Util::DotAlign::Dot)
-    when 4 then Tablo::Util.dot_align(value.as(Float), 4, Tablo::Util::DotAlign::DotZero)
+    when 1 then Tablo::Util.align_on_dot(value.as(Float), 4, Tablo::Util::DotAlign::Empty)
+    when 2 then Tablo::Util.align_on_dot(value.as(Float), 4, Tablo::Util::DotAlign::Blank)
+    when 3 then Tablo::Util.align_on_dot(value.as(Float), 4, Tablo::Util::DotAlign::Dot)
+    when 4 then Tablo::Util.align_on_dot(value.as(Float), 4, Tablo::Util::DotAlign::DotZero)
     else        value.as(Float).to_s
     end
   }) do |t|
@@ -752,7 +752,7 @@ Output:
 ```
 
 Incidentally, this last example displays all the formatting possibilities of
-the `Tablo::Util.dot_align` method.
+the `Tablo::Util.align_on_dot` method.
 
 Compared to the third form, form 4 also allows the use of the width value. +
 Its usefulness seems less obvious, however.

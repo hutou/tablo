@@ -360,7 +360,7 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
       table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Heading.new("Floating point align (blank)", framed: true)) do |t|
         t.add_column("itself", width: 15,
-          body_formatter: ->(c : Tablo::CellType) { Tablo.dot_align(c.as(Float64), 4, :blank) },
+          body_formatter: ->(c : Tablo::CellType) { Tablo.align_on_dot(c.as(Float64), 4, :blank) },
           &.itself)
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
@@ -385,7 +385,7 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
       table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Heading.new("Floating point align (dot_zero)", framed: true)) do |t|
         t.add_column("itself", width: 16,
-          body_formatter: ->(c : Tablo::CellType) { Tablo.dot_align(c.as(Float64), 4, :dot_zero) },
+          body_formatter: ->(c : Tablo::CellType) { Tablo.align_on_dot(c.as(Float64), 4, :dot_zero) },
           &.itself)
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
@@ -413,7 +413,7 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
       table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Heading.new("Body in color, nodot aligned", framed: true)) do |t|
         t.add_column("itself", width: 16,
-          body_formatter: ->(c : Tablo::CellType) { Tablo.dot_align(c.as(Float64), 4, :no_dot) },
+          body_formatter: ->(c : Tablo::CellType) { Tablo.align_on_dot(c.as(Float64), 4, :no_dot) },
           body_styler: ->(_c : Tablo::CellType, s : String) { s.colorize(:red).to_s },
           &.itself)
       end
@@ -455,7 +455,7 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
       table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Heading.new("Body in color, nodot aligned", framed: true)) do |t|
         t.add_column("itself", width: 16,
-          body_formatter: ->(c : Tablo::CellType) { Tablo.dot_align(c.as(Float64), 4, :no_dot) },
+          body_formatter: ->(c : Tablo::CellType) { Tablo.align_on_dot(c.as(Float64), 4, :no_dot) },
           body_styler: ->(c : Tablo::CellType, s : String) {
             if c.as(Float64) < 0.0
               s.colorize(:red).to_s
@@ -503,7 +503,7 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
       table = Tablo::Table.new(FloatSamples.new,
         title: Tablo::Heading.new("Body in color, dot aligned", framed: true)) do |t|
         t.add_column("itself", width: 16,
-          body_formatter: ->(c : Tablo::CellType) { Tablo.dot_align(c.as(Float64), 4, :dot_only) },
+          body_formatter: ->(c : Tablo::CellType) { Tablo.align_on_dot(c.as(Float64), 4, :dot_only) },
           body_styler: ->(_c : Tablo::CellType, r : Tablo::Cell::Data::Coords, s : String) {
             if r.row_index % 2 == 0
               s.colorize(:blue).to_s
@@ -558,10 +558,10 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
           end
         }) do |t|
         t.add_column("itself", width: 16,
-          body_formatter: ->(c : Tablo::CellType) { Tablo.dot_align(c.as(Float64), 4, :dot_only) },
+          body_formatter: ->(c : Tablo::CellType) { Tablo.align_on_dot(c.as(Float64), 4, :dot_only) },
           &.itself)
         t.add_column("Double", width: 16,
-          body_formatter: ->(c : Tablo::CellType) { Tablo.dot_align(c.as(Float64)*2, 4, :dot_only) },
+          body_formatter: ->(c : Tablo::CellType) { Tablo.align_on_dot(c.as(Float64)*2, 4, :dot_only) },
           &.itself)
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
@@ -611,10 +611,10 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
           end
         }) do |t|
         t.add_column("itself", width: 16,
-          body_formatter: ->(c : Tablo::CellType) { Tablo.dot_align(c.as(Float64), 4, :dot_only) },
+          body_formatter: ->(c : Tablo::CellType) { Tablo.align_on_dot(c.as(Float64), 4, :dot_only) },
           &.itself)
         t.add_column("Double", width: 16,
-          body_formatter: ->(c : Tablo::CellType) { Tablo.dot_align(c.as(Float64)*2, 4, :dot_only) },
+          body_formatter: ->(c : Tablo::CellType) { Tablo.align_on_dot(c.as(Float64)*2, 4, :dot_only) },
           &.itself)
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
@@ -668,7 +668,7 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
           end
         }) do |t|
         t.add_column("itself", width: 16,
-          body_formatter: ->(c : Tablo::CellType) { Tablo.dot_align(c.as(Float64), 4, :dot_only) },
+          body_formatter: ->(c : Tablo::CellType) { Tablo.align_on_dot(c.as(Float64), 4, :dot_only) },
           &.itself)
         t.add_column("Double", width: 6,
           body_formatter: ->(c : Tablo::CellType) { "%.2f" % [c.as(Float64) * 2] },
