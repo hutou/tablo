@@ -299,19 +299,19 @@
   </h2>
 
   <p>The purpose of the formatter is to transform the raw value of a cell
-into a formatted character string <br /> (A default formatter (<code>to_s</code>) is applied if
-none is defined by the user).</p>
-<p>For cells of type <code>Cell::Data</code>, the Formatter proc can take 4 different
+into a formatted character string <br />
+(<code><a href="../../../Tablo.html#DEFAULT_FORMATTER">Tablo::DEFAULT_FORMATTER</a></code> is applied if none is defined by the user).</p>
+<p>For cells of type <code><a href="../../../Tablo/Cell/Data.html">Tablo::Cell::Data</a></code>, the Formatter Proc can take 4 different
 forms, as shown below by their commonly used parameter names  and types: <br /></p>
 <ul>
-<li>1st form : (value : <code>CellType</code>, coords : <code>Cell::Data::Coords</code>, column_width : <code>Int32</code>)</li>
-<li>2nd form : (value : <code>CellType</code>, coords : <code>Cell::Data::Coords</code>)</li>
-<li>3rd form : (value : <code>CellType</code>, column_width : <code>Int32</code>)</li>
-<li>4th form : (value : <code>CellType</code>) <br />
+<li>1st form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, <em>coords</em> : <code><a href="../../../Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>, <em>column_width</em> : <code>Int32</code>)</li>
+<li>2nd form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, <em>coords</em> : <code><a href="../../../Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>)</li>
+<li>3rd form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, <em>column_width</em> : <code>Int32</code>)</li>
+<li>4th form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>) <br />
 Default formatter, defined by<code><a href="../../../Tablo/Config/Defaults.html#body_formatter%3ACell%3A%3AData%3A%3AFormatter-class-method">Tablo::Config::Defaults.body_formatter</a></code> (or
 <code><a href="../../../Tablo/Config/Defaults.html#header_formatter%3ACell%3A%3AData%3A%3AFormatter-class-method">Tablo::Config::Defaults.header_formatter</a></code>)</li>
 </ul>
-<p>and the return type is <code>String</code> for all of them.</p>
+<p>and the return type is String for all of them.</p>
 <p>These different forms can be used for conditional formatting.</p>
 <p>For example, to alternate case after each row, the 2nd form
 can be used :</p>
@@ -409,7 +409,7 @@ puts table</code></pre>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f01445560a53c587d8af7345bf02efd71ec57ff3/src/cell.cr#L532" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/65a91b36384113019f2bbb5719151dae7c8b68b4/src/cell.cr#L533" target="_blank">
         cell.cr
       </a>
     

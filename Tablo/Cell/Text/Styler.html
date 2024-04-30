@@ -302,25 +302,24 @@
 a previously formatted character string. For a terminal without
 graphic capabilities, these effects are limited to the use of color
 and/or character modes (bold, italic, etc.).</p>
-<p>For cells of type Cell::Text (heading and group), the styler Proc
+<p>For cells of type <code><a href="../../../Tablo/Cell/Text.html">Tablo::Cell::Text</a></code> (heading and group), the styler Proc
 can take 2 different forms, as shown below by their commonly used
 parameter names and types:</p>
 <ul>
-<li>1st form : (content : <code>String</code>, line : <code>Int32</code>)</li>
-<li>2nd form : (content : <code>String</code>) <br />
+<li>1st form : (<em>content</em> : <code>String</code>, <em>line</em> : <code>Int32</code>)</li>
+<li>2nd form : (<em>content</em> : <code>String</code>) <br />
 Default styler, defined by<code><a href="../../../Tablo/Config/Defaults.html#heading_styler%3ACell%3A%3AText%3A%3AStyler-class-method">Tablo::Config::Defaults.heading_styler</a></code> (or
 <code><a href="../../../Tablo/Config/Defaults.html#group_styler%3ACell%3A%3AText%3A%3AStyler-class-method">Tablo::Config::Defaults.group_styler</a></code>)</li>
 </ul>
 <p>and the return type is String for both.</p>
-<p><code>content</code> is the formatted cell value, after the formatter has been applied.<br />
-<code>line</code> designates the line number in a (multi-line) cell (0..n).</p>
+<p><em>content</em> is the formatted cell value, after the formatter has been applied.<br />
+<em>line</em> designates the line number in a (multi-line) cell (0..n).</p>
 <p>The first form allows easy conditional styling. For example, to colorize
 differently each line of multiline cell:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
-  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My\nMultiline\nTitle&quot;</span>,
-    frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Frame</span>.new,
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My\nMultiline\nTitle&quot;</span>, framed: <span class="n">true</span>,
     styler: <span class="o">-&gt;</span>(content : <span class="t">String</span>, line : <span class="t">Int32</span>) {
       <span class="k">case</span> line
       <span class="k">when</span> <span class="n">0</span> <span class="k">then</span> content.colorize(<span class="n">:blue</span>).to_s
@@ -337,11 +336,9 @@ puts table</code></pre>
 <p>or, more simply, to style the whole cell, we use the 2nd form:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
-
 <span class="t">COLORS</span> <span class="o">=</span> [<span class="n">:blue</span>, <span class="n">:red</span>, <span class="n">:green</span>, <span class="n">:magenta</span>, <span class="n">:cyan</span>]
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
-  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My MultiColor Title&quot;</span>,
-    frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Frame</span>.new,
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My MultiColor Title&quot;</span>, framed: <span class="n">true</span>,
     styler: <span class="o">-&gt;</span>(content : <span class="t">String</span>) { content.chars.map { <span class="o">|</span>c<span class="o">|</span>
       c.colorize.fore(<span class="t">COLORS</span>[rand(<span class="n">5</span>)]).mode(<span class="n">:bold</span>).to_s
     }.join })) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
@@ -349,7 +346,6 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
   t.add_column(<span class="s">&quot;itself x 2&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">2</span>))
   t.add_column(<span class="s">&quot;itself x 3&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">3</span>))
 <span class="k">end</span>
-
 puts table</code></pre>
 <img src="../../../assets/images/api_cell_text_styler_2.svg" width="400">
 
@@ -386,7 +382,7 @@ puts table</code></pre>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f01445560a53c587d8af7345bf02efd71ec57ff3/src/cell.cr#L364" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/65a91b36384113019f2bbb5719151dae7c8b68b4/src/cell.cr#L358" target="_blank">
         cell.cr
       </a>
     

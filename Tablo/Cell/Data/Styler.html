@@ -302,16 +302,16 @@
 formatted character string. For a terminal without graphic capabilities,
 these effects are limited to the use of color and/or character
 modes (bold, italic, etc.).</p>
-<p>For cells of type Cell::Data (header and body), the styler Proc can take
+<p>For cells of type  <code><a href="../../../Tablo/Cell/Data.html">Tablo::Cell::Data</a></code> (header and body), the styler Proc can take
 5 different forms, as shown below by their commonly used parameter names and types:</p>
 <ul>
-<li>1st form : (value : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, coords : <code><a href="../../../Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>,
-content : <code>String</code>, line_index : <code>Int32</code>)</li>
-<li>2nd form : (value : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, coords : <code><a href="../../../Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>,
-content : <code>String</code>)</li>
-<li>3rd form : (value : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, content : <code>String</code>)</li>
-<li>4th form : (content : <code>String</code>, line_index : <code>Int32</code>)</li>
-<li>5th form : (content : <code>String</code>) <br />
+<li>1st form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, <em>coords</em> : <code><a href="../../../Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>,
+<em>content</em> : <code>String</code>, <em>line_index</em> : <code>Int32</code>)</li>
+<li>2nd form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, <em>coords</em> : <code><a href="../../../Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>,
+<em>content</em> : <code>String</code>)</li>
+<li>3rd form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, <em>content</em> : <code>String</code>)</li>
+<li>4th form : (<em>content</em> : <code>String</code>, <em>line_index</em> : <code>Int32</code>)</li>
+<li>5th form : (<em>content</em> : <code>String</code>) <br />
 Default styler, defined by<code><a href="../../../Tablo/Config/Defaults.html#body_styler%3ACell%3A%3AData%3A%3AStyler-class-method">Tablo::Config::Defaults.body_styler</a></code> (or
 <code><a href="../../../Tablo/Config/Defaults.html#header_styler%3ACell%3A%3AData%3A%3AStyler-class-method">Tablo::Config::Defaults.header_styler</a></code>)</li>
 </ul>
@@ -325,10 +325,8 @@ has been applied) <br /></li>
 <p>In a somewhat contrived example, we could write, using the 1st form:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
-
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="s">&quot;A&quot;</span>, <span class="s">&quot;B&quot;</span>, <span class="s">&quot;C&quot;</span>],
-  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My Title&quot;</span>,
-    frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Frame</span>.new),
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My Title&quot;</span>, framed: <span class="n">true</span>),
   body_styler: <span class="o">-&gt;</span>(_value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, coords : <span class="t">Tablo</span><span class="t">::</span><span class="t">Cell</span><span class="t">::</span><span class="t">Data</span><span class="t">::</span><span class="t">Coords</span>, content : <span class="t">String</span>, line_index : <span class="t">Int32</span>) {
     <span class="k">if</span> line_index <span class="o">&gt;</span> <span class="n">0</span>
       content.colorize(<span class="n">:magenta</span>).mode(<span class="n">:bold</span>).to_s
@@ -345,17 +343,14 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
   t.add_column(<span class="s">&quot;itself x 2&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">2</span>))
   t.add_column(<span class="s">&quot;itself x 3&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">3</span>).chars.join(<span class="s">&quot;\n&quot;</span>))
 <span class="k">end</span>
-
 puts table</code></pre>
 <img src="../../../assets/images/api_cell_data_styler_1.svg" width="400">
 <p>Or, more simply by using the 3rd form, to better differentiate between negative
 and positive values:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
-
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">3.14</span>, <span class="n">2.78</span>, <span class="n">3.5</span>],
-  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My Title&quot;</span>,
-    frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Frame</span>.new),
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My Title&quot;</span>, framed: <span class="n">true</span>),
   body_styler: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, content : <span class="t">String</span>) {
     <span class="k">if</span> value.<span class="k">is_a?</span>(<span class="t">Float64</span>)
       <span class="k">if</span> value.<span class="k">as</span>(<span class="t">Float64</span>) <span class="o">&lt;</span> <span class="n">0.0</span>
@@ -371,7 +366,8 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
   t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
   t.add_column(<span class="s">&quot;itself x 2&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">2</span>).<span class="o">*</span>(rand(<span class="n">10</span>) <span class="o">&lt;</span> <span class="n">5</span> ? <span class="n">-1</span> : <span class="n">1</span>))
   t.add_column(<span class="s">&quot;itself x 3&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">3</span>).<span class="o">*</span>(rand(<span class="n">10</span>) <span class="o">&lt;</span> <span class="n">5</span> ? <span class="n">-1</span> : <span class="n">1</span>))
-<span class="k">end</span></code></pre>
+<span class="k">end</span>
+puts table</code></pre>
 <img src="../../../assets/images/api_cell_data_styler_3.svg" width="400">
 
 
@@ -407,7 +403,7 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f01445560a53c587d8af7345bf02efd71ec57ff3/src/cell.cr#L621" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/65a91b36384113019f2bbb5719151dae7c8b68b4/src/cell.cr#L618" target="_blank">
         cell.cr
       </a>
     

@@ -299,18 +299,18 @@
   </h2>
 
   <p>The purpose of the formatter is to transform the raw value of a cell
-into a formatted character string <br /> (A default formatter (<code>to_s</code>) is applied if
-none is defined by the user).</p>
-<p>For cells of type <code>Cell::Text</code> (headings and group), the formatter Proc can
+into a formatted character string <br />
+(<code><a href="../../../Tablo.html#DEFAULT_FORMATTER">Tablo::DEFAULT_FORMATTER</a></code> is applied if none is defined by the user).</p>
+<p>For cells of type <code><a href="../../../Tablo/Cell/Text.html">Tablo::Cell::Text</a></code> (headings and group), the formatter Proc can
 take 2 different forms, as shown below by their commonly used parameter
 names  and types: <br /></p>
 <ul>
-<li>1st form : (value : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, column_width : <code>Int32</code>)</li>
-<li>2nd form : (value : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>) <br />
+<li>1st form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, <em>column_width</em> : <code>Int32</code>)</li>
+<li>2nd form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>) <br />
 Default formatter, defined by<code><a href="../../../Tablo/Config/Defaults.html#heading_formatter%3ACell%3A%3AText%3A%3AFormatter-class-method">Tablo::Config::Defaults.heading_formatter</a></code> (or
 <code><a href="../../../Tablo/Config/Defaults.html#group_formatter%3ACell%3A%3AText%3A%3AFormatter-class-method">Tablo::Config::Defaults.group_formatter</a></code>)</li>
 </ul>
-<p>and the return type is <code>String</code> for both.</p>
+<p>and the return type is String for both.</p>
 <p>Any processing can be done on cell value. For example, in a group, if the
 runtime cell value contains a <code>Time</code> type, we could format as :</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
@@ -340,10 +340,10 @@ puts table</code></pre>
 <p>Another example, to stretch contents of a cell to its maximum width:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
-  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My Title&quot;</span>,
-    frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Frame</span>.new, formatter: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, column_width : <span class="t">Int32</span>) {
-    <span class="t">Tablo</span><span class="t">::</span><span class="t">Util</span>.stretch(value.<span class="k">as</span>(<span class="t">String</span>), width: column_width)
-  })) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My Title&quot;</span>, framed: <span class="n">true</span>,
+    formatter: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, column_width : <span class="t">Int32</span>) {
+      <span class="t">Tablo</span>.stretch(value.<span class="k">as</span>(<span class="t">String</span>), target_width: column_width)
+    })) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
   t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
   t.add_column(<span class="s">&quot;itself x 2&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">2</span>))
   t.add_column(<span class="s">&quot;itself x 3&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">3</span>))
@@ -392,7 +392,7 @@ puts table</code></pre>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f01445560a53c587d8af7345bf02efd71ec57ff3/src/cell.cr#L293" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/65a91b36384113019f2bbb5719151dae7c8b68b4/src/cell.cr#L291" target="_blank">
         cell.cr
       </a>
     

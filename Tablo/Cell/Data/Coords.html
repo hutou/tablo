@@ -300,12 +300,11 @@
     Overview
   </h2>
 
-  <p>The <code><a href="../../../Tablo/Cell/Data/Coords.html">Coords</a></code> <code>struct</code> inherits from the <code><a href="../../../Tablo/Cell/Data.html">Cell::Data</a></code> class and is
-essentially intended to enable conditional formatting or styling.  It
-is managed internally, but its attributes (<code><a href="../../../Tablo/Cell/Data/Coords.html#body_value%3ATablo%3A%3ACellType-instance-method">#body_value</a></code>, <code><a href="../../../Tablo/Cell/Data/Coords.html#row_index%3AInt32-instance-method">#row_index</a></code>,
-<code><a href="../../../Tablo/Cell/Data/Coords.html#column_index%3AInt32-instance-method">#column_index</a></code>), which define the current source data element, are used by
-the <code><a href="../../../Tablo/Cell/Data/Formatter.html">Cell::Data::Formatter</a></code> and <code><a href="../../../Tablo/Cell.html">Cell</a>:<a href="../../../Tablo/Cell/Data/Styler.html">Data::Styler</a></code> procs, to be
-defined by the user.</p>
+  <p>The <code><a href="../../../Tablo/Cell/Data/Coords.html">Coords</a></code> struct is essentially intended to enable conditional
+formatting or styling.  It is managed internally, but its attributes
+(<em>body_value</em>, <em>row_index</em>, <em>column_index</em>), which define the related
+source data element, are used by the <code><a href="../../../Tablo/Cell/Data/Formatter.html">Cell::Data::Formatter</a></code> and
+<code><a href="../../../Tablo/Cell.html">Cell</a>:<a href="../../../Tablo/Cell/Data/Styler.html">Data::Styler</a></code> user-defined procs.</p>
 
 
 
@@ -330,7 +329,7 @@ defined by the user.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f01445560a53c587d8af7345bf02efd71ec57ff3/src/cell.cr#L426" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/65a91b36384113019f2bbb5719151dae7c8b68b4/src/cell.cr#L419" target="_blank">
         cell.cr
       </a>
     
@@ -354,7 +353,7 @@ defined by the user.</p>
       <li class="entry-summary">
         <a href="#new%28body_value%3ACellType%2Crow_index%3AInt32%2Ccolumn_index%3AInt32%29-class-method" class="signature"><strong>.new</strong>(body_value : CellType, row_index : Int32, column_index : Int32)</a>
         
-          <div class="summary"><p>Constructor with 3 mandatory parameters.</p></div>
+          <div class="summary"><p>Creates a Coords struct</p></div>
         
       </li>
     
@@ -379,7 +378,7 @@ defined by the user.</p>
       <li class="entry-summary">
         <a href="#body_value%3ATablo%3A%3ACellType-instance-method" class="signature"><strong>#body_value</strong> : Tablo::CellType</a>
         
-          <div class="summary"><p>Returns the raw value of the current <code><a href="../../../Tablo/Cell/Data.html">Cell::Data</a></code></p></div>
+          <div class="summary"><p>Returns the raw value of the current cell</p></div>
         
       </li>
     
@@ -464,13 +463,25 @@ defined by the user.</p>
       
         <div class="doc">
           
-          <p>Constructor with 3 mandatory parameters.</p>
+          <p>Creates a Coords struct</p>
+<p><em>Mandatory (named) parameters</em>:</p>
+<ul>
+<li>
+<p><em>body_value</em>: raw value of the body cell</p>
+</li>
+<li>
+<p><em>row_index</em>: The position in the Enumerable source (0..n)</p>
+</li>
+<li>
+<p><em>column_index</em>: The position in the column registry (0..n)</p>
+</li>
+</ul>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f01445560a53c587d8af7345bf02efd71ec57ff3/src/cell.cr#L437" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/65a91b36384113019f2bbb5719151dae7c8b68b4/src/cell.cr#L438" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -501,13 +512,13 @@ defined by the user.</p>
       
         <div class="doc">
           
-          <p>Returns the raw value of the current <code><a href="../../../Tablo/Cell/Data.html">Cell::Data</a></code></p>
+          <p>Returns the raw value of the current cell</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f01445560a53c587d8af7345bf02efd71ec57ff3/src/cell.cr#L428" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/65a91b36384113019f2bbb5719151dae7c8b68b4/src/cell.cr#L421" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -528,7 +539,7 @@ defined by the user.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f01445560a53c587d8af7345bf02efd71ec57ff3/src/cell.cr#L434" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/65a91b36384113019f2bbb5719151dae7c8b68b4/src/cell.cr#L427" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -549,7 +560,7 @@ defined by the user.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f01445560a53c587d8af7345bf02efd71ec57ff3/src/cell.cr#L431" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/65a91b36384113019f2bbb5719151dae7c8b68b4/src/cell.cr#L424" target="_blank">View source</a>]
         
       </div>
     </div>
