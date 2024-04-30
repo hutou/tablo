@@ -1,5 +1,5 @@
 # require "./types"
-require "./heading"
+# require "./heading"
 
 module Tablo
   # :nodoc:

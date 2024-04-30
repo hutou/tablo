@@ -1,12 +1,7 @@
-require "./tablo"
-require "./util"
-require "./types"
-require "./config"
-require "./border"
-require "./column"
 require "./row"
-require "./rowgroup"
-require "./heading"
+require "./column"
+require "./cell"
+require "./border"
 require "./summary"
 
 module Tablo

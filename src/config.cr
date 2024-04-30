@@ -1,6 +1,4 @@
-require "./types"
 require "./heading"
-require "./border"
 
 module Tablo
   # The `Config` module define global getters and setters, to be used as default values

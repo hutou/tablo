@@ -1,4 +1,4 @@
-require "./types"
+# require "./types"
 
 module Tablo
   # In Tablo, the Cell class and its subclasses, along with the Table class

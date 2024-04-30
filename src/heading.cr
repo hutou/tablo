@@ -1,6 +1,3 @@
-require "./types"
-require "./*"
-
 module Tablo
   # The purpose of the Heading struct is to manage page titles, subtitles and
   # footers. It will therefore be used to initialize the corresponding

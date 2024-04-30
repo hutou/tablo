@@ -6,11 +6,11 @@ module Tablo
   # Used by `Tablo.dot_align` class method for floats formatting, where
   # all trailing decimal zeroes are replaced by spaces. <br />
   #
-  # special formatting is further applied depending on enum values:
-  # - `Blank`   = whole field is blank if value == 0
-  # - `NoDot`   = decimal part of field (including dot) is blank if all decimals are zeroes
-  # - `DotOnly` = decimal part of field is blank if all decimals are zeroes
-  # - `DotZero` = decimal part of field is blank if all decimals are zeroes, except first (.0)
+  # Special formatting is further applied depending on enum values:
+  # - *Blank*: Whole field is blank if value == 0
+  # - *NoDot*: Decimal part of field (including dot) is blank if all decimals are zeroes
+  # - *DotOnly*: Decimal part of field is blank if all decimals are zeroes
+  # - *DotZero*: Decimal part of field is blank if all decimals are zeroes, except first (.0)
   enum DotAlign
     Blank
     NoDot
@@ -22,12 +22,13 @@ module Tablo
   # replaced by spaces (see `DotAlign`)
   #
   # Mandatory parameters are:
-  # - `value` : type is a Float`
-  # - `dec` : type is Int32 : the number of decimals i<br />
-  #   (Valid range set in `Config::Controls.rounding_range`)
-  # - `mode` : a formatting enum DotAlign value (defaults to DotZero)
+  # - *value*: The number to align on decimal point
+  # - *dec*: Number of decimal places (can be negative: see valid interval in
+  # `Config::Controls.rounding_range`)
+  # - *mode*: Defines format type for decimal point alignment
+  #    (defaults to `DotAlign::DotZero`)
   #
-  # Example with default `DotAlign::DotZero`
+  # Example:
   # ```
   # require "tablo"
   #
@@ -75,26 +76,45 @@ module Tablo
     end
   end
 
-  # TODO Doc to be completed !!!
+  # The `.stretch` method is designed to optimize the filling of a text zone,
+  # possibly multi-line, by inserting one or more filler characters (by
+  # default space) between each character of the initial string.
   #
-  # The stretch method is designed to optimize the filling of a text area,
-  # possibly multi-line, by inserting one or more separators (by default
-  # a space) between each character of the initial string.
+  # _Mandatory parameters:_
   #
-  # If the constraints cannot be met, return the text unchanged.
+  # - *text*: The content of the cell (possibly multiline) to be stretched
+  # - *target_width*: Width of column (or group or header cell)
+  #
+  # _Optional named parameters, with default values_
+  #
+  # - *prefix*: String inserted in front of stretched text, left-aligned <br/>
+  #   The area between braces can be reduced at will, to maximize stretching.
+  #   See example below.
+  # - *suffix*: Same as prefix, but right-aligned
+  # - *alignment*: Justification of stretched text, excluding prefix and suffix
+  # - *fill_char*: Fill character for stretched text
+  # - *max_fill*: Can be set to control the number of padding characters
+  # (*fill_char*) between each character in the stretched string
+  #
+  # If constraints cannot be met (for example, prefix or suffix margins too large),
+  # returns text unchanged.
+  #
   # ```
   # require "tablo"
   # table = Tablo::Table.new([1, 2, 3]) do |t|
   #   t.add_column("integer", &.itself)
   #   t.add_column("Float", &.**(0.5).round(2))
   #   t.add_group("Numbers", formatter: ->(value : Tablo::CellType, width : Int32) {
-  #     Tablo.stretch(value.as(String), width, fill_char: '.', max_fill: 1,
+  #     Tablo.stretch(value.as(`String`), width, fill_char: '.', max_fill: 1,
   #       prefix: "<--{------} ", suffix: " {------}-->")
   #   })
   # end
   # puts table
   # ```
-  # In this exmaple, ....
+  # In this example, we can see that the variable areas of the prefix and
+  # suffix have been reduced to maximize the stretch, which is nevertheless
+  # limited by the *max_fill* parameter to one character.
+  #
   # ```
   # +-----------------------------+
   # | <----- N.u.m.b.e.r.s -----> |
@@ -108,7 +128,7 @@ module Tablo
   # ```
   def self.stretch(text : String, target_width : Int32,
                    prefix : String = "", suffix : String = "",
-                   justification : Justify = Justify::Center,
+                   text_alignment : Justify = Justify::Center,
                    fill_char : Char = ' ',
                    max_fill : Int32 = Int32::MAX) : String
     stretched_text = [] of String
@@ -173,7 +193,7 @@ module Tablo
     text.each_line do |line|
       line = line.strip
       central_part = line.chars.join(fill_char.to_s * spaces_between_chars)
-      central_part_justified = case justification
+      central_part_justified = case text_alignment
                                when Justify::Left
                                  central_part.ljust(target_width - margins_size)
                                when Justify::Right

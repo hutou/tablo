@@ -1,6 +1,3 @@
-require "./types"
-require "./table"
-
 module Tablo
   # The purpose of the Summary class is to calculate and format aggregated
   # source data in a dedicated table, closely linked to the main table.

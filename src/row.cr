@@ -1,4 +1,5 @@
 require "./types"
+require "./rowgroup"
 
 module Tablo
   # :nodoc:

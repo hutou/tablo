@@ -1,6 +1,3 @@
-require "./types"
-require "./cell"
-
 module Tablo
   # The Column class is used internally by the Tablo library and offers no
   # public interface to its attributes and methods.

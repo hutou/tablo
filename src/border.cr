@@ -1,5 +1,5 @@
-require "./types"
 require "./config"
+require "./util"
 
 module Tablo
   # The Border class enhances the layout of a data table by separating rows

@@ -1,7 +1,6 @@
 require "spec"
-
-require "../src/tablo"
 require "debug"
+require "tablo"
 
 class FloatSamples
   include Enumerable(Float64)
