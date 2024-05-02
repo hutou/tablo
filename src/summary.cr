@@ -140,7 +140,7 @@ module Tablo
     # table.pack
     # table.add_summary(invoice_summary_definition,
     #   title: Tablo::Heading.new("Summary", framed: true))
-    # table.summary.pack
+    # table.summary.as(Tablo::Table).pack
     # puts table
     # puts table.summary
     # ```

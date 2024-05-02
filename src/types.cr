@@ -78,7 +78,7 @@ module Tablo
   #
   #
 
-  # LabelType is an union of allowed types for a column label.
+  # `Tablo::LabelType` is an union of allowed types for a column identifier (*label*).
   alias LabelType = String | Symbol | Int32
 
   # ---------- LabelType ----------------------------------------------------------
@@ -170,7 +170,7 @@ module Tablo
   #
   # Its subclasses return the precise type of error
   class Error < Exception
-    # This exception is raised when the column (or group) identifier (LabelType)
+    # This exception is raised when the column (or group) identifier (`LabelType`)
     # is used more than once in a given situation
     class DuplicateLabel < Error
     end

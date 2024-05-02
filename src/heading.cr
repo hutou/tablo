@@ -1,7 +1,7 @@
 module Tablo
   # The purpose of the Heading struct is to manage page titles, subtitles and
   # footers. It will therefore be used to initialize the corresponding
-  # attributes in Tablo::Table, ie: title, subtitle and footer. <br />
+  # attributes in Tablo::Table, ie: *title*, *subtitle* and *footer*. <br />
   # *(Please note, however, that the display of a subtitle is dependent on the
   # existence of a title).*
   struct Heading
@@ -30,48 +30,46 @@ module Tablo
     # The struct Heading instantiation can accept up to 9 parameters, all of
     # which have a default value.
     #
-    # - `value`: type is `CellType` <br />
-    #   Default value is `nil`, which means nothing is displayed <br />
-    #   This is the heading's display content.
+    # - *value*: This is the heading's display content <br />
+    #   (Default: see `Tablo::Config::Defaults.title` or `Tablo::Config::Defaults.subtitle`
+    #   or `Tablo::Config::Defaults.footer`)
     #
-    # - `framed`: type is `Bool` <br />
-    #   Default value is `false` <br />
-    #   If true, the heading's content is framed.
+    # - *framed*: If true, the heading's content is framed <br />
+    #   Default: `false`
     #
-    # - `line_breaks_before`: type is `Int32`<br />
-    #   Default value is 0
+    # - *line_breaks_before*: (see below) <br />
+    #   Default: `0`
     #
-    # - `line_breaks_after`: type is `Int32`<br />
-    #   Default value is 0
+    # - *line_breaks_after*: (see below) <br />
+    #   Default: `0`
     #
     #   Permitted range of values for these last 2 parameters is governed by
     #   `Config::Controls.line_breaks_range`. <br />
     #   (an `Error::InvalidValue` exception  is raised if not in range. <br />
     #   (see explanations below for their usage)
     #
-    # - `alignment`: type is `Justify` <br />
-    #   Default:  defined in `Config::Defaults.heading_alignment`
+    # - *alignment*: content justification <br />
+    #   (Default: see `Config::Defaults.heading_alignment`)
     #
-    # - `formatter`:  a Proc whose type is `Cell::Text::Formatter` <br />
-    #   Default: set by `Config::Defaults.heading_formatter`
+    # - *formatter*:  User-defined Proc <br />
+    #   (Default: see `Config::Defaults.heading_formatter`)
     #
-    # - `styler`:  a Proc whose type is `Cell::Text::Styler` <br />
-    #   Default: set by `Config::Defaults.heading_styler`
+    # - *styler*:  User-defined Proc <br />
+    #   (Default: see `Config::Defaults.heading_styler`)
     #
-    # - `repeated`: type is `Bool` <br />
-    #   Default value is `false` <br />
-    #   This attribute governs the repetition of title and subtitle when the
-    #   `header_frequency` attribute of `Table` is greater than 0 (if `true`, title and subtitle
-    #   are inserted before the repeated group and header rows). <br />
-    #   *-> only applicable to the title attribute*
+    # - *repeated*:  This attribute governs the repetition of title and
+    #   subtitle when the *header_frequency* attribute of Table is greater than
+    #   0 (if `true`, title and subtitle are inserted before the repeated group
+    #   and header rows). <br />
+    #   *-> only applicable to the title attribute* <br />
+    #   (Default: `false`)
     #
-    # - `page_break`: type is `Bool` <br />
-    #    Default value is `false` <br />
-    #    If true, a page break is inserted after the footer content (or after the
-    #    footer frame, but note that in this case, it prevents the join with the
-    #    frame that follows when the value of the `omit_last_rule` parameter of
-    #    `Table` is `true`). <br />
-    #   *-> only applicable to the footer attribute*
+    # - *page_break*: If true, a page break is inserted after the footer
+    #   content (or after the footer frame, but note that in this case, it
+    #   prevents the join with the frame that follows when the value of the
+    #   *omit_last_rule* parameter of Table is `true`). <br />
+    #   *-> only applicable to the footer attribute* <br />
+    #   (Default: `false`)
     #
     # A minimal example could be:
     # ```
@@ -95,12 +93,12 @@ module Tablo
     # +--------------+
     # ```
     #
-    # __Use of `line_breaks_before` and `line_breaks_after` parameters__
+    # __Use of *line_breaks_before* and *line_breaks_after* parameters__
     #
     # These 2 parameters help define the number of line breaks between adjacent
     # framed rows.  The value of this number is the greater of the values
-    # between the `line_breaks_after` value of one row and the
-    # `line_breaks_before` value of the next, bearing in mind that for Group,
+    # between the *line_breaks_after* value of one row and the
+    # *line_breaks_before* value of the next, bearing in mind that for Group,
     # Header and Body row types, or unframed Heading types, these values are always equal to 0.
     #
     # In the following example:
@@ -118,7 +116,7 @@ module Tablo
     # ```
     # we see that the framed title is separated from the table body by one blank line,
     # but two line breaks have been issued. We can also see that the footer is not
-    # joined to the last body row because of the `line_breaks_before` parameter set to 1.
+    # joined to the last body row because of the *line_breaks_before* parameter set to 1.
     #
     # ```
     # +--------------+
