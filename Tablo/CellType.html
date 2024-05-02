@@ -298,23 +298,23 @@
     Overview
   </h2>
 
-  <p>In each Tablo cell, the <code>value</code> attribute contains a raw value, either read from
+  <p>In each Tablo cell, the <em>value</em> attribute contains a raw value, either read from
 the data source or defined in the program body.</p>
-<p>This attribute is of type <code><a href="../Tablo/CellType.html">Tablo::CellType</a></code> and can therefore only store
+<p>This attribute is of type <code><a href="../Tablo/CellType.html">CellType</a></code> and can therefore only store
 values of this type.  To make this possible, each type intended for use in
-Tablo must include the CellType module, an empty module defined as follows:</p>
+Tablo must include the <code><a href="../Tablo/CellType.html">CellType</a></code> module, an empty module defined as follows:</p>
 <pre><code class="language-crystal"><span class="k">module</span> <span class="t">CellType</span>
 <span class="k">end</span></code></pre>
 <p>In Tablo, most scalar types already benefit from this addition, i.e.
 :</p>
 <ul>
-<li>Signed integers: Int8, Int16, Int32, Int64, Int128</li>
-<li>Unsigned integers: UInt8, UInt16, UInt32, UInt64, UInt128</li>
-<li>Floats: Float32, Float64</li>
-<li>Misc : Char, String, Bool, Nil, Symbol, Time</li>
+<li>Signed integers: <code>Int8</code>, <code>Int16</code>, <code>Int32</code>, <code>Int64</code>, <code>Int128</code></li>
+<li>Unsigned integers: <code>UInt8</code>, <code>UInt16</code>, <code>UInt32</code>, <code>UInt64</code>, <code>UInt128</code></li>
+<li>Floats: <code>Float32</code>, <code>Float64</code></li>
+<li>Misc : <code>Char</code>, <code>String</code>, <code>Bool</code>, <code>Nil</code>, <code>Symbol</code>, <code>Time</code></li>
 </ul>
 <p>If another data type is to be used in Tablo, we need to reopen the type and
-include the <code><a href="../Tablo/CellType.html">Tablo::CellType</a></code> module, as in the case of the <code>BigDecimal</code> type below:</p>
+include the <code><a href="../Tablo/CellType.html">CellType</a></code> module, as in the case of the <code>BigDecimal</code> type below:</p>
 <pre><code class="language-crystal"><span class="k">struct</span> <span class="t">BigDecimal</span>
   <span class="k">include</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>
 <span class="k">end</span></code></pre>
@@ -351,7 +351,7 @@ on it, such as:</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/types.cr#L38" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/types.cr#L38" target="_blank">
         types.cr
       </a>
     

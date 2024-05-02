@@ -324,7 +324,7 @@ with associated getters and setters.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L81" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L81" target="_blank">
         config.cr
       </a>
     
@@ -377,8 +377,8 @@ with associated getters and setters.</p>
       </dt>
       
       <dd class="entry-const-doc">
-        <p>Defaut wrapping value for multiline bodies
-nil = no limit, n = limit to n lines</p>
+        <p>Defaut wrapping value for multiline bodies <br />
+<code>nil</code> = no limit, <code>n</code> = limit to <code>n</code> lines</p>
       </dd>
       
     
@@ -414,8 +414,8 @@ nil = no limit, n = limit to n lines</p>
       </dt>
       
       <dd class="entry-const-doc">
-        <p>Creates an instance of <code><a href="../../Tablo/Heading.html">Heading</a></code> struct with default parameters <br />
-(Default <code><a href="../../Tablo/Heading.html">Heading</a></code> <code>value</code> attribute is <code>nil</code>, so nothing to display)</p>
+        <p>Creates an instance of <code><a href="../../Tablo/Heading.html">Heading</a></code> struct with default parameters,
+where the <em>value</em> attribute is <code>nil</code>, so there is nothing to display</p>
       </dd>
       
     
@@ -424,7 +424,7 @@ nil = no limit, n = limit to n lines</p>
       </dt>
       
       <dd class="entry-const-doc">
-        <p>Default group alignment</p>
+        <p>(see <code><a href="../../Tablo.html#DEFAULT_HEADING_ALIGNMENT">DEFAULT_HEADING_ALIGNMENT</a></code>)</p>
       </dd>
       
     
@@ -451,8 +451,7 @@ nil = no limit, n = limit to n lines</p>
       </dt>
       
       <dd class="entry-const-doc">
-        <p>Default header alignment <br />
-A default value of <code>nil</code> makes alignment dependent on data source type</p>
+        <p>A default value of <code>nil</code> makes alignment dependent on data source type</p>
       </dd>
       
     
@@ -470,7 +469,7 @@ A default value of <code>nil</code> makes alignment dependent on data source typ
       </dt>
       
       <dd class="entry-const-doc">
-        <p>Defaut header frequency</p>
+        <p>Defaut header frequency (see <em>header_frequency</em> parameter in <code><a href="../../Tablo/Table.html#new%28sources%3AEnumerable%28T%29%2C%2A%2Ctitle%3AHeading%3DConfig%3A%3ADefaults.title%2Csubtitle%3AHeading%3DConfig%3A%3ADefaults.subtitle%2Cfooter%3AHeading%3DConfig%3A%3ADefaults.footer%2Cborder%3ABorder%3DBorder.new%28Config%3A%3ADefaults.border_definition%2CConfig%3A%3ADefaults.border_styler%29%2Cgroup_alignment%3AJustify%3DConfig%3A%3ADefaults.group_alignment%2Cgroup_formatter%3ACell%3A%3AText%3A%3AFormatter%3DConfig%3A%3ADefaults.group_formatter%2Cgroup_styler%3ACell%3A%3AText%3A%3AStyler%3DConfig%3A%3ADefaults.group_styler%2Cheader_alignment%3AJustify%7CNil%3DConfig%3A%3ADefaults.header_alignment%2Cheader_formatter%3ACell%3A%3AData%3A%3AFormatter%3DConfig%3A%3ADefaults.header_formatter%2Cheader_styler%3ACell%3A%3AData%3A%3AStyler%3DConfig%3A%3ADefaults.header_styler%2Cbody_alignment%3AJustify%7CNil%3DConfig%3A%3ADefaults.body_alignment%2Cbody_formatter%3ACell%3A%3AData%3A%3AFormatter%3DConfig%3A%3ADefaults.body_formatter%2Cbody_styler%3ACell%3A%3AData%3A%3AStyler%3DConfig%3A%3ADefaults.body_styler%2Cleft_padding%3AInt32%3DConfig%3A%3ADefaults.left_padding%2Cright_padding%3AInt32%3DConfig%3A%3ADefaults.right_padding%2Cpadding_character%3AString%3DConfig%3A%3ADefaults.padding_character%2Ctruncation_indicator%3AString%3DConfig%3A%3ADefaults.truncation_indicator%2Cwidth%3AInt32%3DConfig%3A%3ADefaults.column_width%2Cheader_frequency%3AInt32%7CNil%3DConfig%3A%3ADefaults.header_frequency%2Crow_divider_frequency%3AInt32%7CNil%3DConfig%3A%3ADefaults.row_divider_frequency%2Cwrap_mode%3AWrapMode%3DConfig%3A%3ADefaults.wrap_mode%2Cheader_wrap%3AInt32%7CNil%3DConfig%3A%3ADefaults.header_wrap%2Cbody_wrap%3AInt32%7CNil%3DConfig%3A%3ADefaults.body_wrap%2Cmasked_headers%3ABool%3DConfig%3A%3ADefaults.masked_headers%3F%2Comit_group_header_rule%3ABool%3DConfig%3A%3ADefaults.omit_group_header_rule%3F%2Comit_last_rule%3ABool%3DConfig%3A%3ADefaults.omit_last_rule%3F%29-class-method">Table.new</a></code>)</p>
       </dd>
       
     
@@ -489,7 +488,7 @@ A default value of <code>nil</code> makes alignment dependent on data source typ
       
       <dd class="entry-const-doc">
         <p>Defaut wrapping value for multiline headers
-nil = no limit, n = limit to n lines</p>
+<code>nil</code> = no limit, <code>n</code> = limit to <code>n</code> lines</p>
       </dd>
       
     
@@ -498,7 +497,7 @@ nil = no limit, n = limit to n lines</p>
       </dt>
       
       <dd class="entry-const-doc">
-        <p>Default heading alignment</p>
+        <p>(see <code><a href="../../Tablo.html#DEFAULT_HEADING_ALIGNMENT">DEFAULT_HEADING_ALIGNMENT</a></code>)</p>
       </dd>
       
     
@@ -543,7 +542,7 @@ nil = no limit, n = limit to n lines</p>
       </dt>
       
       <dd class="entry-const-doc">
-        <p>Defaut value for omit_group_header_rule</p>
+        <p>Defaut value for <em>omit_group_header_rule</em></p>
       </dd>
       
     
@@ -552,7 +551,7 @@ nil = no limit, n = limit to n lines</p>
       </dt>
       
       <dd class="entry-const-doc">
-        <p>Defaut value for omit_last_rule
+        <p>Defaut value for <em>omit_last_rule</em> <br />
 Omitting last rule allows joiniing of parent and child tables</p>
       </dd>
       
@@ -562,7 +561,7 @@ Omitting last rule allows joiniing of parent and child tables</p>
       </dt>
       
       <dd class="entry-const-doc">
-        <p>Default padding character (a String.size of 1 !)</p>
+        <p>Default padding character (a String, size 1)</p>
       </dd>
       
     
@@ -589,8 +588,8 @@ Omitting last rule allows joiniing of parent and child tables</p>
       </dt>
       
       <dd class="entry-const-doc">
-        <p>Creates an instance of <code><a href="../../Tablo/Heading.html">Heading</a></code> struct with default parameters <br />
-(Default <code><a href="../../Tablo/Heading.html">Heading</a></code> <code>value</code> attribute is <code>nil</code>, so nothing to display)</p>
+        <p>Creates an instance of <code><a href="../../Tablo/Heading.html">Heading</a></code> struct with default parameters,
+where the <em>value</em> attribute is <code>nil</code>, so there is nothing to display</p>
       </dd>
       
     
@@ -599,8 +598,8 @@ Omitting last rule allows joiniing of parent and child tables</p>
       </dt>
       
       <dd class="entry-const-doc">
-        <p>Creates an instance of <code><a href="../../Tablo/Heading.html">Heading</a></code> struct with default parameters <br />
-(Default <code><a href="../../Tablo/Heading.html">Heading</a></code> <code>value</code> attribute is <code>nil</code>, so nothing to display)</p>
+        <p>Creates an instance of <code><a href="../../Tablo/Heading.html">Heading</a></code> struct with default parameters,
+where the <em>value</em> attribute is <code>nil</code>, so there is nothing to display</p>
       </dd>
       
     
@@ -609,7 +608,7 @@ Omitting last rule allows joiniing of parent and child tables</p>
       </dt>
       
       <dd class="entry-const-doc">
-        <p>Defaut truncation indicator</p>
+        <p>Defaut truncation indicator (a string, size 1)</p>
       </dd>
       
     
@@ -618,7 +617,7 @@ Omitting last rule allows joiniing of parent and child tables</p>
       </dt>
       
       <dd class="entry-const-doc">
-        <p>Defaut wrap mode (cut line at word boundary, see <code><a href="../../Tablo/WrapMode.html">WrapMode</a></code>)</p>
+        <p>Defaut wrap mode (see <code><a href="../../Tablo/WrapMode.html">WrapMode</a></code>)</p>
       </dd>
       
     
@@ -641,340 +640,420 @@ Omitting last rule allows joiniing of parent and child tables</p>
       <li class="entry-summary">
         <a href="#body_alignment%3AJustify%7CNil-class-method" class="signature"><strong>.body_alignment</strong> : Justify | Nil</a>
         
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BODY_ALIGNMENT">BODY_ALIGNMENT</a></code>)</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#body_alignment%3D%28body_alignment%3AJustify%7CNil%29-class-method" class="signature"><strong>.body_alignment=</strong>(body_alignment : Justify | Nil)</a>
+        
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BODY_ALIGNMENT">BODY_ALIGNMENT</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#body_formatter%3ACell%3A%3AData%3A%3AFormatter-class-method" class="signature"><strong>.body_formatter</strong> : Cell::Data::Formatter</a>
         
-          <div class="summary"><p>Default formatter for Body (see <code><a href="../../Tablo/Config/Defaults.html#BODY_FORMATTER">BODY_FORMATTER</a></code>)</p></div>
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BODY_FORMATTER">BODY_FORMATTER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#body_formatter%3D%28body_formatter%3ACell%3A%3AData%3A%3AFormatter%29-class-method" class="signature"><strong>.body_formatter=</strong>(body_formatter : Cell::Data::Formatter)</a>
         
-          <div class="summary"><p>Default formatter for Body (see <code><a href="../../Tablo/Config/Defaults.html#BODY_FORMATTER">BODY_FORMATTER</a></code>)</p></div>
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BODY_FORMATTER">BODY_FORMATTER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#body_styler%3ACell%3A%3AData%3A%3AStyler-class-method" class="signature"><strong>.body_styler</strong> : Cell::Data::Styler</a>
         
-          <div class="summary"><p>Default styler for Body (see <code><a href="../../Tablo/Config/Defaults.html#BODY_STYLER">BODY_STYLER</a></code>)</p></div>
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BODY_STYLER">BODY_STYLER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#body_styler%3D%28body_styler%3ACell%3A%3AData%3A%3AStyler%29-class-method" class="signature"><strong>.body_styler=</strong>(body_styler : Cell::Data::Styler)</a>
         
-          <div class="summary"><p>Default styler for Body (see <code><a href="../../Tablo/Config/Defaults.html#BODY_STYLER">BODY_STYLER</a></code>)</p></div>
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BODY_STYLER">BODY_STYLER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#body_wrap%3AInt32%7CNil-class-method" class="signature"><strong>.body_wrap</strong> : Int32 | Nil</a>
         
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BODY_WRAP">BODY_WRAP</a></code>)</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#body_wrap%3D%28body_wrap%3AInt32%7CNil%29-class-method" class="signature"><strong>.body_wrap=</strong>(body_wrap : Int32 | Nil)</a>
+        
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BODY_WRAP">BODY_WRAP</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#border_definition%3AString%7CBorder%3A%3APreSet-class-method" class="signature"><strong>.border_definition</strong> : String | Border::PreSet</a>
         
-          <div class="summary"><p>Default definition  for Border (see <code><a href="../../Tablo/Config/Defaults.html#BORDER_DEFINITION">BORDER_DEFINITION</a></code>)</p></div>
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BORDER_DEFINITION">BORDER_DEFINITION</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#border_definition%3D%28border_definition%3AString%7CBorder%3A%3APreSet%29-class-method" class="signature"><strong>.border_definition=</strong>(border_definition : String | Border::PreSet)</a>
         
-          <div class="summary"><p>Default definition  for Border (see <code><a href="../../Tablo/Config/Defaults.html#BORDER_DEFINITION">BORDER_DEFINITION</a></code>)</p></div>
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BORDER_DEFINITION">BORDER_DEFINITION</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#border_styler%3ABorder%3A%3AStyler-class-method" class="signature"><strong>.border_styler</strong> : Border::Styler</a>
         
-          <div class="summary"><p>Default styler for Border (see <code><a href="../../Tablo/Config/Defaults.html#BORDER_STYLER">BORDER_STYLER</a></code>)</p></div>
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#BORDER_STYLER">BORDER_STYLER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#border_styler%3D%28border_styler%3ABorder%3A%3AStyler%29-class-method" class="signature"><strong>.border_styler=</strong>(border_styler : Border::Styler)</a>
         
-          <div class="summary"><p>Default styler for Border (see <code><a href="../../Tablo/Config/Defaults.html#BORDER_STYLER">BORDER_STYLER</a></code>)</p></div>
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#BORDER_STYLER">BORDER_STYLER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#column_width%3AInt32-class-method" class="signature"><strong>.column_width</strong> : Int32</a>
         
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#COLUMN_WIDTH">COLUMN_WIDTH</a></code>)</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#column_width%3D%28column_width%3AInt32%29-class-method" class="signature"><strong>.column_width=</strong>(column_width : Int32)</a>
+        
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#COLUMN_WIDTH">COLUMN_WIDTH</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#footer%3AHeading-class-method" class="signature"><strong>.footer</strong> : Heading</a>
         
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#FOOTER">FOOTER</a></code>)</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#footer%3D%28footer%3AHeading%29-class-method" class="signature"><strong>.footer=</strong>(footer : Heading)</a>
+        
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#FOOTER">FOOTER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#group_alignment%3AJustify-class-method" class="signature"><strong>.group_alignment</strong> : Justify</a>
         
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#GROUP_ALIGNMENT">GROUP_ALIGNMENT</a></code>)</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#group_alignment%3D%28group_alignment%3AJustify%29-class-method" class="signature"><strong>.group_alignment=</strong>(group_alignment : Justify)</a>
+        
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#GROUP_ALIGNMENT">GROUP_ALIGNMENT</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#group_formatter%3ACell%3A%3AText%3A%3AFormatter-class-method" class="signature"><strong>.group_formatter</strong> : Cell::Text::Formatter</a>
         
-          <div class="summary"><p>Default formatter for Group (see <code><a href="../../Tablo/Config/Defaults.html#GROUP_FORMATTER">GROUP_FORMATTER</a></code>)</p></div>
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#GROUP_FORMATTER">GROUP_FORMATTER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#group_formatter%3D%28group_formatter%3ACell%3A%3AText%3A%3AFormatter%29-class-method" class="signature"><strong>.group_formatter=</strong>(group_formatter : Cell::Text::Formatter)</a>
         
-          <div class="summary"><p>Default formatter for Group (see <code><a href="../../Tablo/Config/Defaults.html#GROUP_FORMATTER">GROUP_FORMATTER</a></code>)</p></div>
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#GROUP_FORMATTER">GROUP_FORMATTER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#group_styler%3ACell%3A%3AText%3A%3AStyler-class-method" class="signature"><strong>.group_styler</strong> : Cell::Text::Styler</a>
         
-          <div class="summary"><p>Default styler for Group (see <code><a href="../../Tablo/Config/Defaults.html#GROUP_STYLER">GROUP_STYLER</a></code>)</p></div>
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#GROUP_STYLER">GROUP_STYLER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#group_styler%3D%28group_styler%3ACell%3A%3AText%3A%3AStyler%29-class-method" class="signature"><strong>.group_styler=</strong>(group_styler : Cell::Text::Styler)</a>
         
-          <div class="summary"><p>Default styler for Group (see <code><a href="../../Tablo/Config/Defaults.html#GROUP_STYLER">GROUP_STYLER</a></code>)</p></div>
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#GROUP_STYLER">GROUP_STYLER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#header_alignment%3AJustify%7CNil-class-method" class="signature"><strong>.header_alignment</strong> : Justify | Nil</a>
         
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_ALIGNMENT">HEADER_ALIGNMENT</a></code>)</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#header_alignment%3D%28header_alignment%3AJustify%7CNil%29-class-method" class="signature"><strong>.header_alignment=</strong>(header_alignment : Justify | Nil)</a>
+        
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_ALIGNMENT">HEADER_ALIGNMENT</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#header_formatter%3ACell%3A%3AData%3A%3AFormatter-class-method" class="signature"><strong>.header_formatter</strong> : Cell::Data::Formatter</a>
         
-          <div class="summary"><p>Default formatter for Header (see <code><a href="../../Tablo/Config/Defaults.html#HEADER_FORMATTER">HEADER_FORMATTER</a></code>)</p></div>
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_FORMATTER">HEADER_FORMATTER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#header_formatter%3D%28header_formatter%3ACell%3A%3AData%3A%3AFormatter%29-class-method" class="signature"><strong>.header_formatter=</strong>(header_formatter : Cell::Data::Formatter)</a>
         
-          <div class="summary"><p>Default formatter for Header (see <code><a href="../../Tablo/Config/Defaults.html#HEADER_FORMATTER">HEADER_FORMATTER</a></code>)</p></div>
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_FORMATTER">HEADER_FORMATTER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#header_frequency%3AInt32%7CNil-class-method" class="signature"><strong>.header_frequency</strong> : Int32 | Nil</a>
         
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_FREQUENCY">HEADER_FREQUENCY</a></code>)</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#header_frequency%3D%28header_frequency%3AInt32%7CNil%29-class-method" class="signature"><strong>.header_frequency=</strong>(header_frequency : Int32 | Nil)</a>
+        
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_FREQUENCY">HEADER_FREQUENCY</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#header_styler%3ACell%3A%3AData%3A%3AStyler-class-method" class="signature"><strong>.header_styler</strong> : Cell::Data::Styler</a>
         
-          <div class="summary"><p>Default styler for Header (see <code><a href="../../Tablo/Config/Defaults.html#HEADER_STYLER">HEADER_STYLER</a></code>)</p></div>
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_STYLER">HEADER_STYLER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#header_styler%3D%28header_styler%3ACell%3A%3AData%3A%3AStyler%29-class-method" class="signature"><strong>.header_styler=</strong>(header_styler : Cell::Data::Styler)</a>
         
-          <div class="summary"><p>Default styler for Header (see <code><a href="../../Tablo/Config/Defaults.html#HEADER_STYLER">HEADER_STYLER</a></code>)</p></div>
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_STYLER">HEADER_STYLER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#header_wrap%3AInt32%7CNil-class-method" class="signature"><strong>.header_wrap</strong> : Int32 | Nil</a>
         
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_WRAP">HEADER_WRAP</a></code>)</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#header_wrap%3D%28header_wrap%3AInt32%7CNil%29-class-method" class="signature"><strong>.header_wrap=</strong>(header_wrap : Int32 | Nil)</a>
+        
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_WRAP">HEADER_WRAP</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#heading_alignment%3AJustify-class-method" class="signature"><strong>.heading_alignment</strong> : Justify</a>
         
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADING_ALIGNMENT">HEADING_ALIGNMENT</a></code>)</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#heading_alignment%3D%28heading_alignment%3AJustify%29-class-method" class="signature"><strong>.heading_alignment=</strong>(heading_alignment : Justify)</a>
+        
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADING_ALIGNMENT">HEADING_ALIGNMENT</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#heading_formatter%3ACell%3A%3AText%3A%3AFormatter-class-method" class="signature"><strong>.heading_formatter</strong> : Cell::Text::Formatter</a>
         
-          <div class="summary"><p>Default formatter for Heading (see <code><a href="../../Tablo/Config/Defaults.html#HEADING_FORMATTER">HEADING_FORMATTER</a></code>)</p></div>
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADING_FORMATTER">HEADING_FORMATTER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#heading_formatter%3D%28heading_formatter%3ACell%3A%3AText%3A%3AFormatter%29-class-method" class="signature"><strong>.heading_formatter=</strong>(heading_formatter : Cell::Text::Formatter)</a>
         
-          <div class="summary"><p>Default formatter for Heading (see <code><a href="../../Tablo/Config/Defaults.html#HEADING_FORMATTER">HEADING_FORMATTER</a></code>)</p></div>
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADING_FORMATTER">HEADING_FORMATTER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#heading_styler%3ACell%3A%3AText%3A%3AStyler-class-method" class="signature"><strong>.heading_styler</strong> : Cell::Text::Styler</a>
         
-          <div class="summary"><p>Default styler for Heading (see <code><a href="../../Tablo/Config/Defaults.html#HEADING_STYLER">HEADING_STYLER</a></code>)</p></div>
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADING_STYLER">HEADING_STYLER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#heading_styler%3D%28heading_styler%3ACell%3A%3AText%3A%3AStyler%29-class-method" class="signature"><strong>.heading_styler=</strong>(heading_styler : Cell::Text::Styler)</a>
         
-          <div class="summary"><p>Default styler for Heading (see <code><a href="../../Tablo/Config/Defaults.html#HEADING_STYLER">HEADING_STYLER</a></code>)</p></div>
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADING_STYLER">HEADING_STYLER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#left_padding%3AInt32-class-method" class="signature"><strong>.left_padding</strong> : Int32</a>
         
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#LEFT_PADDING">LEFT_PADDING</a></code>)</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#left_padding%3D%28left_padding%3AInt32%29-class-method" class="signature"><strong>.left_padding=</strong>(left_padding : Int32)</a>
+        
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#LEFT_PADDING">LEFT_PADDING</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#masked_headers%3D%28masked_headers%3ABool%29-class-method" class="signature"><strong>.masked_headers=</strong>(masked_headers : Bool)</a>
         
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#MASKED_HEADERS">MASKED_HEADERS</a></code>)</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#masked_headers%3F%3ABool-class-method" class="signature"><strong>.masked_headers?</strong> : Bool</a>
+        
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#MASKED_HEADERS">MASKED_HEADERS</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#omit_group_header_rule%3D%28omit_group_header_rule%3ABool%29-class-method" class="signature"><strong>.omit_group_header_rule=</strong>(omit_group_header_rule : Bool)</a>
         
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#OMIT_GROUP_HEADER_RULE">OMIT_GROUP_HEADER_RULE</a></code></p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#omit_group_header_rule%3F%3ABool-class-method" class="signature"><strong>.omit_group_header_rule?</strong> : Bool</a>
+        
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#OMIT_GROUP_HEADER_RULE">OMIT_GROUP_HEADER_RULE</a></code></p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#omit_last_rule%3D%28omit_last_rule%3ABool%29-class-method" class="signature"><strong>.omit_last_rule=</strong>(omit_last_rule : Bool)</a>
         
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#OMIT_LAST_RULE">OMIT_LAST_RULE</a></code>)</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#omit_last_rule%3F%3ABool-class-method" class="signature"><strong>.omit_last_rule?</strong> : Bool</a>
+        
+          <div class="summary"><p>Default: see <code><a href="../../Tablo/Config/Defaults.html#OMIT_LAST_RULE">OMIT_LAST_RULE</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#padding_character%3AString-class-method" class="signature"><strong>.padding_character</strong> : String</a>
         
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#PADDING_CHARACTER">PADDING_CHARACTER</a></code>)</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#padding_character%3D%28padding_character%3AString%29-class-method" class="signature"><strong>.padding_character=</strong>(padding_character : String)</a>
+        
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#PADDING_CHARACTER">PADDING_CHARACTER</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#right_padding%3AInt32-class-method" class="signature"><strong>.right_padding</strong> : Int32</a>
         
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#RIGHT_PADDING">RIGHT_PADDING</a></code>)</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#right_padding%3D%28right_padding%3AInt32%29-class-method" class="signature"><strong>.right_padding=</strong>(right_padding : Int32)</a>
+        
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#RIGHT_PADDING">RIGHT_PADDING</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#row_divider_frequency%3AInt32%7CNil-class-method" class="signature"><strong>.row_divider_frequency</strong> : Int32 | Nil</a>
         
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#ROW_DIVIDER_FREQUENCY">ROW_DIVIDER_FREQUENCY</a></code>)</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#row_divider_frequency%3D%28row_divider_frequency%3AInt32%7CNil%29-class-method" class="signature"><strong>.row_divider_frequency=</strong>(row_divider_frequency : Int32 | Nil)</a>
+        
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#ROW_DIVIDER_FREQUENCY">ROW_DIVIDER_FREQUENCY</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#subtitle%3AHeading-class-method" class="signature"><strong>.subtitle</strong> : Heading</a>
         
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#SUBTITLE">SUBTITLE</a></code>)</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#subtitle%3D%28subtitle%3AHeading%29-class-method" class="signature"><strong>.subtitle=</strong>(subtitle : Heading)</a>
+        
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#SUBTITLE">SUBTITLE</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#title%3AHeading-class-method" class="signature"><strong>.title</strong> : Heading</a>
         
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#TITLE">TITLE</a></code>)</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#title%3D%28title%3AHeading%29-class-method" class="signature"><strong>.title=</strong>(title : Heading)</a>
+        
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#TITLE">TITLE</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#truncation_indicator%3AString-class-method" class="signature"><strong>.truncation_indicator</strong> : String</a>
         
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#TRUNCATION_INDICATOR">TRUNCATION_INDICATOR</a></code>)</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#truncation_indicator%3D%28truncation_indicator%3AString%29-class-method" class="signature"><strong>.truncation_indicator=</strong>(truncation_indicator : String)</a>
+        
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#TRUNCATION_INDICATOR">TRUNCATION_INDICATOR</a></code>)</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#wrap_mode%3AWrapMode-class-method" class="signature"><strong>.wrap_mode</strong> : WrapMode</a>
         
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#WRAP_MODE">WRAP_MODE</a></code>)</p></div>
+        
       </li>
     
       <li class="entry-summary">
         <a href="#wrap_mode%3D%28wrap_mode%3AWrapMode%29-class-method" class="signature"><strong>.wrap_mode=</strong>(wrap_mode : WrapMode)</a>
+        
+          <div class="summary"><p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#WRAP_MODE">WRAP_MODE</a></code>)</p></div>
         
       </li>
     
@@ -1010,10 +1089,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#body_alignment%3AJustify%7CNil-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BODY_ALIGNMENT">BODY_ALIGNMENT</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L84" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L85" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1026,10 +1110,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#body_alignment%3D%28body_alignment%3AJustify%7CNil%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BODY_ALIGNMENT">BODY_ALIGNMENT</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L84" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L85" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1044,13 +1133,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default formatter for Body (see <code><a href="../../Tablo/Config/Defaults.html#BODY_FORMATTER">BODY_FORMATTER</a></code>)</p>
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BODY_FORMATTER">BODY_FORMATTER</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L142" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L148" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1065,13 +1154,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default formatter for Body (see <code><a href="../../Tablo/Config/Defaults.html#BODY_FORMATTER">BODY_FORMATTER</a></code>)</p>
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BODY_FORMATTER">BODY_FORMATTER</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L142" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L148" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1086,13 +1175,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default styler for Body (see <code><a href="../../Tablo/Config/Defaults.html#BODY_STYLER">BODY_STYLER</a></code>)</p>
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BODY_STYLER">BODY_STYLER</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L162" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L168" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1107,13 +1196,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default styler for Body (see <code><a href="../../Tablo/Config/Defaults.html#BODY_STYLER">BODY_STYLER</a></code>)</p>
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BODY_STYLER">BODY_STYLER</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L162" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L168" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1126,10 +1215,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#body_wrap%3AInt32%7CNil-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BODY_WRAP">BODY_WRAP</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L204" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L220" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1142,10 +1236,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#body_wrap%3D%28body_wrap%3AInt32%7CNil%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BODY_WRAP">BODY_WRAP</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L204" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L220" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1160,13 +1259,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default definition  for Border (see <code><a href="../../Tablo/Config/Defaults.html#BORDER_DEFINITION">BORDER_DEFINITION</a></code>)</p>
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BORDER_DEFINITION">BORDER_DEFINITION</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L104" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L108" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1181,13 +1280,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default definition  for Border (see <code><a href="../../Tablo/Config/Defaults.html#BORDER_DEFINITION">BORDER_DEFINITION</a></code>)</p>
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#BORDER_DEFINITION">BORDER_DEFINITION</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L104" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L108" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1202,13 +1301,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default styler for Border (see <code><a href="../../Tablo/Config/Defaults.html#BORDER_STYLER">BORDER_STYLER</a></code>)</p>
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#BORDER_STYLER">BORDER_STYLER</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L109" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L113" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1223,13 +1322,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default styler for Border (see <code><a href="../../Tablo/Config/Defaults.html#BORDER_STYLER">BORDER_STYLER</a></code>)</p>
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#BORDER_STYLER">BORDER_STYLER</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L109" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L113" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1242,10 +1341,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#column_width%3AInt32-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#COLUMN_WIDTH">COLUMN_WIDTH</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L182" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L193" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1258,10 +1362,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#column_width%3D%28column_width%3AInt32%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#COLUMN_WIDTH">COLUMN_WIDTH</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L182" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L193" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1274,10 +1383,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#footer%3AHeading-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#FOOTER">FOOTER</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L99" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L103" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1290,10 +1404,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#footer%3D%28footer%3AHeading%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#FOOTER">FOOTER</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L99" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L103" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1306,10 +1425,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#group_alignment%3AJustify-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#GROUP_ALIGNMENT">GROUP_ALIGNMENT</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L117" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L123" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1322,10 +1446,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#group_alignment%3D%28group_alignment%3AJustify%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#GROUP_ALIGNMENT">GROUP_ALIGNMENT</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L117" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L123" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1340,13 +1469,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default formatter for Group (see <code><a href="../../Tablo/Config/Defaults.html#GROUP_FORMATTER">GROUP_FORMATTER</a></code>)</p>
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#GROUP_FORMATTER">GROUP_FORMATTER</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L132" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L138" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1361,13 +1490,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default formatter for Group (see <code><a href="../../Tablo/Config/Defaults.html#GROUP_FORMATTER">GROUP_FORMATTER</a></code>)</p>
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#GROUP_FORMATTER">GROUP_FORMATTER</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L132" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L138" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1382,13 +1511,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default styler for Group (see <code><a href="../../Tablo/Config/Defaults.html#GROUP_STYLER">GROUP_STYLER</a></code>)</p>
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#GROUP_STYLER">GROUP_STYLER</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L152" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L158" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1403,13 +1532,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default styler for Group (see <code><a href="../../Tablo/Config/Defaults.html#GROUP_STYLER">GROUP_STYLER</a></code>)</p>
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#GROUP_STYLER">GROUP_STYLER</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L152" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L158" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1422,10 +1551,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#header_alignment%3AJustify%7CNil-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_ALIGNMENT">HEADER_ALIGNMENT</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L122" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L128" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1438,10 +1572,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#header_alignment%3D%28header_alignment%3AJustify%7CNil%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_ALIGNMENT">HEADER_ALIGNMENT</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L122" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L128" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1456,13 +1595,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default formatter for Header (see <code><a href="../../Tablo/Config/Defaults.html#HEADER_FORMATTER">HEADER_FORMATTER</a></code>)</p>
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_FORMATTER">HEADER_FORMATTER</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L137" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L143" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1477,13 +1616,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default formatter for Header (see <code><a href="../../Tablo/Config/Defaults.html#HEADER_FORMATTER">HEADER_FORMATTER</a></code>)</p>
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_FORMATTER">HEADER_FORMATTER</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L137" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L143" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1496,10 +1635,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#header_frequency%3AInt32%7CNil-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_FREQUENCY">HEADER_FREQUENCY</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L186" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L198" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1512,10 +1656,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#header_frequency%3D%28header_frequency%3AInt32%7CNil%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_FREQUENCY">HEADER_FREQUENCY</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L186" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L198" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1530,13 +1679,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default styler for Header (see <code><a href="../../Tablo/Config/Defaults.html#HEADER_STYLER">HEADER_STYLER</a></code>)</p>
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_STYLER">HEADER_STYLER</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L157" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L163" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1551,13 +1700,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default styler for Header (see <code><a href="../../Tablo/Config/Defaults.html#HEADER_STYLER">HEADER_STYLER</a></code>)</p>
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_STYLER">HEADER_STYLER</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L157" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L163" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1570,10 +1719,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#header_wrap%3AInt32%7CNil-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_WRAP">HEADER_WRAP</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L199" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L214" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1586,10 +1740,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#header_wrap%3D%28header_wrap%3AInt32%7CNil%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADER_WRAP">HEADER_WRAP</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L199" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L214" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1602,10 +1761,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#heading_alignment%3AJustify-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADING_ALIGNMENT">HEADING_ALIGNMENT</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L113" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L118" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1618,10 +1782,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#heading_alignment%3D%28heading_alignment%3AJustify%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADING_ALIGNMENT">HEADING_ALIGNMENT</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L113" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L118" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1636,13 +1805,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default formatter for Heading (see <code><a href="../../Tablo/Config/Defaults.html#HEADING_FORMATTER">HEADING_FORMATTER</a></code>)</p>
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADING_FORMATTER">HEADING_FORMATTER</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L127" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L133" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1657,13 +1826,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default formatter for Heading (see <code><a href="../../Tablo/Config/Defaults.html#HEADING_FORMATTER">HEADING_FORMATTER</a></code>)</p>
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADING_FORMATTER">HEADING_FORMATTER</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L127" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L133" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1678,13 +1847,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default styler for Heading (see <code><a href="../../Tablo/Config/Defaults.html#HEADING_STYLER">HEADING_STYLER</a></code>)</p>
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADING_STYLER">HEADING_STYLER</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L147" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1699,13 +1868,13 @@ Omitting last rule allows joiniing of parent and child tables</p>
       
         <div class="doc">
           
-          <p>Default styler for Heading (see <code><a href="../../Tablo/Config/Defaults.html#HEADING_STYLER">HEADING_STYLER</a></code>)</p>
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#HEADING_STYLER">HEADING_STYLER</a></code>)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L147" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1718,10 +1887,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#left_padding%3AInt32-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#LEFT_PADDING">LEFT_PADDING</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L166" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L173" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1734,10 +1908,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#left_padding%3D%28left_padding%3AInt32%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#LEFT_PADDING">LEFT_PADDING</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L166" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L173" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1750,10 +1929,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#masked_headers%3D%28masked_headers%3ABool%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#MASKED_HEADERS">MASKED_HEADERS</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L208" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L225" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1766,10 +1950,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#masked_headers%3F%3ABool-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#MASKED_HEADERS">MASKED_HEADERS</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L208" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L225" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1782,10 +1971,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#omit_group_header_rule%3D%28omit_group_header_rule%3ABool%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#OMIT_GROUP_HEADER_RULE">OMIT_GROUP_HEADER_RULE</a></code></p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L212" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L230" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1798,10 +1992,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#omit_group_header_rule%3F%3ABool-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#OMIT_GROUP_HEADER_RULE">OMIT_GROUP_HEADER_RULE</a></code></p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L212" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L230" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1814,10 +2013,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#omit_last_rule%3D%28omit_last_rule%3ABool%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#OMIT_LAST_RULE">OMIT_LAST_RULE</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L217" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L236" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1830,10 +2034,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#omit_last_rule%3F%3ABool-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>Default: see <code><a href="../../Tablo/Config/Defaults.html#OMIT_LAST_RULE">OMIT_LAST_RULE</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L217" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L236" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1846,10 +2055,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#padding_character%3AString-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#PADDING_CHARACTER">PADDING_CHARACTER</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L174" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L183" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1862,10 +2076,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#padding_character%3D%28padding_character%3AString%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#PADDING_CHARACTER">PADDING_CHARACTER</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L174" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L183" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1878,10 +2097,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#right_padding%3AInt32-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#RIGHT_PADDING">RIGHT_PADDING</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L170" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L178" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1894,10 +2118,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#right_padding%3D%28right_padding%3AInt32%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#RIGHT_PADDING">RIGHT_PADDING</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L170" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L178" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1910,10 +2139,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#row_divider_frequency%3AInt32%7CNil-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#ROW_DIVIDER_FREQUENCY">ROW_DIVIDER_FREQUENCY</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L190" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L203" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1926,10 +2160,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#row_divider_frequency%3D%28row_divider_frequency%3AInt32%7CNil%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#ROW_DIVIDER_FREQUENCY">ROW_DIVIDER_FREQUENCY</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L190" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L203" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1942,10 +2181,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#subtitle%3AHeading-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#SUBTITLE">SUBTITLE</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L94" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L97" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1958,10 +2202,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#subtitle%3D%28subtitle%3AHeading%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#SUBTITLE">SUBTITLE</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L94" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L97" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1974,10 +2223,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#title%3AHeading-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#TITLE">TITLE</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L89" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L91" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1990,10 +2244,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#title%3D%28title%3AHeading%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#TITLE">TITLE</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L89" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L91" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2006,10 +2265,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#truncation_indicator%3AString-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#TRUNCATION_INDICATOR">TRUNCATION_INDICATOR</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L178" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L188" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2022,10 +2286,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#truncation_indicator%3D%28truncation_indicator%3AString%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#TRUNCATION_INDICATOR">TRUNCATION_INDICATOR</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L178" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L188" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2038,10 +2307,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#wrap_mode%3AWrapMode-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#WRAP_MODE">WRAP_MODE</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L194" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L208" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2054,10 +2328,15 @@ Omitting last rule allows joiniing of parent and child tables</p>
         <a class="method-permalink" href="#wrap_mode%3D%28wrap_mode%3AWrapMode%29-class-method">#</a>
       </div>
       
+        <div class="doc">
+          
+          <p>(Default: see <code><a href="../../Tablo/Config/Defaults.html#WRAP_MODE">WRAP_MODE</a></code>)</p>
+        </div>
+      
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/36f8a1d63f08102dcf3b7cefb0ef446a3944f935/src/config.cr#L194" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L208" target="_blank">View source</a>]
         
       </div>
     </div>
