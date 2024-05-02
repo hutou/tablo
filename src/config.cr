@@ -5,7 +5,7 @@ module Tablo
   # for all class instantiation parameters.
   module Config
     # Checks whether styling is allowed when output is redirected.
-    # - `true` : styling not allowed
+    # - `true` : styling not allowed (Default)
     # - `false` : styling allowed
     STYLER_TTY_ONLY = true
     class_property? styler_tty_only : Bool = STYLER_TTY_ONLY
@@ -13,7 +13,7 @@ module Tablo
     # Checks whether terminal size is used as table total width when packing is
     # called without a specified width.
     # - `true` : table width is capped to terminal size
-    # - `false` : terminal size is ignored <br />
+    # - `false` : terminal size is ignored (Default) <br />
     TERMINAL_CAPPED_WIDTH = false
     class_property? terminal_capped_width : Bool = TERMINAL_CAPPED_WIDTH
 
@@ -81,139 +81,158 @@ module Tablo
     module Defaults
       # A default value of `nil` makes alignment dependent on data source type
       BODY_ALIGNMENT = nil
+      # (Default: see `BODY_ALIGNMENT`)
       class_property body_alignment : Justify? = BODY_ALIGNMENT
 
-      # Creates an instance of `Heading` struct with default parameters <br />
-      # (Default `Heading` `value` attribute is `nil`, so nothing to display)
+      # Creates an instance of `Heading` struct with default parameters,
+      # where the *value* attribute is `nil`, so there is nothing to display
       TITLE = Heading.new
+      # (Default: see `TITLE`)
       class_property title : Heading = TITLE
 
-      # Creates an instance of `Heading` struct with default parameters <br />
-      # (Default `Heading` `value` attribute is `nil`, so nothing to display)
+      # Creates an instance of `Heading` struct with default parameters,
+      # where the *value* attribute is `nil`, so there is nothing to display
       SUBTITLE = Heading.new
+      # (Default: see `SUBTITLE`)
       class_property subtitle : Heading = SUBTITLE
 
-      # Creates an instance of `Heading` struct with default parameters <br />
-      # (Default `Heading` `value` attribute is `nil`, so nothing to display)
+      # Creates an instance of `Heading` struct with default parameters,
+      # where the *value* attribute is `nil`, so there is nothing to display
       FOOTER = Heading.new
+      # (Default: see `FOOTER`)
       class_property footer : Heading = FOOTER
 
       # Default value for Border definition
       BORDER_DEFINITION = Border::PreSet::Ascii
-      # Default definition  for Border (see `BORDER_DEFINITION`)
+      # (Default: see `BORDER_DEFINITION`)
       class_property border_definition : String | Border::PreSet = Border::PreSet::Ascii
 
       # (see `DEFAULT_STYLER`)
       BORDER_STYLER = DEFAULT_STYLER
-      # Default styler for Border (see `BORDER_STYLER`)
+      # Default: see `BORDER_STYLER`)
       class_property border_styler : Border::Styler = BORDER_STYLER
 
-      # Default heading alignment
+      # (see `DEFAULT_HEADING_ALIGNMENT`)
       HEADING_ALIGNMENT = DEFAULT_HEADING_ALIGNMENT
+      # Default: see `HEADING_ALIGNMENT`)
       class_property heading_alignment : Justify = HEADING_ALIGNMENT
 
-      # Default group alignment
+      # (see `DEFAULT_HEADING_ALIGNMENT`)
       GROUP_ALIGNMENT = DEFAULT_HEADING_ALIGNMENT
+      # Default: see `GROUP_ALIGNMENT`)
       class_property group_alignment : Justify = GROUP_ALIGNMENT
 
-      # Default header alignment <br />
       # A default value of `nil` makes alignment dependent on data source type
       HEADER_ALIGNMENT = nil
+      # (Default: see `HEADER_ALIGNMENT`)
       class_property header_alignment : Justify? = HEADER_ALIGNMENT
 
       # (see `DEFAULT_FORMATTER`)
       HEADING_FORMATTER = DEFAULT_FORMATTER
-      # Default formatter for Heading (see `HEADING_FORMATTER`)
+      # Default: see `HEADING_FORMATTER`)
       class_property heading_formatter : Cell::Text::Formatter = HEADING_FORMATTER
 
       # (see `DEFAULT_FORMATTER`)
       GROUP_FORMATTER = DEFAULT_FORMATTER
-      # Default formatter for Group (see `GROUP_FORMATTER`)
+      # Default: see `GROUP_FORMATTER`)
       class_property group_formatter : Cell::Text::Formatter = GROUP_FORMATTER
 
       # (see `DEFAULT_FORMATTER`)
       HEADER_FORMATTER = DEFAULT_FORMATTER
-      # Default formatter for Header (see `HEADER_FORMATTER`)
+      # Default: see `HEADER_FORMATTER`)
       class_property header_formatter : Cell::Data::Formatter = HEADER_FORMATTER
 
       # (see `DEFAULT_FORMATTER`)
       BODY_FORMATTER = DEFAULT_FORMATTER
-      # Default formatter for Body (see `BODY_FORMATTER`)
+      # (Default: see `BODY_FORMATTER`)
       class_property body_formatter : Cell::Data::Formatter = BODY_FORMATTER
 
       # (see `DEFAULT_STYLER`)
       HEADING_STYLER = DEFAULT_STYLER
-      # Default styler for Heading (see `HEADING_STYLER`)
+      # Default: see `HEADING_STYLER`)
       class_property heading_styler : Cell::Text::Styler = HEADING_STYLER
 
       # (see `DEFAULT_STYLER`)
       GROUP_STYLER = DEFAULT_STYLER
-      # Default styler for Group (see `GROUP_STYLER`)
+      # Default: see `GROUP_STYLER`)
       class_property group_styler : Cell::Text::Styler = GROUP_STYLER
 
       # (see `DEFAULT_STYLER`)
       HEADER_STYLER = DEFAULT_STYLER
-      # Default styler for Header (see `HEADER_STYLER`)
+      # Default: see `HEADER_STYLER`)
       class_property header_styler : Cell::Data::Styler = HEADER_STYLER
 
       # (see `DEFAULT_STYLER`)
       BODY_STYLER = DEFAULT_STYLER
-      # Default styler for Body (see `BODY_STYLER`)
+      # (Default: see `BODY_STYLER`)
       class_property body_styler : Cell::Data::Styler = BODY_STYLER
 
       # Default left padding
       LEFT_PADDING = 1
+      # (Default: see `LEFT_PADDING`)
       class_property left_padding : Int32 = LEFT_PADDING
 
       # Default right padding
       RIGHT_PADDING = 1
+      # (Default: see `RIGHT_PADDING`)
       class_property right_padding : Int32 = RIGHT_PADDING
 
-      # Default padding character (a String.size of 1 !)
+      # Default padding character (a String, size 1)
       PADDING_CHARACTER = " "
+      # (Default: see `PADDING_CHARACTER`)
       class_property padding_character : String = PADDING_CHARACTER
 
-      # Defaut truncation indicator
+      # Defaut truncation indicator (a string, size 1)
       TRUNCATION_INDICATOR = "~"
+      # (Default: see `TRUNCATION_INDICATOR`)
       class_property truncation_indicator : String = TRUNCATION_INDICATOR
 
       # Defaut column width
       COLUMN_WIDTH = 12
+      # (Default: see `COLUMN_WIDTH`)
       class_property column_width : Int32 = COLUMN_WIDTH
 
-      # Defaut header frequency
+      # Defaut header frequency (see *header_frequency* parameter in `Table.new`)
       HEADER_FREQUENCY = 0
+      # (Default: see `HEADER_FREQUENCY`)
       class_property header_frequency : Int32? = HEADER_FREQUENCY
 
       # Defaut row divider frequency
       ROW_DIVIDER_FREQUENCY = nil
+      # (Default: see `ROW_DIVIDER_FREQUENCY`)
       class_property row_divider_frequency : Int32? = ROW_DIVIDER_FREQUENCY
 
-      # Defaut wrap mode (cut line at word boundary, see `WrapMode`)
+      # Defaut wrap mode (see `WrapMode`)
       WRAP_MODE = WrapMode::Word
+      # (Default: see `WRAP_MODE`)
       class_property wrap_mode : WrapMode = WRAP_MODE
 
       # Defaut wrapping value for multiline headers
-      # nil = no limit, n = limit to n lines
+      # `nil` = no limit, `n` = limit to `n` lines
       HEADER_WRAP = nil
+      # (Default: see `HEADER_WRAP`)
       class_property header_wrap : Int32? = HEADER_WRAP
 
-      # Defaut wrapping value for multiline bodies
-      # nil = no limit, n = limit to n lines
+      # Defaut wrapping value for multiline bodies <br />
+      # `nil` = no limit, `n` = limit to `n` lines
       BODY_WRAP = nil
+      # (Default: see `BODY_WRAP`)
       class_property body_wrap : Int32? = BODY_WRAP
 
       # Defaut value for masked headers
       MASKED_HEADERS = false
+      # (Default: see `MASKED_HEADERS`)
       class_property? masked_headers : Bool = MASKED_HEADERS
 
-      # Defaut value for omit_group_header_rule
+      # Defaut value for *omit_group_header_rule*
       OMIT_GROUP_HEADER_RULE = false
+      # (Default: see `OMIT_GROUP_HEADER_RULE`
       class_property? omit_group_header_rule : Bool = OMIT_GROUP_HEADER_RULE
 
-      # Defaut value for omit_last_rule
+      # Defaut value for *omit_last_rule* <br />
       # Omitting last rule allows joiniing of parent and child tables
       OMIT_LAST_RULE = false
+      # Default: see `OMIT_LAST_RULE`)
       class_property? omit_last_rule : Bool = OMIT_LAST_RULE
     end
   end

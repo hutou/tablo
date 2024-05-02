@@ -1,9 +1,9 @@
-# In each Tablo cell, the `value` attribute contains a raw value, either read from
+# In each Tablo cell, the *value* attribute contains a raw value, either read from
 # the data source or defined in the program body.
 #
-# This attribute is of type `Tablo::CellType` and can therefore only store
+# This attribute is of type `CellType` and can therefore only store
 # values of this type.  To make this possible, each type intended for use in
-# Tablo must include the CellType module, an empty module defined as follows:
+# Tablo must include the `CellType` module, an empty module defined as follows:
 #
 # ```
 # module CellType
@@ -12,13 +12,13 @@
 #
 # In Tablo, most scalar types already benefit from this addition, i.e.
 # :
-# - Signed integers: Int8, Int16, Int32, Int64, Int128
-# - Unsigned integers: UInt8, UInt16, UInt32, UInt64, UInt128
-# - Floats: Float32, Float64
-# - Misc : Char, String, Bool, Nil, Symbol, Time
+# - Signed integers: `Int8`, `Int16`, `Int32`, `Int64`, `Int128`
+# - Unsigned integers: `UInt8`, `UInt16`, `UInt32`, `UInt64`, `UInt128`
+# - Floats: `Float32`, `Float64`
+# - Misc : `Char`, `String`, `Bool`, `Nil`, `Symbol`, `Time`
 #
 # If another data type is to be used in Tablo, we need to reopen the type and
-# include the `Tablo::CellType` module, as in the case of the `BigDecimal` type below:
+# include the `CellType` module, as in the case of the `BigDecimal` type below:
 # ```
 # struct BigDecimal
 #   include Tablo::CellType
