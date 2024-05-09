@@ -124,101 +124,65 @@ module Tablo
     # First constructor : Table constructor has two versions to initialize a new Table
     # instance, depending on whether a block is given or not.
     #
-    #  ```text
-    #  Used constants                | Default values
-    #  ----------------------------- | ------------------------------------
-    #  DEFAULT_HEADING_ALIGNMENT     | Justify::Center
-    #  DEFAULT_FORMATTER             | ->(c : CellType) { c.to_s }
-    #  DEFAULT_STYLER                | ->(s : String) { s }
-    #  DEFAULT_DATA_DEPENDENT_STYLER | ->(_c : CellType, s : String) { s }
-    # ```
     #
     # _Mandatory parameters:_
     #
-    # - `sources`: type is Enumerable(T)<br />
-    #   Can be any Enumerable data type _(`Range` is currently (Crystal 1.9.2)
-    #   not correctly supported in this context: use `Range.to_a` instead)_
+    # - *sources*: is any<sup>(1)</sup> Enumerable of any type T<sup>(2)</sup><br />
+    #   <sup>(1)</sup> Currently, a Range Enumerable is not
+    #   supported in this context:  Convert to array beforehand.<br />
+    #   <sup>(2)</sup> Provided that the type includes the `Tablo::CellType` module
+    #
     #
     # _Optional named parameters, with default values_
     #
-    # - `title`: type is `Title`<br />
-    #   Default set by `Config::Defaults.title`<br />
-    #   Initializing this class without any argument set its value to `nil`,
-    #   so there is nothing to display
+    # - *title*: Default set by `Config::Defaults.title`
     #
-    # - `subtitle`: type is `SubTitle`<br />
-    #   Default set by `Config::Defaults.subtitle`<br />
-    #   (Initialization: see `title`)
+    # - *subtitle*: Default set by `Config::Defaults.subtitle`<br />
+    #   (depends on *title* for display)
     #
-    # - `footer`: type is `Footer`<br />
-    #   Default set by `Config::Defaults.footer`<br />
-    #   (Initialization: see `title`)
+    # - *footer*: Default set by `Config::Defaults.footer`
     #
-    # - `border`: type is struct`Border`<br />
-    #   Initalized by 2 parameters :
-    #   - `border_definition` (default = `Config::Defaults.border_definition`,
-    #     which itself defaults to `Border::PreSet::Ascii`) <br />
-    #   Other `Border::PreSet` are: `ReducedAscii`, `Modern`,
-    #   `ReducedModern`, `Markdown`, `Fancy`, `Blank` and `Empty`. <br />
-    #   `border_definition` may also be initialized directly by a string of 16 characters.
-    #    - `border_styler` (default = `Config::Defaults.border_styler`)
+    # - *border*: A dedicated struct for managing the rows and columns
+    # separating data cells. <br />
+    # See `Border.new` for initialization default parameters.
     #
-    # - `group_alignment`: type is `Justify`<br />
-    #   Default value is `Config::Defaults.group_alignment`
+    # - *group_alignment*: Default value set by `Config::Defaults.group_alignment`
     #
-    # - `group_formatter`: type is `Cell::Text::Formatter`<br />
-    #   Default value is `Config::Defaults.group_formatter`
+    # - *group_formatter*: Default value set by `Config::Defaults.group_formatter`
     #
-    # - `group_styler`: type is `Cell::Text::Styler` <br />
-    #   Default value is `Config::Defaults.group_styler`
+    # - *group_styler*: Default value set by `Config::Defaults.group_styler`
     #
-    # - `header_alignment`: type is `Justify?` <br />
-    #   Default value is `Config::Defaults.header_alignment`
+    # - *header_alignment*:  Default value set by `Config::Defaults.header_alignment`
     #
-    # - `header_formatter`: type is `Cell::Data::Formatter` <br />
-    #   Default value is `Config::Defaults.header_formatter,`
+    # - *header_formatter*:  Default value set by `Config::Defaults.header_formatter,`
     #
-    # - `header_styler`: type is `Cell::Data::Styler` <br />
-    #   Defaut value is `Config::Defaults.header_styler`
+    # - *header_styler*: Defaut value set by `Config::Defaults.header_styler`
     #
-    # - `body_alignment`: type is `Justify?` <br />
-    #   Default value is `Config::Defaults.body_alignment`
+    # - *body_alignment*: Default value set by `Config::Defaults.body_alignment`
     #
-    # - `body_formatter`: type id `Cell::Data::Formatter` <br />
-    #   Default value is `Config::Defaults.body_formatter`
+    # - *body_formatter*: Default value set by `Config::Defaults.body_formatter`
     #
-    # - `body_styler`: type is `Cell::Data::Styler` <br />
-    #   Default value is `Config::Defaults.body_styler`
+    # - *body_styler*: Default value set by `Config::Defaults.body_styler`
     #
-    # - `left_padding`: type is `Int32`<br />
-    #   Default value is `Config::Defaults.left_padding` <br />
-    #   Permitted range of values is governed by `Config::Controls.padding_width_range` in
-    #   the `check_padding` method<br />
+    # - *left_padding*: Default value set by `Config::Defaults.left_padding`
+    #
+    # - *right_padding*: Default value set by `Config::Defaults.right_padding` <br />
+    #
+    #   For both left and right padding, permitted range of values is governed by
+    #   `Config::Controls.padding_width_range` <br />
     #   (raises `Error::InvalidValue` runtime exception if value not in range)
     #
-    # - `right_padding`: type is `Int32` <br />
-    #   Default value is `Config::Defaults.right_padding` <br />
-    #   Permitted range of values is governed by `Config::Controls.padding_width_range` in
-    #   the `check_padding` method<br />
-    #   (raises `Error::InvalidValue` runtime exception if value not in range)
+    # - *padding_character*: Default value set by `Config::Defaults.padding_character` <br />
+    #   (raises an `Error::InvalidValue` runtime exception if string size is
+    #   not exactly 1)
     #
-    # - `padding_character`: type is `String`<br />
-    #   Default value is `Config::Defaults.padding_character` <br />
-    #   The `check_padding_character` auxiliairy method ensures the `padding_character`
-    #   string size is only one <br />
-    #   (raises an `Error::InvalidValue` runtime exception otherwise)
+    # - *truncation_indicator*: Defaut value set by `Config::Defaults.truncation_indicator` <br />
+    #   (raises an `Error::InvalidValue` runtime exception if string size is
+    #   not exactly 1)
     #
-    # - `truncation_indicator`: type is `String` <br />
-    #   Defaut value is `Config::Defaults.truncation_indicator` <br />
-    #   The `check_truncation_indicator` auxiliairy method ensures the
-    #   `truncation_indicator` string size
-    #   is only one (raises an `Error::InvalidValue` runtime exception otherwise)
-    #
-    # - `width`: type is `Int32` <br />
-    #   Default value is `Config::Defaults.column_width`<br />
-    #   Permitted range of values is governed by `Config::Controls.column_width_range` in the
-    #   `check_width` auxiliary method (raises `Error::InvalidValue` runtime exception
-    #   unless value in range)
+    # - *width*: Default value set by `Config::Defaults.column_width`<br />
+    #   Permitted range of values is governed by `Config::Controls.column_width_range`<br />
+    #   (raises `Error::InvalidValue` runtime exception ifvalue not in range)
     #
     # - `header_frequency`: type is `Int32?` <br />
     #   Default value is `Config::Defaults.header_frequency` <br />

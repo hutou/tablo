@@ -4,6 +4,9 @@ module Tablo
   # attributes in Tablo::Table, ie: *title*, *subtitle* and *footer*. <br />
   # *(Please note, however, that the display of a subtitle is dependent on the
   # existence of a title).*
+  #
+  # The width of Heading (or Group) cells cannot be set arbitrarily: it is
+  # automatically deduced from the cumulative width of the underlying columns.
   struct Heading
     protected getter line_breaks_before, line_breaks_after
     protected property value

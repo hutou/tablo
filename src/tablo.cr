@@ -36,7 +36,7 @@ module Tablo
   # table = Tablo::Table.new(ar) do |t|
   #   t.add_column("Floats",
   #     body_formatter: ->(value : Tablo::CellType) {
-  #       Tablo.align_on_dot(value, 3, :dot_zero)
+  #       Tablo.align_on_dot(value.as(Float), 3, :dot_zero)
   #     }, &.itself)
   # end
   # puts table
@@ -118,6 +118,18 @@ module Tablo
   # ```
   # +-----------------------------+
   # | <----- N.u.m.b.e.r.s -----> |
+  # +--------------+--------------+
+  # |      integer |        Float |
+  # +--------------+--------------+
+  # |            1 |          1.0 |
+  # |            2 |         1.41 |
+  # |            3 |         1.73 |
+  # +--------------+--------------+
+  # ```
+  # And, without specifying *max_fill*:
+  # ```
+  # +-----------------------------+
+  # | <-- N..u..m..b..e..r..s --> |
   # +--------------+--------------+
   # |      integer |        Float |
   # +--------------+--------------+

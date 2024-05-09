@@ -1,6 +1,18 @@
 module Tablo
-  # The purpose of the Summary class is to calculate and format aggregated
-  # source data in a dedicated table, closely linked to the main table.
+  # The purpose of the Summary class is to calculate, format and display
+  # aggregated source data in a specific table.
+  #
+  # This table is usually closely linked to the main table, but it can also be
+  # presented separately  (see the *omit_last_rule* parameter governing this link
+  # in `Tablo::Table#initialize` method).
+  #
+  # The definition of the summary table is based on the following data structures:
+  # - `UserProc` for aggregate data calculation
+  # - `HeaderColumn` for header content and formatting
+  # - `BodyColumn` for formatting calculated data columns
+  # - `BodyRow` for data placement in the table
+  #
+  # Below, a complete example illustrates how this works in practice.
   class Summary(T, U, V)
     private getter summary_definition, summary_options, table
     private getter summary_sources = [] of Array(CellType)
@@ -21,15 +33,14 @@ module Tablo
     #
     # _Mandatory parameters:_
     #
-    # - `table`: type is Table(T) <br />
-    #   This parameter references the main table
+    # - *table*: This parameter references the main table
     #
-    # - `summary_definition`: its type is U, as it depends on a user defined
-    # array containing `n` instances of `Summary::UserProc`, `Summary::HeaderColumn`,
-    # `Summary::BodyColumn`, `Summary::BodyRow` structs)
+    # - *summary_definition*: a user defined array containing `n` instances
+    # of `Summary::UserProc`, `Summary::HeaderColumn`, `Summary::BodyColumn`
+    # and `Summary::BodyRow` structs)
     #
-    # - `summary_options`: its type is V, a NamedTuple of Table initializers (may be
-    # empty)
+    # - *summary_options*: a NamedTuple of Table initializers (can be empty,
+    # as the main table initializers are included by default)
     #
     # Here is a complete and functional example of Detail and Summary tables
     # "working" together (See relevant infos on usage in structs listed above)
@@ -38,8 +49,6 @@ module Tablo
     # require "tablo"
     # require "colorize"
     # require "big"
-    #
-    # Tablo::Config.styler_tty_only = false
     #
     # struct BigDecimal
     #   include Tablo::CellType
@@ -392,13 +401,14 @@ module Tablo
       # The constructor's only parameter is a Proc, which in turn expects
       # a Table(T) as its only parameter.
       #
-      #  The `table` parameter allows the user to access detailed data in two ways:
-      # 1. by directly accessing the data source (`table.sources.each ...`)
+      #  The *table* parameter allows the user to access detailed data in two ways:
+      # 1. by directly accessing the data source: `table.sources.each ...`
       # 2. by accessing data via column definition: `table.column_data(column_label).each....`
       #
-      # Note that access via column definition allows access to data not
-      # directly present in the source, but has the disadvantage of indirect
-      # access to source data via the user defined `extractor`.
+      # Note that access via column definition allows the use of data not directly
+      # present in the source, but has the disadvantage of indirect (and
+      # slower) access to  data via the user-defined *extractor* in
+      # the `Table#add_column` method.
       #
       # The Proc must return a hash of results (of type `Tablo::CellType`), which, when
       # used inside a Summary table definition, are automatically saved for
@@ -509,13 +519,11 @@ module Tablo
 
       # The constructor expects up to 5 parameters, the first 2 being mandatory
       #
-      # - `column` : type if `LabelType` <br />
-      #    It is the column identifier.
+      # - *column* : The column identifier
       #
-      # - `content` : type is String <br />
-      #    (may be empty)
+      # - *content* : A string of characters (but can be empty)
       #
-      # - The last three are optional (`alignment`, `formatter` and `styler`)
+      # - The last three are optional (*alignment*, *formatter* and *styler*)
       #
       # Examples:
       # ```
@@ -543,11 +551,10 @@ module Tablo
       # column identifier, is the only mandatory one (but it goes without saying
       # that at least one of the 3 optional parameters must be defined!)
       #
-      # - `column` : type is `LabelType` (or `Array(LabelType)`, useful if
-      #    several columns have same parameter values)
+      # - *column* : Column identifier (or array of column identifiers)
       #
-      # - The last three optional parameters are `alignment`,
-      #   `formatter` and `styler`
+      # - The last three optional parameters are *alignment*,
+      #   *formatter* and *styler*
       #
       # Example:
       # ```
@@ -578,22 +585,22 @@ module Tablo
 
       # The constructor expects 3 mandatory parameters.
       #
-      # - `column` : type is `LabelType`, the column identifier
+      # - *column* : The column identifier
       #
-      # - `row` : type is `Int32`, the row number
+      # - *row* : The row number (ie the relative position)
       #
-      # - `content` : type is `CellType` or a Proc returning a `CellType`
+      # - *content* : A CellType or a Proc returning a `CellType`
       #
-      # `column` and `row` define the precise location of the aggregated value in the
+      # *column* and *row* define the precise location of the aggregated value in the
       # Summary table. Row numbers need not be contiguous; what's important is that
       # they allow results to be displayed in the desired row order.
       #
-      # Example of `content` directly fed by a literal string:
+      # Example of *content* directly fed by a literal string:
       # ```
       # Tablo::Summary::BodyRow.new("Price", 40, "Tax (20%)")
       # Tablo::Summary::BodyRow.new("Price", 60, "Balance due"),
       # ```
-      #  Example of `content` fed by a proc returning a `CellType` value:
+      #  Example of *content* fed by a proc returning a `CellType` value:
       # ```
       # Tablo::Summary::BodyRow.new(:total, 40, ->{ Tablo::Summary.use(:tax) }),
       # Tablo::Summary::BodyRow.new(:total, 60, ->{ Tablo::Summary.use(:total_due) }),
