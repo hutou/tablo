@@ -341,7 +341,7 @@ the data source and column definitions.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L18" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L18" target="_blank">
         table.cr
       </a>
     
@@ -621,118 +621,80 @@ the data source and column definitions.</p>
           
           <p>First constructor : Table constructor has two versions to initialize a new Table
 instance, depending on whether a block is given or not.</p>
-<pre><code class="language-text">Used constants                | Default values
------------------------------ | ------------------------------------
-DEFAULT_HEADING_ALIGNMENT     | Justify::Center
-DEFAULT_FORMATTER             | -&gt;(c : CellType) { c.to_s }
-DEFAULT_STYLER                | -&gt;(s : String) { s }
-DEFAULT_DATA_DEPENDENT_STYLER | -&gt;(_c : CellType, s : String) { s }</code></pre>
 <p><em>Mandatory parameters:</em></p>
 <ul>
-<li><code><a href="../Tablo/Table.html#sources-instance-method">#sources</a></code>: type is Enumerable(T)<br />
-Can be any Enumerable data type <em>(<code>Range</code> is currently (Crystal 1.9.2)
-not correctly supported in this context: use <code>Range.to_a</code> instead)</em></li>
+<li><em>sources</em>: is any<sup>(1)</sup> Enumerable of any type T<sup>(2)</sup><br />
+<sup>(1)</sup> Currently, a Range Enumerable is not
+supported in this context:  Convert to array beforehand.<br />
+<sup>(2)</sup> Provided that the type includes the <code><a href="../Tablo/CellType.html">Tablo::CellType</a></code> module</li>
 </ul>
 <p><em>Optional named parameters, with default values</em></p>
 <ul>
 <li>
-<p><code>title</code>: type is <code>Title</code><br />
-Default set by <code><a href="../Tablo/Config/Defaults.html#title%3AHeading-class-method">Config::Defaults.title</a></code><br />
-Initializing this class without any argument set its value to <code>nil</code>,
-so there is nothing to display</p>
+<p><em>title</em>: Default set by <code><a href="../Tablo/Config/Defaults.html#title%3AHeading-class-method">Config::Defaults.title</a></code></p>
 </li>
 <li>
-<p><code>subtitle</code>: type is <code>SubTitle</code><br />
-Default set by <code><a href="../Tablo/Config/Defaults.html#subtitle%3AHeading-class-method">Config::Defaults.subtitle</a></code><br />
-(Initialization: see <code>title</code>)</p>
+<p><em>subtitle</em>: Default set by <code><a href="../Tablo/Config/Defaults.html#subtitle%3AHeading-class-method">Config::Defaults.subtitle</a></code><br />
+(depends on <em>title</em> for display)</p>
 </li>
 <li>
-<p><code>footer</code>: type is <code>Footer</code><br />
-Default set by <code><a href="../Tablo/Config/Defaults.html#footer%3AHeading-class-method">Config::Defaults.footer</a></code><br />
-(Initialization: see <code>title</code>)</p>
+<p><em>footer</em>: Default set by <code><a href="../Tablo/Config/Defaults.html#footer%3AHeading-class-method">Config::Defaults.footer</a></code></p>
 </li>
 <li>
-<p><code>border</code>: type is struct<code><a href="../Tablo/Border.html">Border</a></code><br />
-Initalized by 2 parameters :</p>
-<ul>
-<li><code>border_definition</code> (default = <code><a href="../Tablo/Config/Defaults.html#border_definition%3AString%7CBorder%3A%3APreSet-class-method">Config::Defaults.border_definition</a></code>,
-which itself defaults to <code><a href="../Tablo/Border/PreSet.html#Ascii">Border::PreSet::Ascii</a></code>) <br />
-Other <code><a href="../Tablo/Border/PreSet.html">Border::PreSet</a></code> are: <code>ReducedAscii</code>, <code>Modern</code>,
-<code>ReducedModern</code>, <code>Markdown</code>, <code>Fancy</code>, <code>Blank</code> and <code>Empty</code>. <br />
-<code>border_definition</code> may also be initialized directly by a string of 16 characters.</li>
-<li><code>border_styler</code> (default = <code><a href="../Tablo/Config/Defaults.html#border_styler%3ABorder%3A%3AStyler-class-method">Config::Defaults.border_styler</a></code>)</li>
-</ul>
+<p><em>border</em>: A dedicated struct for managing the rows and columns
+separating data cells. <br />
+See <code><a href="../Tablo/Border.html#new%28definition%3AString%7CPreSet%3DConfig%3A%3ADefaults.border_definition%2Cstyler%3AStyler%3DConfig%3A%3ADefaults.border_styler%29-class-method">Border.new</a></code> for initialization default parameters.</p>
 </li>
 <li>
-<p><code>group_alignment</code>: type is <code><a href="../Tablo/Justify.html">Justify</a></code><br />
-Default value is <code><a href="../Tablo/Config/Defaults.html#group_alignment%3AJustify-class-method">Config::Defaults.group_alignment</a></code></p>
+<p><em>group_alignment</em>: Default value set by <code><a href="../Tablo/Config/Defaults.html#group_alignment%3AJustify-class-method">Config::Defaults.group_alignment</a></code></p>
 </li>
 <li>
-<p><code>group_formatter</code>: type is <code><a href="../Tablo/Cell/Text/Formatter.html">Cell::Text::Formatter</a></code><br />
-Default value is <code><a href="../Tablo/Config/Defaults.html#group_formatter%3ACell%3A%3AText%3A%3AFormatter-class-method">Config::Defaults.group_formatter</a></code></p>
+<p><em>group_formatter</em>: Default value set by <code><a href="../Tablo/Config/Defaults.html#group_formatter%3ACell%3A%3AText%3A%3AFormatter-class-method">Config::Defaults.group_formatter</a></code></p>
 </li>
 <li>
-<p><code>group_styler</code>: type is <code><a href="../Tablo/Cell/Text/Styler.html">Cell::Text::Styler</a></code> <br />
-Default value is <code><a href="../Tablo/Config/Defaults.html#group_styler%3ACell%3A%3AText%3A%3AStyler-class-method">Config::Defaults.group_styler</a></code></p>
+<p><em>group_styler</em>: Default value set by <code><a href="../Tablo/Config/Defaults.html#group_styler%3ACell%3A%3AText%3A%3AStyler-class-method">Config::Defaults.group_styler</a></code></p>
 </li>
 <li>
-<p><code>header_alignment</code>: type is <code><a href="../Tablo/Justify.html">Justify</a>?</code> <br />
-Default value is <code><a href="../Tablo/Config/Defaults.html#header_alignment%3AJustify%7CNil-class-method">Config::Defaults.header_alignment</a></code></p>
+<p><em>header_alignment</em>:  Default value set by <code><a href="../Tablo/Config/Defaults.html#header_alignment%3AJustify%7CNil-class-method">Config::Defaults.header_alignment</a></code></p>
 </li>
 <li>
-<p><code>header_formatter</code>: type is <code><a href="../Tablo/Cell/Data/Formatter.html">Cell::Data::Formatter</a></code> <br />
-Default value is <code><a href="../Tablo/Config/Defaults.html#header_formatter%3ACell%3A%3AData%3A%3AFormatter-class-method">Config::Defaults.header_formatter</a>,</code></p>
+<p><em>header_formatter</em>:  Default value set by <code><a href="../Tablo/Config/Defaults.html#header_formatter%3ACell%3A%3AData%3A%3AFormatter-class-method">Config::Defaults.header_formatter</a>,</code></p>
 </li>
 <li>
-<p><code>header_styler</code>: type is <code><a href="../Tablo/Cell/Data/Styler.html">Cell::Data::Styler</a></code> <br />
-Defaut value is <code><a href="../Tablo/Config/Defaults.html#header_styler%3ACell%3A%3AData%3A%3AStyler-class-method">Config::Defaults.header_styler</a></code></p>
+<p><em>header_styler</em>: Defaut value set by <code><a href="../Tablo/Config/Defaults.html#header_styler%3ACell%3A%3AData%3A%3AStyler-class-method">Config::Defaults.header_styler</a></code></p>
 </li>
 <li>
-<p><code>body_alignment</code>: type is <code><a href="../Tablo/Justify.html">Justify</a>?</code> <br />
-Default value is <code><a href="../Tablo/Config/Defaults.html#body_alignment%3AJustify%7CNil-class-method">Config::Defaults.body_alignment</a></code></p>
+<p><em>body_alignment</em>: Default value set by <code><a href="../Tablo/Config/Defaults.html#body_alignment%3AJustify%7CNil-class-method">Config::Defaults.body_alignment</a></code></p>
 </li>
 <li>
-<p><code>body_formatter</code>: type id <code><a href="../Tablo/Cell/Data/Formatter.html">Cell::Data::Formatter</a></code> <br />
-Default value is <code><a href="../Tablo/Config/Defaults.html#body_formatter%3ACell%3A%3AData%3A%3AFormatter-class-method">Config::Defaults.body_formatter</a></code></p>
+<p><em>body_formatter</em>: Default value set by <code><a href="../Tablo/Config/Defaults.html#body_formatter%3ACell%3A%3AData%3A%3AFormatter-class-method">Config::Defaults.body_formatter</a></code></p>
 </li>
 <li>
-<p><code>body_styler</code>: type is <code><a href="../Tablo/Cell/Data/Styler.html">Cell::Data::Styler</a></code> <br />
-Default value is <code><a href="../Tablo/Config/Defaults.html#body_styler%3ACell%3A%3AData%3A%3AStyler-class-method">Config::Defaults.body_styler</a></code></p>
+<p><em>body_styler</em>: Default value set by <code><a href="../Tablo/Config/Defaults.html#body_styler%3ACell%3A%3AData%3A%3AStyler-class-method">Config::Defaults.body_styler</a></code></p>
 </li>
 <li>
-<p><code>left_padding</code>: type is <code>Int32</code><br />
-Default value is <code><a href="../Tablo/Config/Defaults.html#left_padding%3AInt32-class-method">Config::Defaults.left_padding</a></code> <br />
-Permitted range of values is governed by <code><a href="../Tablo/Config/Controls.html#padding_width_range%3ARange%28Int32%2CInt32%29-class-method">Config::Controls.padding_width_range</a></code> in
-the <code>check_padding</code> method<br />
+<p><em>left_padding</em>: Default value set by <code><a href="../Tablo/Config/Defaults.html#left_padding%3AInt32-class-method">Config::Defaults.left_padding</a></code></p>
+</li>
+<li>
+<p><em>right_padding</em>: Default value set by <code><a href="../Tablo/Config/Defaults.html#right_padding%3AInt32-class-method">Config::Defaults.right_padding</a></code> <br /></p>
+<p>For both left and right padding, permitted range of values is governed by
+<code><a href="../Tablo/Config/Controls.html#padding_width_range%3ARange%28Int32%2CInt32%29-class-method">Config::Controls.padding_width_range</a></code> <br />
 (raises <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> runtime exception if value not in range)</p>
 </li>
 <li>
-<p><code>right_padding</code>: type is <code>Int32</code> <br />
-Default value is <code><a href="../Tablo/Config/Defaults.html#right_padding%3AInt32-class-method">Config::Defaults.right_padding</a></code> <br />
-Permitted range of values is governed by <code><a href="../Tablo/Config/Controls.html#padding_width_range%3ARange%28Int32%2CInt32%29-class-method">Config::Controls.padding_width_range</a></code> in
-the <code>check_padding</code> method<br />
-(raises <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> runtime exception if value not in range)</p>
+<p><em>padding_character</em>: Default value set by <code><a href="../Tablo/Config/Defaults.html#padding_character%3AString-class-method">Config::Defaults.padding_character</a></code> <br />
+(raises an <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> runtime exception if string size is
+not exactly 1)</p>
 </li>
 <li>
-<p><code>padding_character</code>: type is <code>String</code><br />
-Default value is <code><a href="../Tablo/Config/Defaults.html#padding_character%3AString-class-method">Config::Defaults.padding_character</a></code> <br />
-The <code>check_padding_character</code> auxiliairy method ensures the <code>padding_character</code>
-string size is only one <br />
-(raises an <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> runtime exception otherwise)</p>
+<p><em>truncation_indicator</em>: Defaut value set by <code><a href="../Tablo/Config/Defaults.html#truncation_indicator%3AString-class-method">Config::Defaults.truncation_indicator</a></code> <br />
+(raises an <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> runtime exception if string size is
+not exactly 1)</p>
 </li>
 <li>
-<p><code>truncation_indicator</code>: type is <code>String</code> <br />
-Defaut value is <code><a href="../Tablo/Config/Defaults.html#truncation_indicator%3AString-class-method">Config::Defaults.truncation_indicator</a></code> <br />
-The <code>check_truncation_indicator</code> auxiliairy method ensures the
-<code>truncation_indicator</code> string size
-is only one (raises an <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> runtime exception otherwise)</p>
-</li>
-<li>
-<p><code>width</code>: type is <code>Int32</code> <br />
-Default value is <code><a href="../Tablo/Config/Defaults.html#column_width%3AInt32-class-method">Config::Defaults.column_width</a></code><br />
-Permitted range of values is governed by <code><a href="../Tablo/Config/Controls.html#column_width_range%3ARange%28Int32%2CInt32%29-class-method">Config::Controls.column_width_range</a></code> in the
-<code>check_width</code> auxiliary method (raises <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> runtime exception
-unless value in range)</p>
+<p><em>width</em>: Default value set by <code><a href="../Tablo/Config/Defaults.html#column_width%3AInt32-class-method">Config::Defaults.column_width</a></code><br />
+Permitted range of values is governed by <code><a href="../Tablo/Config/Controls.html#column_width_range%3ARange%28Int32%2CInt32%29-class-method">Config::Controls.column_width_range</a></code><br />
+(raises <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> runtime exception ifvalue not in range)</p>
 </li>
 <li>
 <p><code>header_frequency</code>: type is <code>Int32?</code> <br />
@@ -806,7 +768,7 @@ tables joining)</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L279" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L243" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -827,7 +789,7 @@ tables joining)</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L282" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L246" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -863,7 +825,7 @@ and one with block_given = false</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L65" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L65" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -962,7 +924,7 @@ Captured block for extracting data from source</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L431" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L395" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1023,7 +985,7 @@ By default, inherits from table <code>wrap_mode</code> initializer</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L518" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L482" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1058,7 +1020,7 @@ where <code>&lt;<a href="../Tablo/Table.html">Table</a> parameters&gt;</code> is
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L635" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L599" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1079,7 +1041,7 @@ where <code>&lt;<a href="../Tablo/Table.html">Table</a> parameters&gt;</code> is
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L641" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L605" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1104,7 +1066,7 @@ where <code>&lt;<a href="../Tablo/Table.html">Table</a> parameters&gt;</code> is
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L1619" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L1583" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1132,7 +1094,7 @@ according to the <code>header_frequency</code> value.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L693" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L657" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1163,7 +1125,7 @@ between some Body rows, we can do :</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L816" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L780" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1324,7 +1286,7 @@ in this calculation.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L993" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L957" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1346,7 +1308,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L1001" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L965" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1368,7 +1330,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L1018" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L982" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1389,7 +1351,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L45" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L45" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1414,7 +1376,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L372" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L336" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1435,7 +1397,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L647" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L611" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1456,7 +1418,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L652" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L616" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1477,7 +1439,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L1311" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L1275" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1569,7 +1531,7 @@ puts table</code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L1206" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L1170" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1653,7 +1615,7 @@ Group headers are omitted</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L1485" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L1449" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1723,7 +1685,7 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L1384" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L1348" target="_blank">View source</a>]
         
       </div>
     </div>

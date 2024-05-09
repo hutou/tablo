@@ -327,7 +327,7 @@ in order to provide aggregated results.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/summary.cr#L389" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/summary.cr#L398" target="_blank">
         summary.cr
       </a>
     
@@ -430,14 +430,15 @@ in order to provide aggregated results.</p>
           
           <p>The constructor's only parameter is a Proc, which in turn expects
 a Table(T) as its only parameter.</p>
-<p>The <code>table</code> parameter allows the user to access detailed data in two ways:</p>
+<p>The <em>table</em> parameter allows the user to access detailed data in two ways:</p>
 <ol>
-<li>by directly accessing the data source (<code>table.sources.each ...</code>)</li>
+<li>by directly accessing the data source: <code>table.sources.each ...</code></li>
 <li>by accessing data via column definition: <code>table.column_data(column_label).each....</code></li>
 </ol>
-<p>Note that access via column definition allows access to data not
-directly present in the source, but has the disadvantage of indirect
-access to source data via the user defined <code>extractor</code>.</p>
+<p>Note that access via column definition allows the use of data not directly
+present in the source, but has the disadvantage of indirect (and
+slower) access to  data via the user-defined <em>extractor</em> in
+the <code><a href="../../Tablo/Table.html#add_column%28label%3ALabelType%2C%2A%2Cheader%3Dlabel.to_s%2Cheader_alignment%3Dheader_alignment%2Cheader_formatter%3Dheader_formatter%2Cheader_styler%3Dheader_styler%2Cbody_alignment%3Dbody_alignment%2Cbody_formatter%3Dbody_formatter%2Cbody_styler%3Dbody_styler%2Cleft_padding%3Dleft_padding%2Cright_padding%3Dright_padding%2Cpadding_character%3Dpadding_character%2Cwidth%3Dwidth%2Ctruncation_indicator%3Dtruncation_indicator%2Cwrap_mode%3Dwrap_mode%2C%26extractor%3AT%2CInt32-%3ECellType%29-instance-method">Table#add_column</a></code> method.</p>
 <p>The Proc must return a hash of results (of type <code><a href="../../Tablo/CellType.html">Tablo::CellType</a></code>), which, when
 used inside a Summary table definition, are automatically saved for
 future use (see the <code><a href="../../Tablo/Summary.html#use%28key%29-class-method">Summary.use</a></code> method in <code><a href="../../Tablo/Summary/BodyRow.html">Summary::BodyRow</a></code>).</p>
@@ -536,7 +537,7 @@ puts hash[<span class="n">:max_price</span>]   <span class="c"># =&gt; 98000</sp
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/summary.cr#L501" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/summary.cr#L511" target="_blank">View source</a>]
         
       </div>
     </div>

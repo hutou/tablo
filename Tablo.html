@@ -312,84 +312,84 @@
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/border.cr#L4" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/border.cr#L4" target="_blank">
         border.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/cell.cr#L1" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/cell.cr#L1" target="_blank">
         cell.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/column.cr#L1" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/column.cr#L1" target="_blank">
         column.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/config.cr#L3" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/config.cr#L3" target="_blank">
         config.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/heading.cr#L1" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/heading.cr#L1" target="_blank">
         heading.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/row.cr#L4" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/row.cr#L4" target="_blank">
         row.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/rowgroup.cr#L4" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/rowgroup.cr#L4" target="_blank">
         rowgroup.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/summary.cr#L1" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/summary.cr#L1" target="_blank">
         summary.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/table.cr#L7" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L7" target="_blank">
         table.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/tablo.cr#L3" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/tablo.cr#L3" target="_blank">
         tablo.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/types.cr#L62" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/types.cr#L62" target="_blank">
         types.cr
       </a>
     
     <br/>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/util.cr#L1" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/util.cr#L1" target="_blank">
         util.cr
       </a>
     
@@ -536,7 +536,7 @@ ar <span class="o">=</span> [<span class="n">423.14159</span>, <span class="n">2
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new(ar) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
   t.add_column(<span class="s">&quot;Floats&quot;</span>,
     body_formatter: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>) {
-      <span class="t">Tablo</span>.align_on_dot(value, <span class="n">3</span>, <span class="n">:dot_zero</span>)
+      <span class="t">Tablo</span>.align_on_dot(value.<span class="k">as</span>(<span class="t">Float</span>), <span class="n">3</span>, <span class="n">:dot_zero</span>)
     }, <span class="o">&amp;</span>.itself)
 <span class="k">end</span>
 puts table</code></pre>
@@ -554,7 +554,7 @@ puts table</code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/tablo.cr#L53" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/tablo.cr#L53" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -612,12 +612,22 @@ limited by the <em>max_fill</em> parameter to one character.</p>
 |            2 |         1.41 |
 |            3 |         1.73 |
 +--------------+--------------+</code></pre>
+<p>And, without specifying <em>max_fill</em>:</p>
+<pre><code class="language-crystal">+-----------------------------+
+| &lt;-- N..u..m..b..e..r..s --&gt; |
++--------------+--------------+
+|      integer |        Float |
++--------------+--------------+
+|            1 |          1.0 |
+|            2 |         1.41 |
+|            3 |         1.73 |
++--------------+--------------+</code></pre>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/tablo.cr#L129" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/tablo.cr#L141" target="_blank">View source</a>]
         
       </div>
     </div>

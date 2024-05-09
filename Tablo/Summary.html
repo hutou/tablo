@@ -300,8 +300,19 @@
     Overview
   </h2>
 
-  <p>The purpose of the Summary class is to calculate and format aggregated
-source data in a dedicated table, closely linked to the main table.</p>
+  <p>The purpose of the Summary class is to calculate, format and display
+aggregated source data in a specific table.</p>
+<p>This table is usually closely linked to the main table, but it can also be
+presented separately  (see the <em>omit_last_rule</em> parameter governing this link
+in <code><a href="../Tablo/Table.html#initialize%28block_given%29-macro">Tablo::Table#initialize</a></code> method).</p>
+<p>The definition of the summary table is based on the following data structures:</p>
+<ul>
+<li><code><a href="../Tablo/Summary/UserProc.html">UserProc</a></code> for aggregate data calculation</li>
+<li><code><a href="../Tablo/Summary/HeaderColumn.html">HeaderColumn</a></code> for header content and formatting</li>
+<li><code><a href="../Tablo/Summary/BodyColumn.html">BodyColumn</a></code> for formatting calculated data columns</li>
+<li><code><a href="../Tablo/Summary/BodyRow.html">BodyRow</a></code> for data placement in the table</li>
+</ul>
+<p>Below, a complete example illustrates how this works in practice.</p>
 
 
 
@@ -326,7 +337,7 @@ source data in a dedicated table, closely linked to the main table.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/summary.cr#L4" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/summary.cr#L16" target="_blank">
         summary.cr
       </a>
     
@@ -437,17 +448,16 @@ source data in a dedicated table, closely linked to the main table.</p>
 <p><em>Mandatory parameters:</em></p>
 <ul>
 <li>
-<p><code>table</code>: type is Table(T) <br />
-This parameter references the main table</p>
+<p><em>table</em>: This parameter references the main table</p>
 </li>
 <li>
-<p><code>summary_definition</code>: its type is U, as it depends on a user defined
-array containing <code>n</code> instances of <code><a href="../Tablo/Summary/UserProc.html">Summary::UserProc</a></code>, <code><a href="../Tablo/Summary/HeaderColumn.html">Summary::HeaderColumn</a></code>,
-<code><a href="../Tablo/Summary/BodyColumn.html">Summary::BodyColumn</a></code>, <code><a href="../Tablo/Summary/BodyRow.html">Summary::BodyRow</a></code> structs)</p>
+<p><em>summary_definition</em>: a user defined array containing <code>n</code> instances
+of <code><a href="../Tablo/Summary/UserProc.html">Summary::UserProc</a></code>, <code><a href="../Tablo/Summary/HeaderColumn.html">Summary::HeaderColumn</a></code>, <code><a href="../Tablo/Summary/BodyColumn.html">Summary::BodyColumn</a></code>
+and <code><a href="../Tablo/Summary/BodyRow.html">Summary::BodyRow</a></code> structs)</p>
 </li>
 <li>
-<p><code>summary_options</code>: its type is V, a NamedTuple of Table initializers (may be
-empty)</p>
+<p><em>summary_options</em>: a NamedTuple of Table initializers (can be empty,
+as the main table initializers are included by default)</p>
 </li>
 </ul>
 <p>Here is a complete and functional example of Detail and Summary tables
@@ -455,8 +465,6 @@ empty)</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
 <span class="k">require</span> <span class="s">&quot;big&quot;</span>
-
-<span class="t">Tablo</span><span class="t">::</span><span class="t">Config</span>.styler_tty_only <span class="o">=</span> <span class="n">false</span>
 
 <span class="k">struct</span> <span class="t">BigDecimal</span>
   <span class="k">include</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>
@@ -579,7 +587,7 @@ before summary table definition.</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/summary.cr#L161" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/summary.cr#L170" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -617,7 +625,7 @@ a previous calculation identified by <code>:total_sum</code>:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/summary.cr#L180" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/summary.cr#L189" target="_blank">View source</a>]
         
       </div>
     </div>

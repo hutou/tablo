@@ -325,7 +325,7 @@
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/summary.cr#L576" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/summary.cr#L583" target="_blank">
         summary.cr
       </a>
     
@@ -429,22 +429,22 @@
           <p>The constructor expects 3 mandatory parameters.</p>
 <ul>
 <li>
-<p><code>column</code> : type is <code><a href="../../Tablo/LabelType.html">LabelType</a></code>, the column identifier</p>
+<p><em>column</em> : The column identifier</p>
 </li>
 <li>
-<p><code>row</code> : type is <code>Int32</code>, the row number</p>
+<p><em>row</em> : The row number (ie the relative position)</p>
 </li>
 <li>
-<p><code>content</code> : type is <code><a href="../../Tablo/CellType.html">CellType</a></code> or a Proc returning a <code><a href="../../Tablo/CellType.html">CellType</a></code></p>
+<p><em>content</em> : A CellType or a Proc returning a <code><a href="../../Tablo/CellType.html">CellType</a></code></p>
 </li>
 </ul>
-<p><code>column</code> and <code>row</code> define the precise location of the aggregated value in the
+<p><em>column</em> and <em>row</em> define the precise location of the aggregated value in the
 Summary table. Row numbers need not be contiguous; what's important is that
 they allow results to be displayed in the desired row order.</p>
-<p>Example of <code>content</code> directly fed by a literal string:</p>
+<p>Example of <em>content</em> directly fed by a literal string:</p>
 <pre><code class="language-crystal"><span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="s">&quot;Price&quot;</span>, <span class="n">40</span>, <span class="s">&quot;Tax (20%)&quot;</span>)
 <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="s">&quot;Price&quot;</span>, <span class="n">60</span>, <span class="s">&quot;Balance due&quot;</span>),</code></pre>
-<p>Example of <code>content</code> fed by a proc returning a <code><a href="../../Tablo/CellType.html">CellType</a></code> value:</p>
+<p>Example of <em>content</em> fed by a proc returning a <code><a href="../../Tablo/CellType.html">CellType</a></code> value:</p>
 <pre><code class="language-crystal"><span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">40</span>, <span class="o">-&gt;</span>{ <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:tax</span>) }),
 <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">60</span>, <span class="o">-&gt;</span>{ <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total_due</span>) }),</code></pre>
 <p><strong>Important</strong>:
@@ -456,7 +456,7 @@ a <code><a href="../../Tablo/Summary/UserProc.html">Summary::UserProc</a></code>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/f380e15b75e772097939c5fb33f456930a1f232b/src/summary.cr#L606" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/summary.cr#L613" target="_blank">View source</a>]
         
       </div>
     </div>
