@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.11.2">
+<meta name="crystal_docs.project_version" content="development">
+<meta name="crystal_docs.project_name" content="tablo">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="tablo">
+  <title>Tablo::Functions - tablo development</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          tablo
+        </a>
+      </h1>
+
+      <span class="project-version">
+        development
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="tablo/Tablo" data-name="tablo">
+      <a href="../Tablo.html">Tablo</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="tablo/Tablo/Border" data-name="tablo::border">
+      <a href="../Tablo/Border.html">Border</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Border/PreSet" data-name="tablo::border::preset">
+      <a href="../Tablo/Border/PreSet.html">PreSet</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Border/Styler" data-name="tablo::border::styler">
+      <a href="../Tablo/Border/Styler.html">Styler</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="tablo/Tablo/Cell" data-name="tablo::cell">
+      <a href="../Tablo/Cell.html">Cell</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="tablo/Tablo/Cell/Data" data-name="tablo::cell::data">
+      <a href="../Tablo/Cell/Data.html">Data</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Cell/Data/Coords" data-name="tablo::cell::data::coords">
+      <a href="../Tablo/Cell/Data/Coords.html">Coords</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Cell/Data/Formatter" data-name="tablo::cell::data::formatter">
+      <a href="../Tablo/Cell/Data/Formatter.html">Formatter</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Cell/Data/Styler" data-name="tablo::cell::data::styler">
+      <a href="../Tablo/Cell/Data/Styler.html">Styler</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="tablo/Tablo/Cell/Text" data-name="tablo::cell::text">
+      <a href="../Tablo/Cell/Text.html">Text</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Cell/Text/Formatter" data-name="tablo::cell::text::formatter">
+      <a href="../Tablo/Cell/Text/Formatter.html">Formatter</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Cell/Text/Styler" data-name="tablo::cell::text::styler">
+      <a href="../Tablo/Cell/Text/Styler.html">Styler</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/CellType" data-name="tablo::celltype">
+      <a href="../Tablo/CellType.html">CellType</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Column" data-name="tablo::column(t)">
+      <a href="../Tablo/Column.html">Column</a>
+      
+    </li>
+  
+  <li class="parent " data-id="tablo/Tablo/Config" data-name="tablo::config">
+      <a href="../Tablo/Config.html">Config</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Config/Controls" data-name="tablo::config::controls">
+      <a href="../Tablo/Config/Controls.html">Controls</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Config/Defaults" data-name="tablo::config::defaults">
+      <a href="../Tablo/Config/Defaults.html">Defaults</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="tablo/Tablo/Error" data-name="tablo::error">
+      <a href="../Tablo/Error.html">Error</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Error/DuplicateLabel" data-name="tablo::error::duplicatelabel">
+      <a href="../Tablo/Error/DuplicateLabel.html">DuplicateLabel</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Error/GroupEmpty" data-name="tablo::error::groupempty">
+      <a href="../Tablo/Error/GroupEmpty.html">GroupEmpty</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Error/InvalidBorderDefinition" data-name="tablo::error::invalidborderdefinition">
+      <a href="../Tablo/Error/InvalidBorderDefinition.html">InvalidBorderDefinition</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Error/InvalidColumnIndex" data-name="tablo::error::invalidcolumnindex">
+      <a href="../Tablo/Error/InvalidColumnIndex.html">InvalidColumnIndex</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Error/InvalidValue" data-name="tablo::error::invalidvalue">
+      <a href="../Tablo/Error/InvalidValue.html">InvalidValue</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Error/LabelNotFound" data-name="tablo::error::labelnotfound">
+      <a href="../Tablo/Error/LabelNotFound.html">LabelNotFound</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent open current" data-id="tablo/Tablo/Functions" data-name="tablo::functions">
+      <a href="../Tablo/Functions.html">Functions</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Functions/FPAlign" data-name="tablo::functions::fpalign">
+      <a href="../Tablo/Functions/FPAlign.html">FPAlign</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Heading" data-name="tablo::heading">
+      <a href="../Tablo/Heading.html">Heading</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Justify" data-name="tablo::justify">
+      <a href="../Tablo/Justify.html">Justify</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/LabelType" data-name="tablo::labeltype">
+      <a href="../Tablo/LabelType.html">LabelType</a>
+      
+    </li>
+  
+  <li class="parent " data-id="tablo/Tablo/Summary" data-name="tablo::summary(t, u, v)">
+      <a href="../Tablo/Summary.html">Summary</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Summary/BodyColumn" data-name="tablo::summary::bodycolumn">
+      <a href="../Tablo/Summary/BodyColumn.html">BodyColumn</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Summary/BodyRow" data-name="tablo::summary::bodyrow">
+      <a href="../Tablo/Summary/BodyRow.html">BodyRow</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Summary/HeaderColumn" data-name="tablo::summary::headercolumn">
+      <a href="../Tablo/Summary/HeaderColumn.html">HeaderColumn</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Summary/UserProc" data-name="tablo::summary::userproc(t)">
+      <a href="../Tablo/Summary/UserProc.html">UserProc</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Table" data-name="tablo::table(t)">
+      <a href="../Tablo/Table.html">Table</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/WrapMode" data-name="tablo::wrapmode">
+      <a href="../Tablo/WrapMode.html">WrapMode</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">module</span> Tablo::<wbr>Functions
+
+</h1>
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="extended-modules" class="anchor" href="#extended-modules">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Extended Modules
+  </h2>
+  <ul class="other-types-list">
+    
+      <li class="other-type"><a href="../Tablo/Functions.html">Tablo::Functions</a></li>
+    
+  </ul>
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/tablo.cr#L6" target="_blank">
+        tablo.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+
+
+  <h2>
+    <a id="class-method-summary" class="anchor" href="#class-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#fp_align%28value%3AFloat%2Cdec%3AInt32%2Cmode%3AFPAlign%3DFPAlign%3A%3ADotZero%29-class-method" class="signature"><strong>.fp_align</strong>(value : Float, dec : Int32, mode : FPAlign = <span class="t">FPAlign</span><span class="t">::</span><span class="t">DotZero</span>)</a>
+        
+          <div class="summary"><p>Method to align floats on decimal point, where non significant zeroes are replaced by spaces (see <code><a href="../Tablo/Functions/FPAlign.html">FPAlign</a></code>)</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#stretch%28text%3AString%2Ctarget_width%3AInt32%2Cprefix%3AString%3D%22%22%2Csuffix%3AString%3D%22%22%2Ctext_alignment%3AJustify%3DJustify%3A%3ACenter%2Cfill_char%3AChar%3D%27%27%2Cmax_fill%3AInt32%3DInt32%3A%3AMAX%29%3AString-class-method" class="signature"><strong>.stretch</strong>(text : String, target_width : Int32, prefix : String = <span class="s">&quot;&quot;</span>, suffix : String = <span class="s">&quot;&quot;</span>, text_alignment : Justify = <span class="t">Justify</span><span class="t">::</span><span class="t">Center</span>, fill_char : Char = <span class="s">&#39; &#39;</span>, max_fill : Int32 = <span class="t">Int32</span><span class="t">::</span><span class="t">MAX</span>) : String</a>
+        
+          <div class="summary"><p>The <code><a href="../Tablo/Functions.html#stretch%28text%3AString%2Ctarget_width%3AInt32%2Cprefix%3AString%3D%22%22%2Csuffix%3AString%3D%22%22%2Ctext_alignment%3AJustify%3DJustify%3A%3ACenter%2Cfill_char%3AChar%3D%27%27%2Cmax_fill%3AInt32%3DInt32%3A%3AMAX%29%3AString-class-method">.stretch</a></code> method is designed to optimize the filling of a text zone, possibly multi-line, by inserting one or more filler characters (by default space) between each character of the initial string.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+
+
+<div class="methods-inherited">
+  
+</div>
+
+
+
+
+  <h2>
+    <a id="class-method-detail" class="anchor" href="#class-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="fp_align(value:Float,dec:Int32,mode:FPAlign=FPAlign::DotZero)-class-method">
+      <div class="signature">
+        
+        def self.<strong>fp_align</strong>(value : Float, dec : Int32, mode : <a href="../Tablo/Functions/FPAlign.html">FPAlign</a> = <span class="t">FPAlign</span><span class="t">::</span><span class="t">DotZero</span>)
+
+        <a class="method-permalink" href="#fp_align%28value%3AFloat%2Cdec%3AInt32%2Cmode%3AFPAlign%3DFPAlign%3A%3ADotZero%29-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Method to align floats on decimal point, where non significant zeroes are
+replaced by spaces (see <code><a href="../Tablo/Functions/FPAlign.html">FPAlign</a></code>)</p>
+<p>Mandatory parameters are:</p>
+<ul>
+<li><em>value</em>: The number to align on decimal point</li>
+<li><em>dec</em>: Number of decimal places (can be negative: see valid interval in
+<code><a href="../Tablo/Config/Controls.html#rounding_range%3ARange%28Int32%2CInt32%29-class-method">Config::Controls.rounding_range</a></code>)</li>
+<li><em>mode</em>: Defines format type for decimal point alignment
+(defaults to <code><a href="../Tablo/Functions/FPAlign.html#DotZero">FPAlign::DotZero</a></code>)</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+
+ar <span class="o">=</span> [<span class="n">423.14159</span>, <span class="n">2.0000345</span>, <span class="n">0.0000234</span>, <span class="n">42.21</span>, <span class="n">7.9</span>]
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new(ar) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;Floats&quot;</span>,
+    body_formatter: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>) {
+      <span class="t">Tablo</span><span class="t">::</span><span class="t">Functions</span>.fp_align(value.<span class="k">as</span>(<span class="t">Float</span>), <span class="n">3</span>, <span class="n">:dot_zero</span>)
+    }, <span class="o">&amp;</span>.itself)
+<span class="k">end</span>
+puts table</code></pre>
+<pre><code class="language-crystal">+--------------+
+|       Floats |
++--------------+
+|      423.142 |
+|        2.0   |
+|        0.0   |
+|       42.21  |
+|        7.9   |
++--------------+</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/tablo.cr#L54" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="stretch(text:String,target_width:Int32,prefix:String=&quot;&quot;,suffix:String=&quot;&quot;,text_alignment:Justify=Justify::Center,fill_char:Char=&#39;&#39;,max_fill:Int32=Int32::MAX):String-class-method">
+      <div class="signature">
+        
+        def self.<strong>stretch</strong>(text : String, target_width : Int32, prefix : String = <span class="s">&quot;&quot;</span>, suffix : String = <span class="s">&quot;&quot;</span>, text_alignment : <a href="../Tablo/Justify.html">Justify</a> = <span class="t">Justify</span><span class="t">::</span><span class="t">Center</span>, fill_char : Char = <span class="s">&#39; &#39;</span>, max_fill : Int32 = <span class="t">Int32</span><span class="t">::</span><span class="t">MAX</span>) : String
+
+        <a class="method-permalink" href="#stretch%28text%3AString%2Ctarget_width%3AInt32%2Cprefix%3AString%3D%22%22%2Csuffix%3AString%3D%22%22%2Ctext_alignment%3AJustify%3DJustify%3A%3ACenter%2Cfill_char%3AChar%3D%27%27%2Cmax_fill%3AInt32%3DInt32%3A%3AMAX%29%3AString-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>The <code><a href="../Tablo/Functions.html#stretch%28text%3AString%2Ctarget_width%3AInt32%2Cprefix%3AString%3D%22%22%2Csuffix%3AString%3D%22%22%2Ctext_alignment%3AJustify%3DJustify%3A%3ACenter%2Cfill_char%3AChar%3D%27%27%2Cmax_fill%3AInt32%3DInt32%3A%3AMAX%29%3AString-class-method">.stretch</a></code> method is designed to optimize the filling of a text zone,
+possibly multi-line, by inserting one or more filler characters (by
+default space) between each character of the initial string.</p>
+<p><em>Mandatory parameters:</em></p>
+<ul>
+<li><em>text</em>: The content of the cell (possibly multiline) to be stretched</li>
+<li><em>target_width</em>: Width of column (or group or header cell)</li>
+</ul>
+<p><em>Optional named parameters, with default values</em></p>
+<ul>
+<li><em>prefix</em>: String inserted in front of stretched text, left-aligned <br/>
+The area between braces can be reduced at will, to maximize stretching.
+See example below.</li>
+<li><em>suffix</em>: Same as prefix, but right-aligned</li>
+<li><em>alignment</em>: Justification of stretched text, excluding prefix and suffix</li>
+<li><em>fill_char</em>: Fill character for stretched text</li>
+<li><em>max_fill</em>: Can be set to control the number of padding characters
+(<em>fill_char</em>) between each character in the stretched string</li>
+</ul>
+<p>If constraints cannot be met (for example, prefix or suffix margins too large),
+returns text unchanged.</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>]) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;integer&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="s">&quot;Float&quot;</span>, <span class="o">&amp;</span>.<span class="o">**</span>(<span class="n">0.5</span>).round(<span class="n">2</span>))
+  t.add_group(<span class="s">&quot;Numbers&quot;</span>, formatter: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, width : <span class="t">Int32</span>) {
+    <span class="t">Tablo</span><span class="t">::</span><span class="t">Functions</span>.stretch(value.<span class="k">as</span>(<span class="t">String</span>), width, fill_char: <span class="s">&#39;.&#39;</span>, max_fill: <span class="n">1</span>,
+      prefix: <span class="s">&quot;&lt;--{------} &quot;</span>, suffix: <span class="s">&quot; {------}--&gt;&quot;</span>)
+  })
+<span class="k">end</span>
+puts table</code></pre>
+<p>In this example, we can see that the variable areas of the prefix and
+suffix have been reduced to maximize the stretch, which is nevertheless
+limited by the <em>max_fill</em> parameter to one character.</p>
+<pre><code class="language-crystal">+-----------------------------+
+| &lt;----- N.u.m.b.e.r.s -----&gt; |
++--------------+--------------+
+|      integer |        Float |
++--------------+--------------+
+|            1 |          1.0 |
+|            2 |         1.41 |
+|            3 |         1.73 |
++--------------+--------------+</code></pre>
+<p>And, without specifying <em>max_fill</em>:</p>
+<pre><code class="language-crystal">+-----------------------------+
+| &lt;-- N..u..m..b..e..r..s --&gt; |
++--------------+--------------+
+|      integer |        Float |
++--------------+--------------+
+|            1 |          1.0 |
+|            2 |         1.41 |
+|            3 |         1.73 |
++--------------+--------------+</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/tablo.cr#L142" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+
+
+</div>
+
+</body>
+</html>

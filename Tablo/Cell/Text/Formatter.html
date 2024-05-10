@@ -62,11 +62,6 @@
       
         <ul>
   
-  <li class=" " data-id="tablo/Tablo/AlignOnDot" data-name="tablo::alignondot">
-      <a href="../../../Tablo/AlignOnDot.html">AlignOnDot</a>
-      
-    </li>
-  
   <li class="parent " data-id="tablo/Tablo/Border" data-name="tablo::border">
       <a href="../../../Tablo/Border.html">Border</a>
       
@@ -212,6 +207,21 @@
       
     </li>
   
+  <li class="parent " data-id="tablo/Tablo/Functions" data-name="tablo::functions">
+      <a href="../../../Tablo/Functions.html">Functions</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Functions/FPAlign" data-name="tablo::functions::fpalign">
+      <a href="../../../Tablo/Functions/FPAlign.html">FPAlign</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
   <li class=" " data-id="tablo/Tablo/Heading" data-name="tablo::heading">
       <a href="../../../Tablo/Heading.html">Heading</a>
       
@@ -342,7 +352,7 @@ puts table</code></pre>
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
   title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My Title&quot;</span>, framed: <span class="n">true</span>,
     formatter: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, column_width : <span class="t">Int32</span>) {
-      <span class="t">Tablo</span>.stretch(value.<span class="k">as</span>(<span class="t">String</span>), target_width: column_width)
+      <span class="t">Tablo</span><span class="t">::</span><span class="t">Functions</span>.stretch(value.<span class="k">as</span>(<span class="t">String</span>), target_width: column_width)
     })) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
   t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
   t.add_column(<span class="s">&quot;itself x 2&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">2</span>))
@@ -392,7 +402,7 @@ puts table</code></pre>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/cell.cr#L291" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/cell.cr#L291" target="_blank">
         cell.cr
       </a>
     

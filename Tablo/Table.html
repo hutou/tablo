@@ -62,11 +62,6 @@
       
         <ul>
   
-  <li class=" " data-id="tablo/Tablo/AlignOnDot" data-name="tablo::alignondot">
-      <a href="../Tablo/AlignOnDot.html">AlignOnDot</a>
-      
-    </li>
-  
   <li class="parent " data-id="tablo/Tablo/Border" data-name="tablo::border">
       <a href="../Tablo/Border.html">Border</a>
       
@@ -212,6 +207,21 @@
       
     </li>
   
+  <li class="parent " data-id="tablo/Tablo/Functions" data-name="tablo::functions">
+      <a href="../Tablo/Functions.html">Functions</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Functions/FPAlign" data-name="tablo::functions::fpalign">
+      <a href="../Tablo/Functions/FPAlign.html">FPAlign</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
   <li class=" " data-id="tablo/Tablo/Heading" data-name="tablo::heading">
       <a href="../Tablo/Heading.html">Heading</a>
       
@@ -341,7 +351,7 @@ the data source and column definitions.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L18" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L18" target="_blank">
         table.cr
       </a>
     
@@ -694,38 +704,32 @@ not exactly 1)</p>
 <li>
 <p><em>width</em>: Default value set by <code><a href="../Tablo/Config/Defaults.html#column_width%3AInt32-class-method">Config::Defaults.column_width</a></code><br />
 Permitted range of values is governed by <code><a href="../Tablo/Config/Controls.html#column_width_range%3ARange%28Int32%2CInt32%29-class-method">Config::Controls.column_width_range</a></code><br />
-(raises <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> runtime exception ifvalue not in range)</p>
+(raises <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> runtime exception if value not in range)</p>
 </li>
 <li>
-<p><code>header_frequency</code>: type is <code>Int32?</code> <br />
-Default value is <code><a href="../Tablo/Config/Defaults.html#header_frequency%3AInt32%7CNil-class-method">Config::Defaults.header_frequency</a></code> <br />
-Permitted range of values is governed by <code><a href="../Tablo/Config/Controls.html#header_frequency_range%3ARange%28Int32%2CInt32%29-class-method">Config::Controls.header_frequency_range</a></code> in the
-<code>check_header_frequency</code> auxiliary method (raises <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code>
-runtime exception
-unless value in range or <code>nil</code>)</p>
+<p><em>header_frequency</em>: Default value set by <code><a href="../Tablo/Config/Defaults.html#header_frequency%3AInt32%7CNil-class-method">Config::Defaults.header_frequency</a></code> <br />
+Permitted range of values is governed by <code><a href="../Tablo/Config/Controls.html#header_frequency_range%3ARange%28Int32%2CInt32%29-class-method">Config::Controls.header_frequency_range</a></code>  <br />
+(raises <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> runtime exception unless value in range or <code>nil</code>)</p>
 <ul>
 <li>If set to <code>0</code>, rows of data other than body are displayed
 only once, at the beginning for titles and headers, at the end for the footer.</li>
 <li>If set to <code>n</code> (positive), group or column headers are repeated every <code>n</code>
 rows, as are footers, but titles and subtitles are not repeated (unless
-title <code>repeated</code> attribute is set to <code>true</code>)</li>
+title <em>repeated</em> attribute is set to <code>true</code>)</li>
 <li>If set to <code>nil</code>, only body rows are displayed.</li>
 </ul>
 </li>
 <li>
-<p><code>row_divider_frequency</code>: type is <code>Int32?</code> <br />
-Default value is <code><a href="../Tablo/Config/Defaults.html#row_divider_frequency%3AInt32%7CNil-class-method">Config::Defaults.row_divider_frequency</a></code> <br />
-Permitted range of values is governed by <code><a href="../Tablo/Config/Controls.html#row_divider_frequency_range%3ARange%28Int32%2CInt32%29-class-method">Config::Controls.row_divider_frequency_range</a></code>
-in the <code>check_row_divider_frequency</code> auxiliary method (raises <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code>
-runtime exception unless value in range or <code>nil</code>)</p>
+<p><em>row_divider_frequency</em>: Default value set by <code><a href="../Tablo/Config/Defaults.html#row_divider_frequency%3AInt32%7CNil-class-method">Config::Defaults.row_divider_frequency</a></code> <br />
+Permitted range of values is governed by <code><a href="../Tablo/Config/Controls.html#row_divider_frequency_range%3ARange%28Int32%2CInt32%29-class-method">Config::Controls.row_divider_frequency_range</a></code> <br />
+(raises <code><a href="../Tablo/Error/InvalidValue.html">Error::InvalidValue</a></code> runtime exception unless value in range or <code>nil</code>)</p>
 </li>
 <li>
-<p><code>wrap_mode</code>: type is <code><a href="../Tablo/WrapMode.html">WrapMode</a></code> <br />
-Default value is <code><a href="../Tablo/Config/Defaults.html#wrap_mode%3AWrapMode-class-method">Config::Defaults.wrap_mode</a></code><br />
+<p><em>wrap_mode</em>: Default value is <code><a href="../Tablo/Config/Defaults.html#wrap_mode%3AWrapMode-class-method">Config::Defaults.wrap_mode</a></code><br />
 The <code><a href="../Tablo/WrapMode.html">WrapMode</a></code> enum defines 2 modes :</p>
 <ul>
-<li><code>Rune</code> : long lines can be cut between characters (graphemes)</li>
-<li><code>Word</code> : long lines can be cut between words only</li>
+<li><code>Rune</code> : long lines are cut between characters (graphemes)</li>
+<li><code>Word</code> : long lines are cut between words only</li>
 </ul>
 </li>
 <li>
@@ -768,7 +772,7 @@ tables joining)</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L243" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L237" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -789,7 +793,7 @@ tables joining)</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L246" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L240" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -825,7 +829,7 @@ and one with block_given = false</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L65" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L65" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -924,7 +928,7 @@ Captured block for extracting data from source</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L395" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L389" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -985,7 +989,7 @@ By default, inherits from table <code>wrap_mode</code> initializer</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L482" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L476" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1020,7 +1024,7 @@ where <code>&lt;<a href="../Tablo/Table.html">Table</a> parameters&gt;</code> is
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L599" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L593" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1041,7 +1045,7 @@ where <code>&lt;<a href="../Tablo/Table.html">Table</a> parameters&gt;</code> is
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L605" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L599" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1066,7 +1070,7 @@ where <code>&lt;<a href="../Tablo/Table.html">Table</a> parameters&gt;</code> is
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L1583" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L1577" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1094,7 +1098,7 @@ according to the <code>header_frequency</code> value.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L657" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L651" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1125,7 +1129,7 @@ between some Body rows, we can do :</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L780" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L774" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1286,7 +1290,7 @@ in this calculation.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L957" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L951" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1308,7 +1312,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L965" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L959" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1330,7 +1334,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L982" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L976" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1351,7 +1355,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L45" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L45" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1376,7 +1380,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L336" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L330" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1397,7 +1401,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L611" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L605" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1418,7 +1422,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L616" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L610" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1439,7 +1443,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L1275" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L1269" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1531,7 +1535,7 @@ puts table</code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L1170" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L1164" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1615,7 +1619,7 @@ Group headers are omitted</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L1449" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L1443" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1685,7 +1689,7 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7fca9dbefc3a83bf266b7cf95d26be3911d73fb4/src/table.cr#L1348" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/978907cbecb7876e381d5dfc807b7bf66b6750d5/src/table.cr#L1342" target="_blank">View source</a>]
         
       </div>
     </div>
