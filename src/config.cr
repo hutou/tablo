@@ -69,8 +69,8 @@ module Tablo
       # See `LINE_BREAKS_RANGE`
       class_property line_breaks_range : Range(Int32, Int32) = LINE_BREAKS_RANGE
 
-      # Default range of allowable values for rounding in `Tablo.align_on_dot` <br />
-      #  Check is done inside `Tablo.align_on_dot` method
+      # Default range of allowable values for rounding in `Tablo::Functions.fp_align` <br />
+      #  Check is done inside `Tablo::Functions.fp_align` method
       ROUNDING_RANGE = -8..8
       # see `ROUNDING_RANGE`
       class_property rounding_range : Range(Int32, Int32) = ROUNDING_RANGE

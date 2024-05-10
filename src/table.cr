@@ -182,34 +182,28 @@ module Tablo
     #
     # - *width*: Default value set by `Config::Defaults.column_width`<br />
     #   Permitted range of values is governed by `Config::Controls.column_width_range`<br />
-    #   (raises `Error::InvalidValue` runtime exception ifvalue not in range)
+    #   (raises `Error::InvalidValue` runtime exception if value not in range)
     #
-    # - `header_frequency`: type is `Int32?` <br />
-    #   Default value is `Config::Defaults.header_frequency` <br />
-    #   Permitted range of values is governed by `Config::Controls.header_frequency_range` in the
-    #   `check_header_frequency` auxiliary method (raises `Error::InvalidValue`
-    #   runtime exception
-    #   unless value in range or `nil`)
+    # - *header_frequency*: Default value set by `Config::Defaults.header_frequency` <br />
+    #   Permitted range of values is governed by `Config::Controls.header_frequency_range`  <br />
+    #   (raises `Error::InvalidValue` runtime exception unless value in range or `nil`)
     #
     #   - If set to `0`, rows of data other than body are displayed
     #     only once, at the beginning for titles and headers, at the end for the footer.
     #   - If set to `n` (positive), group or column headers are repeated every `n`
     #     rows, as are footers, but titles and subtitles are not repeated (unless
-    #     title `repeated` attribute is set to `true`)
+    #     title *repeated* attribute is set to `true`)
     #   - If set to `nil`, only body rows are displayed.
     #
-    # - `row_divider_frequency`: type is `Int32?` <br />
-    #   Default value is `Config::Defaults.row_divider_frequency` <br />
-    #   Permitted range of values is governed by `Config::Controls.row_divider_frequency_range`
-    #   in the `check_row_divider_frequency` auxiliary method (raises `Error::InvalidValue`
-    #   runtime exception unless value in range or `nil`)
+    # - *row_divider_frequency*: Default value set by `Config::Defaults.row_divider_frequency` <br />
+    #   Permitted range of values is governed by `Config::Controls.row_divider_frequency_range` <br />
+    #   (raises `Error::InvalidValue` runtime exception unless value in range or `nil`)
     #
-    # - `wrap_mode`: type is `WrapMode` <br />
-    #   Default value is `Config::Defaults.wrap_mode`<br />
+    # - *wrap_mode*: Default value is `Config::Defaults.wrap_mode`<br />
     #   The `WrapMode` enum defines 2 modes :
     #
-    #   - `Rune` : long lines can be cut between characters (graphemes)
-    #   - `Word` : long lines can be cut between words only
+    #   - `Rune` : long lines are cut between characters (graphemes)
+    #   - `Word` : long lines are cut between words only
     #
     # - `header_wrap`: type is `Int32?` <br />
     #   Default value is `Config::Defaults.header_wrap` <br />

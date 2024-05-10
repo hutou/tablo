@@ -268,7 +268,7 @@ module Tablo
       # table = Tablo::Table.new([1, 2, 3],
       #   title: Tablo::Heading.new("My Title", framed: true,
       #     formatter: ->(value : Tablo::CellType, column_width : Int32) {
-      #       Tablo.stretch(value.as(String), target_width: column_width)
+      #       Tablo::Functions.stretch(value.as(String), target_width: column_width)
       #     })) do |t|
       #   t.add_column("itself", &.itself)
       #   t.add_column("itself x 2", &.*(2))
