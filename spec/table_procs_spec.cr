@@ -310,25 +310,47 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
         title: Tablo::Heading.new("Justifying headers", framed: true)) do |t|
         t.add_column("numbers") { |n| n[0] }
         t.add_column("Booleans") { |n| n[1] }
-        t.add_column("Strings") { |n| n[0] }
+        t.add_column("Strings") { |n| n[2] }
       end
       {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
       output = <<-EOS
           ╭────────────────────────────────────────────╮
           │             Justifying headers             │
           ├──────────────┬──────────────┬──────────────┤
-          │      numbers :   Booleans   :      Strings │
+          │      numbers :   Booleans   : Strings      │
           ├--------------┼--------------┼--------------┤
-          │            1 :     false    :            1 │
-          │            2 :     true     :            2 │
-          │            3 :     true     :            3 │
+          │            1 :     false    : Abc          │
+          │            2 :     true     : def          │
+          │            3 :     true     : ghi          │
           ╰──────────────┴──────────────┴──────────────╯
           EOS
       table.to_s.should eq output
     end
   end
   describe "#Styling headers" do
-    pending "styling headers" do
+    describe "styling headers" do
+      it "colorize headers in blue" do
+        table = Tablo::Table.new([[1, false, "Abc"], [2, true, "def"], [3, true, "ghi"]],
+          header_styler: ->(content : String) { content.colorize(:blue).to_s },
+          title: Tablo::Heading.new("Justifying headers", framed: true)) do |t|
+          t.add_column("numbers") { |n| n[0] }
+          t.add_column("Booleans") { |n| n[1] }
+          t.add_column("Strings") { |n| n[2] }
+        end
+        {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
+        output = <<-EOS
+          ╭────────────────────────────────────────────╮
+          │             Justifying headers             │
+          ├──────────────┬──────────────┬──────────────┤
+          │      \e[34mnumbers\e[0m :   \e[34mBooleans\e[0m   : \e[34mStrings\e[0m      │
+          ├--------------┼--------------┼--------------┤
+          │            1 :     false    : Abc          │
+          │            2 :     true     : def          │
+          │            3 :     true     : ghi          │
+          ╰──────────────┴──────────────┴──────────────╯
+          EOS
+        table.to_s.should eq output
+      end
     end
   end
   describe "#Formatting body" do
@@ -405,7 +427,29 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
         EOS
       table.to_s.should eq output
     end
-    pending "formatting body" do
+    describe "formatting body" do
+      it "renders body in uppercase" do
+        table = Tablo::Table.new([[1, false, "Abc"], [2, true, "def"], [3, true, "ghi"]],
+          body_formatter: ->(value : Tablo::CellType) { value.to_s.upcase },
+          title: Tablo::Heading.new("Justifying headers", framed: true)) do |t|
+          t.add_column("numbers") { |n| n[0] }
+          t.add_column("Booleans") { |n| n[1] }
+          t.add_column("Strings") { |n| n[2] }
+        end
+        {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
+        output = <<-EOS
+          ╭────────────────────────────────────────────╮
+          │             Justifying headers             │
+          ├──────────────┬──────────────┬──────────────┤
+          │      numbers :   Booleans   : Strings      │
+          ├--------------┼--------------┼--------------┤
+          │            1 :     FALSE    : ABC          │
+          │            2 :     TRUE     : DEF          │
+          │            3 :     TRUE     : GHI          │
+          ╰──────────────┴──────────────┴──────────────╯
+          EOS
+        table.to_s.should eq output
+      end
     end
   end
   describe "#Styling body" do
@@ -712,7 +756,29 @@ describe "#{Tablo::Table} -> Headers and body formatting and styling" do
       end
       table.to_s.should eq output
     end
-    pending "styling body" do
+    describe "styling body" do
+      it "colorize body in red" do
+        table = Tablo::Table.new([[1, false, "Abc"], [2, true, "def"], [3, true, "ghi"]],
+          body_styler: ->(content : String) { content.colorize(:red).to_s },
+          title: Tablo::Heading.new("Justifying headers", framed: true)) do |t|
+          t.add_column("numbers") { |n| n[0] }
+          t.add_column("Booleans") { |n| n[1] }
+          t.add_column("Strings") { |n| n[2] }
+        end
+        {% if flag?(:DEBUG) %} puts "\n#{table}" {% end %}
+        output = <<-EOS
+          ╭────────────────────────────────────────────╮
+          │             Justifying headers             │
+          ├──────────────┬──────────────┬──────────────┤
+          │      numbers :   Booleans   : Strings      │
+          ├--------------┼--------------┼--------------┤
+          │            \e[31m1\e[0m :     \e[31mfalse\e[0m    : \e[31mAbc\e[0m          │
+          │            \e[31m2\e[0m :     \e[31mtrue\e[0m     : \e[31mdef\e[0m          │
+          │            \e[31m3\e[0m :     \e[31mtrue\e[0m     : \e[31mghi\e[0m          │
+          ╰──────────────┴──────────────┴──────────────╯
+          EOS
+        table.to_s.should eq output
+      end
     end
   end
 end
