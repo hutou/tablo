@@ -199,39 +199,34 @@ module Tablo
     #   Permitted range of values is governed by `Config::Controls.row_divider_frequency_range` <br />
     #   (raises `Error::InvalidValue` runtime exception unless value in range or `nil`)
     #
-    # - *wrap_mode*: Default value is `Config::Defaults.wrap_mode`<br />
+    # - *wrap_mode*: Default value set by `Config::Defaults.wrap_mode`<br />
     #   The `WrapMode` enum defines 2 modes :
     #
     #   - `Rune` : long lines are cut between characters (graphemes)
     #   - `Word` : long lines are cut between words only
     #
-    # - `header_wrap`: type is `Int32?` <br />
-    #   Default value is `Config::Defaults.header_wrap` <br />
+    # - *header_wrap*: Default value set by `Config::Defaults.header_wrap` <br />
     #   Permitted range of values is governed by
-    #   `Config::Controls.header_wrap_range` in the `check_header_wrap` auxiliary method
+    #   `Config::Controls.header_wrap_range` <br />
     #   (raises `Error::InvalidValue` runtime exception unless value in range or `nil`)
     #
-    # - `body_wrap` | `Int32?`<br />
-    #   Default value is `Config::Defaults.body_wrap` <br />
+    # - *body_wrap*: Default value set by `Config::Defaults.body_wrap` <br />
     #   Permitted range of values is governed by
-    #   `Config::Controls.body_wrap_range` in the `check_body_wrap` auxiliary method (raises
-    #   `Error::InvalidValue` runtime exception unless value in range or `nil`)
+    #   `Config::Controls.body_wrap_range` <br />
+    #   (raises `Error::InvalidValue` runtime exception unless value in range or `nil`)
     #
-    # - `masked_headers`: type is `Bool` <br />
-    #   Default value is `Config::Defaults.masked_headers?` <br />
+    # - *masked_headers*: Default value set by `Config::Defaults.masked_headers?` <br />
     #   If `true`, groups and column headers are not displayed <br />
     #   (this does not prevent display of title, subtitle and footer)
     #
-    # - `omit_group_header_rule`: type is `Bool` <br />
-    #   Default value is `Config::Defaults.omit_group_header_rule?` <br />
-    #   If `true`, the rule between Group and Header rows is not displayed.
-    #   This is useful for headers custom rendering.
+    # - *omit_group_header_rule*: Default value set by `Config::Defaults.omit_group_header_rule?` <br />
+    #   If `true`, the rule between Group and Header rows is not displayed.<br />
+    #   (This is useful for headers custom rendering)
     #
-    # - `omit_last_rule`: type is `Bool` <br />
-    #   Default value is `Config::Defaults.omit_last_rule?` <br />
+    # - *omit_last_rule*: Default value set by `Config::Defaults.omit_last_rule?` <br />
     #   If `true`, the closing rule of table is not displayed.
-    #   This is useful for custom rendering (and notably for Detail and Summary
-    #   tables joining)
+    #   This is useful for custom rendering (and notably for "graphically" joining Detail
+    #   and Summary tables)
     #
     # Returns an instance of `Table(T)`
     initialize(block_given: false)
@@ -337,54 +332,40 @@ module Tablo
     #
     # _Mandatory positional parameter:_
     #
-    # - `label`: type is `LabelType`<br />
-    #   The label identifies the column
+    # - *label*: The column identifier (of type `LabelType`)
     #
     # _Optional named parameters, with default values_
     #
-    # - `header`: type is `String` <br />
-    #   Default value is `label.to_s`<br />
+    # - *header*: The column header,default value is `label.to_s`<br />
     #   Can be an empty string
     #
-    # - `header_alignment`: type is `Justify?`<br />
-    #   By default, inherits from table `header_alignment` initializer
+    # - *header_alignment*: Default value inherited from Table initializer
     #
-    # - `header_formatter`: type is `Cell::Data::Formatter` <br />
-    #   By default, inherits from table `header_formatter` initializer
+    # - *header_formatter*: Default value inherited from table initializer
     #
-    # - `header_styler`: type is `Cell::Data::Styler` <br />
-    #   By default, inherits from table `header_styler` initializer
+    # - *header_styler*: Default value inherited from table initializer
     #
-    # - `body_alignment`: type is `Justify?` <br />
-    #   By default, inherits from table `body_alignment` initializer
+    # - *body_alignment*: Default value inherited from table initializer
     #
-    # - `body_formatter`: type is `Cell::Data::Formatter` <br />
-    #   By default, inherits from table `body_formatter` initializer
+    # - *body_formatter*: Default value inherited from table initializer
     #
-    # - `body_styler`: type is `Cell::Data::Styler` <br />
-    #   By default, inherits from table `body_styler` initializer
+    # - *body_styler*: Default value inherited from table initializer
     #
-    # - `left_padding`: type is `Int32` <br />
-    #   By default, inherits from table `left_padding` initializer
+    # - *left_padding*: Default value inherited from table initializer
     #
-    # - `right_padding`: type is `Int32` <br />
-    #   By default, inherits from table `right_padding` initializer
+    # - *right_padding*: Default value inherited from table initializer
     #
-    # - `padding_character`: type is `String` <br />
-    #   By default, inherits from table `padding_character` initializer
+    # - *padding_character*: Default value inherited from table initializer
     #
-    # - `width`: type is `Int32` <br />
-    #   By default, inherits from table `width` initializer
+    # - *width*: Default value inherited from table initializer
     #
-    # - `truncation_indicator`: type is `String` <br />
-    #   By default, inherits from table `truncation_indicator` initializer
+    # - *truncation_indicator*: Default value inherited from table initializer
     #
-    # - `wrap_mode`: type is `WrapMode` <br />
-    #   By default, inherits from table `wrap_mode` initializer
+    # - *wrap_mode*: Default value inherited from table initializer
     #
     # _Captured block_
     #
-    # - `&extractor`: type is `(T | Int32) -> CellType` <br />
+    # - *&extractor*: type is `(T | Int32) -> CellType` <br />
     #   Captured block for extracting data from source
     def add_column(label : LabelType, *,
                    header = label.to_s,

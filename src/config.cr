@@ -230,7 +230,7 @@ module Tablo
       class_property? omit_group_header_rule : Bool = OMIT_GROUP_HEADER_RULE
 
       # Defaut value for *omit_last_rule* <br />
-      # Omitting last rule allows joiniing of parent and child tables
+      # Omitting last rule allows joining of parent and child tables
       OMIT_LAST_RULE = false
       # Default: see `OMIT_LAST_RULE`)
       class_property? omit_last_rule : Bool = OMIT_LAST_RULE
