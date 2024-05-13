@@ -351,7 +351,7 @@ the data source and column definitions.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L18" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L18" target="_blank">
         table.cr
       </a>
     
@@ -447,21 +447,21 @@ the data source and column definitions.</p>
       <li class="entry-summary">
         <a href="#add_summary%28summary_definition%2C%2A%2Asummary_options%29-instance-method" class="signature"><strong>#add_summary</strong>(summary_definition, **summary_options)</a>
         
-          <div class="summary"><p>Second form : <code>summary_options</code> given as a list of Table initializers</p></div>
+          <div class="summary"><p>Second form : <em>summary_options</em> given as a list of Table initializers</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#column_data%28column_label%3ALabelType%29-instance-method" class="signature"><strong>#column_data</strong>(column_label : LabelType)</a>
         
-          <div class="summary"><p>Returns an array of data for a specific column</p></div>
+          <div class="summary"><p>Returns an array of data extracted from Table <em>sources</em> for a specific column</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#each%28%26%29-instance-method" class="signature"><strong>#each</strong>(&)</a>
         
-          <div class="summary"><p>Returns successive formatted rows, with all corresponding headers and footers, according to the <code>header_frequency</code> value.</p></div>
+          <div class="summary"><p>Returns successive formatted rows, with all their corresponding headers and footers, according to the Table <em>header_frequency</em> value.</p></div>
         
       </li>
     
@@ -767,7 +767,7 @@ and Summary tables)</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L232" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L232" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -788,7 +788,7 @@ and Summary tables)</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L235" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L235" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -824,7 +824,7 @@ and one with block_given = false</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L65" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L65" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -859,7 +859,7 @@ and one with block_given = false</p>
 <p><em>Optional named parameters, with default values</em></p>
 <ul>
 <li>
-<p><em>header</em>: The column header,default value is <code>label.to_s</code><br />
+<p><em>header</em>: The column header, default value is <code>label.to_s</code><br />
 Can be an empty string</p>
 </li>
 <li>
@@ -909,7 +909,7 @@ Captured block for extracting data from source</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L370" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L370" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -930,39 +930,31 @@ After adding the last column, a group is automatically created (with an
 empty header) if not explicitly specified.</p>
 <p><em>Mandatory positional parameter</em></p>
 <ul>
-<li><code>label</code>: type is <code><a href="../Tablo/LabelType.html">LabelType</a></code> <br />
-The label identifies the group.</li>
+<li><em>label</em>: The group identifier (of type <code><a href="../Tablo/LabelType.html">LabelType</a></code>)</li>
 </ul>
 <p><em>Optional named parameters, with default values</em></p>
 <ul>
 <li>
-<p><code>header</code>: type is <code>String</code> <br />
-Default value id <code>label.to_s</code> <br />
+<p><em>header</em>: The group header, default value is <code>label.to_s</code><br />
 Can be an empty string</p>
 </li>
 <li>
-<p><code>alignment</code>: type is <code><a href="../Tablo/Justify.html">Justify</a></code> <br />
-By default, inherits from table <code>group_alignment</code> initializer</p>
+<p><em>alignment</em>: Default value inherited from table initializer</p>
 </li>
 <li>
-<p><code>formatter</code>: type is <code><a href="../Tablo/Cell/Text/Formatter.html">Cell::Text::Formatter</a></code> <br />
-By default, inherits from table <code>group_formatter</code> initializer</p>
+<p><em>formatter</em>: Default value inherited from table initializer</p>
 </li>
 <li>
-<p><code>styler</code>: type is <code><a href="../Tablo/Cell/Text/Styler.html">Cell::Text::Styler</a></code> <br />
-By default, inherits from table <code>group_styler</code> initializer</p>
+<p><em>styler</em>: Default value inherited from table initializer</p>
 </li>
 <li>
-<p><code>padding_character</code>: type is <code>String</code> <br />
-By default, inherits from table <code>padding_character</code> initializer</p>
+<p><em>padding_character</em>: Default value inherited from table initializer</p>
 </li>
 <li>
-<p><code>truncation_indicator</code>: type is <code>String</code> <br />
-By default, inherits from table <code>truncation_indicator</code> initializer</p>
+<p><em>truncation_indicator</em>: Default value inherited from table initializer</p>
 </li>
 <li>
-<p><code>wrap_mode</code>: type is <code><a href="../Tablo/WrapMode.html">WrapMode</a></code> <br />
-By default, inherits from table <code>wrap_mode</code> initializer</p>
+<p><em>wrap_mode</em>: Default value inherited from table initializer</p>
 </li>
 </ul>
         </div>
@@ -970,7 +962,7 @@ By default, inherits from table <code>wrap_mode</code> initializer</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L457" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L449" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -985,27 +977,28 @@ By default, inherits from table <code>wrap_mode</code> initializer</p>
       
         <div class="doc">
           
-          <p>The <code><a href="../Tablo/Table.html#add_summary%28summary_definition%2Csummary_options%29-instance-method">#add_summary</a></code> method creates a summary table, attached to the main table.</p>
+          <p>The <code><a href="../Tablo/Table.html#add_summary%28summary_definition%2Csummary_options%29-instance-method">#add_summary</a></code> method creates a summary table, attached to the main
+table.</p>
 <p><em>Mandatory positional parameters:</em></p>
 <ul>
 <li>
-<p><code>summary_definition</code>: type is <code>Array(&lt;structs&gt;)</code><br />
-where <code>&lt;structs&gt;</code> may be one or more instances of <code><a href="../Tablo/Summary/UserProc.html">Summary::UserProc</a></code>,
-<code><a href="../Tablo/Summary/HeaderColumn.html">Summary::HeaderColumn</a></code>, <code><a href="../Tablo/Summary/BodyColumn.html">Summary::BodyColumn</a></code> or <code><a href="../Tablo/Summary/BodyRow.html">Summary::BodyRow</a></code> <br /></p>
+<p><em>summary_definition</em>: an array of structs, where structs may be one or
+more instances of <code><a href="../Tablo/Summary/UserProc.html">Summary::UserProc</a></code>, <code><a href="../Tablo/Summary/HeaderColumn.html">Summary::HeaderColumn</a></code>,
+<code><a href="../Tablo/Summary/BodyColumn.html">Summary::BodyColumn</a></code> or <code><a href="../Tablo/Summary/BodyRow.html">Summary::BodyRow</a></code></p>
 </li>
 <li>
-<p><code>summary_options</code>: type is <code>NamedTuple(&lt;<a href="../Tablo/Table.html">Table</a> parameters&gt;)</code> <br />
+<p><em>summary_options</em>: type is <code>NamedTuple(&lt;<a href="../Tablo/Table.html">Table</a> parameters&gt;)</code> <br />
 where <code>&lt;<a href="../Tablo/Table.html">Table</a> parameters&gt;</code> is a list of any number of Table initializers (may be empty).</p>
 </li>
 </ul>
 <p>See <code><a href="../Tablo/Summary.html">Tablo::Summary</a></code> for detailed examples and explanations on use.</p>
-<p>Returns self (an instance of Table(T)) with an embedded Summary Table</p>
+<p>Returns self, an instance of Table(T), with an embedded Summary Table</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L574" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L567" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1020,13 +1013,13 @@ where <code>&lt;<a href="../Tablo/Table.html">Table</a> parameters&gt;</code> is
       
         <div class="doc">
           
-          <p>Second form : <code>summary_options</code> given as a list of Table initializers</p>
+          <p>Second form : <em>summary_options</em> given as a list of Table initializers</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L580" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L573" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1041,17 +1034,24 @@ where <code>&lt;<a href="../Tablo/Table.html">Table</a> parameters&gt;</code> is
       
         <div class="doc">
           
-          <p>Returns an array of data for a specific column</p>
+          <p>Returns an array of data extracted from Table <em>sources</em> for a specific column</p>
 <p><em>Mandatory positional parameter:</em></p>
 <ul>
-<li><code>column_label</code>: type is <code><a href="../Tablo/LabelType.html">LabelType</a></code><br /></li>
+<li><em>column_label</em>: The column identifier</li>
 </ul>
+<p>example:</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>]) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="s">&quot;double&quot;</span>, <span class="o">&amp;</span>.itself.<span class="o">*</span>(<span class="n">2</span>))
+<span class="k">end</span>
+puts table.column_data(<span class="s">&quot;double&quot;</span>) <span class="c"># =&gt; [2, 4, 6]</span></code></pre>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L1558" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L1562" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1066,11 +1066,11 @@ where <code>&lt;<a href="../Tablo/Table.html">Table</a> parameters&gt;</code> is
       
         <div class="doc">
           
-          <p>Returns successive formatted rows, with all corresponding headers and footers,
-according to the <code>header_frequency</code> value.</p>
+          <p>Returns successive formatted rows, with all their corresponding headers and footers,
+according to the Table <em>header_frequency</em> value.</p>
 <p>In fact,</p>
-<pre><code class="language-crystal">table.each <span class="k">do</span> <span class="o">|</span>r<span class="o">|</span>
-  puts r
+<pre><code class="language-crystal">table.each <span class="k">do</span> <span class="o">|</span>row<span class="o">|</span>
+  puts row
 <span class="k">end</span></code></pre>
 <p>is the same as</p>
 <pre><code class="language-crystal">puts table</code></pre>
@@ -1079,7 +1079,7 @@ according to the <code>header_frequency</code> value.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L632" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L625" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1110,7 +1110,7 @@ between some Body rows, we can do :</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L755" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L748" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1271,7 +1271,7 @@ in this calculation.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L932" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L925" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1293,7 +1293,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L940" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L933" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1315,7 +1315,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L957" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L950" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1336,7 +1336,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L45" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L45" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1361,7 +1361,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L325" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L325" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1382,7 +1382,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L586" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L579" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1403,7 +1403,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L591" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L584" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1424,7 +1424,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L1250" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L1243" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1516,7 +1516,7 @@ puts table</code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L1145" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L1138" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1600,7 +1600,7 @@ Group headers are omitted</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L1424" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L1417" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1670,7 +1670,7 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/533912d931f0a2e4b9e7c79100c79ab302d3e90e/src/table.cr#L1323" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/ff9a0e3d72c6408df5dfd30c5e21c3c9cb5d7256/src/table.cr#L1316" target="_blank">View source</a>]
         
       </div>
     </div>
