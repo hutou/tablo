@@ -336,7 +336,7 @@ module Tablo
     #
     # _Optional named parameters, with default values_
     #
-    # - *header*: The column header,default value is `label.to_s`<br />
+    # - *header*: The column header, default value is `label.to_s`<br />
     #   Can be an empty string
     #
     # - *header_alignment*: Default value inherited from Table initializer
@@ -428,32 +428,24 @@ module Tablo
     #
     # _Mandatory positional parameter_
     #
-    # - `label`: type is `LabelType` <br />
-    #   The label identifies the group.
+    # - *label*: The group identifier (of type `LabelType`)
     #
     # _Optional named parameters, with default values_
     #
-    # - `header`: type is `String` <br />
-    #   Default value id `label.to_s` <br />
+    # - *header*: The group header, default value is `label.to_s`<br />
     #   Can be an empty string
     #
-    # - `alignment`: type is `Justify` <br />
-    #   By default, inherits from table `group_alignment` initializer
+    # - *alignment*: Default value inherited from table initializer
     #
-    # - `formatter`: type is `Cell::Text::Formatter` <br />
-    #   By default, inherits from table `group_formatter` initializer
+    # - *formatter*: Default value inherited from table initializer
     #
-    # - `styler`: type is `Cell::Text::Styler` <br />
-    #   By default, inherits from table `group_styler` initializer
+    # - *styler*: Default value inherited from table initializer
     #
-    # - `padding_character`: type is `String` <br />
-    #   By default, inherits from table `padding_character` initializer
+    # - *padding_character*: Default value inherited from table initializer
     #
-    # - `truncation_indicator`: type is `String` <br />
-    #   By default, inherits from table `truncation_indicator` initializer
+    # - *truncation_indicator*: Default value inherited from table initializer
     #
-    # - `wrap_mode`: type is `WrapMode` <br />
-    #   By default, inherits from table `wrap_mode` initializer
+    # - *wrap_mode*: Default value inherited from table initializer
     def add_group(label, *,
                   header = label.to_s,
                   alignment = group_alignment,
@@ -557,26 +549,27 @@ module Tablo
       end
     end
 
-    # The `add_summary` method creates a summary table, attached to the main table.
+    # The `add_summary` method creates a summary table, attached to the main
+    # table.
     #
     # _Mandatory positional parameters:_
     #
-    # - `summary_definition`: type is `Array(<structs>)`<br />
-    # where `<structs>` may be one or more instances of `Summary::UserProc`,
-    # `Summary::HeaderColumn`, `Summary::BodyColumn` or `Summary::BodyRow` <br />
+    # - *summary_definition*: an array of structs, where structs may be one or
+    # more instances of `Summary::UserProc`, `Summary::HeaderColumn`,
+    # `Summary::BodyColumn` or `Summary::BodyRow`
     #
-    # - `summary_options`: type is `NamedTuple(<Table parameters>)` <br />
+    # - *summary_options*: type is `NamedTuple(<Table parameters>)` <br />
     # where `<Table parameters>` is a list of any number of Table initializers (may be empty).
     #
     # See `Tablo::Summary` for detailed examples and explanations on use.
     #
-    # Returns self (an instance of Table(T)) with an embedded Summary Table
+    # Returns self, an instance of Table(T), with an embedded Summary Table
     def add_summary(summary_definition, summary_options)
       self.child = Summary.new(self, summary_definition, summary_options).run
       self.child.as(ATable).parent = self.as(ATable)
     end
 
-    # Second form : `summary_options` given as a list of Table initializers
+    # Second form : *summary_options* given as a list of Table initializers
     def add_summary(summary_definition, **summary_options)
       self.child = Summary.new(self, summary_definition, summary_options).run
       self.child.as(ATable).parent = self.as(ATable)
@@ -613,14 +606,14 @@ module Tablo
       end
     end
 
-    # Returns successive formatted rows, with all corresponding headers and footers,
-    # according to the `header_frequency` value.
+    # Returns successive formatted rows, with all their corresponding headers and footers,
+    # according to the Table *header_frequency* value.
     #
     # In fact,
     #
     # ```
-    # table.each do |r|
-    #   puts r
+    # table.each do |row|
+    #   puts row
     # end
     # ```
     #
@@ -1550,11 +1543,22 @@ module Tablo
       lines.join(NEWLINE)
     end
 
-    # Returns an array of data for a specific column
+    # Returns an array of data extracted from Table *sources* for a specific column
     #
     # _Mandatory positional parameter:_
     #
-    # - `column_label`: type is `LabelType`<br />
+    # - *column_label*: The column identifier
+    #
+    # example:
+    # ```
+    # require "tablo"
+    # table = Tablo::Table.new([1, 2, 3]) do |t|
+    #   t.add_column("itself", &.itself)
+    #   t.add_column("double", &.itself.*(2))
+    # end
+    # puts table.column_data("double") # => [2, 4, 6]
+    # ```
+    #
     def column_data(column_label : LabelType)
       column_data = [] of CellType
       extractor = column_registry[column_label].extractor
