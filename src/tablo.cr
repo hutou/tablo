@@ -149,73 +149,52 @@ module Tablo
       if max_fill < 0
         raise Error::InvalidValue.new "stretch: filler size cannot be negative"
       end
-      if (fb = prefix.index('{')) && (lb = prefix.rindex('}'))
-        prefix_fixed, prefix_variable, prefix_head =
-          prefix[0..fb - 1], prefix[fb + 1..lb - 1], prefix[lb + 1..-1]
-      else
-        prefix_fixed, prefix_variable, prefix_head = prefix, "", ""
+      pre_fix, pre_var, pre_head = if (open = prefix.index('{')) &&
+                                      (close = prefix.rindex('}'))
+                                     {prefix[0..open - 1],
+                                      prefix[open + 1..close - 1],
+                                      prefix[close + 1..-1]}
+                                   else
+                                     {prefix, "", ""}
+                                   end
+      suf_head, suf_var, suf_fix = if (open = suffix.index('{')) &&
+                                      (close = suffix.rindex('}'))
+                                     {suffix[0..open - 1],
+                                      suffix[open + 1..close - 1],
+                                      suffix[close + 1..-1]}
+                                   else
+                                     {"", "", suffix}
+                                   end
+      max_line_len = text.lines.map(&.strip.size).max
+      intervals = max_line_len - 1
+      pre_fix_head_size = pre_fix.size + pre_head.size
+      suf_fix_head_size = suf_fix.size + suf_head.size
+      space_max = target_width - (pre_fix_head_size +
+                                  suf_fix_head_size) - max_line_len
+      return text if space_max < 0
+      spaces = [space_max // intervals, max_fill].min
+      var_size = pre_var.size + suf_var.size
+      reduce = var_size - (target_width - pre_fix_head_size - suf_fix_head_size -
+                           spaces * intervals - max_line_len)
+      if reduce > 0
+        reduce_left = reduce * pre_var.size // var_size
+        pre_var = pre_var[0..-(1 + reduce_left)]
+        suf_var = suf_var[reduce - reduce_left..-1]
       end
-      if (fb = suffix.index('{')) && (lb = suffix.rindex('}'))
-        suffix_head, suffix_variable, suffix_fixed =
-          suffix[0..fb - 1], suffix[fb + 1..lb - 1], suffix[lb + 1..-1]
-      else
-        suffix_fixed, suffix_variable, suffix_head = suffix, "", ""
-      end
-
-      max_line_size = text.lines.map(&.strip.size).max
-      intervals = max_line_size - 1
-
-      margins_max = (prefix_fixed + prefix_variable + prefix_head +
-                     suffix_fixed + suffix_variable + suffix_head).size
-      margins_min = margins_max - (prefix_variable + suffix_variable).size
-      space_chars_avail_min = target_width - margins_max - max_line_size
-      space_chars_avail_max = target_width - margins_min - max_line_size
-
-      # Check if any stretching can be done. If not, return the
-      # text value unchanged
-      return text if space_chars_avail_max < 0
-
-      spaces_between_chars_max = space_chars_avail_max // intervals
-      spaces_between_chars_min = space_chars_avail_min // intervals
-
-      prefix_variable_size = prefix_variable.size
-      suffix_variable_size = suffix_variable.size
-      variable_size = prefix_variable_size + suffix_variable_size
-
-      spaces_between_chars_min = 0 if spaces_between_chars_min < 0
-      spaces_between_chars = spaces_between_chars_min
-      spaces_between_chars_max.downto [spaces_between_chars_min, max_fill].min do |spaces_between|
-        next if spaces_between > max_fill
-        reduce = prefix_variable_size + suffix_variable_size -
-                 (target_width - (prefix_fixed + prefix_head).size -
-                  (suffix_fixed + suffix_head).size - spaces_between *
-                                                      intervals - max_line_size)
-        if reduce > 0
-          reduce_left = reduce * prefix_variable_size // variable_size
-          reduce_right = reduce - reduce_left
-          prefix_variable = prefix_variable[0..-(1 + reduce_left)]
-          suffix_variable = suffix_variable[reduce_right..-1]
-        end
-        spaces_between_chars = spaces_between
-        break
-      end
-
-      margin_left = prefix_fixed + prefix_variable + prefix_head
-      margin_right = suffix_head + suffix_variable + suffix_fixed
-      margins_size = (margin_left + margin_right).size
+      margin_left = pre_fix + pre_var + pre_head
+      margin_right = suf_head + suf_var + suf_fix
+      margin_size = (margin_left + margin_right).size
       text.each_line do |line|
-        line = line.strip
-        central_part = line.chars.join(fill_char.to_s * spaces_between_chars)
-        central_part_justified = case text_alignment
-                                 when Justify::Left
-                                   central_part.ljust(target_width - margins_size)
-                                 when Justify::Right
-                                   central_part.rjust(target_width - margins_size)
-                                 else
-                                   central_part.center(target_width - margins_size)
-                                 end
-        final_line = margin_left + central_part_justified + margin_right
-        stretched_text << final_line
+        central = line.strip.chars.join(fill_char.to_s * spaces)
+        justified = case text_alignment
+                    when Justify::Left
+                      central.ljust(target_width - margin_size)
+                    when Justify::Right
+                      central.rjust(target_width - margin_size)
+                    else
+                      central.center(target_width - margin_size)
+                    end
+        stretched_text << "#{margin_left}#{justified}#{margin_right}"
       end
       stretched_text.join("\n")
     end
