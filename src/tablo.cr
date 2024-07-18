@@ -149,22 +149,16 @@ module Tablo
       if max_fill < 0
         raise Error::InvalidValue.new "stretch: filler size cannot be negative"
       end
-      pre_fix, pre_var, pre_head = if (open = prefix.index('{')) &&
-                                      (close = prefix.rindex('}'))
-                                     {prefix[0..open - 1],
-                                      prefix[open + 1..close - 1],
-                                      prefix[close + 1..-1]}
-                                   else
-                                     {prefix, "", ""}
-                                   end
-      suf_head, suf_var, suf_fix = if (open = suffix.index('{')) &&
-                                      (close = suffix.rindex('}'))
-                                     {suffix[0..open - 1],
-                                      suffix[open + 1..close - 1],
-                                      suffix[close + 1..-1]}
-                                   else
-                                     {"", "", suffix}
-                                   end
+      parse = ->(presuf : String) {
+        if (open = presuf.index('{')) && (close = presuf.rindex('}'))
+          {presuf[0..open - 1], presuf[open + 1..close - 1], presuf[close + 1..-1]}
+        else
+          {presuf, "", ""}
+        end
+      }
+      pre_fix, pre_var, pre_head = parse.call(prefix)
+      suf_head, suf_var, suf_fix = parse.call(suffix)
+
       max_line_len = text.lines.map(&.strip.size).max
       intervals = max_line_len - 1
       pre_fix_head_size = pre_fix.size + pre_head.size
