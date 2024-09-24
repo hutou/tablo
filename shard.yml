@@ -4,9 +4,13 @@ version: 0.90.0
 authors:
   - Hubert Toullec <hutou01@gmail.com>
 
-development_dependencies:
+dependencies:
   version_from_shard:
     github: hugopl/version_from_shard
+  uniwidth:
+    github: naqvis/uni_char_width
+
+development_dependencies:
   ameba:
     github: crystal-ameba/ameba
     branch: master
@@ -17,10 +21,8 @@ development_dependencies:
     #gitlab: hutou/tablo
     #github: hutou/tablo
     branch: development
-  statistics:
-    github: lbarasti/statistics
-  uniwidth:
-    github: naqvis/uni_char_width
+  # statistics:
+  #   github: lbarasti/statistics
 
 crystal: ">= 1.9.2"
 
