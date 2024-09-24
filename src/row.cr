@@ -1,6 +1,3 @@
-require "./types"
-require "./rowgroup"
-
 module Tablo
   # :nodoc:
   # Data source and column definitions meet here

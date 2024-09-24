@@ -1,5 +1,3 @@
-require "./heading"
-
 module Tablo
   # The `Config` module define global getters and setters, to be used as default values
   # for all class instantiation parameters.

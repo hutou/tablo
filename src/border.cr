@@ -1,6 +1,3 @@
-require "./config"
-require "./util"
-
 module Tablo
   # The `Border` class enhances the layout of a data table by separating rows
   # and columns with interconnected horizontal and vertical lines.

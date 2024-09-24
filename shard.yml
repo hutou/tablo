@@ -5,6 +5,8 @@ authors:
   - Hubert Toullec <hutou01@gmail.com>
 
 development_dependencies:
+  version_from_shard:
+    github: hugopl/version_from_shard
   ameba:
     github: crystal-ameba/ameba
     branch: master
@@ -14,7 +16,7 @@ development_dependencies:
     path: .
     #gitlab: hutou/tablo
     #github: hutou/tablo
-    #branch: development
+    branch: development
   statistics:
     github: lbarasti/statistics
   uniwidth:

@@ -1,9 +1,3 @@
-require "./row"
-require "./column"
-require "./cell"
-require "./border"
-require "./summary"
-
 module Tablo
   # :nodoc:
   # An abstract table is needed to allow assignment on class properties

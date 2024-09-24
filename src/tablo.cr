@@ -1,7 +1,18 @@
+require "version_from_shard"
+require "./types"
+require "./config"
+require "./util"
+require "./row"
 require "./table"
+require "./column"
+require "./cell"
+require "./border"
+require "./summary"
+require "./heading"
+require "./rowgroup"
 
 module Tablo
-  VERSION = "0.99.0"
+  VersionFromShard.declare(__DIR__)
 
   module Functions
     # Used by `Tablo::Functions.fp_align` class method for floats formatting, where
