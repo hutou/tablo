@@ -12,7 +12,7 @@ module Tablo
   # in the data source.
   abstract class Cell
     # Common attributes of Cell::Text and Cell::Data
-    private getter value
+    getter value # raw value
     #
     private getter left_padding, right_padding, padding_character
     private getter alignment, truncation_indicator, wrap_mode

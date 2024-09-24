@@ -2,7 +2,7 @@ module Tablo
   # :nodoc:
   # Data source and column definitions meet here
   class Row(T)
-    include Enumerable(CellType)
+    # include Enumerable(CellType)  # -> crystal docs Error
     # :nodoc:
     getter source
 
