@@ -5,10 +5,10 @@ authors:
   - Hubert Toullec <hutou01@gmail.com>
 
 dependencies:
-  version_from_shard:
-    github: hugopl/version_from_shard
   uniwidth:
     github: naqvis/uni_char_width
+  version_from_shard:
+    github: hugopl/version_from_shard
 
 development_dependencies:
   ameba:
