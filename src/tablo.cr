@@ -1,4 +1,3 @@
-require "version_from_shard"
 require "./types"
 require "./config"
 require "./util"
@@ -12,7 +11,7 @@ require "./heading"
 require "./rowgroup"
 
 module Tablo
-  VersionFromShard.declare(__DIR__)
+  VERSION = {{ `shards version "#{__DIR__}"`.chomp.stringify }}
 
   module Functions
     # Used by `Tablo::Functions.fp_align` class method for floats formatting, where

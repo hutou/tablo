@@ -1,5 +1,5 @@
 name: tablo
-version: 0.90.0
+version: 0.90.1
 
 authors:
   - Hubert Toullec <hutou01@gmail.com>
@@ -7,8 +7,6 @@ authors:
 dependencies:
   uniwidth:
     github: naqvis/uni_char_width
-  version_from_shard:
-    github: hugopl/version_from_shard
 
 development_dependencies:
   ameba:
@@ -18,8 +16,6 @@ development_dependencies:
     github: Sija/debug.cr
   tablo:
     path: .
-    #gitlab: hutou/tablo
-    #github: hutou/tablo
     branch: development
 
 crystal: ">= 1.9.2"
