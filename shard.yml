@@ -21,8 +21,6 @@ development_dependencies:
     #gitlab: hutou/tablo
     #github: hutou/tablo
     branch: development
-  # statistics:
-  #   github: lbarasti/statistics
 
 crystal: ">= 1.9.2"
 
