@@ -23,6 +23,7 @@ module Tablo
     # - *NoDot*: Decimal part of field (including dot) is blank if all decimals are zeroes
     # - *DotOnly*: Decimal part of field is blank if all decimals are zeroes
     # - *DotZero*: Decimal part of field is blank if all decimals are zeroes, except first (.0)
+
     enum FPAlign
       Blank
       NoDot
