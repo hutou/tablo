@@ -29,13 +29,11 @@ of integers.
 
 ```crystal
 require "tablo"
-
 table = Tablo::Table.new([1, 2, 3]) do |t|
   t.add_column("itself", &.itself)
   t.add_column(2, header: "Double") { |n| n * 2 }
   t.add_column(:column_3, header: "String") { |n| ('@'.ord + n).chr.to_s * n }
 end
-
 puts table
 ```
 
@@ -43,12 +41,10 @@ or
 
 ```crystal
 require "tablo"
-
 table = Tablo::Table.new([1, 2, 3])
 table.add_column("itself", &.itself)
 table.add_column(2, header: "Double") {|n| n * 2}
 table.add_column(:column_3, header: "String") { |n| ('@'.ord + n).chr.to_s * n }
-
 puts table
 ```
 
@@ -97,10 +93,10 @@ border type, you can do:
 
 ```crystal
 table = Tablo::Table.new([1, 2, 3],
-  border: Tablo::Border.new(Tablo::BorderName::ReducedAscii) do |t|
+  border: Tablo::Border.new(Tablo::Border::PreSet::ReducedAscii)) do |t|
 ```
 
-or even:
+or even, more simply:
 
 ```crystal
 table = Tablo::Table.new([1, 2, 3],
@@ -135,7 +131,6 @@ adjacent columns to be grouped.
 
 ```crystal
 require "tablo"
-
 table = Tablo::Table.new([1, 2, 3]) do |t|
   t.add_column("itself", &.itself)
   t.add_column(2, header: "Double") {|n| n * 2}
@@ -143,7 +138,6 @@ table = Tablo::Table.new([1, 2, 3]) do |t|
   t.add_column(:column_3, header: "String") { |n| ('@'.ord + n).chr.to_s * n }
   t.add_group("Text")
 end
-
 puts table
 ```
 
@@ -166,26 +160,47 @@ globally at table initialization time with the `group_alignment` parameter,
 or locally for a given group with the `alignment` parameter.
 
 ```crystal
+require "tablo"
+
 table = Tablo::Table.new([1, 2, 3],
-        group_alignment: Tablo::Justify::Left) do |t|
+  group_alignment: Tablo::Justify::Left) do |t|
+  t.add_column("itself", &.itself)
+  t.add_column(2, header: "Double") { |n| n * 2 }
+  t.add_group("Numbers")
+  t.add_column(:column_3, header: "String") { |n| ('@'.ord + n).chr.to_s * n }
+  t.add_group("Text")
+end
+puts table
 ```
 
 Output:
 
 ```
+...
 | Numbers                     | Text         |
+...
 ```
 
 or
 
 ```crystal
-t.add_group("Text", alignment: Tablo::Justify::Left)
+require "tablo"
+table = Tablo::Table.new([1, 2, 3]) do |t|
+  t.add_column("itself", &.itself)
+  t.add_column(2, header: "Double") { |n| n * 2 }
+  t.add_group("Numbers")
+  t.add_column(:column_3, header: "String") { |n| ('@'.ord + n).chr.to_s * n }
+  t.add_group("Text", alignment: Tablo::Justify::Left)
+end
+puts table
 ```
 
 Output:
 
 ```
+...
 |           Numbers           | Text         |
+...
 ```
 
 Note that the group header can be empty, and that an empty group header is
@@ -227,8 +242,7 @@ Output:
 ### Headings
 
 A formatted table can optionally include a title, subtitle and footer. Each of
-these elements is of type Title, SubTitle or Footer, inherited from the
-abstract class Heading (see API).
+these elements is of type Heading (see API).
 
 By default, when the table is initialized, their value is `nil`, so nothing is
 displayed.
@@ -237,8 +251,17 @@ To display a title (or subtitle or footer), simply specify its value when
 initializing the table.
 
 ```crystal
+require "tablo"
 table = Tablo::Table.new([1, 2, 3],
-        title: Tablo::Heading.new("Data types alignment")) do |t|
+  title: Tablo::Heading.new("Data types alignment")) do |t|
+  t.add_column("itself", &.itself)
+  t.add_column(2, header: "Double") { |n| n * 2 }
+  t.add_group("Numbers")
+  t.add_column(:column_3, header: "String") { |n| ('@'.ord + n).chr.to_s * n }
+  t.add_column(:column_4, header: "Boolean") { |n| n.even? }
+  t.add_group("Other data types")
+end
+puts table
 ```
 
 Output:
@@ -246,7 +269,6 @@ Output:
 ```
                      Data types alignment
 +-----------------------------+-----------------------------+
-|           Numbers           |       Other data types      |
 |           Numbers           |       Other data types      |
 +--------------+--------------+--------------+--------------+
 |       itself |       Double | String       |    Boolean   |
@@ -259,7 +281,7 @@ Output:
 
 These elements can also be framed, possibly with line breaks before and after
 (defined in the `Heading::Frame` struct initializer as `line_breaks_before` and
-`line_breaks_after` with a value of 0).
+`line_breaks_after` with a default value of 0).
 
 The number of line breaks between adjacent elements is equal to the highest
 value between the current element's `line_breaks_after` and the next element's
@@ -268,7 +290,8 @@ value between the current element's `line_breaks_after` and the next element's
 ```crystal
 table = Tablo::Table.new([1, 2, 3],
   title: Tablo::Heading.new("Data types alignment",
-    frame: Tablo::Heading::Frame.new(line_breaks_before: 0, line_breaks_after: 2))) do |t|
+    framed: true, line_breaks_before: 0, line_breaks_after: 2)) do |t|
+  ...
 ```
 
 Output:
@@ -302,14 +325,14 @@ In summary, we have 6 types of data rows :
 
 ## Rules
 
-Between the different types of rows, there are also different types of
-separator lines, whose format varies according to the types of rows they
-separate.
+Between the different types of data rows, there are also different types
+of separation rules, whose format varies according to the types of rows
+they separate.
 
-In the case of framed rows, for example, there may be a single dividing line,
-making the rows linked, or on the contrary, there may first be a closing line
-for the top row, possibly followed by line breaks before the opening line of
-the bottom row.
+In the case of framed rows, for example, there may be a single
+separating rule, making the rows linked, or on the contrary, there may
+first be a closing rule for the top row, possibly followed by line
+breaks before the opening rule for the bottom row.
 
 These horizontal rules are formatted by the `horizontal_rule` method of class
 Border.
@@ -322,12 +345,21 @@ An important parameter in table initialization is `header_frequency:`
   only once, at the beginning for titles and headers, at the end for the footer.
 
 ```crystal
+require "tablo"
 table = Tablo::Table.new([1, 2, 3],
-        header_frequency: 0,
-        title: Tablo::Heading.new("Data types alignment",
-          frame: Tablo::Heading::Frame.new(0, 2)),
-        subtitle: Tablo::Heading.new("Only Booleans are centered by default"),
-        footer: Tablo::Heading.new("End of page")) do |t|
+  # header_frequency: 0,
+  title: Tablo::Heading.new("Data types alignment",
+    framed: true, line_breaks_before: 0, line_breaks_after: 2),
+  subtitle: Tablo::Heading.new("Only Booleans are centered by default"),
+  footer: Tablo::Heading.new("End of page")) do |t|
+  t.add_column("itself", &.itself)
+  t.add_column(2, header: "Double") { |n| n * 2 }
+  t.add_group("Numbers")
+  t.add_column(:column_3, header: "String") { |n| ('@'.ord + n).chr.to_s * n }
+  t.add_column(:column_4, header: "Boolean") { |n| n.even? }
+  t.add_group("Other data types")
+end
+puts table
 ```
 
 Output:
@@ -338,6 +370,7 @@ Output:
 +-----------------------------------------------------------+
 
             Only Booleans are centered by default
++-----------------------------+-----------------------------+
 |           Numbers           |       Other data types      |
 +--------------+--------------+--------------+--------------+
 |       itself |       Double | String       |    Boolean   |
@@ -346,7 +379,7 @@ Output:
 |            2 |            4 | BB           |     true     |
 |            3 |            6 | CCC          |     false    |
 +--------------+--------------+--------------+--------------+
-                         End of page
+                         End of page  ``
 ```
 
 - If set to `nil`, only body rows are displayed.
@@ -354,6 +387,7 @@ Output:
 ```crystal
 table = Tablo::Table.new([1, 2, 3],
         header_frequency: nil,
+...
 ```
 
 Output:
@@ -372,6 +406,7 @@ Output:
 ```crystal
 table = Tablo::Table.new([1, 2, 3],
         header_frequency: 2,
+...
 ```
 
 Output:
@@ -399,7 +434,7 @@ Output:
 |            3 |            6 | CCC          |     false    |
 |              |              |              |              |
 +--------------+--------------+--------------+--------------+
-                         End of page
+                         End of page ``
 ```
 
 However, if the title `repeated` parameter is set to `true`, we obtain title and
@@ -407,9 +442,10 @@ subtitle repetition.
 
 ```crystal
 table = Tablo::Table.new([1, 2, 3],
-        header_frequency: 2,
-        title: Tablo::Heading.new("Data types alignment",
-          frame: Tablo::Heading::Frame.new(0, 2), repeated: true),
+  header_frequency: 2,
+  title: Tablo::Heading.new("Data types alignment",
+    framed: true, line_breaks_before: 0, line_breaks_after: 2, repeated: true),
+...
 ```
 
 Output:
@@ -447,7 +483,7 @@ Output:
 
 ## Extracting - Formatting - Styling
 
-At the heart of Tablo's operation lies the Cell, a data structure containing
+At the heart of Tablo's operations is the Cell, a data structure containing
 all the elements required for display.
 
 A cell, whether fed by data extracted from the source or directly from the
@@ -455,27 +491,78 @@ code, can span several lines. Even if it initially occupies a single line,
 reducing the column width can result in a cell being displayed over several
 lines.
 
-You can limit the number of lines displayed by using the `header_wrap` or
-`body_wrap` parameters when initializing the table (These 2 parameters are
-global to the table, and cannot be set on individual columns). If the whole
-cell content cannot be displayed due to this restriction, a special character
-(tilde by default) is inserted in the right-hand padding area of the last line
-of the cell (unless right padding is set to 0 for the column).
+Inside a cell, you can limit the number of lines displayed by using the
+`header_wrap` or `body_wrap` parameters when initializing the table
+(These 2 parameters are global to the table, and cannot be set on
+individual columns). If the whole cell content cannot be displayed due
+to this restriction, a special character (tilde by default) is inserted
+in the right-hand padding area of the last line of the cell (unless
+right padding is set to 0 for the column).
 
 Note here the use of the `row_divider_frequency` parameter to separate body
 rows
 
+Note also in this example the direct use of a character string for
+border elements, with the last 4 characters defining the separating
+lines between Heading, Group, Header and Body rows respectively.
+
 ```crystal
 require "tablo"
-
-table = Tablo::Table.new(["abc", "def\nghi\njkl\nmno\npqr", "xyz"],
-  border: Tablo::Border.new("+++++++++|||---."),
-  header_wrap: 2,
+table = Tablo::Table.new(["First\nrow", "Second row\nextending\nover\nfour lines", "Last row"],
+  title: Tablo::Heading.new("Title", framed: true),
+  subtitle: Tablo::Heading.new("SubTitle", framed: true),
+  border: Tablo::Border.new("+++++++++|||x*=."),
+  header_wrap: 4,
   body_wrap: 3,
   row_divider_frequency: 1) do |t|
-  t.add_column("A\nfour\nlines\ncell", &.itself)
+  t.add_column("Column\nheader\nextending\nover\n5 lines", &.itself)
+  t.add_group("Group header")
 end
+puts table
+```
 
+Output:
+
+```
++xxxxxxxxxxxxxx+
+|     Title    |
++xxxxxxxxxxxxxx+
+|   SubTitle   |
++xxxxxxxxxxxxxx+
+| Group header |
++**************+
+| Column       |
+| header       |
+| extending    |
+| over        ~|
++==============+
+| First        |
+| row          |
++..............+
+| Second row   |
+| extending    |
+| over        ~|
++..............+
+| Last row     |
++xxxxxxxxxxxxxx+
+```
+
+In addition, to have greater control over the line break, we can use the
+`wrap_mode` parameter to choose between `Rune` (roughly equivalent to
+a character) and `Word` (default) when cutting a line.
+
+To use Tablo with non-Romanic languages, it is mandatory to use the
+`naqviz/uni_char_width` shard so that the width of each grapheme is correctly
+managed, without impacting alignment.
+
+Here is an example of bad formatting when this shard is omitted :
+
+```crystal
+require "tablo"
+table = Tablo::Table.new(["Crystal\nクリスタル"],
+  header_frequency: nil) do |t|
+  t.add_column(1, &.itself)
+end
 puts table
 ```
 
@@ -483,28 +570,12 @@ Output:
 
 ```
 +--------------+
-| A            |
-| four        ~|
-+--------------+
-| abc          |
-+..............+
-| def          |
-| ghi          |
-| jkl         ~|
-+..............+
-| xyz          |
+| Crystal      |
+| クリスタル        |
 +--------------+
 ```
 
-In addition, to have greater control over the line break, we can use the
-`wrap_mode` parameter to choose between `Rune` (Roughly equivalent to
-a character) and `Word` when cutting a line.
-
-To use Tablo with non-Romanic languages, it is mandatory to use the
-`naqviz/uni_char_width` shard so that the width of each grapheme is correctly
-managed, without impacting alignment.
-
-To do this, you need to:
+To correct this, you need to:
 
 - Add the dependencies to your shard.yml:
 
@@ -524,7 +595,26 @@ require "tablo"
 require "uniwidth"
 ```
 
-at the beginning of your app.
+at the beginning of your app, like this :
+
+```crystal
+require "tablo"
+require "uniwidth"
+table = Tablo::Table.new(["Crystal\nクリスタル"],
+  header_frequency: nil) do |t|
+  t.add_column(1, &.itself)
+end
+puts table
+```
+
+Output:
+
+```
++--------------+
+| Crystal      |
+| クリスタル   |
++--------------+
+```
 
 ### Extracting
 
