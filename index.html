@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.12.2">
+<meta name="generator" content="Crystal Docs 1.14.0">
 <meta name="crystal_docs.project_version" content="development">
 <meta name="crystal_docs.project_name" content="tablo">
 
@@ -329,22 +329,18 @@ Tablo library.</p>
 <p>Here's a first look at how to use Tablo to lay out a simple table from an array
 of integers.</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
-
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>]) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
   t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
   t.add_column(<span class="n">2</span>, header: <span class="s">&quot;Double&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> n <span class="o">*</span> <span class="n">2</span> }
   t.add_column(<span class="n">:column_3</span>, header: <span class="s">&quot;String&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> (<span class="s">&#39;@&#39;</span>.ord <span class="o">+</span> n).chr.to_s <span class="o">*</span> n }
 <span class="k">end</span>
-
 puts table</code></pre>
 <p>or</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
-
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>])
 table.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
 table.add_column(<span class="n">2</span>, header: <span class="s">&quot;Double&quot;</span>) {<span class="o">|</span>n<span class="o">|</span> n <span class="o">*</span> <span class="n">2</span>}
 table.add_column(<span class="n">:column_3</span>, header: <span class="s">&quot;String&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> (<span class="s">&#39;@&#39;</span>.ord <span class="o">+</span> n).chr.to_s <span class="o">*</span> n }
-
 puts table</code></pre>
 <p>output:</p>
 <pre><code class="language-crystal">+--------------+--------------+--------------+
@@ -386,8 +382,8 @@ simply assign the desired definition to the <code>border</code> parameter when
 initializing the table. So, for example, to set the <code>ReducedAscii</code>
 border type, you can do:</p>
 <pre><code class="language-crystal">table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
-  border: <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="t">Tablo</span><span class="t">::</span><span class="t">BorderName</span><span class="t">::</span><span class="t">ReducedAscii</span>) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span></code></pre>
-<p>or even:</p>
+  border: <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span><span class="t">::</span><span class="t">PreSet</span><span class="t">::</span><span class="t">ReducedAscii</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span></code></pre>
+<p>or even, more simply:</p>
 <pre><code class="language-crystal">table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
   border: <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="n">:reduced_ascii</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span></code></pre>
 <pre><code class="language-text">-------------- -------------- --------------
@@ -420,7 +416,6 @@ themselves. This common header constitutes a Group row type.</p>
 <p>To create a Group row, simply define a common header after each set of
 adjacent columns to be grouped.</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
-
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>]) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
   t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
   t.add_column(<span class="n">2</span>, header: <span class="s">&quot;Double&quot;</span>) {<span class="o">|</span>n<span class="o">|</span> n <span class="o">*</span> <span class="n">2</span>}
@@ -428,7 +423,6 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
   t.add_column(<span class="n">:column_3</span>, header: <span class="s">&quot;String&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> (<span class="s">&#39;@&#39;</span>.ord <span class="o">+</span> n).chr.to_s <span class="o">*</span> n }
   t.add_group(<span class="s">&quot;Text&quot;</span>)
 <span class="k">end</span>
-
 puts table</code></pre>
 <p>Output:</p>
 <pre><code class="language-crystal">+-----------------------------+--------------+
@@ -443,14 +437,35 @@ puts table</code></pre>
 <p>By default, Group headers are centered, but their alignment can be modified
 globally at table initialization time with the <code>group_alignment</code> parameter,
 or locally for a given group with the <code>alignment</code> parameter.</p>
-<pre><code class="language-crystal">table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
-        group_alignment: <span class="t">Tablo</span><span class="t">::</span><span class="t">Justify</span><span class="t">::</span><span class="t">Left</span>) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span></code></pre>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
+  group_alignment: <span class="t">Tablo</span><span class="t">::</span><span class="t">Justify</span><span class="t">::</span><span class="t">Left</span>) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="n">2</span>, header: <span class="s">&quot;Double&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> n <span class="o">*</span> <span class="n">2</span> }
+  t.add_group(<span class="s">&quot;Numbers&quot;</span>)
+  t.add_column(<span class="n">:column_3</span>, header: <span class="s">&quot;String&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> (<span class="s">&#39;@&#39;</span>.ord <span class="o">+</span> n).chr.to_s <span class="o">*</span> n }
+  t.add_group(<span class="s">&quot;Text&quot;</span>)
+<span class="k">end</span>
+puts table</code></pre>
 <p>Output:</p>
-<pre><code class="language-crystal"><span class="o">|</span> <span class="t">Numbers</span>                     <span class="o">|</span> <span class="t">Text</span>         <span class="o">|</span></code></pre>
+<pre><code class="language-crystal">...
+<span class="o">|</span> <span class="t">Numbers</span>                     <span class="o">|</span> <span class="t">Text</span>         <span class="o">|</span>
+...</code></pre>
 <p>or</p>
-<pre><code class="language-crystal">t.add_group(<span class="s">&quot;Text&quot;</span>, alignment: <span class="t">Tablo</span><span class="t">::</span><span class="t">Justify</span><span class="t">::</span><span class="t">Left</span>)</code></pre>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>]) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="n">2</span>, header: <span class="s">&quot;Double&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> n <span class="o">*</span> <span class="n">2</span> }
+  t.add_group(<span class="s">&quot;Numbers&quot;</span>)
+  t.add_column(<span class="n">:column_3</span>, header: <span class="s">&quot;String&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> (<span class="s">&#39;@&#39;</span>.ord <span class="o">+</span> n).chr.to_s <span class="o">*</span> n }
+  t.add_group(<span class="s">&quot;Text&quot;</span>, alignment: <span class="t">Tablo</span><span class="t">::</span><span class="t">Justify</span><span class="t">::</span><span class="t">Left</span>)
+<span class="k">end</span>
+puts table</code></pre>
 <p>Output:</p>
-<pre><code class="language-crystal"><span class="o">|</span>           <span class="t">Numbers</span>           <span class="o">|</span> <span class="t">Text</span>         <span class="o">|</span></code></pre>
+<pre><code class="language-crystal">...
+<span class="o">|</span>           <span class="t">Numbers</span>           <span class="o">|</span> <span class="t">Text</span>         <span class="o">|</span>
+...</code></pre>
 <p>Note that the group header can be empty, and that an empty group header is
 automatically created if the last column group is not specified.</p>
 <p>Group and header are intimately linked and only separated by a horizontal
@@ -484,18 +499,25 @@ puts table</code></pre>
   </svg>
 </a>Headings</h3>
 <p>A formatted table can optionally include a title, subtitle and footer. Each of
-these elements is of type Title, SubTitle or Footer, inherited from the
-abstract class Heading (see API).</p>
+these elements is of type Heading (see API).</p>
 <p>By default, when the table is initialized, their value is <code>nil</code>, so nothing is
 displayed.</p>
 <p>To display a title (or subtitle or footer), simply specify its value when
 initializing the table.</p>
-<pre><code class="language-crystal">table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
-        title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Data types alignment&quot;</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span></code></pre>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Data types alignment&quot;</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="n">2</span>, header: <span class="s">&quot;Double&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> n <span class="o">*</span> <span class="n">2</span> }
+  t.add_group(<span class="s">&quot;Numbers&quot;</span>)
+  t.add_column(<span class="n">:column_3</span>, header: <span class="s">&quot;String&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> (<span class="s">&#39;@&#39;</span>.ord <span class="o">+</span> n).chr.to_s <span class="o">*</span> n }
+  t.add_column(<span class="n">:column_4</span>, header: <span class="s">&quot;Boolean&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> n.even? }
+  t.add_group(<span class="s">&quot;Other data types&quot;</span>)
+<span class="k">end</span>
+puts table</code></pre>
 <p>Output:</p>
 <pre><code class="language-crystal">                     Data types alignment
 +-----------------------------+-----------------------------+
-|           Numbers           |       Other data types      |
 |           Numbers           |       Other data types      |
 +--------------+--------------+--------------+--------------+
 |       itself |       Double | String       |    Boolean   |
@@ -506,13 +528,14 @@ initializing the table.</p>
 +--------------+--------------+--------------+--------------+</code></pre>
 <p>These elements can also be framed, possibly with line breaks before and after
 (defined in the <code>Heading::Frame</code> struct initializer as <code>line_breaks_before</code> and
-<code>line_breaks_after</code> with a value of 0).</p>
+<code>line_breaks_after</code> with a default value of 0).</p>
 <p>The number of line breaks between adjacent elements is equal to the highest
 value between the current element's <code>line_breaks_after</code> and the next element's
 <code>line_breaks_before</code>.</p>
 <pre><code class="language-crystal">table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
   title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Data types alignment&quot;</span>,
-    frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Frame</span>.new(line_breaks_before: <span class="n">0</span>, line_breaks_after: <span class="n">2</span>))) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span></code></pre>
+    framed: <span class="n">true</span>, line_breaks_before: <span class="n">0</span>, line_breaks_after: <span class="n">2</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  ...</code></pre>
 <p>Output:</p>
 <pre><code class="language-crystal">+-----------------------------------------------------------+
 |                    Data types alignment                   |
@@ -541,13 +564,13 @@ value between the current element's <code>line_breaks_after</code> and the next 
     <use href="#octicon-link"/>
   </svg>
 </a>Rules</h2>
-<p>Between the different types of rows, there are also different types of
-separator lines, whose format varies according to the types of rows they
-separate.</p>
-<p>In the case of framed rows, for example, there may be a single dividing line,
-making the rows linked, or on the contrary, there may first be a closing line
-for the top row, possibly followed by line breaks before the opening line of
-the bottom row.</p>
+<p>Between the different types of data rows, there are also different types
+of separation rules, whose format varies according to the types of rows
+they separate.</p>
+<p>In the case of framed rows, for example, there may be a single
+separating rule, making the rows linked, or on the contrary, there may
+first be a closing rule for the top row, possibly followed by line
+breaks before the opening rule for the bottom row.</p>
 <p>These horizontal rules are formatted by the <code>horizontal_rule</code> method of class
 Border.</p>
 <h2><a id="display-frequency-and-repeated-title" class="anchor" href="#display-frequency-and-repeated-title">
@@ -560,18 +583,28 @@ Border.</p>
 <li>By default, it is set to 0, i.e. rows of data other than body are displayed
 only once, at the beginning for titles and headers, at the end for the footer.</li>
 </ul>
-<pre><code class="language-crystal">table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
-        header_frequency: <span class="n">0</span>,
-        title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Data types alignment&quot;</span>,
-          frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Frame</span>.new(<span class="n">0</span>, <span class="n">2</span>)),
-        subtitle: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Only Booleans are centered by default&quot;</span>),
-        footer: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;End of page&quot;</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span></code></pre>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
+  <span class="c"># header_frequency: 0,</span>
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Data types alignment&quot;</span>,
+    framed: <span class="n">true</span>, line_breaks_before: <span class="n">0</span>, line_breaks_after: <span class="n">2</span>),
+  subtitle: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Only Booleans are centered by default&quot;</span>),
+  footer: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;End of page&quot;</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="n">2</span>, header: <span class="s">&quot;Double&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> n <span class="o">*</span> <span class="n">2</span> }
+  t.add_group(<span class="s">&quot;Numbers&quot;</span>)
+  t.add_column(<span class="n">:column_3</span>, header: <span class="s">&quot;String&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> (<span class="s">&#39;@&#39;</span>.ord <span class="o">+</span> n).chr.to_s <span class="o">*</span> n }
+  t.add_column(<span class="n">:column_4</span>, header: <span class="s">&quot;Boolean&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> n.even? }
+  t.add_group(<span class="s">&quot;Other data types&quot;</span>)
+<span class="k">end</span>
+puts table</code></pre>
 <p>Output:</p>
 <pre><code class="language-crystal">+-----------------------------------------------------------+
 |                    Data types alignment                   |
 +-----------------------------------------------------------+
 
             Only Booleans are centered by default
++-----------------------------+-----------------------------+
 |           Numbers           |       Other data types      |
 +--------------+--------------+--------------+--------------+
 |       itself |       Double | String       |    Boolean   |
@@ -580,12 +613,13 @@ only once, at the beginning for titles and headers, at the end for the footer.</
 |            2 |            4 | BB           |     true     |
 |            3 |            6 | CCC          |     false    |
 +--------------+--------------+--------------+--------------+
-                         End of page</code></pre>
+                         End of page  ``</code></pre>
 <ul>
 <li>If set to <code>nil</code>, only body rows are displayed.</li>
 </ul>
 <pre><code class="language-crystal">table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
-        header_frequency: <span class="n">nil</span>,</code></pre>
+        header_frequency: <span class="n">nil</span>,
+...</code></pre>
 <p>Output:</p>
 <pre><code class="language-crystal">+--------------+--------------+--------------+--------------+
 |            1 |            2 | A            |     false    |
@@ -597,7 +631,8 @@ only once, at the beginning for titles and headers, at the end for the footer.</
 rows, as are footers, but titles and subtitles are not repeated.</li>
 </ul>
 <pre><code class="language-crystal">table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
-        header_frequency: <span class="n">2</span>,</code></pre>
+        header_frequency: <span class="n">2</span>,
+...</code></pre>
 <p>Output:</p>
 <pre><code class="language-crystal">+-----------------------------------------------------------+
 |                    Data types alignment                   |
@@ -621,13 +656,14 @@ rows, as are footers, but titles and subtitles are not repeated.</li>
 |            3 |            6 | CCC          |     false    |
 |              |              |              |              |
 +--------------+--------------+--------------+--------------+
-                         End of page</code></pre>
+                         End of page ``</code></pre>
 <p>However, if the title <code>repeated</code> parameter is set to <code>true</code>, we obtain title and
 subtitle repetition.</p>
 <pre><code class="language-crystal">table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
-        header_frequency: <span class="n">2</span>,
-        title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Data types alignment&quot;</span>,
-          frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Frame</span>.new(<span class="n">0</span>, <span class="n">2</span>), repeated: <span class="n">true</span>),</code></pre>
+  header_frequency: <span class="n">2</span>,
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Data types alignment&quot;</span>,
+    framed: <span class="n">true</span>, line_breaks_before: <span class="n">0</span>, line_breaks_after: <span class="n">2</span>, repeated: <span class="n">true</span>),
+...</code></pre>
 <p>Output:</p>
 <pre><code class="language-crystal">+-----------------------------------------------------------+
 |                    Data types alignment                   |
@@ -662,51 +698,77 @@ subtitle repetition.</p>
     <use href="#octicon-link"/>
   </svg>
 </a>Extracting - Formatting - Styling</h2>
-<p>At the heart of Tablo's operation lies the Cell, a data structure containing
+<p>At the heart of Tablo's operations is the Cell, a data structure containing
 all the elements required for display.</p>
 <p>A cell, whether fed by data extracted from the source or directly from the
 code, can span several lines. Even if it initially occupies a single line,
 reducing the column width can result in a cell being displayed over several
 lines.</p>
-<p>You can limit the number of lines displayed by using the <code>header_wrap</code> or
-<code>body_wrap</code> parameters when initializing the table (These 2 parameters are
-global to the table, and cannot be set on individual columns). If the whole
-cell content cannot be displayed due to this restriction, a special character
-(tilde by default) is inserted in the right-hand padding area of the last line
-of the cell (unless right padding is set to 0 for the column).</p>
+<p>Inside a cell, you can limit the number of lines displayed by using the
+<code>header_wrap</code> or <code>body_wrap</code> parameters when initializing the table
+(These 2 parameters are global to the table, and cannot be set on
+individual columns). If the whole cell content cannot be displayed due
+to this restriction, a special character (tilde by default) is inserted
+in the right-hand padding area of the last line of the cell (unless
+right padding is set to 0 for the column).</p>
 <p>Note here the use of the <code>row_divider_frequency</code> parameter to separate body
 rows</p>
+<p>Note also in this example the direct use of a character string for
+border elements, with the last 4 characters defining the separating
+lines between Heading, Group, Header and Body rows respectively.</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
-
-table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="s">&quot;abc&quot;</span>, <span class="s">&quot;def\nghi\njkl\nmno\npqr&quot;</span>, <span class="s">&quot;xyz&quot;</span>],
-  border: <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="s">&quot;+++++++++|||---.&quot;</span>),
-  header_wrap: <span class="n">2</span>,
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="s">&quot;First\nrow&quot;</span>, <span class="s">&quot;Second row\nextending\nover\nfour lines&quot;</span>, <span class="s">&quot;Last row&quot;</span>],
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Title&quot;</span>, framed: <span class="n">true</span>),
+  subtitle: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;SubTitle&quot;</span>, framed: <span class="n">true</span>),
+  border: <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="s">&quot;+++++++++|||x*=.&quot;</span>),
+  header_wrap: <span class="n">4</span>,
   body_wrap: <span class="n">3</span>,
   row_divider_frequency: <span class="n">1</span>) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
-  t.add_column(<span class="s">&quot;A\nfour\nlines\ncell&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="s">&quot;Column\nheader\nextending\nover\n5 lines&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_group(<span class="s">&quot;Group header&quot;</span>)
 <span class="k">end</span>
-
 puts table</code></pre>
 <p>Output:</p>
-<pre><code class="language-crystal">+--------------+
-| A            |
-| four        ~|
-+--------------+
-| abc          |
-+..............+
-| def          |
-| ghi          |
-| jkl         ~|
-+..............+
-| xyz          |
-+--------------+</code></pre>
+<pre><code class="language-crystal"><span class="o">+</span>xxxxxxxxxxxxxx<span class="o">+</span>
+<span class="o">|</span>     <span class="t">Title</span>    <span class="o">|</span>
+<span class="o">+</span>xxxxxxxxxxxxxx<span class="o">+</span>
+<span class="o">|</span>   <span class="t">SubTitle</span>   <span class="o">|</span>
+<span class="o">+</span>xxxxxxxxxxxxxx<span class="o">+</span>
+<span class="o">|</span> <span class="t">Group</span> header <span class="o">|</span>
+<span class="o">+</span><span class="o">**</span><span class="o">**</span><span class="o">**</span><span class="o">**</span><span class="o">**</span><span class="o">**</span><span class="o">**</span><span class="o">+</span>
+<span class="o">|</span> <span class="t">Column</span>       <span class="o">|</span>
+<span class="o">|</span> header       <span class="o">|</span>
+<span class="o">|</span> extending    <span class="o">|</span>
+<span class="o">|</span> over        <span class="o">~</span><span class="o">|</span>
+<span class="o">+=</span><span class="o">===</span><span class="o">===</span><span class="o">===</span><span class="o">===</span><span class="o">=</span><span class="o">+</span>
+<span class="o">|</span> <span class="t">First</span>        <span class="o">|</span>
+<span class="o">|</span> row          <span class="o">|</span>
+<span class="o">+</span>..............<span class="o">+</span>
+<span class="o">|</span> <span class="t">Second</span> row   <span class="o">|</span>
+<span class="o">|</span> extending    <span class="o">|</span>
+<span class="o">|</span> over        <span class="o">~</span><span class="o">|</span>
+<span class="o">+</span>..............<span class="o">+</span>
+<span class="o">|</span> <span class="t">Last</span> row     <span class="o">|</span>
+<span class="o">+</span>xxxxxxxxxxxxxx<span class="o">+</span></code></pre>
 <p>In addition, to have greater control over the line break, we can use the
-<code>wrap_mode</code> parameter to choose between <code>Rune</code> (Roughly equivalent to
-a character) and <code>Word</code> when cutting a line.</p>
+<code>wrap_mode</code> parameter to choose between <code>Rune</code> (roughly equivalent to
+a character) and <code>Word</code> (default) when cutting a line.</p>
 <p>To use Tablo with non-Romanic languages, it is mandatory to use the
 <code>naqviz/uni_char_width</code> shard so that the width of each grapheme is correctly
 managed, without impacting alignment.</p>
-<p>To do this, you need to:</p>
+<p>Here is an example of bad formatting when this shard is omitted :</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="s">&quot;Crystal\nクリスタル&quot;</span>],
+  header_frequency: <span class="n">nil</span>) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="n">1</span>, <span class="o">&amp;</span>.itself)
+<span class="k">end</span>
+puts table</code></pre>
+<p>Output:</p>
+<pre><code class="language-crystal">+--------------+
+| Crystal      |
+| クリスタル        |
++--------------+</code></pre>
+<p>To correct this, you need to:</p>
 <ul>
 <li>Add the dependencies to your shard.yml:</li>
 </ul>
@@ -721,7 +783,19 @@ managed, without impacting alignment.</p>
 </ul>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 <span class="k">require</span> <span class="s">&quot;uniwidth&quot;</span></code></pre>
-<p>at the beginning of your app.</p>
+<p>at the beginning of your app, like this :</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+<span class="k">require</span> <span class="s">&quot;uniwidth&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="s">&quot;Crystal\nクリスタル&quot;</span>],
+  header_frequency: <span class="n">nil</span>) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="n">1</span>, <span class="o">&amp;</span>.itself)
+<span class="k">end</span>
+puts table</code></pre>
+<p>Output:</p>
+<pre><code class="language-crystal">+--------------+
+| Crystal      |
+| クリスタル   |
++--------------+</code></pre>
 <h3><a id="extracting" class="anchor" href="#extracting">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
