@@ -575,6 +575,8 @@ Output:
 +--------------+
 ```
 
+ <p> <img src="assets/images/asian_bad.png" width=460> </p>
+
 To correct this, you need to:
 
 - Add the dependencies to your shard.yml:
