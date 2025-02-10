@@ -317,7 +317,7 @@ Output:
 
 In summary, we have 6 types of data rows :
 
-|Type |Description|
+|Type|Description|
 |---|----|
 |Body|Always displayed|
 |Group|Optional|
