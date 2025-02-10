@@ -326,6 +326,8 @@ In summary, we have 6 types of data rows :
 | Subtitle | Optional                                                                                   |
 | Footer   | Optional                                                                                   |
 
+<!-- | Header   | Always displayed, unless `header_frequency:` is `nil` </br> or `masked_headers:` is `true` | -->
+
 ## Rules
 
 Between the different types of data rows, there are also different types
