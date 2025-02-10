@@ -317,14 +317,13 @@ Output:
 
 In summary, we have 6 types of data rows :
 
-| Type     | Description                                                                                |
-| :------- | :----------------------------------------------------------------------------------------- |
-| Header   | Always displayed, unless `header_frequency:` is `nil` </br> or `masked_headers:` is `true` |
-| Body     | Always displayed                                                                           |
-| Group    | Optional                                                                                   |
-| Title    | Optional                                                                                   |
-| Subtitle | Optional                                                                                   |
-| Footer   | Optional                                                                                   |
+| Type     | Description      |
+| :------- | :--------------- |
+| Body     | Always displayed |
+| Group    | Optional         |
+| Title    | Optional         |
+| Subtitle | Optional         |
+| Footer   | Optional         |
 
 <!-- | Header   | Always displayed, unless `header_frequency:` is `nil` </br> or `masked_headers:` is `true` | -->
 
