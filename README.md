@@ -1,4 +1,5 @@
-[<img src="assets/images/logo.png" alt="Logo"/>](https://github.com/hutou/tablo/tree/development?tab=readme-ov-file)
+<!-- [<img src="assets/images/logo.png" alt="Logo"/>](https://github.com/hutou/tablo/tree/development?tab=readme-ov-file) -->
+<img src="assets/images/logo.png"/>
 
 ## Table of contents
 
@@ -17,6 +18,8 @@
 - [Packing](#packing)
 - [Summary](#summary)
 - [Transpose](#transpose)
+- [Columns selection and ordering](#columns-selection-and-ordering)
+- [Tips and tricks](#tips-and-tricks)
 
 ## Getting started
 
@@ -504,14 +507,15 @@ rows
 
 Note also in this example the direct use of a character string for
 border elements, with the last 4 characters defining the separating
-lines between Heading, Group, Header and Body rows respectively.
+lines between Heading(title, subtitle and footer), Group, Header and
+Body rows respectively.
 
 ```crystal
 require "tablo"
 table = Tablo::Table.new(["First\nrow", "Second row\nextending\nover\nfour lines", "Last row"],
   title: Tablo::Heading.new("Title", framed: true),
   subtitle: Tablo::Heading.new("SubTitle", framed: true),
-  border: Tablo::Border.new("+++++++++|||x*=."),
+  border: Tablo::Border.new("+++++++++|||*=-."),
   header_wrap: 4,
   body_wrap: 3,
   row_divider_frequency: 1) do |t|
@@ -524,18 +528,18 @@ puts table
 Output:
 
 ```
-+xxxxxxxxxxxxxx+
-|     Title    |
-+xxxxxxxxxxxxxx+
-|   SubTitle   |
-+xxxxxxxxxxxxxx+
-| Group header |
 +**************+
+|     Title    |
++**************+
+|   SubTitle   |
++**************+
+| Group header |
++==============+
 | Column       |
 | header       |
 | extending    |
 | over        ~|
-+==============+
++--------------+
 | First        |
 | row          |
 +..............+
@@ -544,7 +548,7 @@ Output:
 | over        ~|
 +..............+
 | Last row     |
-+xxxxxxxxxxxxxx+
++**************+
 ```
 
 In addition, to have greater control over the line break, we can use the
@@ -566,16 +570,9 @@ end
 puts table
 ```
 
-Output:
+Output (image):
 
-```
-+--------------+
-| Crystal      |
-| クリスタル      |
-+--------------+
-```
-
- <p> <img src="assets/images/asian_bad.png" width=460> </p>
+ <p> <img src="assets/images/asian_bad.png"> </p>
 
 To correct this, you need to:
 
@@ -609,14 +606,9 @@ end
 puts table
 ```
 
-Output:
+Output (image):
 
-```
-+--------------+
-| Crystal      |
-| クリスタル   |
-+--------------+
-```
+ <p> <img src="assets/images/asian_good.png"> </p>
 
 ### Extracting
 
@@ -650,31 +642,25 @@ module Tablo::CellType
 end
 ```
 
-This module is already included in all Crystal main scalar types. To
-use a (non or less used) scalar type or a user defined class or struct, it is
-mandatory to include it by reopening the class or struct.
+This module is already included in most of Crystal's scalar types. To
+use a scalar type (not or less commonly used) or a stdlib or
+user-defined class or struct, it is mandatory to include it by reopening
+the class or struct.
 
 For example, to allow a cell value to contain an array, we could do :
 
 ```crystal
-class Array
-    include Tablo::CellType
-end
-```
-
-and:
-
-```crystal
 require "tablo"
-
+class Array
+  include Tablo::CellType
+end
 table = Tablo::Table.new([[1, 2], [3, 4]]) do |t|
   t.add_column("itself") { |n| n }
 end
-
 puts table
 ```
 
-would output:
+Output:
 
 ```
 +--------------+
@@ -692,11 +678,11 @@ to obtain a character string ready to be displayed. The simplest
 transformation (which is also the one applied by default) is simply a call to
 the `to_s` method.
 
-Using a proc `formatter` allows you to customize formatting in a variety of
+Using a `Proc` `formatter` allows you to customize formatting in a variety of
 ways, from using `sprintf` formatting strings for numeric values to various
-`String` methods for text and specific `Tablo::Util` methods for both.
+`String` methods for text and specific `Tablo::Functions` methods for both.
 
-A formatter proc can take four forms : the first two apply equally to TextCell
+A formatter `Proc` can take four forms : the first two apply equally to TextCell
 and DataCell and are applied unconditionally on `value`.
 
 The first form expects one parameter (`value`) and the second two: `value` and
@@ -706,7 +692,6 @@ Here is an example of the first form:
 
 ```crystal
 require "tablo"
-
 table = Tablo::Table.new([1, 2, 3]) do |t|
   t.add_column("itself", &.itself)
   t.add_column(2, header: "Double") { |n| n * 2 }
@@ -716,7 +701,6 @@ table = Tablo::Table.new([1, 2, 3]) do |t|
       "%.3f" % value.as(Float)
     }) { |n| n ** 0.5 }
 end
-
 puts table
 ```
 
@@ -740,7 +724,6 @@ would be of type `String` and column would be aligned to the left.
 
 ```crystal
 require "tablo"
-
 table = Tablo::Table.new([1, 2, 3]) do |t|
   t.add_column("itself", &.itself)
   t.add_column(2, header: "Double") { |n| n * 2 }
@@ -764,24 +747,22 @@ Output:
 +--------------+--------------+--------------+
 ```
 
-To illustrate the 2nd form, we will use the `Tablo::Util.stretch` method,
-which can be useful on groups or headings.
+To illustrate the 2nd form, we will use the `Tablo::Functions.stretch` method,
+which can be useful for groups or headings.
 
 ```crystal
 require "tablo"
-
 table = Tablo::Table.new([1, 2, 3]) do |t|
   t.add_column("itself", &.itself)
   t.add_column(2, header: "Double") { |n| n * 2 }
   t.add_group("Numbers",
     formatter: ->(value : Tablo::CellType, width : Int32) {
-      Tablo::Util.stretch(value.as(String), width, ' ')
+      Tablo::Functions.stretch(value.as(String), width, ' ')
     })
   t.add_column(:column_3, header: "String") { |n| ('@'.ord + n).chr.to_s * n }
   t.add_column(:column_4, header: "Boolean") { |n| n.even? }
   t.add_group("Other data types")
 end
-
 puts table
 ```
 
@@ -802,29 +783,27 @@ Output:
 Form 3 and form 4 apply only on DataCell cell types, as they use the
 `coords` parameter to conditionnally format the `value`.
 
-Here is an exemple of form 3 with another method from `Tablo::Util`, which use
+Here is an exemple of form 3 with another method from `Tablo::Functions`, which uses
 the `column_index` as formatting condition.
 
 ```crystal
 require "tablo"
-
 table = Tablo::Table.new([-30.00001, -3.14159, 0.0, 1.470001, 5.78707, 10.0],
   body_formatter: ->(value : Tablo::CellType, coords : Tablo::Cell::Data::Coords) {
     case coords.column_index
-    when 1 then Tablo::Util.fp_align(value.as(Float), 4, Tablo::Util::FPAlign::Empty)
-    when 2 then Tablo::Util.fp_align(value.as(Float), 4, Tablo::Util::FPAlign::Blank)
-    when 3 then Tablo::Util.fp_align(value.as(Float), 4, Tablo::Util::FPAlign::Dot)
-    when 4 then Tablo::Util.fp_align(value.as(Float), 4, Tablo::Util::FPAlign::DotZero)
+    when 1 then Tablo::Functions.fp_align(value.as(Float), 4, Tablo::Functions::FPAlign::Blank)
+    when 2 then Tablo::Functions.fp_align(value.as(Float), 4, Tablo::Functions::FPAlign::NoDot)
+    when 3 then Tablo::Functions.fp_align(value.as(Float), 4, Tablo::Functions::FPAlign::DotOnly)
+    when 4 then Tablo::Functions.fp_align(value.as(Float), 4, Tablo::Functions::FPAlign::DotZero)
     else        value.as(Float).to_s
     end
   }) do |t|
   t.add_column("itself", &.itself)
-  t.add_column("1 - Empty", &.itself)
-  t.add_column("2 - Blank", &.itself)
-  t.add_column("3 - Dot", &.itself)
+  t.add_column("1 - Blank", &.itself)
+  t.add_column("2 - NoDot", &.itself)
+  t.add_column("3 - DotOnly", &.itself)
   t.add_column("4 - DotZero", &.itself)
 end
-
 puts table
 ```
 
@@ -832,7 +811,7 @@ Output:
 
 ```
 +--------------+--------------+--------------+--------------+--------------+
-|       itself |    1 - Empty |    2 - Blank |      3 - Dot |  4 - DotZero |
+|       itself |    1 - Blank |    2 - NoDot |  3 - DotOnly |  4 - DotZero |
 +--------------+--------------+--------------+--------------+--------------+
 |    -30.00001 |     -30      |     -30      |     -30.     |     -30.0    |
 |     -3.14159 |      -3.1416 |      -3.1416 |      -3.1416 |      -3.1416 |
@@ -844,10 +823,43 @@ Output:
 ```
 
 Incidentally, this last example displays all the formatting possibilities of
-the `Tablo::Util.fp_align` method.
+the `Tablo::Functions.fp_align` method.
 
-Compared to the third form, form 4 also allows the use of the width value. +
-Its usefulness seems less obvious, however.
+Compared to the third form, form 4 also allows the use of the width value.
+
+Just for fun, here is a slightly contrived example:
+
+```crystal
+require "tablo"
+table = Tablo::Table.new([1, 2, 3, 4, 5, 6, 7, 8, 9]) do |t|
+  t.add_column(:column_3, header: "King's crown", width: 20,
+    header_alignment: Tablo::Justify::Center,
+    body_alignment: Tablo::Justify::Center,
+    body_formatter: ->(value : Tablo::CellType, coords : Tablo::Cell::Data::Coords, width : Int32) {
+      Tablo::Functions.stretch(value.as(String), width, ' ')
+    }
+  ) { |n| ('@'.ord + n).chr.to_s * n }
+end
+puts table
+```
+
+Output:
+
+```
++----------------------+
+|     King's crown     |
++----------------------+
+|           A          |
+| B                  B |
+|  C        C        C |
+|  D     D     D     D |
+|   E   E   E   E   E  |
+|   F  F  F  F  F  F   |
+|  G  G  G  G  G  G  G |
+|    H H H H H H H H   |
+|   I I I I I I I I I  |
++----------------------+
+```
 
 Overview of the 4 different forms of formatter procs:
 | Forms of formatter procs | Parameter and types, in order |
@@ -859,17 +871,18 @@ Overview of the 4 different forms of formatter procs:
 
 ### Styling
 
+When it comes to terminal styling, the possibilities are limited, especially
 as they depend on the terminal's capabilities. There are therefore
 2 complementary ways of proceeding:
 
-- play with the mode (underlined, bold, italic...)
-- use color
+- Play with the mode (underlined, bold, italic...)
+- Use color
 
 This can be done using ANSI code sequences, or preferably, using the
 `colorize` module of the standard library.
 
 In this section, we'll be using color, altered characters and graphic borders
-with the Fancy border type. Output will therefore be presented as SVG images,
+with the Fancy border type. Output will therefore be presented as images,
 so as to guarantee perfect rendering, whatever the medium used for display.
 
 For styling, there are 5 forms of procs.
@@ -882,7 +895,6 @@ Let's look at a simple example, with yellow borders and blue headers.
 ```crystal
 require "tablo"
 require "colorize"
-
 table = Tablo::Table.new([1, 2, 3],
   border: Tablo::Border.new(:fancy, styler: ->(border_char : String) {
     border_char.colorize(:yellow).to_s
@@ -893,11 +905,12 @@ table = Tablo::Table.new([1, 2, 3],
   t.add_column(:column_3, header: "String") { |n| ('@'.ord + n).chr.to_s * n }
   t.add_column(:column_4, header: "Boolean") { |n| n.even? }
 end
-
 puts table
 ```
 
-<p> <img src="assets/images/styling_first_form.svg" width=460> </p>
+Output:
+
+<p> <img src="assets/images/styling_first_form.png"</p>
 
 Cool! Let's do now some conditional styling, painting in bold green all values
 greater than 2 in all numeric columns and underlining the `true` boolean value
@@ -915,10 +928,12 @@ body_styler: ->(value : Tablo::CellType, content : String) {
 },
 ```
 
-<p> <img src="assets/images/styling_third_form.svg" width=460> </p>
+Output:
+
+<p><img src="assets/images/styling_third_form.png"> </p>
 
 Let's end with a final example, with a black-and-white look: how do you
-display rows alternately in light gray (with a bit of italics) and dark gray
+display rows alternately in black (with a bit of italics) and dark gray
 to make them easier to read?
 
 This would be the 4th form.
@@ -926,18 +941,17 @@ This would be the 4th form.
 ```crystal
 require "tablo"
 require "colorize"
-
 table = Tablo::Table.new([1, 2, 3, 4, 5],
-  title: Tablo::Heading.new("My black and white fancy table", frame: Tablo::Heading::Frame.new),
-  footer: Tablo::Heading.new("End of data", frame: Tablo::Heading::Frame.new),
+  title: Tablo::Heading.new("My black and white fancy table", framed: true),
+  footer: Tablo::Heading.new("End of data", framed: true),
   border: Tablo::Border.new(:fancy, ->(border_char : String) {
-    border_char.colorize(:light_gray).to_s
+    border_char.colorize(:dark_gray).to_s
   }),
   body_styler: ->(_value : Tablo::CellType, coords : Tablo::Cell::Data::Coords, content : String) {
     if coords.row_index.even?
-      "\e[3m" + content.colorize(:light_gray).to_s + "\e[0m"                      <1>
+      "\e[3m" + content.colorize(:black).to_s + "\e[0m"
     else
-      content.colorize.fore(:dark_gray).mode(:bold).to_s
+      content.colorize.fore(:dark_gray).to_s
     end
   },
   header_styler: ->(content : String) { content.colorize.mode(:bold).to_s }) do |t|
@@ -945,14 +959,16 @@ table = Tablo::Table.new([1, 2, 3, 4, 5],
   t.add_column(2, header: "Double") { |n| n * 2 }
   t.add_column(:column_3, header: "String") { |n| ('@'.ord + n).chr.to_s * n }
 end
-
 puts table
 ```
 
-`<1>` From version 1.10 onwards, Crystal does support italic mode, and the use
-of ANSI sequences is given here simply as an example.
+Output:
 
-<p> <img src="assets/images/styling_fourth_form.svg" width=460> </p>
+<p> <img src="assets/images/styling_fourth_form.png"> </p>
+
+_*From version 1.10 onwards, Crystal `colorize` module does support italic
+mode, and the use of ANSI sequences is given here simply as an
+example.*_
 
 Overview of the 5 different forms of styler procs:
 
@@ -969,7 +985,7 @@ Overview of the 5 different forms of styler procs:
 In the previous examples, the notion of column width was used. For a better
 understanding, the diagram below highlights the structure of a column.
 
-<p> <img src="assets/images/column_layout.svg" width=460> </p>
+<p> <img src="assets/images/column_layout.svg"> </p>
 
 As we saw at the start of this tutorial, by default, all columns have the same
 width, i.e. 12 characters.
@@ -1007,7 +1023,6 @@ their default value : 12 characters.
 
 ```crystal
 require "tablo"
-
 data = [
   [1, "Box", "Orange", "Elephant", "Mont St Michel"],
 ]
@@ -1018,51 +1033,59 @@ table = Tablo::Table.new(data) do |t|
   t.add_column(3, header: "Animals") { |n| n[3].as(String) }
   t.add_column("Famous\nSites") { |n| n[4].as(String) }
 end
-
 puts table
 puts "table width = #{table.total_table_width}"
 ```
 
 Table standard output, using default width values, without any packing:
 
+```crystal
+puts table
 ```
- puts table
- +--------------+--------------+--------------+--------------+--------------+
- |       Primes | Things       | Fruits       | Animals      | Famous       |
- |              |              |              |              | Sites        |
- +--------------+--------------+--------------+--------------+--------------+
- |            1 | Box          | Orange       | Elephant     | Mont St      |
- |              |              |              |              | Michel       |
- +--------------+--------------+--------------+--------------+--------------+
- table width = 76
+
+```
++--------------+--------------+--------------+--------------+--------------+
+|       Primes | Things       | Fruits       | Animals      | Famous       |
+|              |              |              |              | Sites        |
++--------------+--------------+--------------+--------------+--------------+
+|            1 | Box          | Orange       | Elephant     | Mont St      |
+|              |              |              |              | Michel       |
++--------------+--------------+--------------+--------------+--------------+
+table width = 76
 ```
 
 Using default `pack` parameters (ie: none !), we get an optimal packing
 
+```crystal
+puts table.pack
 ```
- puts table.pack
- +--------+--------+--------+----------+----------------+
- | Primes | Things | Fruits | Animals  | Famous         |
- |        |        |        |          | Sites          |
- +--------+--------+--------+----------+----------------+
- |      1 | Box    | Orange | Elephant | Mont St Michel |
- +--------+--------+--------+----------+----------------+
- table width = 56
+
+```
++--------+--------+--------+----------+----------------+
+| Primes | Things | Fruits | Animals  | Famous         |
+|        |        |        |          | Sites          |
++--------+--------+--------+----------+----------------+
+|      1 | Box    | Orange | Elephant | Mont St Michel |
++--------+--------+--------+----------+----------------+
+table width = 56
 ```
 
 But using `pack` with same table width (56) on initial widths values gives
 a significantly poorer result
 
+```crystal
+puts table.pack(56, packing_mode: Tablo::PackingMode::InitialWidths)
 ```
- puts table.pack(56, packing_mode: Tablo::PackingMode::InitialWidths)
- +----------+----------+----------+----------+----------+
- |   Primes | Things   | Fruits   | Animals  | Famous   |
- |          |          |          |          | Sites    |
- +----------+----------+----------+----------+----------+
- |        1 | Box      | Orange   | Elephant | Mont St  |
- |          |          |          |          | Michel   |
- +----------+----------+----------+----------+----------+
- table width = 56
+
+```
++----------+----------+----------+----------+----------+
+|   Primes | Things   | Fruits   | Animals  | Famous   |
+|          |          |          |          | Sites    |
++----------+----------+----------+----------+----------+
+|        1 | Box      | Orange   | Elephant | Mont St  |
+|          |          |          |          | Michel   |
++----------+----------+----------+----------+----------+
+table width = 56
 ```
 
 This is due to the way Tablo reduces or increases column size. See the
@@ -1073,70 +1096,80 @@ Using the `width` parameter, any table width can be obtained, by reducing or
 increasing the width of each column progressively to reach the desired table
 width
 
+```crystal
+puts table.pack(30)
 ```
- puts table.pack(30)
- +-----+-----+-----+-----+----+
- | Pri | Thi | Fru | Ani | Fa |
- | mes | ngs | its | mal | mo |
- |     |     |     | s   | us |
- |     |     |     |     | Si |
- |     |     |     |     | te |
- |     |     |     |     | s  |
- +-----+-----+-----+-----+----+
- |   1 | Box | Ora | Ele | Mo |
- |     |     | nge | pha | nt |
- |     |     |     | nt  | St |
- |     |     |     |     | Mi |
- |     |     |     |     | el |
- +-----+-----+-----+-----+----+
- table width = 30
+
+```
++-----+-----+-----+-----+----+
+| Pri | Thi | Fru | Ani | Fa |
+| mes | ngs | its | mal | mo |
+|     |     |     | s   | us |
+|     |     |     |     | Si |
+|     |     |     |     | te |
+|     |     |     |     | s  |
++-----+-----+-----+-----+----+
+|   1 | Box | Ora | Ele | Mo |
+|     |     | nge | pha | nt |
+|     |     |     | nt  | St |
+|     |     |     |     | Mi |
+|     |     |     |     | el |
++-----+-----+-----+-----+----+
+table width = 30
 ```
 
 or
 
+```crystal
+puts table.pack(90)
 ```
- puts table.pack(90)
- +----------------+-----------------+-----------------+-----------------+-----------------+
- |         Primes | Things          | Fruits          | Animals         | Famous          |
- |                |                 |                 |                 | Sites           |
- +----------------+-----------------+-----------------+-----------------+-----------------+
- |              1 | Box             | Orange          | Elephant        | Mont St Michel  |
- +----------------+-----------------+-----------------+-----------------+-----------------+
- table width = 90
+
+```
++----------------+-----------------+-----------------+-----------------+-----------------+
+|         Primes | Things          | Fruits          | Animals         | Famous          |
+|                |                 |                 |                 | Sites           |
++----------------+-----------------+-----------------+-----------------+-----------------+
+|              1 | Box             | Orange          | Elephant        | Mont St Michel  |
++----------------+-----------------+-----------------+-----------------+-----------------+
+table width = 90
 ```
 
 There is, however, a limit to the reduction: each column must be able to
 accommodate at least one character. Here, we're asking for a table width of
 15, but the minimum size to respect this rule is 21!
 
+```crystal
+puts table.pack(15)
 ```
- puts table.pack(15)
- +---+---+---+---+---+
- | P | T | F | A | F |
- | r | h | r | n | a |
- | i | i | u | i | m |
- | m | n | i | m | o |
- | e | g | t | a | u |
- | s | s | s | l | s |
- |   |   |   | s | S |
- |   |   |   |   | i |
- |   |   |   |   | t |
- |   |   |   |   | e |
- |   |   |   |   | s |
- +---+---+---+---+---+
- | 1 | B | O | E | M |
- |   | o | r | l | o |
- |   | x | a | e | n |
- |   |   | n | p | t |
- |   |   | g | h | S |
- |   |   | e | a | t |
- |   |   |   | n | M |
- |   |   |   | t | i |
- |   |   |   |   | c |
- |   |   |   |   | h |
- |   |   |   |   | e |
- |   |   |   |   | l |
- +---+---+---+---+---+
+
+```
++---+---+---+---+---+
+| P | T | F | A | F |
+| r | h | r | n | a |
+| i | i | u | i | m |
+| m | n | i | m | o |
+| e | g | t | a | u |
+| s | s | s | l | s |
+|   |   |   | s | S |
+|   |   |   |   | i |
+|   |   |   |   | t |
+|   |   |   |   | e |
+|   |   |   |   | s |
++---+---+---+---+---+
+| 1 | B | O | E | M |
+|   | o | r | l | o |
+|   | x | a | e | n |
+|   |   | n | p | t |
+|   |   | g | h | S |
+|   |   | e | a | t |
+|   |   |   | n | M |
+|   |   |   | t | i |
+|   |   |   |   | c |
+|   |   |   |   | h |
+|   |   |   |   | e |
+|   |   |   |   | l |
++---+---+---+---+---+
+table width = 21
 ```
 
 If, with the parameter `packing_mode == Startingwidths::AutoSized` by
@@ -1154,6 +1187,29 @@ Finally, using the `except` parameter, you can temporarily freeze the size of
 one or more columns at their current value, so that they are excluded from
 resizing.
 
+```crystal
+table.pack
+puts table.pack(100,except: [2, :fruits])
+```
+
+```
++----------------------+--------+--------+-----------------------+-----------------------+
+|               Primes | Things | Fruits | Animals               | Famous                |
+|                      |        |        |                       | Sites                 |
++----------------------+--------+--------+-----------------------+-----------------------+
+|                    1 | Box    | Orange | Elephant              | Mont St Michel        |
++----------------------+--------+--------+-----------------------+-----------------------+
+table width = 90
+```
+
+The same effect could be obtained by the statements:
+
+```crystal
+table.pack
+puts table.pack(90, only: ["Primes", 3, "Famous\nSites"])
+```
+
+Note that when a column is created using the `add_column` method, the width is
 stored in 2 different attributes: the current value and the initial value
 (never subsequently modified).
 
@@ -1196,32 +1252,38 @@ The Tablo library offers a basic yet useful summary method.
 At present, it can be used to perform calculations on individual columns of data
 and between columns.
 
-Here's an example of how it works now and what it can do for you:
+Here's a rather complete and detailed example of how it works and what
+it can do:
 
 ```crystal
 require "tablo"
 require "colorize"
+require "big"
+
+struct BigDecimal
+  include Tablo::CellType
+end
 
 struct InvoiceItem
-  include Tablo::CellType
   getter product, quantity, price
 
-  def initialize(@product : String, @quantity : Int32?, @price : Int32?)
+  def initialize(@product : String, @quantity : Int32?, @price : BigDecimal?)
   end
 end
 
 invoice = [
-  InvoiceItem.new("Laptop", 3, 98000),
-  InvoiceItem.new("Printer", 2, 15499),
-  InvoiceItem.new("Router", 1, 9900),
-  InvoiceItem.new("Switch", nil, 4500),
-  InvoiceItem.new("Accessories", 5, 6450),
+  InvoiceItem.new("Laptop", 3, BigDecimal.new(980)),
+  InvoiceItem.new("Printer", 2, BigDecimal.new(154.99)),
+  InvoiceItem.new("Router", 1, BigDecimal.new(99)),
+  InvoiceItem.new("Switch", nil, BigDecimal.new(45)),
+  InvoiceItem.new("Accessories", 5, BigDecimal.new(64.50)),
 ]
 
 table = Tablo::Table.new(invoice,
-  omit_last_rule: false,
-  border: Tablo::Border.new(Tablo::BorderName::Fancy),
-  title: Tablo::Heading.new("Invoice")) do |t|
+  omit_last_rule: true,
+  border: Tablo::Border.new(Tablo::Border::PreSet::Fancy),
+  title: Tablo::Heading.new("\nInvoice\n=======\n"),
+  subtitle: Tablo::Heading.new("Details", framed: true)) do |t|
   t.add_column("Product",
     &.product)
   t.add_column("Quantity",
@@ -1230,194 +1292,272 @@ table = Tablo::Table.new(invoice,
     }, &.quantity)
   t.add_column("Price",
     body_formatter: ->(value : Tablo::CellType) {
-      "%.2f" % (value.as(Int32) / 100)
-    }, &.price)
+      "%.2f" % value.as(BigDecimal)
+    }, &.price.as(Tablo::CellType))
   t.add_column(:total, header: "Total",
     body_formatter: ->(value : Tablo::CellType) {
-      value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
+      value.nil? ? "" : "%.2f" % value.as(BigDecimal)
     }) { |n| n.price.nil? || n.quantity.nil? ? nil : (
-    n.price.as(Int32) * n.quantity.as(Int32)
-  ) }
+    n.price.as(BigDecimal) *
+      n.quantity.as(Int32)
+  ).as(Tablo::CellType) }
 end
 
 invoice_summary_definition = [
-  Tablo::Aggregation.new(:total, Tablo::Aggregate::Sum),
+  Tablo::Summary::UserProc.new(
+    proc: ->(tbl : Tablo::Table(InvoiceItem)) {
+      total_sum = BigDecimal.new(0)
+      tbl.column_data(:total).each do |tot|
+        total_sum += tot.as(BigDecimal) unless tot.nil?
+      end
+      discount = total_sum * 0.05
+      total_after_discount = total_sum - discount
+      tax = total_after_discount * 0.2
+      total_due = total_after_discount + tax
+      {
+        :total_sum            => total_sum.as(Tablo::CellType),
+        :discount             => discount.as(Tablo::CellType),
+        :total_after_discount => total_after_discount.as(Tablo::CellType),
+        :tax                  => tax.as(Tablo::CellType),
+        :total_due            => total_due.as(Tablo::CellType),
+      }
+    }),
+  Tablo::Summary::BodyColumn.new("Price", alignment: Tablo::Justify::Right),
   Tablo::Summary::BodyColumn.new(:total, alignment: Tablo::Justify::Right,
     formatter: ->(value : Tablo::CellType) {
       value.is_a?(String) ? value : (
-        value.nil? ? "" : "%.2f" % (value.as(Int32) / 100)
+        value.nil? ? "" : "%.2f" % value.as(BigDecimal)
       )
     },
-    styler: ->(_value : Tablo::CellType, cd : Tablo::Cell::Data::Coords, fc : String) {
-      case cd.row_index
-      when 0, 2, 5
-        fc.colorize.mode(:bold).to_s
-      when 1
-        fc.colorize.mode(:italic).to_s
-      else
-        fc
+    styler: ->(_value : Tablo::CellType, coords : Tablo::Cell::Data::Coords, content : String) {
+      case coords.row_index
+      when 0, 2, 5 then content.colorize.mode(:bold).to_s
+      when 1       then content.colorize.mode(:italic).to_s
+      else              content
       end
     }),
-  Tablo::Summary::BodyRow.new("Price", 1, "SubTotal"),
-  Tablo::Summary::BodyRow.new("Price", 2, "Discount 5%"),
-  Tablo::Summary::BodyRow.new("Price", 3, "S/T discount"),
-  Tablo::Summary::BodyRow.new("Price", 4, "Tax (20%)"),
-  Tablo::Summary::BodyRow.new("Price", 6, "Balance due"),
-  Tablo::Summary::BodyRow.new(:total, 1, ->{ Tablo::Summary.use(:total,
-    Tablo::Aggregate::Sum) }),
-  Tablo::Summary::BodyRow.new(:total, 2, ->{ Tablo::Summary.keep(:discount,
-    (Tablo::Summary.use(:total, Tablo::Aggregate::Sum).as(Int32) * 0.05)
-      .to_i).as(Tablo::CellType) }),
-  Tablo::Summary::BodyRow.new(:total, 3, ->{ (Tablo::Summary.keep(:total_after_discount,
-    Tablo::Summary.use(:total, Tablo::Aggregate::Sum).as(Int32) -
-    Tablo::Summary.use(:discount).as(Int32))).as(Tablo::CellType) }),
-  Tablo::Summary::BodyRow.new(:total, 4, ->{ (Tablo::Summary.keep(:tax,
-    (Tablo::Summary.use(:total_after_discount).as(Int32) * 0.2)
-      .to_i)).as(Tablo::CellType) }),
-  Tablo::Summary::BodyRow.new(:total, 5, "========".as(Tablo::CellType)),
-  Tablo::Summary::BodyRow.new(:total, 6, ->{ (Tablo::Summary.use(:tax).as(Int32) +
-                                     Tablo::Summary.use(:total_after_discount)
-                                       .as(Int32)).as(Tablo::CellType) }),
+  Tablo::Summary::HeaderColumn.new("Product", content: ""),
+  Tablo::Summary::HeaderColumn.new("Quantity", content: ""),
+  Tablo::Summary::HeaderColumn.new("Price", content: "Total Invoice",
+    alignment: Tablo::Justify::Right),
+  Tablo::Summary::HeaderColumn.new(:total, content: "Amounts"),
+
+  Tablo::Summary::BodyRow.new("Price", 10, "SubTotal"),
+  Tablo::Summary::BodyRow.new("Price", 20, "Discount 5%"),
+  Tablo::Summary::BodyRow.new("Price", 30, "S/T after discount"),
+  Tablo::Summary::BodyRow.new("Price", 40, "Tax (20%)"),
+  Tablo::Summary::BodyRow.new("Price", 60, "Balance due"),
+
+  Tablo::Summary::BodyRow.new(:total, 10, -> { Tablo::Summary.use(:total_sum) }),
+  Tablo::Summary::BodyRow.new(:total, 20, -> { Tablo::Summary.use(:discount) }),
+  Tablo::Summary::BodyRow.new(:total, 30, -> { Tablo::Summary.use(:total_after_discount) }),
+  Tablo::Summary::BodyRow.new(:total, 40, -> { Tablo::Summary.use(:tax) }),
+  Tablo::Summary::BodyRow.new(:total, 50, "========"),
+  Tablo::Summary::BodyRow.new(:total, 60, -> { Tablo::Summary.use(:total_due) }),
 ]
-
-table.summary(invoice_summary_definition,
-  {
-    masked_headers: true,
-    border:         Tablo::Border.new("EEESSSSSSSSSESSS"),
-  })
-
+table.pack
+table.add_summary(invoice_summary_definition,
+  title: Tablo::Heading.new("Summary", framed: true))
+table.summary.as(Tablo::Table).pack
 puts table
-puts table.summary.as(Tablo::SummaryTable)
+puts table.summary
 ```
 
-<p> <img src="assets/images/summary.svg" width=460> </p>
+Output:
 
-Let's take a closer look at the source code.
+<p> <img src="assets/images/summary.png"> </p>
 
-In the last lines of code, you can see two calls to the summary method. The
-first accepts two parameters and is used to define the layout of the summary,
-while the second, without parameters, simply returns the SummaryTable instance
-created, ready for display.
+Let's take a look at the source code.
 
-The layout is defined on the basis of several data type instances, grouped together in an array (`summary_definition` in this example):
+The first fifty or so lines build a classic Tablo table, defining and
+feeding the data structure to be presented.
 
-1. The Aggregation type, defined as follows:
+Next comes the definition of the summary section, in the form of an
+array of n `struct` instances, of 4 different types:
 
-```crystal
-   record Aggregation, column : LabelType | Array(LabelType),
-          aggregate : Aggregate | Array(Aggregate)
-```
+- the `Summary::UserProc` type is used to perform calculations, whose
+  results are stored in a hash internally
+- the `Summary::HeaderColumn` type defines attributes (content, format,
+  style and alignment) for headers
+- the `Summary::BodyColumn` type defines attributes (format, style and
+  alignment) for body rows
+- the `Summary::BodyRow` type defines row contents, using data
+  calculated in `Summary::UserProc` that can be accessed by key
 
-- column, of type LabelType, identifies the column on which to perform
-  calculations
-- aggregate is an enum with 4 possible elements: Sum, Count, Min
-  and Max. Several Aggregate instances can be defined, or, if required,
-  combined into a single instance by setting the parameters in an array.
+Finally, the last lines display the 2 tables: the main table and the
+summary table (linked by the `omit_last_rule: true` statement). Note
+the prior use of the pack method on the main table to optimize column
+widths, then again on the summary table to take into account the new
+contents of the “Price” column.
 
-The layout is defined on the basis of several data type instances, grouped together in an array:
-
-1. the Aggregation type is used to define the various aggregation calculations (Sum, Count, Minimum and Maximum) on the table's data columns.
-
-Nil values are ignored, and only numerical values are used for Sum, Minimum and Maximum calculations. Source data is read only once, regardless of the number of columns and aggregates used.
-
-record Aggregation, column : LabelType | Array(LabelType), aggregate : Aggregate | Array(Aggregate)
-
-2. column, of type LabelType, identifies the column on which to perform calculations
-   Aggregate is an enum with 4 possible elements: Sum, Count, Min and Max.
-   Several Aggregate instances can be defined, or, if required, combined into a single instance by setting the parameters in an array.
-
-TODO TODO TODO
-TODO TODO TODO
-TODO TODO TODO
-TODO TODO TODO
-TODO TODO TODO
-TODO TODO TODO
-TODO TODO TODO
-TODO TODO TODO
-
-the Summary::BodyRow type
-Summary::BodyColumn type
-
-The first part - the creation of the main table - calls for no particular
-comment (except perhaps the use of a more realistic data source than the
-previous arrays of integers!)
-
-Calling the `summary` method, with its 2 parameters, creates a new `Table`
-instance, and calling the same method without arguments returns this same
-instance, ready to be displayed.
-
-The first parameter (`summary_def`) defines all the calculations to be performed
-on the data, as well as their layout.
-
-The type of `summary_def` is : `Hash(LabelType, NamedTuple(...))`. The hash key is
-therefore a column identifier (`LabelType` is an alias of `String | Symbol
-| Int32`).
-
-The `NamedTuple` may have up to 8 entries, all optional except `proc`
-
-| Hash key           | Type of hash value   |
-| :----------------- | :------------------- |
-| `header`           | `String`             |
-| `header_alignment` | `Justify`            |
-| `header_formatter` | `DataCellFormatter`  |
-| `header_styler`    | `DataCellStyler`     |
-| `body_alignment`   | `Justify`            |
-| `body_formatter`   | `DataCellFormatter`  |
-| `body_styler`      | `DataCellStyler`     |
-| `proc`             | `Summary::UserProcs` |
-
-- `header` default value is the empty string
-- the next 6 entries default values are inherited from Table
-  initializers of same name
-- `proc` is a bit complex and has no default value. Its value type is
-  `Summary::UserProcs`, an alias whose definition is :
-
-```crystal
-alias SourcesCurrentColumn = Array(CellType)
-alias SourcesAllColumns = Hash(LabelType, Array(CellType))
-alias Summary::UserProcCurrent = Proc(SourcesCurrentColumn, CellType)
-alias Summary::UserProcAll = Proc(SourcesAllColumns, CellType)
-
-alias SummaryLineProcCurrent = {Int32, Summary::UserProcCurrent}
-alias SummaryLineProcAll = {Int32, Summary::UserProcAll}
-alias SummaryLineProcBoth = SummaryLineProcCurrent | SummaryLineProcAll
-
-alias Summary::UserProcs = {Int32, Proc(Array(CellType), CellType)} |
-{Int32, Proc(Hash(LabelType, Array(CellType)), CellType)} |
-Array({Int32, Proc(Array(CellType), CellType)}) |
-Array({Int32, Proc(Hash(LabelType, Array(CellType)), CellType)}) |
-Array({Int32, Proc(Array(CellType), CellType)} |
-{Int32, Proc(Hash(LabelType, Array(CellType)), CellType)})
-alias Summary::UserProcAll = Proc(Hash(LabelType, Array(CellType)), CellType)
-alias Summary::UserProcCurrent = Proc(Array(CellType), CellType)
-```
-
-The latter - `Summary::UserProcs`- is a tad complex and can take several forms.
-Basically, it is a tuple of 2 elements :
-
-- An `Int32`, which indicates the position (line) of the proc result in the column
-- A `proc` or an array of procs, which performs the calculation and expects
-  as parameter either an `Array(CellType)` or a `Hash(LabelType,
-Array(CellType))`
-
-The second parameter (`options`) ...
-
-Outch!
-
-Looking again at the source code, we see that :
-
-- The `:tax` column has 2 entries, of type `Tuple`:
-- `body_formatter:` and its associated proc which performs the
-  conversion from cents to currency units, and checks that the cell is
-  not nil (this is necessary, as of the 3 summary lines, the 1st and
-  3rd are not fed).
-- `proc:` a tuple defined by the number of the summary line to be fed,
-  and the proc performing the calculation. The latter takes as
-  parameter a `CellType` array (the "Tax (20%)" data column), converts
-  it to an array of integers before summing and converting the result
+For a more in-depth study of this example, detailed explanations are
+available in the API.
 
 ## Transpose
 
-```text
+Sometimes, it can be useful to be able to invert columns and rows, for
+example, when the number of elements in a source row is large, and
+therefore unsuitable for horizontal presentation (and provided also that
+the number of rows is small).
+
+The `transpose` method can automatically perform this transformation.
+Here is a very simple, contrived but significant, example :
+
+```crystal
+require "tablo"
+table = Tablo::Table.new([-1, 0, 1]) do |t|
+  t.add_column("Itself", &.itself)
+  t.add_column("Pred", &.pred)
+  t.add_column("Succ", &.succ)
+  t.add_column("Even?", &.even?)
+  t.add_column("Odd?", &.odd?)
+  t.add_column("Abs", &.abs)
+  t.add_column("Double", &.itself.*(2))
+  t.add_column("Triple", &.itself.*(3))
+  t.add_column("String 1u", &.itself.to_s.*(1))
+  t.add_column("String 2u", &.itself.to_s.*(2))
+  t.add_column("String 3u", &.itself.to_s.*(3))
+  t.add_column("String 4u", &.itself.to_s.*(4))
+  t.add_column("String 5u", &.itself.to_s.*(5))
+  t.add_column("String 6u", &.itself.to_s.*(6))
+  t.add_column("String 5d", &.itself.to_s.*(5))
+  t.add_column("String 4d", &.itself.to_s.*(4))
+  t.add_column("String 3d", &.itself.to_s.*(3))
+  t.add_column("String 2d", &.itself.to_s.*(2))
+  t.add_column("String 1d", &.itself.to_s.*(1))
+end
+```
+
+Displaying this table in the standard way produces a table with a total
+length of 286 characters, hardly compatible with the width of current
+terminals.
+
+```crystal
+puts table
+puts "Table width = #{table.total_table_width}"
+```
 
 ```
++--------------+--------------+-------------  //  -------------+--------------+--------------+
+|       Itself |         Pred |         Succ  //  String 3d    | String 2d    | String 1d    |
++--------------+--------------+-------------  //  -------------+--------------+--------------+
+|           -1 |           -2 |            0  //  -1-1-1       | -1-1         | -1           |
+|            0 |           -1 |            1  //  000          | 00           | 0            |
+|            1 |            0 |            2  //  111          | 11           | 1            |
++--------------+--------------+-------------  //  -------------+--------------+--------------+
+table width = 286
+```
+
+Using the “transpose” method produces a much clearer result:
+
+```crystal
+transposed_table = table.transpose
+puts transposed_table
+puts "Table width = #{transposed_table.total_table_width}"
+```
+
+```
++-----------+--------------+--------------+--------------+
+|           |           -1 |            0 |            1 |
++-----------+--------------+--------------+--------------+
+| Itself    |           -1 |            0 |            1 |
+| Pred      |           -2 |           -1 |            0 |
+| Succ      |            0 |            1 |            2 |
+| Even?     |     false    |     true     |     false    |
+| Odd?      |     true     |     false    |     true     |
+| Abs       |            1 |            0 |            1 |
+| Double    |           -2 |            0 |            2 |
+| Triple    |           -3 |            0 |            3 |
+| String 1u | -1           | 0            | 1            |
+| String 2u | -1-1         | 00           | 11           |
+| String 3u | -1-1-1       | 000          | 111          |
+| String 4u | -1-1-1-1     | 0000         | 1111         |
+| String 5u | -1-1-1-1-1   | 00000        | 11111        |
+| String 6u | -1-1-1-1-1-1 | 000000       | 111111       |
+| String 5d | -1-1-1-1-1   | 00000        | 11111        |
+| String 4d | -1-1-1-1     | 0000         | 1111         |
+| String 3d | -1-1-1       | 000          | 111          |
+| String 2d | -1-1         | 00           | 11           |
+| String 1d | -1           | 0            | 1            |
++-----------+--------------+--------------+--------------+
+Table width = 58
+```
+
+See API for details.
+
+## Columns selection and ordering
+
+Sometimes we may need to present a table in different ways and, rather
+than redefining a new table each time, it's more economical to define
+the table in its most “complete” configuration, then, when it's time to
+display it, select and order the columns to be presented.
+
+`Table#using_columns` and `Table#using_column_indexes` methods do just that!
+
+If defined, groups are preserved if no re-ordering required.
+
+See API for examples.
+
+## Tips and tricks
+
+Here are interesting things to try...
+
+### Data sources
+
+A table may be built once, and used by different data sources, at the
+condition that these sources have exactly the same type.
+The `Table#sources=` method allows to change data sources.
+
+(The `Table#sources` method allows to access data directly, for example
+in `Summary.UserProc` struct initialization - see API)
+
+### Tables into tables
+
+Formatting a table (or any other formatted data) inside a cell of another table is perfectly possible.
+
+Here is an example :
+
+```crystal
+require "tablo"
+
+def my_string
+  "My formatted string"
+end
+
+def your_string
+  "Your formatted string"
+end
+
+tslave = Tablo::Table.new(["abc"]) do |t|
+  t.add_column("itself", &.itself)
+  t.add_column("my_string") { my_string }
+end
+tmain = Tablo::Table.new([1],
+  title: Tablo::Heading.new("tmain", framed: true)) do |t|
+  t.add_column("tslave") { tslave.to_s }
+  t.add_column("your_string") { your_string }
+end
+puts tmain.pack
+```
+
+_*Here, the `[1]` is a fake, as it is never used.*_
+
+Output:
+
+```
++---------------------------------------------------------+
+|                          tmain                          |
++---------------------------------+-----------------------+
+| tslave                          | your_string           |
++---------------------------------+-----------------------+
+| +--------------+--------------+ | Your formatted string |
+| | itself       | my_string    | |                       |
+| +--------------+--------------+ |                       |
+| | abc          | My           | |                       |
+| |              | formatted    | |                       |
+| |              | string       | |                       |
+| +--------------+--------------+ |                       |
++---------------------------------+-----------------------+
+```
+
+This can lead to some interesting formatting possibilities!

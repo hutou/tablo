@@ -224,8 +224,8 @@ module Tablo
       # For cells of type `Tablo::Cell::Text` (headings and group), the formatter Proc can
       # take 2 different forms, as shown below by their commonly used parameter
       # names  and types: <br />
-      # - 1st form : (*value* : `Tablo::CellType`, *column_width* : `Int32`)
-      # - 2nd form : (*value* : `Tablo::CellType`) <br />
+      # - 1st form : (*value* : `Tablo::CellType`) <br />
+      # - 2nd form : (*value* : `Tablo::CellType`, *column_width* : `Int32`)
       #   Default formatter, defined by`Tablo::Config::Defaults.heading_formatter` (or
       #                   `Tablo::Config::Defaults.group_formatter`)
       #
@@ -288,8 +288,8 @@ module Tablo
       # |            3 |            6 |            9 |
       # +--------------+--------------+--------------+
       # ```
-      alias Formatter = Proc(CellType, Int32, String) |
-                        Proc(CellType, String)
+      alias Formatter = Proc(CellType, String) |
+                        Proc(CellType, Int32, String)
 
       # The purpose of the styler is to apply stylistic effects to
       # a previously formatted character string. For a terminal without
@@ -300,8 +300,8 @@ module Tablo
       # can take 2 different forms, as shown below by their commonly used
       # parameter names and types:
       #
-      # - 1st form : (*content* : `String`, *line* : `Int32`)
-      # - 2nd form : (*content* : `String`) <br />
+      # - 1st form : (*content* : `String`) <br />
+      # - 2nd form : (*content* : `String`, *line* : `Int32`)
       #   Default styler, defined by`Tablo::Config::Defaults.heading_styler` (or
       #                   `Tablo::Config::Defaults.group_styler`)
       #
@@ -310,7 +310,7 @@ module Tablo
       # *content* is the formatted cell value, after the formatter has been applied.<br />
       # *line* designates the line number in a (multi-line) cell (0..n).
       #
-      # The first form allows easy conditional styling. For example, to colorize
+      # The second form allows easy conditional styling. For example, to colorize
       # differently each line of multiline cell:
       # ```
       # require "tablo"
@@ -336,7 +336,7 @@ module Tablo
       # <img src="../../../assets/images/api_cell_text_styler_1.svg" width="400">
       #
       #
-      #  or, more simply, to style the whole cell, we use the 2nd form:
+      #  or, more simply, to style the whole cell, we use the 1st form:
       # ```
       # require "tablo"
       # require "colorize"
@@ -355,8 +355,8 @@ module Tablo
       #
       # <img src="../../../assets/images/api_cell_text_styler_2.svg" width="400">
       #
-      alias Styler = Proc(String, Int32, String) |
-                     Proc(String, String)
+      alias Styler = Proc(String, String) |
+                     Proc(String, Int32, String)
       # called from Table
       protected getter row_type
       def_clone
@@ -383,10 +383,10 @@ module Tablo
       # Format the cell value (type CellType)
       private def apply_formatter
         case f = formatter
-        in Proc(CellType, Int32, String)
-          f.call(value, width)
         in Proc(CellType, String)
           f.call(value)
+        in Proc(CellType, Int32, String)
+          f.call(value, width)
         end
       end
 
@@ -394,10 +394,10 @@ module Tablo
       private def apply_styler(content, line_index)
         return content unless Util.styler_allowed
         case s = styler
-        in Proc(String, Int32, String)
-          s.call(content, line_index)
         in Proc(String, String)
           s.call(content)
+        in Proc(String, Int32, String)
+          s.call(content, line_index)
         end
       end
 
@@ -445,10 +445,10 @@ module Tablo
       #
       # For cells of type `Tablo::Cell::Data`, the Formatter Proc can take 4 different
       # forms, as shown below by their commonly used parameter names  and types: <br />
-      # - 1st form : (*value* : `Tablo::CellType`, *coords* : `Tablo::Cell::Data::Coords`, *column_width* : `Int32`)
-      # - 2nd form : (*value* : `Tablo::CellType`, *coords* : `Tablo::Cell::Data::Coords`)
-      # - 3rd form : (*value* : `Tablo::CellType`, *column_width* : `Int32`)
-      # - 4th form : (*value* : `Tablo::CellType`) <br />
+      # - 1st form : (*value* : `Tablo::CellType`) <br />
+      # - 2nd form : (*value* : `Tablo::CellType`, *column_width* : `Int32`)
+      # - 3rd form : (*value* : `Tablo::CellType`, *coords* : `Tablo::Cell::Data::Coords`)
+      # - 4th form : (*value* : `Tablo::CellType`, *coords* : `Tablo::Cell::Data::Coords`, *column_width* : `Int32`)
       #   Default formatter, defined by`Tablo::Config::Defaults.body_formatter` (or
       #                   `Tablo::Config::Defaults.header_formatter`)
       #
@@ -456,7 +456,7 @@ module Tablo
       #
       # These different forms can be used for conditional formatting.
       #
-      # For example, to alternate case after each row, the 2nd form
+      # For example, to alternate case after each row, the 3rd form
       # can be used :
       # ```
       # require "tablo"
@@ -530,10 +530,10 @@ module Tablo
       # | C            | CC           | CCC          |
       # +--------------+--------------+--------------+
       # ```
-      alias Formatter = Proc(CellType, Cell::Data::Coords, Int32, String) |
-                        Proc(CellType, Cell::Data::Coords, String) |
+      alias Formatter = Proc(CellType, String) |
                         Proc(CellType, Int32, String) |
-                        Proc(CellType, String)
+                        Proc(CellType, Cell::Data::Coords, String) |
+                        Proc(CellType, Cell::Data::Coords, Int32, String)
 
       # The purpose of the styler is to apply stylistic effects to a previously
       # formatted character string. For a terminal without graphic capabilities,
@@ -543,13 +543,13 @@ module Tablo
       # For cells of type  `Tablo::Cell::Data` (header and body), the styler Proc can take
       # 5 different forms, as shown below by their commonly used parameter names and types:
       #
-      # - 1st form : (*value* : `Tablo::CellType`, *coords* : `Tablo::Cell::Data::Coords`,
-      #              *content* : `String`, *line_index* : `Int32`)
-      # - 2nd form : (*value* : `Tablo::CellType`, *coords* : `Tablo::Cell::Data::Coords`,
-      #              *content* : `String`)
+      # - 1st form : (*content* : `String`) <br />
+      # - 2nd form : (*content* : `String`, *line_index* : `Int32`)
       # - 3rd form : (*value* : `Tablo::CellType`, *content* : `String`)
-      # - 4th form : (*content* : `String`, *line_index* : `Int32`)
-      # - 5th form : (*content* : `String`) <br />
+      # - 4th form : (*value* : `Tablo::CellType`, *coords* : `Tablo::Cell::Data::Coords`,
+      #              *content* : `String`)
+      # - 5th form : (*value* : `Tablo::CellType`, *coords* : `Tablo::Cell::Data::Coords`,
+      #              *content* : `String`, *line_index* : `Int32`)
       #   Default styler, defined by`Tablo::Config::Defaults.body_styler` (or
       #                   `Tablo::Config::Defaults.header_styler`)
       #
@@ -561,7 +561,7 @@ module Tablo
       #
       # These different forms can be used for conditional formatting.
       #
-      # In a somewhat contrived example, we could write, using the 1st form:
+      # In a somewhat contrived example, we could write, using the 5th form:
       # ```
       # require "tablo"
       # require "colorize"
@@ -615,11 +615,11 @@ module Tablo
       # ```
       #
       # <img src="../../../assets/images/api_cell_data_styler_3.svg" width="400">
-      alias Styler = Proc(CellType, Cell::Data::Coords, String, Int32, String) |
-                     Proc(CellType, Cell::Data::Coords, String, String) |
-                     Proc(CellType, String, String) |
+      alias Styler = Proc(String, String) |
                      Proc(String, Int32, String) |
-                     Proc(String, String)
+                     Proc(CellType, String, String) |
+                     Proc(CellType, Cell::Data::Coords, String, String) |
+                     Proc(CellType, Cell::Data::Coords, String, Int32, String)
       # called from Column
       protected getter coords
 
@@ -640,14 +640,14 @@ module Tablo
       # Format the cell value (type CellType)
       private def apply_formatter
         case f = formatter
-        in Proc(CellType, Cell::Data::Coords, Int32, String)
-          f.call(value, coords, width)
-        in Proc(CellType, Cell::Data::Coords, String)
-          f.call(value, coords)
-        in Proc(CellType, Int32, String)
-          f.call(value, width)
         in Proc(CellType, String)
           f.call(value)
+        in Proc(CellType, Int32, String)
+          f.call(value, width)
+        in Proc(CellType, Cell::Data::Coords, String)
+          f.call(value, coords)
+        in Proc(CellType, Cell::Data::Coords, Int32, String)
+          f.call(value, coords, width)
         end
       end
 
@@ -655,16 +655,16 @@ module Tablo
       private def apply_styler(content, line_index)
         return content unless Util.styler_allowed
         case s = styler
-        in Proc(CellType, Cell::Data::Coords, String, Int32, String)
-          s.call(value, coords, content, line_index)
-        in Proc(CellType, Cell::Data::Coords, String, String)
-          s.call(value, coords, content)
-        in Proc(CellType, String, String)
-          s.call(value, content)
-        in Proc(String, Int32, String)
-          s.call(content, line_index)
         in Proc(String, String)
           s.call(content)
+        in Proc(String, Int32, String)
+          s.call(content, line_index)
+        in Proc(CellType, String, String)
+          s.call(value, content)
+        in Proc(CellType, Cell::Data::Coords, String, String)
+          s.call(value, coords, content)
+        in Proc(CellType, Cell::Data::Coords, String, Int32, String)
+          s.call(value, coords, content, line_index)
         end
       end
 

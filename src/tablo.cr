@@ -99,12 +99,12 @@ module Tablo
     #
     # _Optional named parameters, with default values_
     #
+    # - *fill_char*: Fill character for stretched text
     # - *prefix*: String inserted in front of stretched text, left-aligned <br/>
     #   The area between braces can be reduced at will, to maximize stretching.
     #   See example below.
     # - *suffix*: Same as prefix, but right-aligned
     # - *alignment*: Justification of stretched text, excluding prefix and suffix
-    # - *fill_char*: Fill character for stretched text
     # - *max_fill*: Can be set to control the number of padding characters
     # (*fill_char*) between each character in the stretched string
     #
@@ -151,9 +151,9 @@ module Tablo
     # +--------------+--------------+
     # ```
     def self.stretch(text : String, target_width : Int32,
+                     fill_char : Char = ' ',
                      prefix : String = "", suffix : String = "",
                      text_alignment : Justify = Justify::Center,
-                     fill_char : Char = ' ',
                      max_fill : Int32 = Int32::MAX) : String
       stretched_text = [] of String
 
@@ -177,6 +177,7 @@ module Tablo
       space_max = target_width - (pre_fix_head_size +
                                   suf_fix_head_size) - max_line_len
       return text if space_max < 0
+      return text if intervals.zero?
       spaces = [space_max // intervals, max_fill].min
       var_size = pre_var.size + suf_var.size
       reduce = var_size - (target_width - pre_fix_head_size - suf_fix_head_size -
