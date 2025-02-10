@@ -315,13 +315,13 @@ modes (bold, italic, etc.).</p>
 <p>For cells of type  <code><a href="../../../Tablo/Cell/Data.html">Tablo::Cell::Data</a></code> (header and body), the styler Proc can take
 5 different forms, as shown below by their commonly used parameter names and types:</p>
 <ul>
-<li>1st form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, <em>coords</em> : <code><a href="../../../Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>,
-<em>content</em> : <code>String</code>, <em>line_index</em> : <code>Int32</code>)</li>
-<li>2nd form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, <em>coords</em> : <code><a href="../../../Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>,
-<em>content</em> : <code>String</code>)</li>
+<li>1st form : (<em>content</em> : <code>String</code>) <br /></li>
+<li>2nd form : (<em>content</em> : <code>String</code>, <em>line_index</em> : <code>Int32</code>)</li>
 <li>3rd form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, <em>content</em> : <code>String</code>)</li>
-<li>4th form : (<em>content</em> : <code>String</code>, <em>line_index</em> : <code>Int32</code>)</li>
-<li>5th form : (<em>content</em> : <code>String</code>) <br />
+<li>4th form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, <em>coords</em> : <code><a href="../../../Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>,
+<em>content</em> : <code>String</code>)</li>
+<li>5th form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, <em>coords</em> : <code><a href="../../../Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>,
+<em>content</em> : <code>String</code>, <em>line_index</em> : <code>Int32</code>)
 Default styler, defined by<code><a href="../../../Tablo/Config/Defaults.html#body_styler%3ACell%3A%3AData%3A%3AStyler-class-method">Tablo::Config::Defaults.body_styler</a></code> (or
 <code><a href="../../../Tablo/Config/Defaults.html#header_styler%3ACell%3A%3AData%3A%3AStyler-class-method">Tablo::Config::Defaults.header_styler</a></code>)</li>
 </ul>
@@ -332,7 +332,7 @@ has been applied) <br /></li>
 <li><em>line_index</em> designates the line number in a (multi-line) cell (0..n).</li>
 </ul>
 <p>These different forms can be used for conditional formatting.</p>
-<p>In a somewhat contrived example, we could write, using the 1st form:</p>
+<p>In a somewhat contrived example, we could write, using the 5th form:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="s">&quot;A&quot;</span>, <span class="s">&quot;B&quot;</span>, <span class="s">&quot;C&quot;</span>],
@@ -413,7 +413,7 @@ puts table</code></pre>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/e1ff02c704ca54ca95da8bbd35adbe43094f7215/src/cell.cr#L618" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/36ddf6da8b778f068bcd288e16eb23dee52be39b/src/cell.cr#L618" target="_blank">
         cell.cr
       </a>
     

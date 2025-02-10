@@ -316,15 +316,15 @@ and/or character modes (bold, italic, etc.).</p>
 can take 2 different forms, as shown below by their commonly used
 parameter names and types:</p>
 <ul>
-<li>1st form : (<em>content</em> : <code>String</code>, <em>line</em> : <code>Int32</code>)</li>
-<li>2nd form : (<em>content</em> : <code>String</code>) <br />
+<li>1st form : (<em>content</em> : <code>String</code>) <br /></li>
+<li>2nd form : (<em>content</em> : <code>String</code>, <em>line</em> : <code>Int32</code>)
 Default styler, defined by<code><a href="../../../Tablo/Config/Defaults.html#heading_styler%3ACell%3A%3AText%3A%3AStyler-class-method">Tablo::Config::Defaults.heading_styler</a></code> (or
 <code><a href="../../../Tablo/Config/Defaults.html#group_styler%3ACell%3A%3AText%3A%3AStyler-class-method">Tablo::Config::Defaults.group_styler</a></code>)</li>
 </ul>
 <p>and the return type is String for both.</p>
 <p><em>content</em> is the formatted cell value, after the formatter has been applied.<br />
 <em>line</em> designates the line number in a (multi-line) cell (0..n).</p>
-<p>The first form allows easy conditional styling. For example, to colorize
+<p>The second form allows easy conditional styling. For example, to colorize
 differently each line of multiline cell:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
@@ -343,7 +343,7 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
 <span class="k">end</span>
 puts table</code></pre>
 <img src="../../../assets/images/api_cell_text_styler_1.svg" width="400">
-<p>or, more simply, to style the whole cell, we use the 2nd form:</p>
+<p>or, more simply, to style the whole cell, we use the 1st form:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
 <span class="t">COLORS</span> <span class="o">=</span> [<span class="n">:blue</span>, <span class="n">:red</span>, <span class="n">:green</span>, <span class="n">:magenta</span>, <span class="n">:cyan</span>]
@@ -392,7 +392,7 @@ puts table</code></pre>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/e1ff02c704ca54ca95da8bbd35adbe43094f7215/src/cell.cr#L358" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/36ddf6da8b778f068bcd288e16eb23dee52be39b/src/cell.cr#L358" target="_blank">
         cell.cr
       </a>
     

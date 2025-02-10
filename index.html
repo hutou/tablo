@@ -289,7 +289,8 @@
 
 
 <div class="main-content">
-<p><a href="https://github.com/hutou/tablo/tree/development?tab=readme-ov-file"><img src="assets/images/logo.png" alt="Logo"/></a></p>
+<!-- [<img src="assets/images/logo.png" alt="Logo"/>](https://github.com/hutou/tablo/tree/development?tab=readme-ov-file) -->
+<img src="assets/images/logo.png"/>
 <h2><a id="table-of-contents" class="anchor" href="#table-of-contents">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -317,6 +318,8 @@
 <li><a href="#packing">Packing</a></li>
 <li><a href="#summary">Summary</a></li>
 <li><a href="#transpose">Transpose</a></li>
+<li><a href="#columns-selection-and-ordering">Columns selection and ordering</a></li>
+<li><a href="#tips-and-tricks">Tips and tricks</a></li>
 </ul>
 <h2><a id="getting-started" class="anchor" href="#getting-started">
   <svg class="octicon-link" aria-hidden="true">
@@ -715,12 +718,13 @@ right padding is set to 0 for the column).</p>
 rows</p>
 <p>Note also in this example the direct use of a character string for
 border elements, with the last 4 characters defining the separating
-lines between Heading, Group, Header and Body rows respectively.</p>
+lines between Heading(title, subtitle and footer), Group, Header and
+Body rows respectively.</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="s">&quot;First\nrow&quot;</span>, <span class="s">&quot;Second row\nextending\nover\nfour lines&quot;</span>, <span class="s">&quot;Last row&quot;</span>],
   title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Title&quot;</span>, framed: <span class="n">true</span>),
   subtitle: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;SubTitle&quot;</span>, framed: <span class="n">true</span>),
-  border: <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="s">&quot;+++++++++|||x*=.&quot;</span>),
+  border: <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="s">&quot;+++++++++|||*=-.&quot;</span>),
   header_wrap: <span class="n">4</span>,
   body_wrap: <span class="n">3</span>,
   row_divider_frequency: <span class="n">1</span>) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
@@ -729,27 +733,27 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
 <span class="k">end</span>
 puts table</code></pre>
 <p>Output:</p>
-<pre><code class="language-crystal"><span class="o">+</span>xxxxxxxxxxxxxx<span class="o">+</span>
-<span class="o">|</span>     <span class="t">Title</span>    <span class="o">|</span>
-<span class="o">+</span>xxxxxxxxxxxxxx<span class="o">+</span>
-<span class="o">|</span>   <span class="t">SubTitle</span>   <span class="o">|</span>
-<span class="o">+</span>xxxxxxxxxxxxxx<span class="o">+</span>
-<span class="o">|</span> <span class="t">Group</span> header <span class="o">|</span>
-<span class="o">+</span><span class="o">**</span><span class="o">**</span><span class="o">**</span><span class="o">**</span><span class="o">**</span><span class="o">**</span><span class="o">**</span><span class="o">+</span>
-<span class="o">|</span> <span class="t">Column</span>       <span class="o">|</span>
-<span class="o">|</span> header       <span class="o">|</span>
-<span class="o">|</span> extending    <span class="o">|</span>
-<span class="o">|</span> over        <span class="o">~</span><span class="o">|</span>
-<span class="o">+=</span><span class="o">===</span><span class="o">===</span><span class="o">===</span><span class="o">===</span><span class="o">=</span><span class="o">+</span>
-<span class="o">|</span> <span class="t">First</span>        <span class="o">|</span>
-<span class="o">|</span> row          <span class="o">|</span>
-<span class="o">+</span>..............<span class="o">+</span>
-<span class="o">|</span> <span class="t">Second</span> row   <span class="o">|</span>
-<span class="o">|</span> extending    <span class="o">|</span>
-<span class="o">|</span> over        <span class="o">~</span><span class="o">|</span>
-<span class="o">+</span>..............<span class="o">+</span>
-<span class="o">|</span> <span class="t">Last</span> row     <span class="o">|</span>
-<span class="o">+</span>xxxxxxxxxxxxxx<span class="o">+</span></code></pre>
+<pre><code class="language-crystal">+**************+
+|     Title    |
++**************+
+|   SubTitle   |
++**************+
+| Group header |
++==============+
+| Column       |
+| header       |
+| extending    |
+| over        ~|
++--------------+
+| First        |
+| row          |
++..............+
+| Second row   |
+| extending    |
+| over        ~|
++..............+
+| Last row     |
++**************+</code></pre>
 <p>In addition, to have greater control over the line break, we can use the
 <code>wrap_mode</code> parameter to choose between <code>Rune</code> (roughly equivalent to
 a character) and <code>Word</code> (default) when cutting a line.</p>
@@ -763,12 +767,8 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
   t.add_column(<span class="n">1</span>, <span class="o">&amp;</span>.itself)
 <span class="k">end</span>
 puts table</code></pre>
-<p>Output:</p>
-<pre><code class="language-crystal">+--------------+
-| Crystal      |
-| クリスタル      |
-+--------------+</code></pre>
- <p> <img src="assets/images/asian_bad.png" width=460> </p>
+<p>Output (image):</p>
+ <p> <img src="assets/images/asian_bad.png"> </p>
 <p>To correct this, you need to:</p>
 <ul>
 <li>Add the dependencies to your shard.yml:</li>
@@ -792,11 +792,8 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
   t.add_column(<span class="n">1</span>, <span class="o">&amp;</span>.itself)
 <span class="k">end</span>
 puts table</code></pre>
-<p>Output:</p>
-<pre><code class="language-crystal">+--------------+
-| Crystal      |
-| クリスタル   |
-+--------------+</code></pre>
+<p>Output (image):</p>
+ <p> <img src="assets/images/asian_good.png"> </p>
 <h3><a id="extracting" class="anchor" href="#extracting">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -821,22 +818,20 @@ getter body_value, row_index, column_index
 module restriction type:</p>
 <pre><code class="language-crystal"><span class="k">module</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>
 <span class="k">end</span></code></pre>
-<p>This module is already included in all Crystal main scalar types. To
-use a (non or less used) scalar type or a user defined class or struct, it is
-mandatory to include it by reopening the class or struct.</p>
+<p>This module is already included in most of Crystal's scalar types. To
+use a scalar type (not or less commonly used) or a stdlib or
+user-defined class or struct, it is mandatory to include it by reopening
+the class or struct.</p>
 <p>For example, to allow a cell value to contain an array, we could do :</p>
-<pre><code class="language-crystal"><span class="k">class</span> <span class="t">Array</span>
-    <span class="k">include</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>
-<span class="k">end</span></code></pre>
-<p>and:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
-
+<span class="k">class</span> <span class="t">Array</span>
+  <span class="k">include</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>
+<span class="k">end</span>
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([[<span class="n">1</span>, <span class="n">2</span>], [<span class="n">3</span>, <span class="n">4</span>]]) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
   t.add_column(<span class="s">&quot;itself&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> n }
 <span class="k">end</span>
-
 puts table</code></pre>
-<p>would output:</p>
+<p>Output:</p>
 <pre><code class="language-crystal">+--------------+
 | itself       |
 +--------------+
@@ -852,16 +847,15 @@ puts table</code></pre>
 to obtain a character string ready to be displayed. The simplest
 transformation (which is also the one applied by default) is simply a call to
 the <code>to_s</code> method.</p>
-<p>Using a proc <code>formatter</code> allows you to customize formatting in a variety of
+<p>Using a <code>Proc</code> <code>formatter</code> allows you to customize formatting in a variety of
 ways, from using <code>sprintf</code> formatting strings for numeric values to various
-<code>String</code> methods for text and specific <code>Tablo::Util</code> methods for both.</p>
-<p>A formatter proc can take four forms : the first two apply equally to TextCell
+<code>String</code> methods for text and specific <code><a href="Tablo/Functions.html">Tablo::Functions</a></code> methods for both.</p>
+<p>A formatter <code>Proc</code> can take four forms : the first two apply equally to TextCell
 and DataCell and are applied unconditionally on <code>value</code>.</p>
 <p>The first form expects one parameter (<code>value</code>) and the second two: <code>value</code> and
 <code>width</code> (column width).</p>
 <p>Here is an example of the first form:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
-
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>]) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
   t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
   t.add_column(<span class="n">2</span>, header: <span class="s">&quot;Double&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> n <span class="o">*</span> <span class="n">2</span> }
@@ -871,7 +865,6 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
       <span class="s">&quot;%.3f&quot;</span> <span class="o">%</span> value.<span class="k">as</span>(<span class="t">Float</span>)
     }) { <span class="o">|</span>n<span class="o">|</span> n <span class="o">**</span> <span class="n">0.5</span> }
 <span class="k">end</span>
-
 puts table</code></pre>
 <p>Output:</p>
 <pre><code class="language-crystal">+--------------+--------------+--------------+
@@ -886,7 +879,6 @@ governed by the type of <code>value</code>, which is a float.</p>
 <p>If the formatting were done directly at the data extraction level, <code>value</code>
 would be of type <code>String</code> and column would be aligned to the left.</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
-
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>]) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
   t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
   t.add_column(<span class="n">2</span>, header: <span class="s">&quot;Double&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> n <span class="o">*</span> <span class="n">2</span> }
@@ -904,22 +896,20 @@ puts table</code></pre>
 |            2 |            4 | 1.414        |
 |            3 |            6 | 1.732        |
 +--------------+--------------+--------------+</code></pre>
-<p>To illustrate the 2nd form, we will use the <code>Tablo::Util.stretch</code> method,
-which can be useful on groups or headings.</p>
+<p>To illustrate the 2nd form, we will use the <code>Tablo::Functions.stretch</code> method,
+which can be useful for groups or headings.</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
-
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>]) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
   t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
   t.add_column(<span class="n">2</span>, header: <span class="s">&quot;Double&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> n <span class="o">*</span> <span class="n">2</span> }
   t.add_group(<span class="s">&quot;Numbers&quot;</span>,
     formatter: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, width : <span class="t">Int32</span>) {
-      <span class="t">Tablo</span><span class="t">::</span><span class="t">Util</span>.stretch(value.<span class="k">as</span>(<span class="t">String</span>), width, <span class="s">&#39; &#39;</span>)
+      <span class="t">Tablo</span><span class="t">::</span><span class="t">Functions</span>.stretch(value.<span class="k">as</span>(<span class="t">String</span>), width, <span class="s">&#39; &#39;</span>)
     })
   t.add_column(<span class="n">:column_3</span>, header: <span class="s">&quot;String&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> (<span class="s">&#39;@&#39;</span>.ord <span class="o">+</span> n).chr.to_s <span class="o">*</span> n }
   t.add_column(<span class="n">:column_4</span>, header: <span class="s">&quot;Boolean&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> n.even? }
   t.add_group(<span class="s">&quot;Other data types&quot;</span>)
 <span class="k">end</span>
-
 puts table</code></pre>
 <p>Output:</p>
 <pre><code class="language-crystal">+-----------------------------+-----------------------------+
@@ -933,31 +923,29 @@ puts table</code></pre>
 +--------------+--------------+--------------+--------------+</code></pre>
 <p>Form 3 and form 4 apply only on DataCell cell types, as they use the
 <code>coords</code> parameter to conditionnally format the <code>value</code>.</p>
-<p>Here is an exemple of form 3 with another method from <code>Tablo::Util</code>, which use
+<p>Here is an exemple of form 3 with another method from <code><a href="Tablo/Functions.html">Tablo::Functions</a></code>, which uses
 the <code>column_index</code> as formatting condition.</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
-
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">-30.00001</span>, <span class="n">-3.14159</span>, <span class="n">0.0</span>, <span class="n">1.470001</span>, <span class="n">5.78707</span>, <span class="n">10.0</span>],
   body_formatter: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, coords : <span class="t">Tablo</span><span class="t">::</span><span class="t">Cell</span><span class="t">::</span><span class="t">Data</span><span class="t">::</span><span class="t">Coords</span>) {
     <span class="k">case</span> coords.column_index
-    <span class="k">when</span> <span class="n">1</span> <span class="k">then</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Util</span>.fp_align(value.<span class="k">as</span>(<span class="t">Float</span>), <span class="n">4</span>, <span class="t">Tablo</span><span class="t">::</span><span class="t">Util</span><span class="t">::</span><span class="t">FPAlign</span><span class="t">::</span><span class="t">Empty</span>)
-    <span class="k">when</span> <span class="n">2</span> <span class="k">then</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Util</span>.fp_align(value.<span class="k">as</span>(<span class="t">Float</span>), <span class="n">4</span>, <span class="t">Tablo</span><span class="t">::</span><span class="t">Util</span><span class="t">::</span><span class="t">FPAlign</span><span class="t">::</span><span class="t">Blank</span>)
-    <span class="k">when</span> <span class="n">3</span> <span class="k">then</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Util</span>.fp_align(value.<span class="k">as</span>(<span class="t">Float</span>), <span class="n">4</span>, <span class="t">Tablo</span><span class="t">::</span><span class="t">Util</span><span class="t">::</span><span class="t">FPAlign</span><span class="t">::</span><span class="t">Dot</span>)
-    <span class="k">when</span> <span class="n">4</span> <span class="k">then</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Util</span>.fp_align(value.<span class="k">as</span>(<span class="t">Float</span>), <span class="n">4</span>, <span class="t">Tablo</span><span class="t">::</span><span class="t">Util</span><span class="t">::</span><span class="t">FPAlign</span><span class="t">::</span><span class="t">DotZero</span>)
+    <span class="k">when</span> <span class="n">1</span> <span class="k">then</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Functions</span>.fp_align(value.<span class="k">as</span>(<span class="t">Float</span>), <span class="n">4</span>, <span class="t">Tablo</span><span class="t">::</span><span class="t">Functions</span><span class="t">::</span><span class="t">FPAlign</span><span class="t">::</span><span class="t">Blank</span>)
+    <span class="k">when</span> <span class="n">2</span> <span class="k">then</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Functions</span>.fp_align(value.<span class="k">as</span>(<span class="t">Float</span>), <span class="n">4</span>, <span class="t">Tablo</span><span class="t">::</span><span class="t">Functions</span><span class="t">::</span><span class="t">FPAlign</span><span class="t">::</span><span class="t">NoDot</span>)
+    <span class="k">when</span> <span class="n">3</span> <span class="k">then</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Functions</span>.fp_align(value.<span class="k">as</span>(<span class="t">Float</span>), <span class="n">4</span>, <span class="t">Tablo</span><span class="t">::</span><span class="t">Functions</span><span class="t">::</span><span class="t">FPAlign</span><span class="t">::</span><span class="t">DotOnly</span>)
+    <span class="k">when</span> <span class="n">4</span> <span class="k">then</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Functions</span>.fp_align(value.<span class="k">as</span>(<span class="t">Float</span>), <span class="n">4</span>, <span class="t">Tablo</span><span class="t">::</span><span class="t">Functions</span><span class="t">::</span><span class="t">FPAlign</span><span class="t">::</span><span class="t">DotZero</span>)
     <span class="k">else</span>        value.<span class="k">as</span>(<span class="t">Float</span>).to_s
     <span class="k">end</span>
   }) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
   t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
-  t.add_column(<span class="s">&quot;1 - Empty&quot;</span>, <span class="o">&amp;</span>.itself)
-  t.add_column(<span class="s">&quot;2 - Blank&quot;</span>, <span class="o">&amp;</span>.itself)
-  t.add_column(<span class="s">&quot;3 - Dot&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="s">&quot;1 - Blank&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="s">&quot;2 - NoDot&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="s">&quot;3 - DotOnly&quot;</span>, <span class="o">&amp;</span>.itself)
   t.add_column(<span class="s">&quot;4 - DotZero&quot;</span>, <span class="o">&amp;</span>.itself)
 <span class="k">end</span>
-
 puts table</code></pre>
 <p>Output:</p>
 <pre><code class="language-crystal">+--------------+--------------+--------------+--------------+--------------+
-|       itself |    1 - Empty |    2 - Blank |      3 - Dot |  4 - DotZero |
+|       itself |    1 - Blank |    2 - NoDot |  3 - DotOnly |  4 - DotZero |
 +--------------+--------------+--------------+--------------+--------------+
 |    -30.00001 |     -30      |     -30      |     -30.     |     -30.0    |
 |     -3.14159 |      -3.1416 |      -3.1416 |      -3.1416 |      -3.1416 |
@@ -967,9 +955,34 @@ puts table</code></pre>
 |         10.0 |      10      |      10      |      10.     |      10.0    |
 +--------------+--------------+--------------+--------------+--------------+</code></pre>
 <p>Incidentally, this last example displays all the formatting possibilities of
-the <code>Tablo::Util.fp_align</code> method.</p>
-<p>Compared to the third form, form 4 also allows the use of the width value. +
-Its usefulness seems less obvious, however.</p>
+the <code>Tablo::Functions.fp_align</code> method.</p>
+<p>Compared to the third form, form 4 also allows the use of the width value.</p>
+<p>Just for fun, here is a slightly contrived example:</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>, <span class="n">4</span>, <span class="n">5</span>, <span class="n">6</span>, <span class="n">7</span>, <span class="n">8</span>, <span class="n">9</span>]) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="n">:column_3</span>, header: <span class="s">&quot;King&#39;s crown&quot;</span>, width: <span class="n">20</span>,
+    header_alignment: <span class="t">Tablo</span><span class="t">::</span><span class="t">Justify</span><span class="t">::</span><span class="t">Center</span>,
+    body_alignment: <span class="t">Tablo</span><span class="t">::</span><span class="t">Justify</span><span class="t">::</span><span class="t">Center</span>,
+    body_formatter: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, coords : <span class="t">Tablo</span><span class="t">::</span><span class="t">Cell</span><span class="t">::</span><span class="t">Data</span><span class="t">::</span><span class="t">Coords</span>, width : <span class="t">Int32</span>) {
+      <span class="t">Tablo</span><span class="t">::</span><span class="t">Functions</span>.stretch(value.<span class="k">as</span>(<span class="t">String</span>), width, <span class="s">&#39; &#39;</span>)
+    }
+  ) { <span class="o">|</span>n<span class="o">|</span> (<span class="s">&#39;@&#39;</span>.ord <span class="o">+</span> n).chr.to_s <span class="o">*</span> n }
+<span class="k">end</span>
+puts table</code></pre>
+<p>Output:</p>
+<pre><code class="language-crystal">+----------------------+
+|     King&#39;s crown     |
++----------------------+
+|           A          |
+| B                  B |
+|  C        C        C |
+|  D     D     D     D |
+|   E   E   E   E   E  |
+|   F  F  F  F  F  F   |
+|  G  G  G  G  G  G  G |
+|    H H H H H H H H   |
+|   I I I I I I I I I  |
++----------------------+</code></pre>
 <p>Overview of the 4 different forms of formatter procs:
 | Forms of formatter procs | Parameter and types, in order |
 | -- | -- |
@@ -982,16 +995,17 @@ Its usefulness seems less obvious, however.</p>
     <use href="#octicon-link"/>
   </svg>
 </a>Styling</h3>
-<p>as they depend on the terminal's capabilities. There are therefore
+<p>When it comes to terminal styling, the possibilities are limited, especially
+as they depend on the terminal's capabilities. There are therefore
 2 complementary ways of proceeding:</p>
 <ul>
-<li>play with the mode (underlined, bold, italic...)</li>
-<li>use color</li>
+<li>Play with the mode (underlined, bold, italic...)</li>
+<li>Use color</li>
 </ul>
 <p>This can be done using ANSI code sequences, or preferably, using the
 <code>colorize</code> module of the standard library.</p>
 <p>In this section, we'll be using color, altered characters and graphic borders
-with the Fancy border type. Output will therefore be presented as SVG images,
+with the Fancy border type. Output will therefore be presented as images,
 so as to guarantee perfect rendering, whatever the medium used for display.</p>
 <p>For styling, there are 5 forms of procs.</p>
 <p>The first uses only the (formatted) content as a parameter, and therefore does not
@@ -999,7 +1013,6 @@ allow conditional styling.</p>
 <p>Let's look at a simple example, with yellow borders and blue headers.</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
-
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
   border: <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="n">:fancy</span>, styler: <span class="o">-&gt;</span>(border_char : <span class="t">String</span>) {
     border_char.colorize(<span class="n">:yellow</span>).to_s
@@ -1010,9 +1023,9 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
   t.add_column(<span class="n">:column_3</span>, header: <span class="s">&quot;String&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> (<span class="s">&#39;@&#39;</span>.ord <span class="o">+</span> n).chr.to_s <span class="o">*</span> n }
   t.add_column(<span class="n">:column_4</span>, header: <span class="s">&quot;Boolean&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> n.even? }
 <span class="k">end</span>
-
 puts table</code></pre>
-<p> <img src="assets/images/styling_first_form.svg" width=460> </p>
+<p>Output:</p>
+<p> <img src="assets/images/styling_first_form.png"</p>
 <p>Cool! Let's do now some conditional styling, painting in bold green all values
 greater than 2 in all numeric columns and underlining the <code>true</code> boolean value
 in fourth column: this is the third form of styling.
@@ -1025,25 +1038,25 @@ Just add, at the table level before <code>header_styler</code>, the following li
     value <span class="o">==</span> <span class="n">true</span> ? content.colorize.mode(<span class="n">:underline</span>).to_s : content
   <span class="k">end</span>
 },</code></pre>
-<p> <img src="assets/images/styling_third_form.svg" width=460> </p>
+<p>Output:</p>
+<p><img src="assets/images/styling_third_form.png"> </p>
 <p>Let's end with a final example, with a black-and-white look: how do you
-display rows alternately in light gray (with a bit of italics) and dark gray
+display rows alternately in black (with a bit of italics) and dark gray
 to make them easier to read?</p>
 <p>This would be the 4th form.</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
-
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>, <span class="n">4</span>, <span class="n">5</span>],
-  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My black and white fancy table&quot;</span>, frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Frame</span>.new),
-  footer: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;End of data&quot;</span>, frame: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span><span class="t">::</span><span class="t">Frame</span>.new),
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;My black and white fancy table&quot;</span>, framed: <span class="n">true</span>),
+  footer: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;End of data&quot;</span>, framed: <span class="n">true</span>),
   border: <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="n">:fancy</span>, <span class="o">-&gt;</span>(border_char : <span class="t">String</span>) {
-    border_char.colorize(<span class="n">:light_gray</span>).to_s
+    border_char.colorize(<span class="n">:dark_gray</span>).to_s
   }),
   body_styler: <span class="o">-&gt;</span>(_value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, coords : <span class="t">Tablo</span><span class="t">::</span><span class="t">Cell</span><span class="t">::</span><span class="t">Data</span><span class="t">::</span><span class="t">Coords</span>, content : <span class="t">String</span>) {
     <span class="k">if</span> coords.row_index.even?
-      <span class="s">&quot;\e[3m&quot;</span> <span class="o">+</span> content.colorize(<span class="n">:light_gray</span>).to_s <span class="o">+</span> <span class="s">&quot;\e[0m&quot;</span>                      <span class="o">&lt;</span><span class="n">1</span><span class="o">&gt;</span>
+      <span class="s">&quot;\e[3m&quot;</span> <span class="o">+</span> content.colorize(<span class="n">:black</span>).to_s <span class="o">+</span> <span class="s">&quot;\e[0m&quot;</span>
     <span class="k">else</span>
-      content.colorize.fore(<span class="n">:dark_gray</span>).mode(<span class="n">:bold</span>).to_s
+      content.colorize.fore(<span class="n">:dark_gray</span>).to_s
     <span class="k">end</span>
   },
   header_styler: <span class="o">-&gt;</span>(content : <span class="t">String</span>) { content.colorize.mode(<span class="n">:bold</span>).to_s }) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
@@ -1051,11 +1064,12 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
   t.add_column(<span class="n">2</span>, header: <span class="s">&quot;Double&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> n <span class="o">*</span> <span class="n">2</span> }
   t.add_column(<span class="n">:column_3</span>, header: <span class="s">&quot;String&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> (<span class="s">&#39;@&#39;</span>.ord <span class="o">+</span> n).chr.to_s <span class="o">*</span> n }
 <span class="k">end</span>
-
 puts table</code></pre>
-<p><code>&lt;1&gt;</code> From version 1.10 onwards, Crystal does support italic mode, and the use
-of ANSI sequences is given here simply as an example.</p>
-<p> <img src="assets/images/styling_fourth_form.svg" width=460> </p>
+<p>Output:</p>
+<p> <img src="assets/images/styling_fourth_form.png"> </p>
+<p><em><em>From version 1.10 onwards, Crystal <code>colorize</code> module does support italic
+mode, and the use of ANSI sequences is given here simply as an
+example.</em></em></p>
 <p>Overview of the 5 different forms of styler procs:</p>
 <p>| Forms of styler procs | Parameter and types, in order                                                                                                                                   |
 | --------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -1071,7 +1085,7 @@ of ANSI sequences is given here simply as an example.</p>
 </a>Packing</h2>
 <p>In the previous examples, the notion of column width was used. For a better
 understanding, the diagram below highlights the structure of a column.</p>
-<p> <img src="assets/images/column_layout.svg" width=460> </p>
+<p> <img src="assets/images/column_layout.svg"> </p>
 <p>As we saw at the start of this tutorial, by default, all columns have the same
 width, i.e. 12 characters.</p>
 <p>Of course, this value can be modified globally when initializing the table, or
@@ -1110,7 +1124,6 @@ packing (<code>only</code>).</p>
 parameters values, starting from the 'standard' one, with all column widths to
 their default value : 12 characters.</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
-
 data <span class="o">=</span> [
   [<span class="n">1</span>, <span class="s">&quot;Box&quot;</span>, <span class="s">&quot;Orange&quot;</span>, <span class="s">&quot;Elephant&quot;</span>, <span class="s">&quot;Mont St Michel&quot;</span>],
 ]
@@ -1121,100 +1134,100 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
   t.add_column(<span class="n">3</span>, header: <span class="s">&quot;Animals&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> n[<span class="n">3</span>].<span class="k">as</span>(<span class="t">String</span>) }
   t.add_column(<span class="s">&quot;Famous\nSites&quot;</span>) { <span class="o">|</span>n<span class="o">|</span> n[<span class="n">4</span>].<span class="k">as</span>(<span class="t">String</span>) }
 <span class="k">end</span>
-
 puts table
 puts <span class="s">&quot;table width = </span><span class="i">#{</span>table.total_table_width<span class="i">}</span><span class="s">&quot;</span></code></pre>
 <p>Table standard output, using default width values, without any packing:</p>
-<pre><code class="language-crystal"> puts table
- +--------------+--------------+--------------+--------------+--------------+
- |       Primes | Things       | Fruits       | Animals      | Famous       |
- |              |              |              |              | Sites        |
- +--------------+--------------+--------------+--------------+--------------+
- |            1 | Box          | Orange       | Elephant     | Mont St      |
- |              |              |              |              | Michel       |
- +--------------+--------------+--------------+--------------+--------------+
- table width = 76</code></pre>
+<pre><code class="language-crystal">puts table</code></pre>
+<pre><code class="language-crystal">+--------------+--------------+--------------+--------------+--------------+
+|       Primes | Things       | Fruits       | Animals      | Famous       |
+|              |              |              |              | Sites        |
++--------------+--------------+--------------+--------------+--------------+
+|            1 | Box          | Orange       | Elephant     | Mont St      |
+|              |              |              |              | Michel       |
++--------------+--------------+--------------+--------------+--------------+
+table width = 76</code></pre>
 <p>Using default <code>pack</code> parameters (ie: none !), we get an optimal packing</p>
-<pre><code class="language-crystal"> puts table.pack
- +--------+--------+--------+----------+----------------+
- | Primes | Things | Fruits | Animals  | Famous         |
- |        |        |        |          | Sites          |
- +--------+--------+--------+----------+----------------+
- |      1 | Box    | Orange | Elephant | Mont St Michel |
- +--------+--------+--------+----------+----------------+
- table width = 56</code></pre>
+<pre><code class="language-crystal">puts table.pack</code></pre>
+<pre><code class="language-crystal">+--------+--------+--------+----------+----------------+
+| Primes | Things | Fruits | Animals  | Famous         |
+|        |        |        |          | Sites          |
++--------+--------+--------+----------+----------------+
+|      1 | Box    | Orange | Elephant | Mont St Michel |
++--------+--------+--------+----------+----------------+
+table width = 56</code></pre>
 <p>But using <code>pack</code> with same table width (56) on initial widths values gives
 a significantly poorer result</p>
-<pre><code class="language-crystal"> puts table.pack(56, packing_mode: Tablo::PackingMode::InitialWidths)
- +----------+----------+----------+----------+----------+
- |   Primes | Things   | Fruits   | Animals  | Famous   |
- |          |          |          |          | Sites    |
- +----------+----------+----------+----------+----------+
- |        1 | Box      | Orange   | Elephant | Mont St  |
- |          |          |          |          | Michel   |
- +----------+----------+----------+----------+----------+
- table width = 56</code></pre>
+<pre><code class="language-crystal">puts table.pack(<span class="n">56</span>, packing_mode: <span class="t">Tablo</span><span class="t">::</span><span class="t">PackingMode</span><span class="t">::</span><span class="t">InitialWidths</span>)</code></pre>
+<pre><code class="language-crystal">+----------+----------+----------+----------+----------+
+|   Primes | Things   | Fruits   | Animals  | Famous   |
+|          |          |          |          | Sites    |
++----------+----------+----------+----------+----------+
+|        1 | Box      | Orange   | Elephant | Mont St  |
+|          |          |          |          | Michel   |
++----------+----------+----------+----------+----------+
+table width = 56</code></pre>
 <p>This is due to the way Tablo reduces or increases column size. See the
 description of the algorithm in the releated section for <code>Table.pack</code> in
 API.</p>
 <p>Using the <code>width</code> parameter, any table width can be obtained, by reducing or
 increasing the width of each column progressively to reach the desired table
 width</p>
-<pre><code class="language-crystal"> puts table.pack(30)
- +-----+-----+-----+-----+----+
- | Pri | Thi | Fru | Ani | Fa |
- | mes | ngs | its | mal | mo |
- |     |     |     | s   | us |
- |     |     |     |     | Si |
- |     |     |     |     | te |
- |     |     |     |     | s  |
- +-----+-----+-----+-----+----+
- |   1 | Box | Ora | Ele | Mo |
- |     |     | nge | pha | nt |
- |     |     |     | nt  | St |
- |     |     |     |     | Mi |
- |     |     |     |     | el |
- +-----+-----+-----+-----+----+
- table width = 30</code></pre>
+<pre><code class="language-crystal">puts table.pack(<span class="n">30</span>)</code></pre>
+<pre><code class="language-crystal">+-----+-----+-----+-----+----+
+| Pri | Thi | Fru | Ani | Fa |
+| mes | ngs | its | mal | mo |
+|     |     |     | s   | us |
+|     |     |     |     | Si |
+|     |     |     |     | te |
+|     |     |     |     | s  |
++-----+-----+-----+-----+----+
+|   1 | Box | Ora | Ele | Mo |
+|     |     | nge | pha | nt |
+|     |     |     | nt  | St |
+|     |     |     |     | Mi |
+|     |     |     |     | el |
++-----+-----+-----+-----+----+
+table width = 30</code></pre>
 <p>or</p>
-<pre><code class="language-crystal"> puts table.pack(90)
- +----------------+-----------------+-----------------+-----------------+-----------------+
- |         Primes | Things          | Fruits          | Animals         | Famous          |
- |                |                 |                 |                 | Sites           |
- +----------------+-----------------+-----------------+-----------------+-----------------+
- |              1 | Box             | Orange          | Elephant        | Mont St Michel  |
- +----------------+-----------------+-----------------+-----------------+-----------------+
- table width = 90</code></pre>
+<pre><code class="language-crystal">puts table.pack(<span class="n">90</span>)</code></pre>
+<pre><code class="language-crystal">+----------------+-----------------+-----------------+-----------------+-----------------+
+|         Primes | Things          | Fruits          | Animals         | Famous          |
+|                |                 |                 |                 | Sites           |
++----------------+-----------------+-----------------+-----------------+-----------------+
+|              1 | Box             | Orange          | Elephant        | Mont St Michel  |
++----------------+-----------------+-----------------+-----------------+-----------------+
+table width = 90</code></pre>
 <p>There is, however, a limit to the reduction: each column must be able to
 accommodate at least one character. Here, we're asking for a table width of
 15, but the minimum size to respect this rule is 21!</p>
-<pre><code class="language-crystal"> puts table.pack(15)
- +---+---+---+---+---+
- | P | T | F | A | F |
- | r | h | r | n | a |
- | i | i | u | i | m |
- | m | n | i | m | o |
- | e | g | t | a | u |
- | s | s | s | l | s |
- |   |   |   | s | S |
- |   |   |   |   | i |
- |   |   |   |   | t |
- |   |   |   |   | e |
- |   |   |   |   | s |
- +---+---+---+---+---+
- | 1 | B | O | E | M |
- |   | o | r | l | o |
- |   | x | a | e | n |
- |   |   | n | p | t |
- |   |   | g | h | S |
- |   |   | e | a | t |
- |   |   |   | n | M |
- |   |   |   | t | i |
- |   |   |   |   | c |
- |   |   |   |   | h |
- |   |   |   |   | e |
- |   |   |   |   | l |
- +---+---+---+---+---+</code></pre>
+<pre><code class="language-crystal">puts table.pack(<span class="n">15</span>)</code></pre>
+<pre><code class="language-crystal">+---+---+---+---+---+
+| P | T | F | A | F |
+| r | h | r | n | a |
+| i | i | u | i | m |
+| m | n | i | m | o |
+| e | g | t | a | u |
+| s | s | s | l | s |
+|   |   |   | s | S |
+|   |   |   |   | i |
+|   |   |   |   | t |
+|   |   |   |   | e |
+|   |   |   |   | s |
++---+---+---+---+---+
+| 1 | B | O | E | M |
+|   | o | r | l | o |
+|   | x | a | e | n |
+|   |   | n | p | t |
+|   |   | g | h | S |
+|   |   | e | a | t |
+|   |   |   | n | M |
+|   |   |   | t | i |
+|   |   |   |   | c |
+|   |   |   |   | h |
+|   |   |   |   | e |
+|   |   |   |   | l |
++---+---+---+---+---+
+table width = 21</code></pre>
 <p>If, with the parameter <code>packing_mode == Startingwidths::AutoSized</code> by
 default (set by <code>Config.packing_mode</code>), the <code>pack</code> method automatically
 adapts the width of columns to their largest content (body or header) before
@@ -1227,7 +1240,20 @@ the terminal size, otherwise <code>pack</code> will become a non-operation.</p>
 <p>Finally, using the <code>except</code> parameter, you can temporarily freeze the size of
 one or more columns at their current value, so that they are excluded from
 resizing.</p>
-<p>stored in 2 different attributes: the current value and the initial value
+<pre><code class="language-crystal">table.pack
+puts table.pack(<span class="n">100</span>,except: [<span class="n">2</span>, <span class="n">:fruits</span>])</code></pre>
+<pre><code class="language-crystal">+----------------------+--------+--------+-----------------------+-----------------------+
+|               Primes | Things | Fruits | Animals               | Famous                |
+|                      |        |        |                       | Sites                 |
++----------------------+--------+--------+-----------------------+-----------------------+
+|                    1 | Box    | Orange | Elephant              | Mont St Michel        |
++----------------------+--------+--------+-----------------------+-----------------------+
+table width = 90</code></pre>
+<p>The same effect could be obtained by the statements:</p>
+<pre><code class="language-crystal">table.pack
+puts table.pack(<span class="n">90</span>, only: [<span class="s">&quot;Primes&quot;</span>, <span class="n">3</span>, <span class="s">&quot;Famous\nSites&quot;</span>])</code></pre>
+<p>Note that when a column is created using the <code>add_column</code> method, the width is
+stored in 2 different attributes: the current value and the initial value
 (never subsequently modified).</p>
 <p>The <code>pack</code> method simply modifies the current column width value, and the
 <code>to_s</code> method then takes care of the layout, and we can save the table in its
@@ -1255,30 +1281,36 @@ puts table</code></pre>
 <p>The Tablo library offers a basic yet useful summary method.</p>
 <p>At present, it can be used to perform calculations on individual columns of data
 and between columns.</p>
-<p>Here's an example of how it works now and what it can do for you:</p>
+<p>Here's a rather complete and detailed example of how it works and what
+it can do:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
+<span class="k">require</span> <span class="s">&quot;big&quot;</span>
+
+<span class="k">struct</span> <span class="t">BigDecimal</span>
+  <span class="k">include</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>
+<span class="k">end</span>
 
 <span class="k">struct</span> <span class="t">InvoiceItem</span>
-  <span class="k">include</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>
   getter product, quantity, price
 
-  <span class="k">def</span> <span class="m">initialize</span>(@product : <span class="t">String</span>, @quantity : <span class="t">Int32</span>?, @price : <span class="t">Int32</span>?)
+  <span class="k">def</span> <span class="m">initialize</span>(@product : <span class="t">String</span>, @quantity : <span class="t">Int32</span>?, @price : <span class="t">BigDecimal</span>?)
   <span class="k">end</span>
 <span class="k">end</span>
 
 invoice <span class="o">=</span> [
-  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Laptop&quot;</span>, <span class="n">3</span>, <span class="n">98000</span>),
-  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Printer&quot;</span>, <span class="n">2</span>, <span class="n">15499</span>),
-  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Router&quot;</span>, <span class="n">1</span>, <span class="n">9900</span>),
-  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Switch&quot;</span>, <span class="n">nil</span>, <span class="n">4500</span>),
-  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Accessories&quot;</span>, <span class="n">5</span>, <span class="n">6450</span>),
+  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Laptop&quot;</span>, <span class="n">3</span>, <span class="t">BigDecimal</span>.new(<span class="n">980</span>)),
+  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Printer&quot;</span>, <span class="n">2</span>, <span class="t">BigDecimal</span>.new(<span class="n">154.99</span>)),
+  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Router&quot;</span>, <span class="n">1</span>, <span class="t">BigDecimal</span>.new(<span class="n">99</span>)),
+  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Switch&quot;</span>, <span class="n">nil</span>, <span class="t">BigDecimal</span>.new(<span class="n">45</span>)),
+  <span class="t">InvoiceItem</span>.new(<span class="s">&quot;Accessories&quot;</span>, <span class="n">5</span>, <span class="t">BigDecimal</span>.new(<span class="n">64.50</span>)),
 ]
 
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new(invoice,
-  omit_last_rule: <span class="n">false</span>,
-  border: <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="t">Tablo</span><span class="t">::</span><span class="t">BorderName</span><span class="t">::</span><span class="t">Fancy</span>),
-  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Invoice&quot;</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  omit_last_rule: <span class="n">true</span>,
+  border: <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span><span class="t">::</span><span class="t">PreSet</span><span class="t">::</span><span class="t">Fancy</span>),
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;\nInvoice\n=======\n&quot;</span>),
+  subtitle: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Details&quot;</span>, framed: <span class="n">true</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
   t.add_column(<span class="s">&quot;Product&quot;</span>,
     <span class="o">&amp;</span>.product)
   t.add_column(<span class="s">&quot;Quantity&quot;</span>,
@@ -1287,176 +1319,245 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
     }, <span class="o">&amp;</span>.quantity)
   t.add_column(<span class="s">&quot;Price&quot;</span>,
     body_formatter: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>) {
-      <span class="s">&quot;%.2f&quot;</span> <span class="o">%</span> (value.<span class="k">as</span>(<span class="t">Int32</span>) <span class="o">/</span> <span class="n">100</span>)
-    }, <span class="o">&amp;</span>.price)
+      <span class="s">&quot;%.2f&quot;</span> <span class="o">%</span> value.<span class="k">as</span>(<span class="t">BigDecimal</span>)
+    }, <span class="o">&amp;</span>.price.<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>))
   t.add_column(<span class="n">:total</span>, header: <span class="s">&quot;Total&quot;</span>,
     body_formatter: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>) {
-      value.<span class="k">nil?</span> ? <span class="s">&quot;&quot;</span> : <span class="s">&quot;%.2f&quot;</span> <span class="o">%</span> (value.<span class="k">as</span>(<span class="t">Int32</span>) <span class="o">/</span> <span class="n">100</span>)
+      value.<span class="k">nil?</span> ? <span class="s">&quot;&quot;</span> : <span class="s">&quot;%.2f&quot;</span> <span class="o">%</span> value.<span class="k">as</span>(<span class="t">BigDecimal</span>)
     }) { <span class="o">|</span>n<span class="o">|</span> n.price.<span class="k">nil?</span> <span class="o">||</span> n.quantity.<span class="k">nil?</span> ? <span class="n">nil</span> : (
-    n.price.<span class="k">as</span>(<span class="t">Int32</span>) <span class="o">*</span> n.quantity.<span class="k">as</span>(<span class="t">Int32</span>)
-  ) }
+    n.price.<span class="k">as</span>(<span class="t">BigDecimal</span>) <span class="o">*</span>
+      n.quantity.<span class="k">as</span>(<span class="t">Int32</span>)
+  ).<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>) }
 <span class="k">end</span>
 
 invoice_summary_definition <span class="o">=</span> [
-  <span class="t">Tablo</span><span class="t">::</span><span class="t">Aggregation</span>.new(<span class="n">:total</span>, <span class="t">Tablo</span><span class="t">::</span><span class="t">Aggregate</span><span class="t">::</span><span class="t">Sum</span>),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">UserProc</span>.new(
+    proc: <span class="o">-&gt;</span>(tbl : <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>(<span class="t">InvoiceItem</span>)) {
+      total_sum <span class="o">=</span> <span class="t">BigDecimal</span>.new(<span class="n">0</span>)
+      tbl.column_data(<span class="n">:total</span>).each <span class="k">do</span> <span class="o">|</span>tot<span class="o">|</span>
+        total_sum <span class="o">+=</span> tot.<span class="k">as</span>(<span class="t">BigDecimal</span>) <span class="k">unless</span> tot.<span class="k">nil?</span>
+      <span class="k">end</span>
+      discount <span class="o">=</span> total_sum <span class="o">*</span> <span class="n">0.05</span>
+      total_after_discount <span class="o">=</span> total_sum <span class="o">-</span> discount
+      tax <span class="o">=</span> total_after_discount <span class="o">*</span> <span class="n">0.2</span>
+      total_due <span class="o">=</span> total_after_discount <span class="o">+</span> tax
+      {
+        <span class="n">:total_sum</span>            <span class="o">=&gt;</span> total_sum.<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>),
+        <span class="n">:discount</span>             <span class="o">=&gt;</span> discount.<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>),
+        <span class="n">:total_after_discount</span> <span class="o">=&gt;</span> total_after_discount.<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>),
+        <span class="n">:tax</span>                  <span class="o">=&gt;</span> tax.<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>),
+        <span class="n">:total_due</span>            <span class="o">=&gt;</span> total_due.<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>),
+      }
+    }),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyColumn</span>.new(<span class="s">&quot;Price&quot;</span>, alignment: <span class="t">Tablo</span><span class="t">::</span><span class="t">Justify</span><span class="t">::</span><span class="t">Right</span>),
   <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyColumn</span>.new(<span class="n">:total</span>, alignment: <span class="t">Tablo</span><span class="t">::</span><span class="t">Justify</span><span class="t">::</span><span class="t">Right</span>,
     formatter: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>) {
       value.<span class="k">is_a?</span>(<span class="t">String</span>) ? value : (
-        value.<span class="k">nil?</span> ? <span class="s">&quot;&quot;</span> : <span class="s">&quot;%.2f&quot;</span> <span class="o">%</span> (value.<span class="k">as</span>(<span class="t">Int32</span>) <span class="o">/</span> <span class="n">100</span>)
+        value.<span class="k">nil?</span> ? <span class="s">&quot;&quot;</span> : <span class="s">&quot;%.2f&quot;</span> <span class="o">%</span> value.<span class="k">as</span>(<span class="t">BigDecimal</span>)
       )
     },
-    styler: <span class="o">-&gt;</span>(_value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, cd : <span class="t">Tablo</span><span class="t">::</span><span class="t">Cell</span><span class="t">::</span><span class="t">Data</span><span class="t">::</span><span class="t">Coords</span>, fc : <span class="t">String</span>) {
-      <span class="k">case</span> cd.row_index
-      <span class="k">when</span> <span class="n">0</span>, <span class="n">2</span>, <span class="n">5</span>
-        fc.colorize.mode(<span class="n">:bold</span>).to_s
-      <span class="k">when</span> <span class="n">1</span>
-        fc.colorize.mode(<span class="n">:italic</span>).to_s
-      <span class="k">else</span>
-        fc
+    styler: <span class="o">-&gt;</span>(_value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>, coords : <span class="t">Tablo</span><span class="t">::</span><span class="t">Cell</span><span class="t">::</span><span class="t">Data</span><span class="t">::</span><span class="t">Coords</span>, content : <span class="t">String</span>) {
+      <span class="k">case</span> coords.row_index
+      <span class="k">when</span> <span class="n">0</span>, <span class="n">2</span>, <span class="n">5</span> <span class="k">then</span> content.colorize.mode(<span class="n">:bold</span>).to_s
+      <span class="k">when</span> <span class="n">1</span>       <span class="k">then</span> content.colorize.mode(<span class="n">:italic</span>).to_s
+      <span class="k">else</span>              content
       <span class="k">end</span>
     }),
-  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="s">&quot;Price&quot;</span>, <span class="n">1</span>, <span class="s">&quot;SubTotal&quot;</span>),
-  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="s">&quot;Price&quot;</span>, <span class="n">2</span>, <span class="s">&quot;Discount 5%&quot;</span>),
-  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="s">&quot;Price&quot;</span>, <span class="n">3</span>, <span class="s">&quot;S/T discount&quot;</span>),
-  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="s">&quot;Price&quot;</span>, <span class="n">4</span>, <span class="s">&quot;Tax (20%)&quot;</span>),
-  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="s">&quot;Price&quot;</span>, <span class="n">6</span>, <span class="s">&quot;Balance due&quot;</span>),
-  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">1</span>, <span class="o">-&gt;</span>{ <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total</span>,
-    <span class="t">Tablo</span><span class="t">::</span><span class="t">Aggregate</span><span class="t">::</span><span class="t">Sum</span>) }),
-  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">2</span>, <span class="o">-&gt;</span>{ <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.keep(<span class="n">:discount</span>,
-    (<span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total</span>, <span class="t">Tablo</span><span class="t">::</span><span class="t">Aggregate</span><span class="t">::</span><span class="t">Sum</span>).<span class="k">as</span>(<span class="t">Int32</span>) <span class="o">*</span> <span class="n">0.05</span>)
-      .to_i).<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>) }),
-  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">3</span>, <span class="o">-&gt;</span>{ (<span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.keep(<span class="n">:total_after_discount</span>,
-    <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total</span>, <span class="t">Tablo</span><span class="t">::</span><span class="t">Aggregate</span><span class="t">::</span><span class="t">Sum</span>).<span class="k">as</span>(<span class="t">Int32</span>) <span class="o">-</span>
-    <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:discount</span>).<span class="k">as</span>(<span class="t">Int32</span>))).<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>) }),
-  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">4</span>, <span class="o">-&gt;</span>{ (<span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.keep(<span class="n">:tax</span>,
-    (<span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total_after_discount</span>).<span class="k">as</span>(<span class="t">Int32</span>) <span class="o">*</span> <span class="n">0.2</span>)
-      .to_i)).<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>) }),
-  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">5</span>, <span class="s">&quot;========&quot;</span>.<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>)),
-  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">6</span>, <span class="o">-&gt;</span>{ (<span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:tax</span>).<span class="k">as</span>(<span class="t">Int32</span>) <span class="o">+</span>
-                                     <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total_after_discount</span>)
-                                       .<span class="k">as</span>(<span class="t">Int32</span>)).<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>) }),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">HeaderColumn</span>.new(<span class="s">&quot;Product&quot;</span>, content: <span class="s">&quot;&quot;</span>),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">HeaderColumn</span>.new(<span class="s">&quot;Quantity&quot;</span>, content: <span class="s">&quot;&quot;</span>),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">HeaderColumn</span>.new(<span class="s">&quot;Price&quot;</span>, content: <span class="s">&quot;Total Invoice&quot;</span>,
+    alignment: <span class="t">Tablo</span><span class="t">::</span><span class="t">Justify</span><span class="t">::</span><span class="t">Right</span>),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">HeaderColumn</span>.new(<span class="n">:total</span>, content: <span class="s">&quot;Amounts&quot;</span>),
+
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="s">&quot;Price&quot;</span>, <span class="n">10</span>, <span class="s">&quot;SubTotal&quot;</span>),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="s">&quot;Price&quot;</span>, <span class="n">20</span>, <span class="s">&quot;Discount 5%&quot;</span>),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="s">&quot;Price&quot;</span>, <span class="n">30</span>, <span class="s">&quot;S/T after discount&quot;</span>),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="s">&quot;Price&quot;</span>, <span class="n">40</span>, <span class="s">&quot;Tax (20%)&quot;</span>),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="s">&quot;Price&quot;</span>, <span class="n">60</span>, <span class="s">&quot;Balance due&quot;</span>),
+
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">10</span>, <span class="o">-&gt;</span> { <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total_sum</span>) }),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">20</span>, <span class="o">-&gt;</span> { <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:discount</span>) }),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">30</span>, <span class="o">-&gt;</span> { <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total_after_discount</span>) }),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">40</span>, <span class="o">-&gt;</span> { <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:tax</span>) }),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">50</span>, <span class="s">&quot;========&quot;</span>),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">60</span>, <span class="o">-&gt;</span> { <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total_due</span>) }),
 ]
-
-table.summary(invoice_summary_definition,
-  {
-    masked_headers: <span class="n">true</span>,
-    border:         <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="s">&quot;EEESSSSSSSSSESSS&quot;</span>),
-  })
-
+table.pack
+table.add_summary(invoice_summary_definition,
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Summary&quot;</span>, framed: <span class="n">true</span>))
+table.summary.<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>).pack
 puts table
-puts table.summary.<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">SummaryTable</span>)</code></pre>
-<p> <img src="assets/images/summary.svg" width=460> </p>
-<p>Let's take a closer look at the source code.</p>
-<p>In the last lines of code, you can see two calls to the summary method. The
-first accepts two parameters and is used to define the layout of the summary,
-while the second, without parameters, simply returns the SummaryTable instance
-created, ready for display.</p>
-<p>The layout is defined on the basis of several data type instances, grouped together in an array (<code>summary_definition</code> in this example):</p>
-<ol>
-<li>The Aggregation type, defined as follows:</li>
-</ol>
-<pre><code class="language-crystal">   record <span class="t">Aggregation</span>, column : <span class="t">LabelType</span> <span class="o">|</span> <span class="t">Array</span>(<span class="t">LabelType</span>),
-          aggregate : <span class="t">Aggregate</span> <span class="o">|</span> <span class="t">Array</span>(<span class="t">Aggregate</span>)</code></pre>
+puts table.summary</code></pre>
+<p>Output:</p>
+<p> <img src="assets/images/summary.png"> </p>
+<p>Let's take a look at the source code.</p>
+<p>The first fifty or so lines build a classic Tablo table, defining and
+feeding the data structure to be presented.</p>
+<p>Next comes the definition of the summary section, in the form of an
+array of n <code>struct</code> instances, of 4 different types:</p>
 <ul>
-<li>column, of type LabelType, identifies the column on which to perform
-calculations</li>
-<li>aggregate is an enum with 4 possible elements: Sum, Count, Min
-and Max. Several Aggregate instances can be defined, or, if required,
-combined into a single instance by setting the parameters in an array.</li>
+<li>the <code>Summary::UserProc</code> type is used to perform calculations, whose
+results are stored in a hash internally</li>
+<li>the <code>Summary::HeaderColumn</code> type defines attributes (content, format,
+style and alignment) for headers</li>
+<li>the <code>Summary::BodyColumn</code> type defines attributes (format, style and
+alignment) for body rows</li>
+<li>the <code>Summary::BodyRow</code> type defines row contents, using data
+calculated in <code>Summary::UserProc</code> that can be accessed by key</li>
 </ul>
-<p>The layout is defined on the basis of several data type instances, grouped together in an array:</p>
-<ol>
-<li>the Aggregation type is used to define the various aggregation calculations (Sum, Count, Minimum and Maximum) on the table's data columns.</li>
-</ol>
-<p>Nil values are ignored, and only numerical values are used for Sum, Minimum and Maximum calculations. Source data is read only once, regardless of the number of columns and aggregates used.</p>
-<p>record Aggregation, column : LabelType | Array(LabelType), aggregate : Aggregate | Array(Aggregate)</p>
-<ol start="2">
-<li>column, of type LabelType, identifies the column on which to perform calculations
-Aggregate is an enum with 4 possible elements: Sum, Count, Min and Max.
-Several Aggregate instances can be defined, or, if required, combined into a single instance by setting the parameters in an array.</li>
-</ol>
-<p><span class="flag orange">TODO</span>  TODO TODO</p>
-<p><span class="flag orange">TODO</span>  TODO TODO</p>
-<p><span class="flag orange">TODO</span>  TODO TODO</p>
-<p><span class="flag orange">TODO</span>  TODO TODO</p>
-<p><span class="flag orange">TODO</span>  TODO TODO</p>
-<p><span class="flag orange">TODO</span>  TODO TODO</p>
-<p><span class="flag orange">TODO</span>  TODO TODO</p>
-<p><span class="flag orange">TODO</span>  TODO TODO</p>
-<p>the Summary::BodyRow type
-Summary::BodyColumn type</p>
-<p>The first part - the creation of the main table - calls for no particular
-comment (except perhaps the use of a more realistic data source than the
-previous arrays of integers!)</p>
-<p>Calling the <code>summary</code> method, with its 2 parameters, creates a new <code>Table</code>
-instance, and calling the same method without arguments returns this same
-instance, ready to be displayed.</p>
-<p>The first parameter (<code>summary_def</code>) defines all the calculations to be performed
-on the data, as well as their layout.</p>
-<p>The type of <code>summary_def</code> is : <code>Hash(LabelType, NamedTuple(...))</code>. The hash key is
-therefore a column identifier (<code>LabelType</code> is an alias of <code>String | Symbol | Int32</code>).</p>
-<p>The <code>NamedTuple</code> may have up to 8 entries, all optional except <code>proc</code></p>
-<p>| Hash key           | Type of hash value   |
-| :----------------- | :------------------- |
-| <code>header</code>           | <code>String</code>             |
-| <code>header_alignment</code> | <code>Justify</code>            |
-| <code>header_formatter</code> | <code>DataCellFormatter</code>  |
-| <code>header_styler</code>    | <code>DataCellStyler</code>     |
-| <code>body_alignment</code>   | <code>Justify</code>            |
-| <code>body_formatter</code>   | <code>DataCellFormatter</code>  |
-| <code>body_styler</code>      | <code>DataCellStyler</code>     |
-| <code>proc</code>             | <code>Summary::UserProcs</code> |</p>
-<ul>
-<li><code>header</code> default value is the empty string</li>
-<li>the next 6 entries default values are inherited from Table
-initializers of same name</li>
-<li><code>proc</code> is a bit complex and has no default value. Its value type is
-<code>Summary::UserProcs</code>, an alias whose definition is :</li>
-</ul>
-<pre><code class="language-crystal"><span class="k">alias</span> <span class="t">SourcesCurrentColumn</span> <span class="o">=</span> <span class="t">Array</span>(<span class="t">CellType</span>)
-<span class="k">alias</span> <span class="t">SourcesAllColumns</span> <span class="o">=</span> <span class="t">Hash</span>(<span class="t">LabelType</span>, <span class="t">Array</span>(<span class="t">CellType</span>))
-<span class="k">alias</span> <span class="t">Summary</span><span class="t">::</span><span class="t">UserProcCurrent</span> <span class="o">=</span> <span class="t">Proc</span>(<span class="t">SourcesCurrentColumn</span>, <span class="t">CellType</span>)
-<span class="k">alias</span> <span class="t">Summary</span><span class="t">::</span><span class="t">UserProcAll</span> <span class="o">=</span> <span class="t">Proc</span>(<span class="t">SourcesAllColumns</span>, <span class="t">CellType</span>)
-
-<span class="k">alias</span> <span class="t">SummaryLineProcCurrent</span> <span class="o">=</span> {<span class="t">Int32</span>, <span class="t">Summary</span><span class="t">::</span><span class="t">UserProcCurrent</span>}
-<span class="k">alias</span> <span class="t">SummaryLineProcAll</span> <span class="o">=</span> {<span class="t">Int32</span>, <span class="t">Summary</span><span class="t">::</span><span class="t">UserProcAll</span>}
-<span class="k">alias</span> <span class="t">SummaryLineProcBoth</span> <span class="o">=</span> <span class="t">SummaryLineProcCurrent</span> <span class="o">|</span> <span class="t">SummaryLineProcAll</span>
-
-<span class="k">alias</span> <span class="t">Summary</span><span class="t">::</span><span class="t">UserProcs</span> <span class="o">=</span> {<span class="t">Int32</span>, <span class="t">Proc</span>(<span class="t">Array</span>(<span class="t">CellType</span>), <span class="t">CellType</span>)} <span class="o">|</span>
-{<span class="t">Int32</span>, <span class="t">Proc</span>(<span class="t">Hash</span>(<span class="t">LabelType</span>, <span class="t">Array</span>(<span class="t">CellType</span>)), <span class="t">CellType</span>)} <span class="o">|</span>
-<span class="t">Array</span>({<span class="t">Int32</span>, <span class="t">Proc</span>(<span class="t">Array</span>(<span class="t">CellType</span>), <span class="t">CellType</span>)}) <span class="o">|</span>
-<span class="t">Array</span>({<span class="t">Int32</span>, <span class="t">Proc</span>(<span class="t">Hash</span>(<span class="t">LabelType</span>, <span class="t">Array</span>(<span class="t">CellType</span>)), <span class="t">CellType</span>)}) <span class="o">|</span>
-<span class="t">Array</span>({<span class="t">Int32</span>, <span class="t">Proc</span>(<span class="t">Array</span>(<span class="t">CellType</span>), <span class="t">CellType</span>)} <span class="o">|</span>
-{<span class="t">Int32</span>, <span class="t">Proc</span>(<span class="t">Hash</span>(<span class="t">LabelType</span>, <span class="t">Array</span>(<span class="t">CellType</span>)), <span class="t">CellType</span>)})
-<span class="k">alias</span> <span class="t">Summary</span><span class="t">::</span><span class="t">UserProcAll</span> <span class="o">=</span> <span class="t">Proc</span>(<span class="t">Hash</span>(<span class="t">LabelType</span>, <span class="t">Array</span>(<span class="t">CellType</span>)), <span class="t">CellType</span>)
-<span class="k">alias</span> <span class="t">Summary</span><span class="t">::</span><span class="t">UserProcCurrent</span> <span class="o">=</span> <span class="t">Proc</span>(<span class="t">Array</span>(<span class="t">CellType</span>), <span class="t">CellType</span>)</code></pre>
-<p>The latter - <code>Summary::UserProcs</code>- is a tad complex and can take several forms.
-Basically, it is a tuple of 2 elements :</p>
-<ul>
-<li>An <code>Int32</code>, which indicates the position (line) of the proc result in the column</li>
-<li>A <code>proc</code> or an array of procs, which performs the calculation and expects
-as parameter either an <code>Array(CellType)</code> or a <code>Hash(LabelType, Array(CellType))</code></li>
-</ul>
-<p>The second parameter (<code>options</code>) ...</p>
-<p>Outch!</p>
-<p>Looking again at the source code, we see that :</p>
-<ul>
-<li>The <code>:tax</code> column has 2 entries, of type <code>Tuple</code>:</li>
-<li><code>body_formatter:</code> and its associated proc which performs the
-conversion from cents to currency units, and checks that the cell is
-not nil (this is necessary, as of the 3 summary lines, the 1st and
-3rd are not fed).</li>
-<li><code>proc:</code> a tuple defined by the number of the summary line to be fed,
-and the proc performing the calculation. The latter takes as
-parameter a <code>CellType</code> array (the &quot;Tax (20%)&quot; data column), converts
-it to an array of integers before summing and converting the result</li>
-</ul>
+<p>Finally, the last lines display the 2 tables: the main table and the
+summary table (linked by the <code>omit_last_rule: true</code> statement). Note
+the prior use of the pack method on the main table to optimize column
+widths, then again on the summary table to take into account the new
+contents of the “Price” column.</p>
+<p>For a more in-depth study of this example, detailed explanations are
+available in the API.</p>
 <h2><a id="transpose" class="anchor" href="#transpose">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>Transpose</h2>
-<pre><code class="language-text"></code></pre>
+<p>Sometimes, it can be useful to be able to invert columns and rows, for
+example, when the number of elements in a source row is large, and
+therefore unsuitable for horizontal presentation (and provided also that
+the number of rows is small).</p>
+<p>The <code>transpose</code> method can automatically perform this transformation.
+Here is a very simple, contrived but significant, example :</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">-1</span>, <span class="n">0</span>, <span class="n">1</span>]) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;Itself&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="s">&quot;Pred&quot;</span>, <span class="o">&amp;</span>.pred)
+  t.add_column(<span class="s">&quot;Succ&quot;</span>, <span class="o">&amp;</span>.succ)
+  t.add_column(<span class="s">&quot;Even?&quot;</span>, <span class="o">&amp;</span>.even?)
+  t.add_column(<span class="s">&quot;Odd?&quot;</span>, <span class="o">&amp;</span>.odd?)
+  t.add_column(<span class="s">&quot;Abs&quot;</span>, <span class="o">&amp;</span>.abs)
+  t.add_column(<span class="s">&quot;Double&quot;</span>, <span class="o">&amp;</span>.itself.<span class="o">*</span>(<span class="n">2</span>))
+  t.add_column(<span class="s">&quot;Triple&quot;</span>, <span class="o">&amp;</span>.itself.<span class="o">*</span>(<span class="n">3</span>))
+  t.add_column(<span class="s">&quot;String 1u&quot;</span>, <span class="o">&amp;</span>.itself.to_s.<span class="o">*</span>(<span class="n">1</span>))
+  t.add_column(<span class="s">&quot;String 2u&quot;</span>, <span class="o">&amp;</span>.itself.to_s.<span class="o">*</span>(<span class="n">2</span>))
+  t.add_column(<span class="s">&quot;String 3u&quot;</span>, <span class="o">&amp;</span>.itself.to_s.<span class="o">*</span>(<span class="n">3</span>))
+  t.add_column(<span class="s">&quot;String 4u&quot;</span>, <span class="o">&amp;</span>.itself.to_s.<span class="o">*</span>(<span class="n">4</span>))
+  t.add_column(<span class="s">&quot;String 5u&quot;</span>, <span class="o">&amp;</span>.itself.to_s.<span class="o">*</span>(<span class="n">5</span>))
+  t.add_column(<span class="s">&quot;String 6u&quot;</span>, <span class="o">&amp;</span>.itself.to_s.<span class="o">*</span>(<span class="n">6</span>))
+  t.add_column(<span class="s">&quot;String 5d&quot;</span>, <span class="o">&amp;</span>.itself.to_s.<span class="o">*</span>(<span class="n">5</span>))
+  t.add_column(<span class="s">&quot;String 4d&quot;</span>, <span class="o">&amp;</span>.itself.to_s.<span class="o">*</span>(<span class="n">4</span>))
+  t.add_column(<span class="s">&quot;String 3d&quot;</span>, <span class="o">&amp;</span>.itself.to_s.<span class="o">*</span>(<span class="n">3</span>))
+  t.add_column(<span class="s">&quot;String 2d&quot;</span>, <span class="o">&amp;</span>.itself.to_s.<span class="o">*</span>(<span class="n">2</span>))
+  t.add_column(<span class="s">&quot;String 1d&quot;</span>, <span class="o">&amp;</span>.itself.to_s.<span class="o">*</span>(<span class="n">1</span>))
+<span class="k">end</span></code></pre>
+<p>Displaying this table in the standard way produces a table with a total
+length of 286 characters, hardly compatible with the width of current
+terminals.</p>
+<pre><code class="language-crystal">puts table
+puts <span class="s">&quot;Table width = </span><span class="i">#{</span>table.total_table_width<span class="i">}</span><span class="s">&quot;</span></code></pre>
+<pre><code class="language-crystal">+--------------+--------------+-------------  //  -------------+--------------+--------------+
+|       Itself |         Pred |         Succ  //  String 3d    | String 2d    | String 1d    |
++--------------+--------------+-------------  //  -------------+--------------+--------------+
+|           -1 |           -2 |            0  //  -1-1-1       | -1-1         | -1           |
+|            0 |           -1 |            1  //  000          | 00           | 0            |
+|            1 |            0 |            2  //  111          | 11           | 1            |
++--------------+--------------+-------------  //  -------------+--------------+--------------+
+table width = 286</code></pre>
+<p>Using the “transpose” method produces a much clearer result:</p>
+<pre><code class="language-crystal">transposed_table <span class="o">=</span> table.transpose
+puts transposed_table
+puts <span class="s">&quot;Table width = </span><span class="i">#{</span>transposed_table.total_table_width<span class="i">}</span><span class="s">&quot;</span></code></pre>
+<pre><code class="language-crystal">+-----------+--------------+--------------+--------------+
+|           |           -1 |            0 |            1 |
++-----------+--------------+--------------+--------------+
+| Itself    |           -1 |            0 |            1 |
+| Pred      |           -2 |           -1 |            0 |
+| Succ      |            0 |            1 |            2 |
+| Even?     |     false    |     true     |     false    |
+| Odd?      |     true     |     false    |     true     |
+| Abs       |            1 |            0 |            1 |
+| Double    |           -2 |            0 |            2 |
+| Triple    |           -3 |            0 |            3 |
+| String 1u | -1           | 0            | 1            |
+| String 2u | -1-1         | 00           | 11           |
+| String 3u | -1-1-1       | 000          | 111          |
+| String 4u | -1-1-1-1     | 0000         | 1111         |
+| String 5u | -1-1-1-1-1   | 00000        | 11111        |
+| String 6u | -1-1-1-1-1-1 | 000000       | 111111       |
+| String 5d | -1-1-1-1-1   | 00000        | 11111        |
+| String 4d | -1-1-1-1     | 0000         | 1111         |
+| String 3d | -1-1-1       | 000          | 111          |
+| String 2d | -1-1         | 00           | 11           |
+| String 1d | -1           | 0            | 1            |
++-----------+--------------+--------------+--------------+
+Table width = 58</code></pre>
+<p>See API for details.</p>
+<h2><a id="columns-selection-and-ordering" class="anchor" href="#columns-selection-and-ordering">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Columns selection and ordering</h2>
+<p>Sometimes we may need to present a table in different ways and, rather
+than redefining a new table each time, it's more economical to define
+the table in its most “complete” configuration, then, when it's time to
+display it, select and order the columns to be presented.</p>
+<p><code>Table#using_columns</code> and <code>Table#using_column_indexes</code> methods do just that!</p>
+<p>If defined, groups are preserved if no re-ordering required.</p>
+<p>See API for examples.</p>
+<h2><a id="tips-and-tricks" class="anchor" href="#tips-and-tricks">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Tips and tricks</h2>
+<p>Here are interesting things to try...</p>
+<h3><a id="data-sources" class="anchor" href="#data-sources">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Data sources</h3>
+<p>A table may be built once, and used by different data sources, at the
+condition that these sources have exactly the same type.
+The <code>Table#sources=</code> method allows to change data sources.</p>
+<p>(The <code>Table#sources</code> method allows to access data directly, for example
+in <code>Summary.UserProc</code> struct initialization - see API)</p>
+<h3><a id="tables-into-tables" class="anchor" href="#tables-into-tables">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Tables into tables</h3>
+<p>Formatting a table (or any other formatted data) inside a cell of another table is perfectly possible.</p>
+<p>Here is an example :</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+
+<span class="k">def</span> <span class="m">my_string</span>
+  <span class="s">&quot;My formatted string&quot;</span>
+<span class="k">end</span>
+
+<span class="k">def</span> <span class="m">your_string</span>
+  <span class="s">&quot;Your formatted string&quot;</span>
+<span class="k">end</span>
+
+tslave <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="s">&quot;abc&quot;</span>]) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="s">&quot;my_string&quot;</span>) { my_string }
+<span class="k">end</span>
+tmain <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>],
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;tmain&quot;</span>, framed: <span class="n">true</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;tslave&quot;</span>) { tslave.to_s }
+  t.add_column(<span class="s">&quot;your_string&quot;</span>) { your_string }
+<span class="k">end</span>
+puts tmain.pack</code></pre>
+<p><em><em>Here, the <code>[1]</code> is a fake, as it is never used.</em></em></p>
+<p>Output:</p>
+<pre><code class="language-crystal">+---------------------------------------------------------+
+|                          tmain                          |
++---------------------------------+-----------------------+
+| tslave                          | your_string           |
++---------------------------------+-----------------------+
+| +--------------+--------------+ | Your formatted string |
+| | itself       | my_string    | |                       |
+| +--------------+--------------+ |                       |
+| | abc          | My           | |                       |
+| |              | formatted    | |                       |
+| |              | string       | |                       |
+| +--------------+--------------+ |                       |
++---------------------------------+-----------------------+</code></pre>
+<p>This can lead to some interesting formatting possibilities!</p>
 </div>
 </body>
 </html>
