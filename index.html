@@ -553,15 +553,15 @@ value between the current element's <code>line_breaks_after</code> and the next 
 |            2 |            4 | BB           |     true     |
 |            3 |            6 | CCC          |     false    |
 +--------------+--------------+--------------+--------------+</code></pre>
-<p>In summary, we have 6 types of data rows :</p>
-<p>|Type|Description
-|---|----
-|Body|Always displayed
-|Group|Optional
-|Title|Optional
-|Subtitle|Optional
-|Footer|Optional</p>
-<!-- | Header   | Always displayed, unless `header_frequency:` is `nil` </br> or `masked_headers:` is `true` | -->
+<p>To sum up, we have 6 types of data rows :</p>
+<ol>
+<li>Title : Optional display </br></li>
+<li>SubTitle : Optional display </br></li>
+<li>Group : Optional display </br></li>
+<li>Header : Always displayed, unless <code>header_frequency</code> is <code>nil</code> or <code>masked_headers</code> is <code>true</code> </br></li>
+<li>Body : Always displayed </br></li>
+<li>Footer : Optional display</li>
+</ol>
 <h2><a id="rules" class="anchor" href="#rules">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -983,13 +983,13 @@ puts table</code></pre>
 |    H H H H H H H H   |
 |   I I I I I I I I I  |
 +----------------------+</code></pre>
-<p>Overview of the 4 different forms of formatter procs:
-| Forms of formatter procs | Parameter and types, in order |
-| -- | -- |
-| 1st form | <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code> <br />used by: <code>TextCell</code> or <code>DataCell</code>|
-| 2nd form | <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code>, <code>width</code> : <code>Int32</code> <br />used by: <code>TextCell</code> or <code>DataCell</code> |
-| 3rd form | <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code>, <code>coords</code> : <code><a href="Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code> <br />used by: <code>DataCell</code>|
-| 4th form | <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code>, <code>coords</code> : <code><a href="Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>, <br /><code>width</code> : <code>Int32</code> used by: <code>DataCell</code> |</p>
+<p>Overview of the 4 different forms of formatter procs:</p>
+<ul>
+<li>1st form: <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code> <br />used by: <code>TextCell</code> or <code>DataCell</code></li>
+<li>2nd form: <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code>, <code>width</code> : <code>Int32</code> <br />used by: <code>TextCell</code> or <code>DataCell</code></li>
+<li>3rd form: <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code>, <code>coords</code> : <code><a href="Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code> <br />used by: <code>DataCell</code></li>
+<li>4th form: <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code>, <code>coords</code> : <code><a href="Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>, <br /><code>width</code> : <code>Int32</code> used by: <code>DataCell</code></li>
+</ul>
 <h3><a id="styling" class="anchor" href="#styling">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -1071,13 +1071,13 @@ puts table</code></pre>
 mode, and the use of ANSI sequences is given here simply as an
 example.</em></em></p>
 <p>Overview of the 5 different forms of styler procs:</p>
-<p>| Forms of styler procs | Parameter and types, in order                                                                                                                                   |
-| --------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1st form              | <code>(formatted) content</code> : <code>String</code> <br />used by: <code>Border</code>, <code>TextCell</code> or <code>DataCell</code>                                                                              |
-| 2nd form              | <code>(formatted) content</code> : <code>String</code>, <code>line_index</code> : <code>Int32</code> <br /> used by: <code>TextCell</code>                                                                             |
-| 3rd form              | <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code>, <code>(formatted) content</code> : <code>String</code> <br /> used by: <code>DataCell</code>                                                                        |
-| 4th form              | <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code>, <code>coords</code> : <code><a href="Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>, <br /> <code>(formatted) content</code> : <code>String</code> used by: <code>DataCell</code>                                |
-| 5th form              | <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code>, <code>coords</code> : <code><a href="Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>, <br /> <code>(formatted) content</code> : <code>String</code>, <code>line_index</code> : <code>Int32</code> <br /> used by: <code>DataCell</code> |</p>
+<ul>
+<li>1st form: <code>(formatted) content</code> : <code>String</code> <br />used by: <code>Border</code>, <code>TextCell</code> or <code>DataCell</code></li>
+<li>2nd form: <code>(formatted) content</code> : <code>String</code>, <code>line_index</code> : <code>Int32</code> <br /> used by: <code>TextCell</code></li>
+<li>3rd form: <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code>, <code>(formatted) content</code> : <code>String</code> <br /> used by: <code>DataCell</code></li>
+<li>4th form: <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code>, <code>coords</code> : <code><a href="Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>, <br /> <code>(formatted) content</code> : <code>String</code> used by: <code>DataCell</code></li>
+<li>5th form: <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code>, <code>coords</code> : <code><a href="Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>, <br /> <code>(formatted) content</code> : <code>String</code>, <code>line_index</code> : <code>Int32</code> <br /> used by: <code>DataCell</code></li>
+</ul>
 <h2><a id="packing" class="anchor" href="#packing">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -1265,14 +1265,26 @@ puts table</code></pre>
 <p>or</p>
 <pre><code class="language-crystal">puts table.pack</code></pre>
 <p>To sum up:</p>
-<p>| Type of call                                               | Results, with <code>PackingMode::AutoSized</code> as default and no columns excluded                                                                                                                                   |
-| :--------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <code>table.pack</code>                                               | <ul><li>Automatically adapts columns to their largest content</li><li>Modifies current values of column width</li></ul>                                                                                     |
-| <code>table.pack(40)</code>                                           | <ul> <li>Automatically adapts columns to their largest content</li> <li>Modifies current values of column width</li> <li>Reduces or increases column widths to meet total table size requirements</li></ul> |
-| <code>table.pack(packing_mode: PackingMode::CurrentWidths</code>)     | <ul><li>No-op</li></ul>                                                                                                                                                                                     |
-| <code>table.pack(40, packing_mode: PackingMode::CurrentWidths</code>) | <ul><li>Reduces or increases column widths to meet total table size requirements</li></ul>                                                                                                                  |
-| <code>table.pack(packing_mode: PackingMode::InitialWidths</code>)     | <ul><li> Only resets current column values to their initial values, no packing is done</li></ul>                                                                                                            |
-| <code>table.pack(40, packing_mode: PackingMode::InitialWidths</code>) | <ul><li> Resets current column values to their initial values</li> <li>Reduces or increases column widths to meet total table size requirements</li></ul>                                                   |</p>
+<ul>
+<li><code>table.pack</code>: <ul><li>Automatically adapts columns to their largest content</li>
+<li>Modifies current values of column width</li></ul>
+</li>
+<li><code>table.pack(40)</code>: <ul> <li>Automatically adapts columns to their largest content</li>
+<li>Modifies current values of column width</li>
+<li>Reduces or increases column widths to meet total table size requirements</li></ul>
+</li>
+<li><code>table.pack(packing_mode: PackingMode::CurrentWidths)</code>: <ul><li>No-op</li></ul></li>
+<li><code>table.pack(40, packing_mode: PackingMode::CurrentWidths)</code>: <ul>
+<li>Reduces or increases column widths to meet total table size requirements</li></ul>
+</li>
+<li><code>table.pack(packing_mode: PackingMode::InitialWidths)</code>: <ul>
+<li> Only resets current column values to their initial values, no packing is done</li></ul>
+</li>
+<li><code>table.pack(40, packing_mode: PackingMode::InitialWidths)</code>: <ul>
+<li> Resets current column values to their initial values</li>
+<li>Reduces or increases column widths to meet total table size requirements</li></ul>
+</li>
+</ul>
 <h2><a id="summary" class="anchor" href="#summary">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
