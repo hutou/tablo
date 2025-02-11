@@ -23,11 +23,10 @@ the library.
 
 Compared to the first version, it offers extended capabilities,
 sometimes at the cost of modified syntax. It also offers new features,
-such as the possibility of adding a summary table, fed by user-defined
-functions (sum, average, etc.), the ability to process any
-enumerable data, as well as elaborate layout possibilities: grouped,
-masked and reordered columns, different types of headers (title,
-subtitle, footer), detached or joined border lines, etc.
+such as the possibility of adding a summary table, the ability to
+process any enumerable data, as well as elaborate layout possibilities:
+grouped, masked and reordered columns, different types of headers
+(title, subtitle, footer), etc.
 
 While overall, Tablo remains, in terms of its functionalities, broadly
 comparable, with a few exceptions, to the Tabulo v3.0 version of Matt Harvey,
@@ -52,7 +51,7 @@ the source code, meanwhile, has been deeply redesigned.
 
 - Optionally, the table can have a title, a subtitle or a footer.
 
-- Headers (and title and subtitle) row can be repeated at arbitrary intervals.
+- Headers (and title and subtitle) rows can be repeated at arbitrary intervals.
 
 - Alignment of header and body cells is configurable, but by default,
   numbers are right-aligned, Boolean values centered, other types

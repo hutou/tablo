@@ -315,19 +315,14 @@ Output:
 +--------------+--------------+--------------+--------------+
 ```
 
-In summary, we have 6 types of data rows :
+To sum up, we have 6 types of data rows :
 
-
-|Type|Description
-|---|----
-|Body|Always displayed
-|Group|Optional
-|Title|Optional
-|Subtitle|Optional
-|Footer|Optional
-
-
-<!-- | Header   | Always displayed, unless `header_frequency:` is `nil` </br> or `masked_headers:` is `true` | -->
+1. Title : Optional display </br>
+2. SubTitle : Optional display </br>
+3. Group : Optional display </br>
+4. Header : Always displayed, unless `header_frequency` is `nil` or `masked_headers` is `true` </br>
+5. Body : Always displayed </br>
+6. Footer : Optional display
 
 ## Rules
 
@@ -865,12 +860,11 @@ Output:
 ```
 
 Overview of the 4 different forms of formatter procs:
-| Forms of formatter procs | Parameter and types, in order |
-| -- | -- |
-| 1st form | `value` : `Tablo::CellType` <br />used by: `TextCell` or `DataCell`|
-| 2nd form | `value` : `Tablo::CellType`, `width` : `Int32` <br />used by: `TextCell` or `DataCell` |
-| 3rd form | `value` : `Tablo::CellType`, `coords` : `Tablo::Cell::Data::Coords` <br />used by: `DataCell`|
-| 4th form | `value` : `Tablo::CellType`, `coords` : `Tablo::Cell::Data::Coords`, <br />`width` : `Int32` used by: `DataCell` |
+
+- 1st form: `value` : `Tablo::CellType` <br />used by: `TextCell` or `DataCell`
+- 2nd form: `value` : `Tablo::CellType`, `width` : `Int32` <br />used by: `TextCell` or `DataCell`
+- 3rd form: `value` : `Tablo::CellType`, `coords` : `Tablo::Cell::Data::Coords` <br />used by: `DataCell`
+- 4th form: `value` : `Tablo::CellType`, `coords` : `Tablo::Cell::Data::Coords`, <br />`width` : `Int32` used by: `DataCell`
 
 ### Styling
 
@@ -975,13 +969,11 @@ example.*_
 
 Overview of the 5 different forms of styler procs:
 
-| Forms of styler procs | Parameter and types, in order                                                                                                                                   |
-| --------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1st form              | `(formatted) content` : `String` <br />used by: `Border`, `TextCell` or `DataCell`                                                                              |
-| 2nd form              | `(formatted) content` : `String`, `line_index` : `Int32` <br /> used by: `TextCell`                                                                             |
-| 3rd form              | `value` : `Tablo::CellType`, `(formatted) content` : `String` <br /> used by: `DataCell`                                                                        |
-| 4th form              | `value` : `Tablo::CellType`, `coords` : `Tablo::Cell::Data::Coords`, <br /> `(formatted) content` : `String` used by: `DataCell`                                |
-| 5th form              | `value` : `Tablo::CellType`, `coords` : `Tablo::Cell::Data::Coords`, <br /> `(formatted) content` : `String`, `line_index` : `Int32` <br /> used by: `DataCell` |
+- 1st form: `(formatted) content` : `String` <br />used by: `Border`, `TextCell` or `DataCell`
+- 2nd form: `(formatted) content` : `String`, `line_index` : `Int32` <br /> used by: `TextCell`
+- 3rd form: `value` : `Tablo::CellType`, `(formatted) content` : `String` <br /> used by: `DataCell`
+- 4th form: `value` : `Tablo::CellType`, `coords` : `Tablo::Cell::Data::Coords`, <br /> `(formatted) content` : `String` used by: `DataCell`
+- 5th form: `value` : `Tablo::CellType`, `coords` : `Tablo::Cell::Data::Coords`, <br /> `(formatted) content` : `String`, `line_index` : `Int32` <br /> used by: `DataCell`
 
 ## Packing
 
@@ -1239,14 +1231,19 @@ puts table.pack
 
 To sum up:
 
-| Type of call                                               | Results, with `PackingMode::AutoSized` as default and no columns excluded                                                                                                                                   |
-| :--------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `table.pack`                                               | <ul><li>Automatically adapts columns to their largest content</li><li>Modifies current values of column width</li></ul>                                                                                     |
-| `table.pack(40)`                                           | <ul> <li>Automatically adapts columns to their largest content</li> <li>Modifies current values of column width</li> <li>Reduces or increases column widths to meet total table size requirements</li></ul> |
-| `table.pack(packing_mode: PackingMode::CurrentWidths`)     | <ul><li>No-op</li></ul>                                                                                                                                                                                     |
-| `table.pack(40, packing_mode: PackingMode::CurrentWidths`) | <ul><li>Reduces or increases column widths to meet total table size requirements</li></ul>                                                                                                                  |
-| `table.pack(packing_mode: PackingMode::InitialWidths`)     | <ul><li> Only resets current column values to their initial values, no packing is done</li></ul>                                                                                                            |
-| `table.pack(40, packing_mode: PackingMode::InitialWidths`) | <ul><li> Resets current column values to their initial values</li> <li>Reduces or increases column widths to meet total table size requirements</li></ul>                                                   |
+- `table.pack`: <ul><li>Automatically adapts columns to their largest content</li>
+  <li>Modifies current values of column width</li></ul>
+- `table.pack(40)`: <ul> <li>Automatically adapts columns to their largest content</li>
+  <li>Modifies current values of column width</li>
+  <li>Reduces or increases column widths to meet total table size requirements</li></ul>
+- `table.pack(packing_mode: PackingMode::CurrentWidths)`: <ul><li>No-op</li></ul>
+- `table.pack(40, packing_mode: PackingMode::CurrentWidths)`: <ul>
+  <li>Reduces or increases column widths to meet total table size requirements</li></ul>
+- `table.pack(packing_mode: PackingMode::InitialWidths)`: <ul>
+  <li> Only resets current column values to their initial values, no packing is done</li></ul>
+- `table.pack(40, packing_mode: PackingMode::InitialWidths)`: <ul>
+  <li> Resets current column values to their initial values</li>
+  <li>Reduces or increases column widths to meet total table size requirements</li></ul>
 
 ## Summary
 
