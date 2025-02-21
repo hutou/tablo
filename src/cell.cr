@@ -325,7 +325,7 @@ module Tablo
       #       end
       #     })) do |t|
       #   t.add_column("itself", &.itself)
-      #   t.add_column("itself x 2", &.*(2))
+      #   t.add_column("itself x 2", &.*(2))  tablo/Tablo/Border/Styler.html
       #   t.add_column("itself x 3", &.*(3))
       # end
       # puts table
