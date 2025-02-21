@@ -154,7 +154,7 @@ module Tablo
     # puts table.summary
     # ```
     #
-    # <img src="../../assets/images/api_summary.png">
+    # <img src="../../../assets/images/api_summary.png">
     #
     #
     # A few points of note: <br />
