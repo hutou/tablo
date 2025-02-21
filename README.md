@@ -1,4 +1,3 @@
-<!-- [<img src="assets/images/logo.png" alt="Logo"/>](https://github.com/hutou/tablo/tree/development?tab=readme-ov-file) -->
 <img src="assets/images/logo.png"/>
 
 ## Table of contents
@@ -570,7 +569,7 @@ puts table
 
 Output (image):
 
- <p> <img src="assets/images/asian_bad.png"> </p>
+ <p> <img src="assets/images/tutorial_asian_bad.png"> </p>
 
 To correct this, you need to:
 
@@ -606,7 +605,7 @@ puts table
 
 Output (image):
 
- <p> <img src="assets/images/asian_good.png"> </p>
+ <p> <img src="assets/images/tutorial_asian_good.png"> </p>
 
 ### Extracting
 
@@ -907,7 +906,7 @@ puts table
 
 Output:
 
-<p> <img src="assets/images/styling_first_form.png"</p>
+<p> <img src="assets/images/tutorial_styling_first_form.png"</p>
 
 Cool! Let's do now some conditional styling, painting in bold green all values
 greater than 2 in all numeric columns and underlining the `true` boolean value
@@ -927,7 +926,7 @@ body_styler: ->(value : Tablo::CellType, content : String) {
 
 Output:
 
-<p><img src="assets/images/styling_third_form.png"> </p>
+<p><img src="assets/images/tutorial_styling_third_form.png"> </p>
 
 Let's end with a final example, with a black-and-white look: how do you
 display rows alternately in black (with a bit of italics) and dark gray
@@ -961,7 +960,7 @@ puts table
 
 Output:
 
-<p> <img src="assets/images/styling_fourth_form.png"> </p>
+<p> <img src="assets/images/tutorial_styling_fourth_form.png"> </p>
 
 _*From version 1.10 onwards, Crystal `colorize` module does support italic
 mode, and the use of ANSI sequences is given here simply as an
@@ -980,7 +979,7 @@ Overview of the 5 different forms of styler procs:
 In the previous examples, the notion of column width was used. For a better
 understanding, the diagram below highlights the structure of a column.
 
-<p> <img src="assets/images/column_layout.svg"> </p>
+<p> <img src="assets/images/tutorial_column_layout.svg"> </p>
 
 As we saw at the start of this tutorial, by default, all columns have the same
 width, i.e. 12 characters.
@@ -1365,7 +1364,7 @@ puts table.summary
 
 Output:
 
-<p> <img src="assets/images/summary.png"> </p>
+<p> <img src="assets/images/tutorial_summary.png"> </p>
 
 Let's take a look at the source code.
 
