@@ -347,7 +347,7 @@ in <code><a href="../Tablo/Table.html#initialize%28block_given%29-macro">Tablo::
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/583986254c072a07bbce07d4b572604f4ea01e05/src/summary.cr#L16" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/d688d9ca7123c9e147c2f0d78201f9e708f4e337/src/summary.cr#L16" target="_blank">
         summary.cr
       </a>
     
@@ -540,12 +540,12 @@ invoice_summary_definition <span class="o">=</span> [
   <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="s">&quot;Price&quot;</span>, <span class="n">40</span>, <span class="s">&quot;Tax (20%)&quot;</span>),
   <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="s">&quot;Price&quot;</span>, <span class="n">60</span>, <span class="s">&quot;Balance due&quot;</span>),
 
-  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">10</span>, <span class="o">-&gt;</span>{ <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total_sum</span>) }),
-  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">20</span>, <span class="o">-&gt;</span>{ <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:discount</span>) }),
-  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">30</span>, <span class="o">-&gt;</span>{ <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total_after_discount</span>) }),
-  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">40</span>, <span class="o">-&gt;</span>{ <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:tax</span>) }),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">10</span>, <span class="o">-&gt;</span> { <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total_sum</span>) }),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">20</span>, <span class="o">-&gt;</span> { <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:discount</span>) }),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">30</span>, <span class="o">-&gt;</span> { <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total_after_discount</span>) }),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">40</span>, <span class="o">-&gt;</span> { <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:tax</span>) }),
   <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">50</span>, <span class="s">&quot;========&quot;</span>),
-  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">60</span>, <span class="o">-&gt;</span>{ <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total_due</span>) }),
+  <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">60</span>, <span class="o">-&gt;</span> { <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total_due</span>) }),
 ]
 
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new(invoice,
@@ -578,7 +578,7 @@ table.add_summary(invoice_summary_definition,
 table.summary.<span class="k">as</span>(<span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>).pack
 puts table
 puts table.summary</code></pre>
-<img src="../assets/images/api_summary.svg" width="540">
+<img src="../assets/images/api_summary.png">
 <p>A few points of note: <br /></p>
 <ul>
 <li>Use of the <code>BigDecimal</code> type (not included in Tablo by default, but made
@@ -597,7 +597,7 @@ before summary table definition.</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/583986254c072a07bbce07d4b572604f4ea01e05/src/summary.cr#L170" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/d688d9ca7123c9e147c2f0d78201f9e708f4e337/src/summary.cr#L170" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -629,13 +629,13 @@ by key (which is of type Symbol).<br />
 (see <code><a href="../Tablo/Summary/UserProc.html">Summary::UserProc</a></code>)</p>
 <p>For example, to populate row 1 of column <code>:total</code> with the result of
 a previous calculation identified by <code>:total_sum</code>:</p>
-<pre><code class="language-crystal"><span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">1</span>, <span class="o">-&gt;</span>{ <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total_sum</span>) })</code></pre>
+<pre><code class="language-crystal"><span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">1</span>, <span class="o">-&gt;</span> { <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total_sum</span>) })</code></pre>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/583986254c072a07bbce07d4b572604f4ea01e05/src/summary.cr#L189" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/d688d9ca7123c9e147c2f0d78201f9e708f4e337/src/summary.cr#L189" target="_blank">View source</a>]
         
       </div>
     </div>

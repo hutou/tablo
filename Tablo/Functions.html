@@ -336,7 +336,7 @@
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/583986254c072a07bbce07d4b572604f4ea01e05/src/tablo.cr#L16" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/d688d9ca7123c9e147c2f0d78201f9e708f4e337/src/tablo.cr#L16" target="_blank">
         tablo.cr
       </a>
     
@@ -442,7 +442,7 @@ puts table</code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/583986254c072a07bbce07d4b572604f4ea01e05/src/tablo.cr#L65" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/d688d9ca7123c9e147c2f0d78201f9e708f4e337/src/tablo.cr#L65" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -468,13 +468,13 @@ default space) between each character of the initial string.</p>
 <p><em>Optional named parameters, with default values</em></p>
 <ul>
 <li><em>fill_char</em>: Fill character for stretched text</li>
+<li><em>max_fill</em>: Can be set to control the number of padding characters
+(<em>fill_char</em>) between each character in the stretched string</li>
 <li><em>prefix</em>: String inserted in front of stretched text, left-aligned <br/>
 The area between braces can be reduced at will, to maximize stretching.
 See example below.</li>
 <li><em>suffix</em>: Same as prefix, but right-aligned</li>
 <li><em>alignment</em>: Justification of stretched text, excluding prefix and suffix</li>
-<li><em>max_fill</em>: Can be set to control the number of padding characters
-(<em>fill_char</em>) between each character in the stretched string</li>
 </ul>
 <p>If constraints cannot be met (for example, prefix or suffix margins too large),
 returns text unchanged.</p>
@@ -510,12 +510,15 @@ limited by the <em>max_fill</em> parameter to one character.</p>
 |            2 |         1.41 |
 |            3 |         1.73 |
 +--------------+--------------+</code></pre>
+<p>Note that the alignment of stretched text is only respected if the prefix
+<strong>and</strong> suffix parameters are not absent or empty. Otherwise, the column alignment
+(defined or default) is applied.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/583986254c072a07bbce07d4b572604f4ea01e05/src/tablo.cr#L153" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/d688d9ca7123c9e147c2f0d78201f9e708f4e337/src/tablo.cr#L156" target="_blank">View source</a>]
         
       </div>
     </div>
