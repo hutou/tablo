@@ -156,6 +156,7 @@ module Tablo
     #
     # <img src="../../assets/images/api_summary.png">
     #
+    #
     # A few points of note: <br />
     # - Use of the `BigDecimal` type (not included in Tablo by default, but made
     #   possible by reopening the `BigDecimal` struct and adding the `include CellType`
