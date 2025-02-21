@@ -100,13 +100,13 @@ module Tablo
     # _Optional named parameters, with default values_
     #
     # - *fill_char*: Fill character for stretched text
+    # - *max_fill*: Can be set to control the number of padding characters
+    # (*fill_char*) between each character in the stretched string
     # - *prefix*: String inserted in front of stretched text, left-aligned <br/>
     #   The area between braces can be reduced at will, to maximize stretching.
     #   See example below.
     # - *suffix*: Same as prefix, but right-aligned
     # - *alignment*: Justification of stretched text, excluding prefix and suffix
-    # - *max_fill*: Can be set to control the number of padding characters
-    # (*fill_char*) between each character in the stretched string
     #
     # If constraints cannot be met (for example, prefix or suffix margins too large),
     # returns text unchanged.
@@ -150,6 +150,9 @@ module Tablo
     # |            3 |         1.73 |
     # +--------------+--------------+
     # ```
+    # Note that the alignment of stretched text is only respected if the prefix
+    # **and** suffix parameters are not absent or empty. Otherwise, the column alignment
+    # (defined or default) is applied.
     def self.stretch(text : String, target_width : Int32,
                      fill_char : Char = ' ',
                      prefix : String = "", suffix : String = "",

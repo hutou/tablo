@@ -114,12 +114,12 @@ module Tablo
     #   Tablo::Summary::BodyRow.new("Price", 40, "Tax (20%)"),
     #   Tablo::Summary::BodyRow.new("Price", 60, "Balance due"),
     #
-    #   Tablo::Summary::BodyRow.new(:total, 10, ->{ Tablo::Summary.use(:total_sum) }),
-    #   Tablo::Summary::BodyRow.new(:total, 20, ->{ Tablo::Summary.use(:discount) }),
-    #   Tablo::Summary::BodyRow.new(:total, 30, ->{ Tablo::Summary.use(:total_after_discount) }),
-    #   Tablo::Summary::BodyRow.new(:total, 40, ->{ Tablo::Summary.use(:tax) }),
+    #   Tablo::Summary::BodyRow.new(:total, 10, -> { Tablo::Summary.use(:total_sum) }),
+    #   Tablo::Summary::BodyRow.new(:total, 20, -> { Tablo::Summary.use(:discount) }),
+    #   Tablo::Summary::BodyRow.new(:total, 30, -> { Tablo::Summary.use(:total_after_discount) }),
+    #   Tablo::Summary::BodyRow.new(:total, 40, -> { Tablo::Summary.use(:tax) }),
     #   Tablo::Summary::BodyRow.new(:total, 50, "========"),
-    #   Tablo::Summary::BodyRow.new(:total, 60, ->{ Tablo::Summary.use(:total_due) }),
+    #   Tablo::Summary::BodyRow.new(:total, 60, -> { Tablo::Summary.use(:total_due) }),
     # ]
     #
     # table = Tablo::Table.new(invoice,
@@ -154,7 +154,7 @@ module Tablo
     # puts table.summary
     # ```
     #
-    # <img src="../assets/images/api_summary.svg" width="540">
+    # <img src="../assets/images/api_summary.png">
     #
     # A few points of note: <br />
     # - Use of the `BigDecimal` type (not included in Tablo by default, but made
@@ -184,7 +184,7 @@ module Tablo
     # For example, to populate row 1 of column `:total` with the result of
     # a previous calculation identified by `:total_sum`:
     # ```
-    # Tablo::Summary::BodyRow.new(:total, 1, ->{ Tablo::Summary.use(:total_sum) })
+    # Tablo::Summary::BodyRow.new(:total, 1, -> { Tablo::Summary.use(:total_sum) })
     # ```
     def self.use(key)
       proc_results[key]

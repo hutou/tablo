@@ -2,10 +2,8 @@ module Tablo
   # The Column class is used internally by the Tablo library and offers no
   # public interface to its attributes and methods.
   #
-  # Its main function is to manage the creation of a table's various columns,
-  # defined by the `Cell::Data` type (Header and body).
-  #
-  # It is activated by the `Table#add_column` method.
+  # Its main function is to manage the creation of table columns, using
+  # the `Table#add_column` method.
   class Column(T)
     protected property width                   # called from Table, Summary
     protected getter initial_width : Int32 = 0 # called from Table

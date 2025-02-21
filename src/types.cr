@@ -154,11 +154,12 @@ module Tablo
   # Cell contents can be justified in 3 ways: to the left, to the right or centered.
   #
   # Justification can be explicit, defined by a dedicated attribute, or
-  # implicit, depending on the cell data type.
+  # implicit, depending on the cell data type or heading.
   #
   # In the latter case, in Tablo, the justification is as follows:
   # - Right for cells containing numeric data
-  # - Centered for cells containing Boolean data
+  # - Centered for colomn cells containing Boolean data and for headings
+  #   (Title, Subtitle, Group and Footer)
   # - Left for all other cases
   enum Justify
     Left
