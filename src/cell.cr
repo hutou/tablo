@@ -311,7 +311,7 @@ module Tablo
       # *line* designates the line number in a (multi-line) cell (0..n).
       #
       # The second form allows easy conditional styling. For example, to colorize
-      # differently each line of multiline cell:
+      # differently each line of a multiline cell:
       # ```
       # require "tablo"
       # require "colorize"
@@ -331,10 +331,7 @@ module Tablo
       # puts table
       # ```
       #
-      #
-      #
-      # <img src="../../../assets/images/api_cell_text_styler_1.svg" width="400">
-      #
+      # <img src="../../../assets/images/api_cell_text_styler_1.png">
       #
       #  or, more simply, to style the whole cell, we use the 1st form:
       # ```
@@ -353,7 +350,7 @@ module Tablo
       # puts table
       # ```
       #
-      # <img src="../../../assets/images/api_cell_text_styler_2.svg" width="400">
+      # <img src="../../../assets/images/api_cell_text_styler_2.png">
       #
       alias Styler = Proc(String, String) |
                      Proc(String, Int32, String)
@@ -586,7 +583,7 @@ module Tablo
       # puts table
       # ```
       #
-      # <img src="../../../assets/images/api_cell_data_styler_1.svg" width="400">
+      # <img src="../../../assets/images/api_cell_data_styler_1.png">
       #
       # Or, more simply by using the 3rd form, to better differentiate between negative
       # and positive values:
@@ -614,7 +611,7 @@ module Tablo
       # puts table
       # ```
       #
-      # <img src="../../../assets/images/api_cell_data_styler_3.svg" width="400">
+      # <img src="../../../assets/images/api_cell_data_styler_2.png">
       alias Styler = Proc(String, String) |
                      Proc(String, Int32, String) |
                      Proc(CellType, String, String) |

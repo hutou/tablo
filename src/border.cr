@@ -89,7 +89,7 @@ module Tablo
   # | Ascii         | +++++++++|||---- |
   # | ReducedAscii  | ESEESEESEESE---- |
   # | ReducedModern | ESEESEESEESE──── |
-  # | Markdown      | SSS|||SSS|||SS-S |
+  # | Markdown      | EEE|||EEE|||ES-S |
   # | Modern        | ┌┬┐├┼┤└┴┘│││──── |
   # | Fancy         | ╭┬╮├┼┤╰┴╯│:│─−-⋅ |
   # | Blank         | SSSSSSSSSSSSSSSS |
@@ -122,13 +122,13 @@ module Tablo
     # require "colorize"
     # table = Tablo::Table.new([1, 2, 3],
     #   border: Tablo::Border.new(Tablo::Border::PreSet::Ascii,
-    #     styler: ->(connectors : String) { connectors.colorize(:red).to_s })) do |t|
+    #     styler: ->(border_chars : String) { border_chars.colorize(:red).to_s })) do |t|
     #   t.add_column("itself", &.itself)
     # end
     # puts table
     # ```
     #
-    # <img src="../../assets/images/api_border_styler.svg" width="160">
+    # <img src="../../assets/images/api_border_styler.png">
     #
     alias Styler = Proc(String, String)
 
@@ -148,7 +148,7 @@ module Tablo
         PreSet::ReducedAscii  => "ESEESEESEESE----",
         PreSet::Modern        => "┌┬┐├┼┤└┴┘│││────",
         PreSet::ReducedModern => "ESEESEESEESE────",
-        PreSet::Markdown      => "SSS|||SSS|||SS-S",
+        PreSet::Markdown      => "EEE|||EEE|||ES-S",
         PreSet::Fancy         => "╭┬╮├┼┤╰┴╯│:│─−-⋅",
         PreSet::Blank         => "SSSSSSSSSSSSSSSS",
         PreSet::Empty         => "EEEEEEEEEEEEEEEE",
@@ -173,6 +173,16 @@ module Tablo
     # ```
     # border = Tablo::Border.new("┌┬┐├┼┤└┴┘│││────",
     #   styler: ->(connectors : String) { connectors.colorize.fore(:blue).mode(:bold).to_s })
+    # ```
+    #
+    # In general, a border is defined directly in table creation, as :
+    # ```
+    # require "tablo"
+    # table = Tablo::Table.new(["abc"],
+    #   border: Tablo::Border.new(:fancy)) do |t|
+    #   t.add_column("itself", &.itself)
+    # end
+    # puts table
     # ```
     def initialize(definition : String | PreSet = Config::Defaults.border_definition,
                    @styler : Styler = Config::Defaults.border_styler)

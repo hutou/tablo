@@ -1,103 +1,358 @@
 require "./spec_helper"
 
-# Redefine protected and private methods for tests
-module Tablo
-  struct Border
-    def horizontal_rule(column_widths, ruletype = Tablo::RuleType::Bottom,
-                        groups = [] of Array(Int32))
-      previous_def
-    end
-
-    def connectors(ruletype)
-      previous_def
-    end
-
-    def definition
-      [@top_left, @top_mid, @top_right, @mid_left, @mid_mid, @mid_right,
-       @bottom_left, @bottom_mid, @bottom_right, @vdiv_left, @vdiv_mid,
-       @vdiv_right, @hdiv_tbs, @hdiv_grp, @hdiv_hdr, @hdiv_bdy]
-        .map { |n| n.size.zero? ? "E" : (n == " " ? "S" : n) }.join
-    end
-  end
-end
+# border specs uses a basic table and checks rendering for all presets
+# and somme string definitions
 
 describe Tablo::Border do
-  describe "Constructors" do
-    it "correctly creates a border from predefined names" do
-      border = Tablo::Border.new(Tablo::Border::PreSet::Ascii)
-      border.should be_a(Tablo::Border)
-    end
-    it "correctly creates a border from a string of 16 chars" do
-      border = Tablo::Border.new("abcdefghijklmnop")
-      border.should be_a(Tablo::Border)
-    end
-    it "correctly renders all definition strings from predefined names" do
-      {
-        Tablo::Border::PreSet::Ascii         => "+++++++++|||----",
-        Tablo::Border::PreSet::ReducedAscii  => "ESEESEESEESE----",
-        Tablo::Border::PreSet::Modern        => "┌┬┐├┼┤└┴┘│││────",
-        Tablo::Border::PreSet::ReducedModern => "ESEESEESEESE────",
-        Tablo::Border::PreSet::Markdown      => "SSS|||SSS|||SS-S",
-        Tablo::Border::PreSet::Fancy         => "╭┬╮├┼┤╰┴╯│:│─−-⋅",
-        Tablo::Border::PreSet::Blank         => "SSSSSSSSSSSSSSSS",
-        Tablo::Border::PreSet::Empty         => "EEEEEEEEEEEEEEEE",
-      }.each do |k, v|
-        Tablo::Border.new(k).definition.should eq(v)
+  describe "Border presets (using enum or symbol)" do
+    it "correctly creates a border from :ascii" do
+      table = Tablo::Table.new([1, 2, 3],
+        border: Tablo::Border.new(:ascii),
+        title: Tablo::Heading.new("Title", framed: true),
+        subtitle: Tablo::Heading.new("SubTitle", framed: true),
+        footer: Tablo::Heading.new("Footer", framed: true),
+        row_divider_frequency: 1) do |t|
+        t.add_column("itself", &.itself)
+        t.add_column("double", &.itself.*(2))
       end
+      expected_output = <<-OUTPUT
+      +-----------------------------+
+      |            Title            |
+      +-----------------------------+
+      |           SubTitle          |
+      +--------------+--------------+
+      |       itself |       double |
+      +--------------+--------------+
+      |            1 |            2 |
+      +--------------+--------------+
+      |            2 |            4 |
+      +--------------+--------------+
+      |            3 |            6 |
+      +--------------+--------------+
+      |            Footer           |
+      +-----------------------------+
+      OUTPUT
+      table.to_s.should eq(expected_output)
     end
+
+    it "correctly creates a border from PreSet::ReducedAscii" do
+      table = Tablo::Table.new([1, 2, 3],
+        border: Tablo::Border.new(Tablo::Border::PreSet::ReducedAscii),
+        title: Tablo::Heading.new("Title", framed: true),
+        subtitle: Tablo::Heading.new("SubTitle", framed: true),
+        footer: Tablo::Heading.new("Footer", framed: true),
+        row_divider_frequency: 1) do |t|
+        t.add_column("itself", &.itself)
+        t.add_column("double", &.itself.*(2))
+      end
+      expected_output = <<-OUTPUT
+      -----------------------------
+                  Title            
+      -----------------------------
+                 SubTitle          
+      -------------- --------------
+             itself         double 
+      -------------- --------------
+                  1              2 
+      -------------- --------------
+                  2              4 
+      -------------- --------------
+                  3              6 
+      -------------- --------------
+                  Footer           
+      -----------------------------
+      OUTPUT
+      table.to_s.should eq(expected_output)
+    end
+
+    it "correctly creates a border from PreSet::Modern" do
+      table = Tablo::Table.new([1, 2, 3],
+        border: Tablo::Border.new(Tablo::Border::PreSet::Modern),
+        title: Tablo::Heading.new("Title", framed: true),
+        subtitle: Tablo::Heading.new("SubTitle", framed: true),
+        footer: Tablo::Heading.new("Footer", framed: true),
+        row_divider_frequency: 1) do |t|
+        t.add_column("itself", &.itself)
+        t.add_column("double", &.itself.*(2))
+      end
+      expected_output = <<-OUTPUT
+      ┌─────────────────────────────┐
+      │            Title            │
+      ├─────────────────────────────┤
+      │           SubTitle          │
+      ├──────────────┬──────────────┤
+      │       itself │       double │
+      ├──────────────┼──────────────┤
+      │            1 │            2 │
+      ├──────────────┼──────────────┤
+      │            2 │            4 │
+      ├──────────────┼──────────────┤
+      │            3 │            6 │
+      ├──────────────┴──────────────┤
+      │            Footer           │
+      └─────────────────────────────┘
+      OUTPUT
+      table.to_s.should eq(expected_output)
+    end
+
+    it "correctly creates a border from PreSet::ReducedModern" do
+      table = Tablo::Table.new([1, 2, 3],
+        border: Tablo::Border.new(Tablo::Border::PreSet::ReducedModern),
+        title: Tablo::Heading.new("Title", framed: true),
+        subtitle: Tablo::Heading.new("SubTitle", framed: true),
+        footer: Tablo::Heading.new("Footer", framed: true),
+        row_divider_frequency: 1) do |t|
+        t.add_column("itself", &.itself)
+        t.add_column("double", &.itself.*(2))
+      end
+      expected_output = <<-OUTPUT
+      ─────────────────────────────
+                  Title            
+      ─────────────────────────────
+                 SubTitle          
+      ────────────── ──────────────
+             itself         double 
+      ────────────── ──────────────
+                  1              2 
+      ────────────── ──────────────
+                  2              4 
+      ────────────── ──────────────
+                  3              6 
+      ────────────── ──────────────
+                  Footer           
+      ─────────────────────────────
+      OUTPUT
+      table.to_s.should eq(expected_output)
+    end
+
+    it "correctly creates a border from PreSet::Markdown" do
+      table = Tablo::Table.new([1, 2, 3],
+        # Do not use title, nor subtitle, nor footer for markdown table
+        border: Tablo::Border.new(Tablo::Border::PreSet::Markdown)) do |t|
+        t.add_column("itself", &.itself)
+        t.add_column("double", &.itself.*(2))
+      end
+      expected_output = <<-OUTPUT
+      |       itself |       double |
+      |--------------|--------------|
+      |            1 |            2 |
+      |            2 |            4 |
+      |            3 |            6 |
+      OUTPUT
+      table.to_s.should eq(expected_output)
+    end
+
+    it "correctly creates a border from :fancy" do
+      table = Tablo::Table.new([1, 2, 3],
+        border: Tablo::Border.new(:fancy),
+        title: Tablo::Heading.new("Title", framed: true),
+        subtitle: Tablo::Heading.new("SubTitle", framed: true),
+        footer: Tablo::Heading.new("Footer", framed: true),
+        row_divider_frequency: 1) do |t|
+        t.add_column("itself", &.itself)
+        t.add_column("double", &.itself.*(2))
+      end
+      expected_output = <<-OUTPUT
+      ╭─────────────────────────────╮
+      │            Title            │
+      ├─────────────────────────────┤
+      │           SubTitle          │
+      ├──────────────┬──────────────┤
+      │       itself :       double │
+      ├--------------┼--------------┤
+      │            1 :            2 │
+      ├⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅┼⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅┤
+      │            2 :            4 │
+      ├⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅┼⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅┤
+      │            3 :            6 │
+      ├──────────────┴──────────────┤
+      │            Footer           │
+      ╰─────────────────────────────╯
+      OUTPUT
+      table.to_s.should eq(expected_output)
+    end
+
+    it "correctly creates a border from PreSet::Blank" do
+      table = Tablo::Table.new([1, 2, 3],
+        border: Tablo::Border.new(Tablo::Border::PreSet::Blank),
+        title: Tablo::Heading.new("Title", framed: true),
+        subtitle: Tablo::Heading.new("SubTitle", framed: true),
+        footer: Tablo::Heading.new("Footer", framed: true),
+        row_divider_frequency: 1) do |t|
+        t.add_column("itself", &.itself)
+        t.add_column("double", &.itself.*(2))
+      end
+      expected_output = <<-OUTPUT
+                                     
+                   Title             
+                                     
+                  SubTitle           
+                                     
+              itself         double  
+                                     
+                   1              2  
+                                     
+                   2              4  
+                                     
+                   3              6  
+                                     
+                   Footer            
+                                     
+      OUTPUT
+      table.to_s.should eq(expected_output)
+    end
+
+    it "correctly creates a border from :empty" do
+      table = Tablo::Table.new([1, 2, 3],
+        border: Tablo::Border.new(:empty),
+        title: Tablo::Heading.new("Title", framed: true),
+        subtitle: Tablo::Heading.new("SubTitle", framed: true),
+        footer: Tablo::Heading.new("Footer", framed: true),
+        row_divider_frequency: 1) do |t|
+        t.add_column("itself", &.itself)
+        t.add_column("double", &.itself.*(2))
+      end
+      expected_output = <<-OUTPUT
+                  Title           
+                SubTitle          
+             itself        double 
+                  1             2 
+                  2             4 
+                  3             6 
+                 Footer           
+      OUTPUT
+      table.to_s.should eq(expected_output)
+    end
+  end
+
+  describe "Border strings" do
     it "raises an exception on incorrect string length definition" do
       expect_raises Tablo::Error::InvalidBorderDefinition do
         border = Tablo::Border.new("abcdefghijklmnopz")
       end
     end
-  end
 
-  describe "#horizontal_rule" do
-    it "correctly formats line, without grouped columns" do
-      border = Tablo::Border.new(Tablo::Border::PreSet::Modern)
-      rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        ruletype: Tablo::RuleType::TitleTop, groups: [] of Array(Int32))
-      rule.should eq("┌────────────────────────────────────────────────────────────┐")
-      border.connectors(Tablo::RuleType::BodyBody).should eq({"├", "┼", "┤", "─", ""})
-      border.definition.should eq("┌┬┐├┼┤└┴┘│││────")
-      rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        ruletype: Tablo::RuleType::TitleBottom, groups: [] of Array(Int32))
-      rule.should eq("└────────────────────────────────────────────────────────────┘")
-      rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        ruletype: Tablo::RuleType::TitleHeader, groups: [] of Array(Int32))
-      rule.should eq("├────────┬──────┬─────┬────────────┬───────────────┬─────────┤")
-      rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        ruletype: Tablo::RuleType::HeaderTop, groups: [] of Array(Int32))
-      rule.should eq("┌────────┬──────┬─────┬────────────┬───────────────┬─────────┐")
-      rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        ruletype: Tablo::RuleType::HeaderBody, groups: [] of Array(Int32))
-      rule.should eq("├────────┼──────┼─────┼────────────┼───────────────┼─────────┤")
-      rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        ruletype: Tablo::RuleType::BodyBottom, groups: [] of Array(Int32))
-      rule.should eq("└────────┴──────┴─────┴────────────┴───────────────┴─────────┘")
-    end
-    it "correctly formats line, with grouped columns" do
-      border = Tablo::Border.new(Tablo::Border::PreSet::Modern)
-      rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        ruletype: Tablo::RuleType::TitleGroup, groups: [[1, 2], [3], [4, 5], [6]])
-      rule.should eq("├───────────────┬─────┬────────────────────────────┬─────────┤")
-      rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        ruletype: Tablo::RuleType::GroupTop, groups: [[1, 2], [3], [4, 5], [6]])
-      rule.should eq("┌───────────────┬─────┬────────────────────────────┬─────────┐")
-      rule = border.horizontal_rule([8, 6, 5, 12, 15, 9],
-        ruletype: Tablo::RuleType::GroupHeader, groups: [[1, 2], [3], [4, 5], [6]])
-      rule.should eq("├────────┬──────┼─────┼────────────┬───────────────┼─────────┤")
-    end
-    it "correctly styles line" do
-      border = Tablo::Border.new(Tablo::Border::PreSet::Modern,
-        styler: ->(s : String) { s.colorize(:red).to_s })
-      rule = border.horizontal_rule([8, 6],
-        ruletype: Tablo::RuleType::GroupHeader, groups: [[1, 2]])
-      if Tablo::Util.styler_allowed
-        rule.should eq("\e[31m├────────┬──────┤\e[0m")
-      else
-        rule.should eq("├────────┬──────┤")
+    it "correctly creates a border from 'abcdefghijklmnop' " do
+      table = Tablo::Table.new([1, 2, 3],
+        border: Tablo::Border.new("abcdefghijklmnop"),
+        title: Tablo::Heading.new("Title", framed: true),
+        subtitle: Tablo::Heading.new("SubTitle", framed: true),
+        footer: Tablo::Heading.new("Footer", framed: true),
+        row_divider_frequency: 1) do |t|
+        t.add_column("itself", &.itself)
+        t.add_column("double", &.itself.*(2))
       end
+      expected_output = <<-OUTPUT
+      ammmmmmmmmmmmmmmmmmmmmmmmmmmmmc
+      j            Title            l
+      dmmmmmmmmmmmmmmmmmmmmmmmmmmmmmf
+      j           SubTitle          l
+      dmmmmmmmmmmmmmmbmmmmmmmmmmmmmmf
+      j       itself k       double l
+      dooooooooooooooeoooooooooooooof
+      j            1 k            2 l
+      dppppppppppppppeppppppppppppppf
+      j            2 k            4 l
+      dppppppppppppppeppppppppppppppf
+      j            3 k            6 l
+      dmmmmmmmmmmmmmmhmmmmmmmmmmmmmmf
+      j            Footer           l
+      gmmmmmmmmmmmmmmmmmmmmmmmmmmmmmi
+      OUTPUT
+      table.to_s.should eq(expected_output)
+    end
+
+    it "correctly creates a border from 'ABCDEFGHIJKLMNOP' " do
+      table = Tablo::Table.new([1, 2, 3],
+        border: Tablo::Border.new("ABCDEFGHIJKLMNOP"),
+        title: Tablo::Heading.new("Title", framed: true),
+        subtitle: Tablo::Heading.new("SubTitle", framed: true),
+        footer: Tablo::Heading.new("Footer", framed: true),
+        row_divider_frequency: 1) do |t|
+        t.add_column("itself", &.itself)
+        t.add_column("double", &.itself.*(2))
+      end
+      expected_output = <<-OUTPUT
+      AMMMMMMMMMMMMMMMMMMMMMMMMMMMMMC
+      J            Title            L
+      DMMMMMMMMMMMMMMMMMMMMMMMMMMMMMF
+      J           SubTitle          L
+      DMMMMMMMMMMMMMMBMMMMMMMMMMMMMMF
+      J       itself K       double L
+      DOOOOOOOOOOOOOOOOOOOOOOOOOOOOF
+      J            1 K            2 L
+      DPPPPPPPPPPPPPPPPPPPPPPPPPPPPF
+      J            2 K            4 L
+      DPPPPPPPPPPPPPPPPPPPPPPPPPPPPF
+      J            3 K            6 L
+      DMMMMMMMMMMMMMMHMMMMMMMMMMMMMMF
+      J            Footer           L
+      GMMMMMMMMMMMMMMMMMMMMMMMMMMMMMI
+      OUTPUT
+      table.to_s.should eq(expected_output)
+    end
+
+    it "correctly creates a border from 'ABCDSFGHIJKLMNOP' " do
+      table = Tablo::Table.new([1, 2, 3],
+        border: Tablo::Border.new("ABCDSFGHIJKLMNOP"),
+        title: Tablo::Heading.new("Title", framed: true),
+        subtitle: Tablo::Heading.new("SubTitle", framed: true),
+        footer: Tablo::Heading.new("Footer", framed: true),
+        row_divider_frequency: 1) do |t|
+        t.add_column("itself", &.itself)
+        t.add_column("double", &.itself.*(2))
+      end
+      expected_output = <<-OUTPUT
+      AMMMMMMMMMMMMMMMMMMMMMMMMMMMMMC
+      J            Title            L
+      DMMMMMMMMMMMMMMMMMMMMMMMMMMMMMF
+      J           SubTitle          L
+      DMMMMMMMMMMMMMMBMMMMMMMMMMMMMMF
+      J       itself K       double L
+      DOOOOOOOOOOOOOO OOOOOOOOOOOOOOF
+      J            1 K            2 L
+      DPPPPPPPPPPPPPP PPPPPPPPPPPPPPF
+      J            2 K            4 L
+      DPPPPPPPPPPPPPP PPPPPPPPPPPPPPF
+      J            3 K            6 L
+      DMMMMMMMMMMMMMMHMMMMMMMMMMMMMMF
+      J            Footer           L
+      GMMMMMMMMMMMMMMMMMMMMMMMMMMMMMI
+      OUTPUT
+      table.to_s.should eq(expected_output)
+    end
+  end
+  describe "Border styler" do
+    it "correctly colorize border characters" do
+      table = Tablo::Table.new([1, 2, 3],
+        # TODO
+        border: Tablo::Border.new("ABCDSFGHIJKLMNOP", styler: ->(x : String) { x.colorize.fore(:green).mode(:bold).to_s }),
+        # TODO
+        title: Tablo::Heading.new("Title", framed: true),
+        subtitle: Tablo::Heading.new("SubTitle", framed: true),
+        footer: Tablo::Heading.new("Footer", framed: true),
+        row_divider_frequency: 1) do |t|
+        t.add_column("itself", &.itself)
+        t.add_column("double", &.itself.*(2))
+      end
+      expected_output = <<-OUTPUT
+      \e[32;1mAMMMMMMMMMMMMMMMMMMMMMMMMMMMMMC\e[0m
+      \e[32;1mJ\e[0m            Title            \e[32;1mL\e[0m
+      \e[32;1mDMMMMMMMMMMMMMMMMMMMMMMMMMMMMMF\e[0m
+      \e[32;1mJ\e[0m           SubTitle          \e[32;1mL\e[0m
+      \e[32;1mDMMMMMMMMMMMMMMBMMMMMMMMMMMMMMF\e[0m
+      \e[32;1mJ\e[0m       itself \e[32;1mK\e[0m       double \e[32;1mL\e[0m
+      \e[32;1mDOOOOOOOOOOOOOO OOOOOOOOOOOOOOF\e[0m
+      \e[32;1mJ\e[0m            1 \e[32;1mK\e[0m            2 \e[32;1mL\e[0m
+      \e[32;1mDPPPPPPPPPPPPPP PPPPPPPPPPPPPPF\e[0m
+      \e[32;1mJ\e[0m            2 \e[32;1mK\e[0m            4 \e[32;1mL\e[0m
+      \e[32;1mDPPPPPPPPPPPPPP PPPPPPPPPPPPPPF\e[0m
+      \e[32;1mJ\e[0m            3 \e[32;1mK\e[0m            6 \e[32;1mL\e[0m
+      \e[32;1mDMMMMMMMMMMMMMMHMMMMMMMMMMMMMMF\e[0m
+      \e[32;1mJ\e[0m            Footer           \e[32;1mL\e[0m
+      \e[32;1mGMMMMMMMMMMMMMMMMMMMMMMMMMMMMMI\e[0m
+      OUTPUT
+      table.to_s.should eq(expected_output)
     end
   end
 end
