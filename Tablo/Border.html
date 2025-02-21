@@ -375,7 +375,7 @@ a definition string.</p>
 | Ascii         | +++++++++|||---- |
 | ReducedAscii  | ESEESEESEESE---- |
 | ReducedModern | ESEESEESEESE──── |
-| Markdown      | SSS|||SSS|||SS-S |
+| Markdown      | EEE|||EEE|||ES-S |
 | Modern        | ┌┬┐├┼┤└┴┘│││──── |
 | Fancy         | ╭┬╮├┼┤╰┴╯│:│─−-⋅ |
 | Blank         | SSSSSSSSSSSSSSSS |
@@ -406,7 +406,7 @@ style is defined.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/d5f7764c4071c056373a03453b6c7c37958ddd82/src/border.cr#L101" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/583986254c072a07bbce07d4b572604f4ea01e05/src/border.cr#L101" target="_blank">
         border.cr
       </a>
     
@@ -428,7 +428,7 @@ style is defined.</p>
   <dl>
     
       <dt class="entry-const" id="PREDEFINED_BORDERS">
-        <strong>PREDEFINED_BORDERS</strong> = <code>{<span class="t">PreSet</span><span class="t">::</span><span class="t">Ascii</span> <span class="o">=&gt;</span> <span class="s">&quot;+++++++++|||----&quot;</span>, <span class="t">PreSet</span><span class="t">::</span><span class="t">ReducedAscii</span> <span class="o">=&gt;</span> <span class="s">&quot;ESEESEESEESE----&quot;</span>, <span class="t">PreSet</span><span class="t">::</span><span class="t">Modern</span> <span class="o">=&gt;</span> <span class="s">&quot;┌┬┐├┼┤└┴┘│││────&quot;</span>, <span class="t">PreSet</span><span class="t">::</span><span class="t">ReducedModern</span> <span class="o">=&gt;</span> <span class="s">&quot;ESEESEESEESE────&quot;</span>, <span class="t">PreSet</span><span class="t">::</span><span class="t">Markdown</span> <span class="o">=&gt;</span> <span class="s">&quot;SSS|||SSS|||SS-S&quot;</span>, <span class="t">PreSet</span><span class="t">::</span><span class="t">Fancy</span> <span class="o">=&gt;</span> <span class="s">&quot;╭┬╮├┼┤╰┴╯│:│─−-⋅&quot;</span>, <span class="t">PreSet</span><span class="t">::</span><span class="t">Blank</span> <span class="o">=&gt;</span> <span class="s">&quot;SSSSSSSSSSSSSSSS&quot;</span>, <span class="t">PreSet</span><span class="t">::</span><span class="t">Empty</span> <span class="o">=&gt;</span> <span class="s">&quot;EEEEEEEEEEEEEEEE&quot;</span>}</code>
+        <strong>PREDEFINED_BORDERS</strong> = <code>{<span class="t">PreSet</span><span class="t">::</span><span class="t">Ascii</span> <span class="o">=&gt;</span> <span class="s">&quot;+++++++++|||----&quot;</span>, <span class="t">PreSet</span><span class="t">::</span><span class="t">ReducedAscii</span> <span class="o">=&gt;</span> <span class="s">&quot;ESEESEESEESE----&quot;</span>, <span class="t">PreSet</span><span class="t">::</span><span class="t">Modern</span> <span class="o">=&gt;</span> <span class="s">&quot;┌┬┐├┼┤└┴┘│││────&quot;</span>, <span class="t">PreSet</span><span class="t">::</span><span class="t">ReducedModern</span> <span class="o">=&gt;</span> <span class="s">&quot;ESEESEESEESE────&quot;</span>, <span class="t">PreSet</span><span class="t">::</span><span class="t">Markdown</span> <span class="o">=&gt;</span> <span class="s">&quot;EEE|||EEE|||ES-S&quot;</span>, <span class="t">PreSet</span><span class="t">::</span><span class="t">Fancy</span> <span class="o">=&gt;</span> <span class="s">&quot;╭┬╮├┼┤╰┴╯│:│─−-⋅&quot;</span>, <span class="t">PreSet</span><span class="t">::</span><span class="t">Blank</span> <span class="o">=&gt;</span> <span class="s">&quot;SSSSSSSSSSSSSSSS&quot;</span>, <span class="t">PreSet</span><span class="t">::</span><span class="t">Empty</span> <span class="o">=&gt;</span> <span class="s">&quot;EEEEEEEEEEEEEEEE&quot;</span>}</code>
       </dt>
       
       <dd class="entry-const-doc">
@@ -548,12 +548,19 @@ Default value set by <code><a href="../Tablo/Config/Defaults.html#border_styler%
 <p>or</p>
 <pre><code class="language-crystal">border <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="s">&quot;┌┬┐├┼┤└┴┘│││────&quot;</span>,
   styler: <span class="o">-&gt;</span>(connectors : <span class="t">String</span>) { connectors.colorize.fore(<span class="n">:blue</span>).mode(<span class="n">:bold</span>).to_s })</code></pre>
+<p>In general, a border is defined directly in table creation, as :</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="s">&quot;abc&quot;</span>],
+  border: <span class="t">Tablo</span><span class="t">::</span><span class="t">Border</span>.new(<span class="n">:fancy</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;itself&quot;</span>, <span class="o">&amp;</span>.itself)
+<span class="k">end</span>
+puts table</code></pre>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/d5f7764c4071c056373a03453b6c7c37958ddd82/src/border.cr#L177" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/583986254c072a07bbce07d4b572604f4ea01e05/src/border.cr#L187" target="_blank">View source</a>]
         
       </div>
     </div>

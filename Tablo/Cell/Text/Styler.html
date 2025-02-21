@@ -325,7 +325,7 @@ Default styler, defined by<code><a href="../../../Tablo/Config/Defaults.html#hea
 <p><em>content</em> is the formatted cell value, after the formatter has been applied.<br />
 <em>line</em> designates the line number in a (multi-line) cell (0..n).</p>
 <p>The second form allows easy conditional styling. For example, to colorize
-differently each line of multiline cell:</p>
+differently each line of a multiline cell:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>],
@@ -342,7 +342,7 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
   t.add_column(<span class="s">&quot;itself x 3&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">3</span>))
 <span class="k">end</span>
 puts table</code></pre>
-<img src="../../../assets/images/api_cell_text_styler_1.svg" width="400">
+<img src="../../../assets/images/api_cell_text_styler_1.png">
 <p>or, more simply, to style the whole cell, we use the 1st form:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 <span class="k">require</span> <span class="s">&quot;colorize&quot;</span>
@@ -357,7 +357,7 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
   t.add_column(<span class="s">&quot;itself x 3&quot;</span>, <span class="o">&amp;</span>.<span class="o">*</span>(<span class="n">3</span>))
 <span class="k">end</span>
 puts table</code></pre>
-<img src="../../../assets/images/api_cell_text_styler_2.svg" width="400">
+<img src="../../../assets/images/api_cell_text_styler_2.png">
 
 
 
@@ -392,7 +392,7 @@ puts table</code></pre>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/d5f7764c4071c056373a03453b6c7c37958ddd82/src/cell.cr#L358" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/583986254c072a07bbce07d4b572604f4ea01e05/src/cell.cr#L355" target="_blank">
         cell.cr
       </a>
     
