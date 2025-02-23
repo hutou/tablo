@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="tablo">
-  <title>Tablo::Cell - tablo development</title>
+  <title>Tablo::Row(T) - tablo development</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -82,7 +82,7 @@
       
     </li>
   
-  <li class="parent open current" data-id="tablo/Tablo/Cell" data-name="tablo::cell">
+  <li class="parent " data-id="tablo/Tablo/Cell" data-name="tablo::cell">
       <a href="../Tablo/Cell.html">Cell</a>
       
         <ul>
@@ -237,7 +237,7 @@
       
     </li>
   
-  <li class=" " data-id="tablo/Tablo/Row" data-name="tablo::row(t)">
+  <li class=" current" data-id="tablo/Tablo/Row" data-name="tablo::row(t)">
       <a href="../Tablo/Row.html">Row</a>
       
     </li>
@@ -296,12 +296,12 @@
 <div class="main-content">
 <h1 class="type-name">
 
-  <span class="kind">abstract class</span> Tablo::<wbr>Cell
+  <span class="kind">class</span> Tablo::<wbr>Row(T)
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../Tablo/Cell.html">Tablo::Cell</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../Tablo/Row.html">Tablo::Row(T)</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
@@ -315,39 +315,29 @@
     Overview
   </h2>
 
-  <p>In Tablo, the Cell class and its subclasses, along with the Table class
-itself, form the core of the library's functionality. <br /> However, methods
-and classes of the Cell type are mainly for internal use, and generally
-have no public interface.</p>
-<p>Cell is an abstract class representing a single cell inside a Table.<br />
-Derived concrete cells are : <code><a href="../Tablo/Cell/Text.html">Cell::Text</a></code> and <code><a href="../Tablo/Cell/Data.html">Cell::Data</a></code></p>
-<p>It is made up of several attributes and methods, including the <em>value</em>
-attribute, of type <code><a href="../Tablo/CellType.html">Tablo::CellType</a></code>, which holds the raw content of each element
-in the data source.</p>
-
-
-
-
+  <p>Data source and column definitions meet here</p>
 
 
 
 
 
   <h2>
-    <a id="direct-known-subclasses" class="anchor" href="#direct-known-subclasses">
+    <a id="included-modules" class="anchor" href="#included-modules">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>
-    Direct Known Subclasses
+    Included Modules
   </h2>
   <ul class="other-types-list">
     
-      <li class="other-type"><a href="../Tablo/Cell/Data.html">Tablo::Cell::Data</a></li>
-    
-      <li class="other-type"><a href="../Tablo/Cell/Text.html">Tablo::Cell::Text</a></li>
+      <li class="other-type">Enumerable(<a href="../Tablo/Cell/Data.html">Tablo::Cell::Data</a>)</li>
     
   </ul>
+
+
+
+
 
 
 
@@ -364,8 +354,8 @@ in the data source.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/26018e0f4937596bf79bf7255238b92965031bce/src/cell.cr#L13" target="_blank">
-        cell.cr
+      <a href="https://github.com/hutou/tablo/blob/26018e0f4937596bf79bf7255238b92965031bce/src/row.cr#L3" target="_blank">
+        row.cr
       </a>
     
     <br/>
@@ -392,16 +382,23 @@ in the data source.</p>
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#formatted_content-instance-method" class="signature"><strong>#formatted_content</strong></a>
+        <a href="#each%28%26%29-instance-method" class="signature"><strong>#each</strong>(&)</a>
         
-          <div class="summary"><p>Returns the formatted value of the Cell, after applying the formatter for this Column (but without applying any wrapping or the styler).</p></div>
+          <div class="summary"><p>Calls the given block once for each column in the row and returns the corresponding cell as parameter, giving access to its raw value, formatted_content and coords attributes</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#value-instance-method" class="signature"><strong>#value</strong></a>
+        <a href="#to_h-instance-method" class="signature"><strong>#to_h</strong></a>
         
-          <div class="summary"><p>Common attributes of Cell::Text and Cell::Data</p></div>
+          <div class="summary"><p>Returns a Hash representation of the row, with column label acting as key and the associated cell as value.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#to_s%28io%3AIO%29-instance-method" class="signature"><strong>#to_s</strong>(io : IO)</a>
+        
+          <div class="summary"><p>Returns a character string in the form of an “Ascii” graphic representation of the row, including the column headers (with title, subtitle and group where appropriate) that appear just above and the footer for the last row.</p></div>
         
       </li>
     
@@ -410,6 +407,19 @@ in the data source.</p>
 
 
 <div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
+    
+
+
   
     
 
@@ -455,45 +465,130 @@ in the data source.</p>
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="formatted_content-instance-method">
+    <div class="entry-detail" id="each(&amp;)-instance-method">
       <div class="signature">
         
-        def <strong>formatted_content</strong>
+        def <strong>each</strong>(&)
 
-        <a class="method-permalink" href="#formatted_content-instance-method">#</a>
+        <a class="method-permalink" href="#each%28%26%29-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Returns the formatted value of the Cell, after applying the formatter
-for this Column (but without applying any wrapping or the styler).</p>
+          <p>Calls the given block once for each column in the row and returns
+the corresponding cell as parameter, giving access to its raw value,
+formatted_content and coords attributes</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="s">&quot;a&quot;</span>, <span class="s">&quot;b&quot;</span>, <span class="s">&quot;c&quot;</span>]) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;Char&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="s">&quot;String&quot;</span>, body_formatter: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>) {
+    value.<span class="k">as</span>(<span class="t">String</span>).upcase
+  }, <span class="o">&amp;</span>.itself.<span class="o">*</span>(<span class="n">5</span>))
+<span class="k">end</span>
+table.each <span class="k">do</span> <span class="o">|</span>row<span class="o">|</span>
+  row.each <span class="k">do</span> <span class="o">|</span>cell<span class="o">|</span>
+    print cell.value.to_s, <span class="s">&quot;  &quot;</span>, cell.formatted_content, <span class="s">&quot;  &quot;</span>,
+      cell.coords.row_index, <span class="s">&quot;  &quot;</span>, cell.coords.column_index, <span class="s">&quot;    &quot;</span>
+  <span class="k">end</span>
+  puts
+<span class="k">end</span></code></pre>
+<pre><code class="language-crystal">a  a  <span class="n">0</span>  <span class="n">0</span>    aaaaa  <span class="t">AAAAA</span>  <span class="n">0</span>  <span class="n">1</span>
+b  b  <span class="n">1</span>  <span class="n">0</span>    bbbbb  <span class="t">BBBBB</span>  <span class="n">1</span>  <span class="n">1</span>
+c  c  <span class="n">2</span>  <span class="n">0</span>    ccccc  <span class="t">CCCCC</span>  <span class="n">2</span>  <span class="n">1</span></code></pre>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/26018e0f4937596bf79bf7255238b92965031bce/src/cell.cr#L157" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/26018e0f4937596bf79bf7255238b92965031bce/src/row.cr#L39" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="value-instance-method">
+    <div class="entry-detail" id="to_h-instance-method">
       <div class="signature">
         
-        def <strong>value</strong>
+        def <strong>to_h</strong>
 
-        <a class="method-permalink" href="#value-instance-method">#</a>
+        <a class="method-permalink" href="#to_h-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Common attributes of Cell::Text and Cell::Data</p>
+          <p>Returns a Hash representation of the row, with column label acting
+as key and the associated cell as value.</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="s">&quot;a&quot;</span>]) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;Char&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="s">&quot;String&quot;</span>, body_formatter: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>) {
+    value.<span class="k">as</span>(<span class="t">String</span>).upcase
+  }, <span class="o">&amp;</span>.itself.<span class="o">*</span>(<span class="n">5</span>))
+<span class="k">end</span>
+table.each <span class="k">do</span> <span class="o">|</span>row<span class="o">|</span>
+  h <span class="o">=</span> row.to_h
+  puts <span class="k">typeof</span>(h)
+  print h[<span class="s">&quot;String&quot;</span>].value, <span class="s">&quot;  &quot;</span>, h[<span class="s">&quot;String&quot;</span>].formatted_content, <span class="s">&quot;  &quot;</span>,
+    h[<span class="s">&quot;String&quot;</span>].coords.row_index, <span class="s">&quot;  &quot;</span>, h[<span class="s">&quot;String&quot;</span>].coords.column_index, <span class="s">&quot;\n&quot;</span>
+<span class="k">end</span></code></pre>
+<pre><code class="language-crystal"><span class="t">Hash</span>(<span class="t">Int32</span> <span class="o">|</span> <span class="t">String</span> <span class="o">|</span> <span class="t">Symbol</span>, <span class="t">Tablo</span><span class="t">::</span><span class="t">Cell</span><span class="t">::</span><span class="t">Data</span>)
+aaaaa  <span class="t">AAAAA</span>  <span class="n">0</span>  <span class="n">1</span></code></pre>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/26018e0f4937596bf79bf7255238b92965031bce/src/cell.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/26018e0f4937596bf79bf7255238b92965031bce/src/row.cr#L113" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_s(io:IO)-instance-method">
+      <div class="signature">
+        
+        def <strong>to_s</strong>(io : IO)
+
+        <a class="method-permalink" href="#to_s%28io%3AIO%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns a character string in the form of an “Ascii” graphic representation
+of the row, including the column headers (with title, subtitle and group
+where appropriate) that appear just above and the footer for the last row.</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
+table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="s">&quot;a&quot;</span>, <span class="s">&quot;b&quot;</span>, <span class="s">&quot;c&quot;</span>],
+  title: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Title&quot;</span>, framed: <span class="n">true</span>),
+  subtitle: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;SubTitle&quot;</span>, framed: <span class="n">true</span>),
+  footer: <span class="t">Tablo</span><span class="t">::</span><span class="t">Heading</span>.new(<span class="s">&quot;Footer&quot;</span>, framed: <span class="n">true</span>)) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
+  t.add_column(<span class="s">&quot;Char&quot;</span>, <span class="o">&amp;</span>.itself)
+  t.add_column(<span class="s">&quot;String&quot;</span>, body_formatter: <span class="o">-&gt;</span>(value : <span class="t">Tablo</span><span class="t">::</span><span class="t">CellType</span>) {
+    value.<span class="k">as</span>(<span class="t">String</span>).upcase
+  }, <span class="o">&amp;</span>.itself.<span class="o">*</span>(<span class="n">5</span>))
+<span class="k">end</span>
+table.each_with_index <span class="k">do</span> <span class="o">|</span>row, i<span class="o">|</span>
+  row.to_s.each_line <span class="k">do</span> <span class="o">|</span>line<span class="o">|</span>
+    puts <span class="s">&quot;row </span><span class="i">#{</span>i<span class="i">}</span><span class="s"> -&gt; </span><span class="i">#{</span>line<span class="i">}</span><span class="s">&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre>
+<pre><code class="language-crystal">row 0 -&gt; +-----------------------------+
+row 0 -&gt; |            Title            |
+row 0 -&gt; +-----------------------------+
+row 0 -&gt; |           SubTitle          |
+row 0 -&gt; +--------------+--------------+
+row 0 -&gt; | Char         | String       |
+row 0 -&gt; +--------------+--------------+
+row 0 -&gt; | a            | AAAAA        |
+row 1 -&gt; | b            | BBBBB        |
+row 2 -&gt; | c            | CCCCC        |
+row 2 -&gt; +--------------+--------------+
+row 2 -&gt; |            Footer           |
+row 2 -&gt; +-----------------------------+</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/26018e0f4937596bf79bf7255238b92965031bce/src/row.cr#L82" target="_blank">View source</a>]
         
       </div>
     </div>

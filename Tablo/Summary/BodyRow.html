@@ -237,6 +237,11 @@
       
     </li>
   
+  <li class=" " data-id="tablo/Tablo/Row" data-name="tablo::row(t)">
+      <a href="../../Tablo/Row.html">Row</a>
+      
+    </li>
+  
   <li class="parent open current" data-id="tablo/Tablo/Summary" data-name="tablo::summary(t, u, v)">
       <a href="../../Tablo/Summary.html">Summary</a>
       
@@ -335,7 +340,7 @@
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/4b269ffded2a5289a035b753061726b0cd85a73f/src/summary.cr#L584" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/26018e0f4937596bf79bf7255238b92965031bce/src/summary.cr#L583" target="_blank">
         summary.cr
       </a>
     
@@ -453,10 +458,10 @@ Summary table. Row numbers need not be contiguous; what's important is that
 they allow results to be displayed in the desired row order.</p>
 <p>Example of <em>content</em> directly fed by a literal string:</p>
 <pre><code class="language-crystal"><span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="s">&quot;Price&quot;</span>, <span class="n">40</span>, <span class="s">&quot;Tax (20%)&quot;</span>)
-<span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="s">&quot;Price&quot;</span>, <span class="n">60</span>, <span class="s">&quot;Balance due&quot;</span>),</code></pre>
+<span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="s">&quot;Price&quot;</span>, <span class="n">60</span>, <span class="s">&quot;Balance due&quot;</span>)</code></pre>
 <p>Example of <em>content</em> fed by a proc returning a <code><a href="../../Tablo/CellType.html">CellType</a></code> value:</p>
-<pre><code class="language-crystal"><span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">40</span>, <span class="o">-&gt;</span>{ <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:tax</span>) }),
-<span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">60</span>, <span class="o">-&gt;</span>{ <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total_due</span>) }),</code></pre>
+<pre><code class="language-crystal"><span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">40</span>, <span class="o">-&gt;</span> { <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:tax</span>) })
+<span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span><span class="t">::</span><span class="t">BodyRow</span>.new(<span class="n">:total</span>, <span class="n">60</span>, <span class="o">-&gt;</span> { <span class="t">Tablo</span><span class="t">::</span><span class="t">Summary</span>.use(<span class="n">:total_due</span>) })</code></pre>
 <p><strong>Important</strong>:
 Note here the use of the <code><a href="../../Tablo/Summary.html#use%28key%29-class-method">Summary.use</a></code> class method, which retrieves, via
 a Symbol key, an aggregated value previously calculated in
@@ -466,7 +471,7 @@ a <code><a href="../../Tablo/Summary/UserProc.html">Summary::UserProc</a></code>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/4b269ffded2a5289a035b753061726b0cd85a73f/src/summary.cr#L614" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/26018e0f4937596bf79bf7255238b92965031bce/src/summary.cr#L613" target="_blank">View source</a>]
         
       </div>
     </div>
