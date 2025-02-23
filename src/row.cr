@@ -1,72 +1,122 @@
 module Tablo
-  # :nodoc:
   # Data source and column definitions meet here
   class Row(T)
-    # include Enumerable(CellType)  # -> crystal docs Error
+    include Enumerable(Tablo::Cell::Data)
     # :nodoc:
     getter source
 
     # :nodoc:
-    # Creates a new instance of a `Row` (index in table sources, starts at zero)
+    # Creates a new instance of a row
     def initialize(@table : Table(T), @source : T, @divider : Bool?, @index : Int32)
     end
 
-    # :nodoc:
-    # Calls the given block once for each cell(column) in the `Row`, passing
-    # that cell value as parameter.  Each "cell" is just the calculated value
-    # for its column (pre-formatting) for this `Row`'s source item.
+    # Calls the given block once for each column in the row and returns
+    # the corresponding cell as parameter, giving access to its raw value,
+    # formatted_content and coords attributes
     #
-    # # TODO This method seems unused (except in spec), so What for ???
+    # ```
+    # require "tablo"
+    # table = Tablo::Table.new(["a", "b", "c"]) do |t|
+    #   t.add_column("Char", &.itself)
+    #   t.add_column("String", body_formatter: ->(value : Tablo::CellType) {
+    #     value.as(String).upcase
+    #   }, &.itself.*(5))
+    # end
+    # table.each do |row|
+    #   row.each do |cell|
+    #     print cell.value.to_s, "  ", cell.formatted_content, "  ",
+    #       cell.coords.row_index, "  ", cell.coords.column_index, "    "
+    #   end
+    #   puts
+    # end
+    # ```
     #
-    def each
+    # ```
+    # a  a  0  0    aaaaa  AAAAA  0  1
+    # b  b  1  0    bbbbb  BBBBB  1  1
+    # c  c  2  0    ccccc  CCCCC  2  1
+    # ```
+    def each(&)
       @table.column_registry.each_with_index do |(_, column), column_index|
         yield column.body_cell(source: @source, row_index: @index, column_index: column_index)
       end
     end
 
-    # :nodoc:
-    # Returns a string being an "ASCII" graphical representation of the `Row`,
-    # including any column (Title/Group/)headers that appear just above it in the `Table`
-    # (depending on where this `Row` is in the `Table` and how the `Table` was
-    # configured with respect to header frequency).
-    # def to_s(io)
-    #   if @table.column_registry.any?
-    #     io << @table.formatted_body_row(@source, @divider, @index)
-    #   else
-    #     io << ""
+    # Returns a character string in the form of an “Ascii” graphic representation
+    # of the row, including the column headers (with title, subtitle and group
+    # where appropriate) that appear just above and the footer for the last row.
+    #
+    # ```
+    # require "tablo"
+    # table = Tablo::Table.new(["a", "b", "c"],
+    #   title: Tablo::Heading.new("Title", framed: true),
+    #   subtitle: Tablo::Heading.new("SubTitle", framed: true),
+    #   footer: Tablo::Heading.new("Footer", framed: true)) do |t|
+    #   t.add_column("Char", &.itself)
+    #   t.add_column("String", body_formatter: ->(value : Tablo::CellType) {
+    #     value.as(String).upcase
+    #   }, &.itself.*(5))
+    # end
+    # table.each_with_index do |row, i|
+    #   row.to_s.each_line do |line|
+    #     puts "row #{i} -> #{line}"
     #   end
     # end
-    # def to_s(io : IO)
-    #   if !@table.column_registry.empty?
-    #     io << @table.all_rendered_rows(@source, @divider, @index)
-    #   else
-    #     io << ""
-    #   end
-    # end
-
+    # ```
+    #
+    # ```
+    # row 0 -> +-----------------------------+
+    # row 0 -> |            Title            |
+    # row 0 -> +-----------------------------+
+    # row 0 -> |           SubTitle          |
+    # row 0 -> +--------------+--------------+
+    # row 0 -> | Char         | String       |
+    # row 0 -> +--------------+--------------+
+    # row 0 -> | a            | AAAAA        |
+    # row 1 -> | b            | BBBBB        |
+    # row 2 -> | c            | CCCCC        |
+    # row 2 -> +--------------+--------------+
+    # row 2 -> |            Footer           |
+    # row 2 -> +-----------------------------+
+    # ```
     def to_s(io : IO)
       if !@table.column_registry.empty?
-        # transitions = @table.transitions(@index)
-        # rows = RowGroup.new(@table, @source, @divider, @index, **transitions).run
         rows = RowGroup.new(@table, @source, @divider, @index).run
-        # rows = RowGroup.new(@table, @source, @divider, @index).run
-        # io << @table.join_lines(rows.reject &.empty?)
-        # io << (rows.reject &.empty?).join(NEWLINE)
-        # io << (rows.reject &.empty?).map { |e| e == " " ? "" : e }.join(NEWLINE)
         io << rows.join(NEWLINE)
-        # io << @table.all_rendered_rows(@source, @divider, @index)
       else
         io << ""
       end
     end
 
-    # :nodoc:
-    # Returns a Hash representation of the `Row`, with column labels acting
-    # as keys and the calculated cell values (before formatting) providing the values.
+    # Returns a Hash representation of the row, with column label acting
+    # as key and the associated cell as value.
+    # ```
+    # require "tablo"
+    # table = Tablo::Table.new(["a"]) do |t|
+    #   t.add_column("Char", &.itself)
+    #   t.add_column("String", body_formatter: ->(value : Tablo::CellType) {
+    #     value.as(String).upcase
+    #   }, &.itself.*(5))
+    # end
+    # table.each do |row|
+    #   h = row.to_h
+    #   puts typeof(h)
+    #   print h["String"].value, "  ", h["String"].formatted_content, "  ",
+    #     h["String"].coords.row_index, "  ", h["String"].coords.column_index, "\n"
+    # end
+    # ```
+    #
+    # ```
+    # Hash(Int32 | String | Symbol, Tablo::Cell::Data)
+    # aaaaa  AAAAA  0  1
+    # ```
     def to_h
+      hash = {} of LabelType => Cell::Data
       @table.column_registry.map_with_index do |(label, column), column_index|
-        [label, column.body_cell(@source, row_index: @index, column_index: column_index).value]
-      end.to_h
+        hash[label.as(LabelType)] = column.body_cell(@source, row_index: @index,
+          column_index: column_index).as(Cell::Data)
+      end
+      hash
     end
   end
 end

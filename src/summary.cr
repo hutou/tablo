@@ -397,7 +397,7 @@ module Tablo
     # to source data, accessible either by column or directly from the source,
     # in order to provide aggregated results.
     struct Summary::UserProc(T)
-      protected getter proc
+      getter proc
 
       # The constructor's only parameter is a Proc, which in turn expects
       # a Table(T) as its only parameter.
@@ -508,7 +508,6 @@ module Tablo
       # puts hash[:total_count] # => 4
       # puts hash[:max_price]   # => 98000
       # ```
-      # Note that column access is about 3 times slower.
       def initialize(@proc : Proc(Table(T), Hash(Symbol, CellType)))
       end
     end
@@ -530,10 +529,10 @@ module Tablo
       # ```
       # Tablo::Summary::HeaderColumn.new("Price",
       #   content: "Total Invoice",
-      #   alignment: Tablo::Justify::Right),
+      #   alignment: Tablo::Justify::Right)
       # Tablo::Summary::HeaderColumn.new(:total,
       #   content: "Amounts",
-      #   styler: ->(s : String) {s.colorize(:red).to_s}),
+      #   styler: ->(s : String) { s.colorize(:red).to_s })
       # ```
       def initialize(@column : LabelType | Array(LabelType),
                      @content : String,
@@ -571,7 +570,7 @@ module Tablo
       #     when 1       then fc.colorize.mode(:italic).to_s
       #     else              fc
       #     end
-      #   }),
+      #   })
       # ```
       def initialize(@column : LabelType | Array(LabelType), *,
                      @alignment : Justify? = nil,
@@ -599,12 +598,12 @@ module Tablo
       # Example of *content* directly fed by a literal string:
       # ```
       # Tablo::Summary::BodyRow.new("Price", 40, "Tax (20%)")
-      # Tablo::Summary::BodyRow.new("Price", 60, "Balance due"),
+      # Tablo::Summary::BodyRow.new("Price", 60, "Balance due")
       # ```
       #  Example of *content* fed by a proc returning a `CellType` value:
       # ```
-      # Tablo::Summary::BodyRow.new(:total, 40, ->{ Tablo::Summary.use(:tax) }),
-      # Tablo::Summary::BodyRow.new(:total, 60, ->{ Tablo::Summary.use(:total_due) }),
+      # Tablo::Summary::BodyRow.new(:total, 40, -> { Tablo::Summary.use(:tax) })
+      # Tablo::Summary::BodyRow.new(:total, 60, -> { Tablo::Summary.use(:total_due) })
       # ```
       #
       # **Important**:

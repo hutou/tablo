@@ -132,7 +132,7 @@ module Tablo
     # - *title*: Default set by `Config::Defaults.title`
     #
     # - *subtitle*: Default set by `Config::Defaults.subtitle`<br />
-    #   (depends on *title* for display)
+    #   (depends on *title* existence for display)
     #
     # - *footer*: Default set by `Config::Defaults.footer`
     #
@@ -315,11 +315,71 @@ module Tablo
     # Replaces existing data source with a new one. <br />
     #
     # _Mandatory positional parameter_
-    # - `src`: type is `Enumerable(T)` Where T is the same type as at table initialization
-    def sources=(src : Enumerable(T))
+    # - *sources*: New data source, whose type is `Enumerable(T)`, where T is the same type as at table initialization
+    #
+    # ```
+    # table = Tablo::Table.new([1, 2, 3]) do |t|
+    #   t.add_column(:number) { |n| n }
+    #   t.add_column(:doubled, header: "Number X 2") { |n| n * 2 }
+    # end
+    # puts table
+    # puts
+    # table.sources = [50, 60]
+    # puts table
+    # ```
+    #
+    # ```
+    # +--------------+--------------+
+    # |       number |   Number X 2 |
+    # +--------------+--------------+
+    # |            1 |            2 |
+    # |            2 |            4 |
+    # |            3 |            6 |
+    # +--------------+--------------+
+    #
+    # +--------------+--------------+
+    # |       number |   Number X 2 |
+    # +--------------+--------------+
+    # |           50 |          100 |
+    # |           60 |          120 |
+    # +--------------+--------------+
+    # ```
+    # Existing sources may also be altered, as in the following example.
+    #
+    # ```
+    # arr = [1, 2, 3]
+    # table = Tablo::Table.new(arr) do |t|
+    #   t.add_column(:number) { |n| n }
+    #   t.add_column(:doubled, header: "Number X 2") { |n| n * 2 }
+    # end
+    # puts table
+    # puts
+    # arr << 42
+    # arr.shift
+    # puts table
+    # ```
+    #
+    # ```
+    # +--------------+--------------+
+    # |       number |   Number X 2 |
+    # +--------------+--------------+
+    # |            1 |            2 |
+    # |            2 |            4 |
+    # |            3 |            6 |
+    # +--------------+--------------+
+    #
+    # +--------------+--------------+
+    # |       number |   Number X 2 |
+    # +--------------+--------------+
+    # |            2 |            4 |
+    # |            3 |            6 |
+    # |           42 |           84 |
+    # +--------------+--------------+
+    # ```
+    def sources=(sources : Enumerable(T))
       self.child = nil
-      self.row_count = src.size
-      self.sources = src
+      self.row_count = sources.size
+      @sources = sources
     end
 
     # Returns an instance of `Column(T)`
@@ -586,6 +646,9 @@ module Tablo
             add_group(:dummy_last_group, header: "")
           end
         end
+        # Update sources in case data has changed since a previous print
+        # of this table
+        self.sources = sources
         # Line below is equivalent to: rows = self.map { |row| row.to_s }
         rows = map &.to_s
         io << join_lines(rows)

@@ -154,7 +154,7 @@ module Tablo
 
     # Returns the formatted value of the Cell, after applying the formatter
     # for this Column (but without applying any wrapping or the styler).
-    protected def formatted_content
+    def formatted_content
       self.memoized_formatted_content ||= apply_formatter
     end
 
@@ -618,7 +618,7 @@ module Tablo
                      Proc(CellType, Cell::Data::Coords, String, String) |
                      Proc(CellType, Cell::Data::Coords, String, Int32, String)
       # called from Column
-      protected getter coords
+      getter coords
 
       # :nodoc:
       def initialize(@value : CellType,
