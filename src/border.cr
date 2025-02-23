@@ -184,6 +184,7 @@ module Tablo
     # end
     # puts table
     # ```
+    # <img src="../assets/images/api_border.png">
     def initialize(definition : String | PreSet = Config::Defaults.border_definition,
                    @styler : Styler = Config::Defaults.border_styler)
       if definition.is_a?(PreSet)
