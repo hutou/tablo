@@ -317,8 +317,8 @@
 
   <p>In Tablo, the Cell class and its subclasses, along with the Table class
 itself, form the core of the library's functionality. <br /> However, methods
-and classes of the Cell type are mainly for internal use, and generally
-have no public interface.</p>
+and classes of the Cell type are mainly for internal use, so the Cell class has
+very limited public interface.</p>
 <p>Cell is an abstract class representing a single cell inside a Table.<br />
 Derived concrete cells are : <code><a href="../Tablo/Cell/Text.html">Cell::Text</a></code> and <code><a href="../Tablo/Cell/Data.html">Cell::Data</a></code></p>
 <p>It is made up of several attributes and methods, including the <em>value</em>
@@ -364,7 +364,7 @@ in the data source.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/fdf8d6f6f3f6237ae7618f249dff25b5e34f0d03/src/cell.cr#L13" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/f9678ddc089f0ae8d0342f36edf9af88d0c8f274/src/cell.cr#L13" target="_blank">
         cell.cr
       </a>
     
@@ -394,14 +394,14 @@ in the data source.</p>
       <li class="entry-summary">
         <a href="#formatted_content-instance-method" class="signature"><strong>#formatted_content</strong></a>
         
-          <div class="summary"><p>Returns the formatted value of the Cell, after applying the formatter for this Column (but without applying any wrapping or the styler).</p></div>
+          <div class="summary"><p>Returns the formatted value of the Cell, after applying the formatter for this column (but without applying any wrapping or the styler).</p></div>
         
       </li>
     
       <li class="entry-summary">
         <a href="#value-instance-method" class="signature"><strong>#value</strong></a>
         
-          <div class="summary"><p>Common attributes of Cell::Text and Cell::Data</p></div>
+          <div class="summary"><p>Returns the raw value of the cell, as <code><a href="../Tablo/CellType.html">Tablo::CellType</a></code></p></div>
         
       </li>
     
@@ -466,13 +466,13 @@ in the data source.</p>
         <div class="doc">
           
           <p>Returns the formatted value of the Cell, after applying the formatter
-for this Column (but without applying any wrapping or the styler).</p>
+for this column (but without applying any wrapping or the styler).</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/fdf8d6f6f3f6237ae7618f249dff25b5e34f0d03/src/cell.cr#L157" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f9678ddc089f0ae8d0342f36edf9af88d0c8f274/src/cell.cr#L157" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -487,13 +487,13 @@ for this Column (but without applying any wrapping or the styler).</p>
       
         <div class="doc">
           
-          <p>Common attributes of Cell::Text and Cell::Data</p>
+          <p>Returns the raw value of the cell, as <code><a href="../Tablo/CellType.html">Tablo::CellType</a></code></p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/fdf8d6f6f3f6237ae7618f249dff25b5e34f0d03/src/cell.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/f9678ddc089f0ae8d0342f36edf9af88d0c8f274/src/cell.cr#L15" target="_blank">View source</a>]
         
       </div>
     </div>
