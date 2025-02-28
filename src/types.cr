@@ -1,5 +1,5 @@
 # In each Tablo cell, the *value* attribute contains a raw value, either read from
-# the data source or defined in the program body.
+# the data source or defined in the program source code.
 #
 # This attribute is of type `CellType` and can therefore only store
 # values of this type.  To make this possible, each type intended for use in

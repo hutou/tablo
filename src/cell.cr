@@ -1,8 +1,8 @@
 module Tablo
   # In Tablo, the Cell class and its subclasses, along with the Table class
   # itself, form the core of the library's functionality. <br /> However, methods
-  # and classes of the Cell type are mainly for internal use, and generally
-  # have no public interface.
+  # and classes of the Cell type are mainly for internal use, so the Cell class has
+  # very limited public interface.
   #
   # Cell is an abstract class representing a single cell inside a Table.<br />
   # Derived concrete cells are : `Cell::Text` and `Cell::Data`
@@ -11,8 +11,8 @@ module Tablo
   # attribute, of type `Tablo::CellType`, which holds the raw content of each element
   # in the data source.
   abstract class Cell
-    # Common attributes of Cell::Text and Cell::Data
-    getter value # raw value
+    # Returns the raw value of the cell, as `Tablo::CellType`
+    getter value
     #
     private getter left_padding, right_padding, padding_character
     private getter alignment, truncation_indicator, wrap_mode
@@ -153,7 +153,7 @@ module Tablo
     end
 
     # Returns the formatted value of the Cell, after applying the formatter
-    # for this Column (but without applying any wrapping or the styler).
+    # for this column (but without applying any wrapping or the styler).
     def formatted_content
       self.memoized_formatted_content ||= apply_formatter
     end
@@ -214,8 +214,8 @@ module Tablo
       padding_character * amount
     end
 
-    # The Text class, derived from Cell, is used to manage Heading and
-    #  Group cells
+    # The Text class, derived from Cell, is used to manage Heading (title, subtitle and
+    # footer) and Group cells
     class Text < Cell
       # The purpose of the formatter is to transform the raw value of a cell
       # into a formatted character string <br />
@@ -356,7 +356,8 @@ module Tablo
                      Proc(String, Int32, String)
       # called from Table
       protected getter row_type
-      def_clone
+
+      protected def_clone
 
       # :nodoc:
       def initialize(@value : CellType,
@@ -423,6 +424,7 @@ module Tablo
         # Returns the index of the column (0..n)
         getter column_index
 
+        # :nodoc:
         # Creates a Coords struct
         #
         # _Mandatory (named) parameters_:
@@ -556,7 +558,7 @@ module Tablo
       # has been applied) <br />
       # - *line_index* designates the line number in a (multi-line) cell (0..n).
       #
-      # These different forms can be used for conditional formatting.
+      # These different forms can be used for conditional styling.
       #
       # In a somewhat contrived example, we could write, using the 5th form:
       # ```
@@ -617,7 +619,6 @@ module Tablo
                      Proc(CellType, String, String) |
                      Proc(CellType, Cell::Data::Coords, String, String) |
                      Proc(CellType, Cell::Data::Coords, String, Int32, String)
-      # called from Column
       getter coords
 
       # :nodoc:
