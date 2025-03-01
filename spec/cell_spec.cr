@@ -1,4 +1,5 @@
 require "./spec_helper"
+require "colorize"
 require "uniwidth"
 
 # Specs for src/cell.cr are very limited, as most of its code is not public
@@ -16,7 +17,7 @@ describe Tablo::Cell do
   # 2. using non-romanic languages
   #    a. WrapMode = Rune (~Char)
   #    b. WrapMode = Word
-  context "Line cut location for romanic languages" do
+  context "(Multi)Line cut location for romanic languages" do
     context "Using Rune wrap mode" do
       it "correctly cuts lines at appropriate locations and set truncation indicator" do
         table = Tablo::Table.new(["This is a rather long line, needed for tests"],
@@ -104,15 +105,193 @@ describe Tablo::Cell do
       end
     end
   end
-end
 
-describe Tablo::Cell::Text do
-  # formatter and styler procs
-end
+  describe Tablo::Cell::Text do
+    # formatter and styler procs
+    context "Check use of cell value in formatter proc" do
+      it "correctly renders table, based on cell'a value, globally" do
+        table = Tablo::Table.new(["A", "B", "C"],
+          body_formatter: ->(value : Tablo::CellType) {
+            if value.is_a?(String)
+              value.as(String).downcase
+            else
+              value.to_s
+            end
+          }) do |t|
+          t.add_column("itself", &.itself)
+          t.add_column("itself x 2", &.*(2))
+          t.add_column("itself x 3", &.*(3))
+        end
+        expected_output = <<-OUTPUT
+          +--------------+--------------+--------------+
+          | itself       | itself x 2   | itself x 3   |
+          +--------------+--------------+--------------+
+          | a            | aa           | aaa          |
+          | b            | bb           | bbb          |
+          | c            | cc           | ccc          |
+          +--------------+--------------+--------------+
+          OUTPUT
+        table.to_s.should eq(expected_output)
+      end
+      it "correctly renders table, based on cell'a value, at column level" do
+        table = Tablo::Table.new(["A", "B", "C"]) do |t|
+          t.add_column("itself", &.itself)
+          t.add_column("itself x 2",
+            body_formatter: ->(value : Tablo::CellType) {
+              if value.is_a?(String)
+                value.as(String).downcase
+              else
+                value.to_s
+              end
+            }, &.*(2)
+          )
+          t.add_column("itself x 3", &.*(3))
+        end
+        expected_output = <<-OUTPUT
+          +--------------+--------------+--------------+
+          | itself       | itself x 2   | itself x 3   |
+          +--------------+--------------+--------------+
+          | A            | aa           | AAA          |
+          | B            | bb           | BBB          |
+          | C            | cc           | CCC          |
+          +--------------+--------------+--------------+
+          OUTPUT
+        table.to_s.should eq(expected_output)
+      end
+    end
+    context "Check use of cell value in styler proc" do
+      it "correctly renders colorized table, based on formatted content and cell line number" do
+        table = Tablo::Table.new(["A", "B", "C"],
+          title: Tablo::Heading.new("My Title", framed: true),
+          body_styler: ->(content : String, line_index : Int32) {
+            case line_index
+            when 0 then content.colorize(:magenta).mode(:bold).to_s
+            when 1 then content.colorize(:blue).mode(:bold).to_s
+            when 2 then content.colorize(:green).mode(:bold).to_s
+            else
+              content
+            end
+          }
+        ) do |t|
+          t.add_column("itself", &.itself)
+          t.add_column("itself x 2", &.*(2))
+          t.add_column("itself x 3", &.*(3).chars.join("\n"))
+        end
+        expected_output = <<-OUTPUT
+          +--------------------------------------------+
+          |                  My Title                  |
+          +--------------+--------------+--------------+
+          | itself       | itself x 2   | itself x 3   |
+          +--------------+--------------+--------------+
+          | \e[35;1mA\e[0m            | \e[35;1mAA\e[0m           | \e[35;1mA\e[0m            |
+          |              |              | \e[34;1mA\e[0m            |
+          |              |              | \e[32;1mA\e[0m            |
+          | \e[35;1mB\e[0m            | \e[35;1mBB\e[0m           | \e[35;1mB\e[0m            |
+          |              |              | \e[34;1mB\e[0m            |
+          |              |              | \e[32;1mB\e[0m            |
+          | \e[35;1mC\e[0m            | \e[35;1mCC\e[0m           | \e[35;1mC\e[0m            |
+          |              |              | \e[34;1mC\e[0m            |
+          |              |              | \e[32;1mC\e[0m            |
+          +--------------+--------------+--------------+
+          OUTPUT
+        table.to_s.should eq(expected_output)
+      end
+    end
+  end
 
-describe Tablo::Cell::Data do
-  # coords
-  # formatter and styler procs
+  describe Tablo::Cell::Data do
+    context "Check use of cell coords and value in formatter proc" do
+      it "correctly renders table, based on cell'a value and coords, globally" do
+        table = Tablo::Table.new(["A", "B", "C"],
+          body_formatter: ->(value : Tablo::CellType, coords : Tablo::Cell::Data::Coords) {
+            if value.is_a?(String)
+              coords.row_index % 2 == 0 ? value.as(String).upcase : value.as(String).downcase
+            else
+              value.to_s
+            end
+          }) do |t|
+          t.add_column("itself", &.itself)
+          t.add_column("itself x 2", &.*(2))
+          t.add_column("itself x 3", &.*(3))
+        end
+        expected_output = <<-OUTPUT
+          +--------------+--------------+--------------+
+          | itself       | itself x 2   | itself x 3   |
+          +--------------+--------------+--------------+
+          | A            | AA           | AAA          |
+          | b            | bb           | bbb          |
+          | C            | CC           | CCC          |
+          +--------------+--------------+--------------+
+          OUTPUT
+        table.to_s.should eq(expected_output)
+      end
+      it "correctly renders table, based on cell'a value and coords, at column level" do
+        table = Tablo::Table.new(["A", "B", "C"]) do |t|
+          t.add_column("itself", &.itself)
+          t.add_column("itself x 2",
+            body_formatter: ->(value : Tablo::CellType, coords : Tablo::Cell::Data::Coords) {
+              if value.is_a?(String)
+                coords.row_index % 2 == 0 ? value.as(String).upcase : value.as(String).downcase
+              else
+                value.to_s
+              end
+            }, &.*(2)
+          )
+          t.add_column("itself x 3", &.*(3))
+        end
+        expected_output = <<-OUTPUT
+          +--------------+--------------+--------------+
+          | itself       | itself x 2   | itself x 3   |
+          +--------------+--------------+--------------+
+          | A            | AA           | AAA          |
+          | B            | bb           | BBB          |
+          | C            | CC           | CCC          |
+          +--------------+--------------+--------------+
+          OUTPUT
+        table.to_s.should eq(expected_output)
+      end
+    end
+    context "Check use of cell coords, formatted content and value in styler proc" do
+      it "correctly renders colorized table, based on cell'a value, formatted content and coords" do
+        table = Tablo::Table.new(["A", "B", "C"],
+          title: Tablo::Heading.new("My Title", framed: true),
+          body_styler: ->(_value : Tablo::CellType, coords : Tablo::Cell::Data::Coords, content : String, line_index : Int32) {
+            if line_index > 0
+              content.colorize(:magenta).mode(:bold).to_s
+            else
+              if coords.row_index % 2 == 0
+                coords.column_index == 0 ? content.colorize(:red).to_s : content.colorize(:green).to_s
+              else
+                content.colorize(:blue).to_s
+              end
+            end
+          }
+        ) do |t|
+          t.add_column("itself", &.itself)
+          t.add_column("itself x 2", &.*(2))
+          t.add_column("itself x 3", &.*(3).chars.join("\n"))
+        end
+        expected_output = <<-OUTPUT
+          +--------------------------------------------+
+          |                  My Title                  |
+          +--------------+--------------+--------------+
+          | itself       | itself x 2   | itself x 3   |
+          +--------------+--------------+--------------+
+          | \e[31mA\e[0m            | \e[32mAA\e[0m           | \e[32mA\e[0m            |
+          |              |              | \e[35;1mA\e[0m            |
+          |              |              | \e[35;1mA\e[0m            |
+          | \e[34mB\e[0m            | \e[34mBB\e[0m           | \e[34mB\e[0m            |
+          |              |              | \e[35;1mB\e[0m            |
+          |              |              | \e[35;1mB\e[0m            |
+          | \e[31mC\e[0m            | \e[32mCC\e[0m           | \e[32mC\e[0m            |
+          |              |              | \e[35;1mC\e[0m            |
+          |              |              | \e[35;1mC\e[0m            |
+          +--------------+--------------+--------------+
+          OUTPUT
+        table.to_s.should eq(expected_output)
+      end
+    end
+  end
 end
 
 # Redefine protected and private methods for tests
