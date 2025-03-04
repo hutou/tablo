@@ -1076,11 +1076,11 @@ mode, and the use of ANSI sequences is given here simply as an
 example.</em></em></p>
 <p>Overview of the 5 different forms of styler procs:</p>
 <ul>
-<li>1st form: <code>(formatted) content</code> : <code>String</code> <br />used by: <code>Border</code>, <code>TextCell</code> or <code>DataCell</code></li>
-<li>2nd form: <code>(formatted) content</code> : <code>String</code>, <code>line_index</code> : <code>Int32</code> <br /> used by: <code>TextCell</code></li>
-<li>3rd form: <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code>, <code>(formatted) content</code> : <code>String</code> <br /> used by: <code>DataCell</code></li>
-<li>4th form: <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code>, <code>coords</code> : <code><a href="Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>, <br /> <code>(formatted) content</code> : <code>String</code> used by: <code>DataCell</code></li>
-<li>5th form: <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code>, <code>coords</code> : <code><a href="Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>, <br /> <code>(formatted) content</code> : <code>String</code>, <code>line_index</code> : <code>Int32</code> <br /> used by: <code>DataCell</code></li>
+<li>1st form: <code>content</code> : <code>String</code> <br />used by: <code>Border</code>, <code>TextCell</code> or <code>DataCell</code></li>
+<li>2nd form: <code>content</code> : <code>String</code>, <code>line_index</code> : <code>Int32</code> <br /> used by: <code>TextCell</code></li>
+<li>3rd form: <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code>, <code>content</code> : <code>String</code> <br /> used by: <code>DataCell</code></li>
+<li>4th form: <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code>, <code>coords</code> : <code><a href="Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>, <br /> <code>content</code> : <code>String</code> used by: <code>DataCell</code></li>
+<li>5th form: <code>value</code> : <code><a href="Tablo/CellType.html">Tablo::CellType</a></code>, <code>coords</code> : <code><a href="Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>, <br /> <code>content</code> : <code>String</code>, <code>line_index</code> : <code>Int32</code> <br /> used by: <code>DataCell</code></li>
 </ul>
 <h2><a id="packing" class="anchor" href="#packing">
   <svg class="octicon-link" aria-hidden="true">

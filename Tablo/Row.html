@@ -354,7 +354,7 @@
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/4d76b65cacab541759b5035402a479a436cd421f/src/row.cr#L3" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/c098b222edb1ba118b4c17d0040a9f990041b79f/src/row.cr#L3" target="_blank">
         row.cr
       </a>
     
@@ -384,7 +384,7 @@
       <li class="entry-summary">
         <a href="#each%28%26%29-instance-method" class="signature"><strong>#each</strong>(&)</a>
         
-          <div class="summary"><p>Calls the given block once for each column in the row and returns the corresponding cell as parameter, giving access to its raw value, formatted_content and coords attributes</p></div>
+          <div class="summary"><p>Calls the given block once for each column in the row and returns the corresponding cell as parameter, giving access to its raw value, content and coords attributes</p></div>
         
       </li>
     
@@ -477,7 +477,7 @@
           
           <p>Calls the given block once for each column in the row and returns
 the corresponding cell as parameter, giving access to its raw value,
-formatted_content and coords attributes</p>
+content and coords attributes</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
 table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</span><span class="t">Table</span>.new([<span class="s">&quot;a&quot;</span>, <span class="s">&quot;b&quot;</span>, <span class="s">&quot;c&quot;</span>]) <span class="k">do</span> <span class="o">|</span>t<span class="o">|</span>
   t.add_column(<span class="s">&quot;Char&quot;</span>, <span class="o">&amp;</span>.itself)
@@ -487,7 +487,7 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
 <span class="k">end</span>
 table.each <span class="k">do</span> <span class="o">|</span>row<span class="o">|</span>
   row.each <span class="k">do</span> <span class="o">|</span>cell<span class="o">|</span>
-    print cell.value.to_s, <span class="s">&quot;  &quot;</span>, cell.formatted_content, <span class="s">&quot;  &quot;</span>,
+    print cell.value.to_s, <span class="s">&quot;  &quot;</span>, cell.content, <span class="s">&quot;  &quot;</span>,
       cell.coords.row_index, <span class="s">&quot;  &quot;</span>, cell.coords.column_index, <span class="s">&quot;    &quot;</span>
   <span class="k">end</span>
   puts
@@ -500,7 +500,7 @@ c  c  <span class="n">2</span>  <span class="n">0</span>    ccccc  <span class="
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/4d76b65cacab541759b5035402a479a436cd421f/src/row.cr#L39" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/c098b222edb1ba118b4c17d0040a9f990041b79f/src/row.cr#L39" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -527,7 +527,7 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
 table.each <span class="k">do</span> <span class="o">|</span>row<span class="o">|</span>
   h <span class="o">=</span> row.to_h
   puts <span class="k">typeof</span>(h)
-  print h[<span class="s">&quot;String&quot;</span>].value, <span class="s">&quot;  &quot;</span>, h[<span class="s">&quot;String&quot;</span>].formatted_content, <span class="s">&quot;  &quot;</span>,
+  print h[<span class="s">&quot;String&quot;</span>].value, <span class="s">&quot;  &quot;</span>, h[<span class="s">&quot;String&quot;</span>].content, <span class="s">&quot;  &quot;</span>,
     h[<span class="s">&quot;String&quot;</span>].coords.row_index, <span class="s">&quot;  &quot;</span>, h[<span class="s">&quot;String&quot;</span>].coords.column_index, <span class="s">&quot;\n&quot;</span>
 <span class="k">end</span></code></pre>
 <pre><code class="language-crystal"><span class="t">Hash</span>(<span class="t">Int32</span> <span class="o">|</span> <span class="t">String</span> <span class="o">|</span> <span class="t">Symbol</span>, <span class="t">Tablo</span><span class="t">::</span><span class="t">Cell</span><span class="t">::</span><span class="t">Data</span>)
@@ -537,7 +537,7 @@ aaaaa  <span class="t">AAAAA</span>  <span class="n">0</span>  <span class="n">1
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/4d76b65cacab541759b5035402a479a436cd421f/src/row.cr#L113" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/c098b222edb1ba118b4c17d0040a9f990041b79f/src/row.cr#L113" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -588,7 +588,7 @@ row 2 -&gt; +-----------------------------+</code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/4d76b65cacab541759b5035402a479a436cd421f/src/row.cr#L82" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/c098b222edb1ba118b4c17d0040a9f990041b79f/src/row.cr#L82" target="_blank">View source</a>]
         
       </div>
     </div>
