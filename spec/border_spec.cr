@@ -5,7 +5,7 @@ require "./spec_helper"
 
 describe Tablo::Border do
   describe "Border presets (using enum or symbol)" do
-    it "correctly creates a border from :ascii" do
+    it "creates a border from :ascii" do
       table = Tablo::Table.new([1, 2, 3],
         border: Tablo::Border.new(:ascii),
         title: Tablo::Heading.new("Title", framed: true),
@@ -35,7 +35,7 @@ describe Tablo::Border do
       table.to_s.should eq(expected_output)
     end
 
-    it "correctly creates a border from PreSet::ReducedAscii" do
+    it "creates a border from PreSet::ReducedAscii" do
       table = Tablo::Table.new([1, 2, 3],
         border: Tablo::Border.new(Tablo::Border::PreSet::ReducedAscii),
         title: Tablo::Heading.new("Title", framed: true),
@@ -65,7 +65,7 @@ describe Tablo::Border do
       table.to_s.should eq(expected_output)
     end
 
-    it "correctly creates a border from PreSet::Modern" do
+    it "creates a border from PreSet::Modern" do
       table = Tablo::Table.new([1, 2, 3],
         border: Tablo::Border.new(Tablo::Border::PreSet::Modern),
         title: Tablo::Heading.new("Title", framed: true),
@@ -95,7 +95,7 @@ describe Tablo::Border do
       table.to_s.should eq(expected_output)
     end
 
-    it "correctly creates a border from PreSet::ReducedModern" do
+    it "creates a border from PreSet::ReducedModern" do
       table = Tablo::Table.new([1, 2, 3],
         border: Tablo::Border.new(Tablo::Border::PreSet::ReducedModern),
         title: Tablo::Heading.new("Title", framed: true),
@@ -125,7 +125,7 @@ describe Tablo::Border do
       table.to_s.should eq(expected_output)
     end
 
-    it "correctly creates a border from PreSet::Markdown" do
+    it "creates a border from PreSet::Markdown" do
       table = Tablo::Table.new([1, 2, 3],
         # Do not use title, nor subtitle, nor footer for markdown table
         border: Tablo::Border.new(Tablo::Border::PreSet::Markdown)) do |t|
@@ -142,7 +142,7 @@ describe Tablo::Border do
       table.to_s.should eq(expected_output)
     end
 
-    it "correctly creates a border from :fancy" do
+    it "creates a border from :fancy" do
       table = Tablo::Table.new([1, 2, 3],
         border: Tablo::Border.new(:fancy),
         title: Tablo::Heading.new("Title", framed: true),
@@ -172,7 +172,7 @@ describe Tablo::Border do
       table.to_s.should eq(expected_output)
     end
 
-    it "correctly creates a border from PreSet::Blank" do
+    it "creates a border from PreSet::Blank" do
       table = Tablo::Table.new([1, 2, 3],
         border: Tablo::Border.new(Tablo::Border::PreSet::Blank),
         title: Tablo::Heading.new("Title", framed: true),
@@ -202,7 +202,7 @@ describe Tablo::Border do
       table.to_s.should eq(expected_output)
     end
 
-    it "correctly creates a border from :empty" do
+    it "creates a border from :empty" do
       table = Tablo::Table.new([1, 2, 3],
         border: Tablo::Border.new(:empty),
         title: Tablo::Heading.new("Title", framed: true),
@@ -232,7 +232,7 @@ describe Tablo::Border do
       end
     end
 
-    it "correctly creates a border from 'abcdefghijklmnop' " do
+    it "creates a border from 'abcdefghijklmnop' " do
       table = Tablo::Table.new([1, 2, 3],
         border: Tablo::Border.new("abcdefghijklmnop"),
         title: Tablo::Heading.new("Title", framed: true),
@@ -262,7 +262,7 @@ describe Tablo::Border do
       table.to_s.should eq(expected_output)
     end
 
-    it "correctly creates a border from 'ABCDEFGHIJKLMNOP' " do
+    it "creates a border from 'ABCDEFGHIJKLMNOP' " do
       table = Tablo::Table.new([1, 2, 3],
         border: Tablo::Border.new("ABCDEFGHIJKLMNOP"),
         title: Tablo::Heading.new("Title", framed: true),
@@ -292,7 +292,7 @@ describe Tablo::Border do
       table.to_s.should eq(expected_output)
     end
 
-    it "correctly creates a border from 'ABCDSFGHIJKLMNOP' " do
+    it "creates a border from 'ABCDSFGHIJKLMNOP' " do
       table = Tablo::Table.new([1, 2, 3],
         border: Tablo::Border.new("ABCDSFGHIJKLMNOP"),
         title: Tablo::Heading.new("Title", framed: true),
@@ -323,7 +323,7 @@ describe Tablo::Border do
     end
   end
   describe "Border styler" do
-    it "correctly colorize border characters" do
+    it "colorizes border characters" do
       table = Tablo::Table.new([1, 2, 3],
         # TODO
         border: Tablo::Border.new("ABCDSFGHIJKLMNOP", styler: ->(x : String) { x.colorize.fore(:green).mode(:bold).to_s }),

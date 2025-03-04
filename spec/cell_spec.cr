@@ -19,7 +19,7 @@ describe Tablo::Cell do
   #    b. WrapMode = Word
   context "(Multi)Line cut location for romanic languages" do
     context "Using Rune wrap mode" do
-      it "correctly cuts lines at appropriate locations and set truncation indicator" do
+      it "cuts lines at appropriate locations and set truncation indicator" do
         table = Tablo::Table.new(["This is a rather long line, needed for tests"],
           truncation_indicator: "~",
           wrap_mode: Tablo::WrapMode::Rune,
@@ -40,7 +40,7 @@ describe Tablo::Cell do
       end
     end
     context "Using Word wrap mode" do
-      it "correctly cuts lines at appropriate locations and set truncation indicator" do
+      it "cuts lines at appropriate locations and set truncation indicator" do
         table = Tablo::Table.new(["This is a rather long line, needed for tests"],
           truncation_indicator: "~",
           wrap_mode: Tablo::WrapMode::Word,
@@ -63,7 +63,7 @@ describe Tablo::Cell do
   end
   context "Line cut location for *NON* romanic languages (In japaneese, no spacing between words)" do
     context "Using Rune wrap mode (same as Word for Japaneese)" do
-      it "correctly cuts lines at appropriate locations and set truncation indicator" do
+      it "cuts lines at appropriate locations and set truncation indicator" do
         table = Tablo::Table.new(["クリスタルのコンピューター言語は本当に素晴らしい！"],
           truncation_indicator: "~",
           wrap_mode: Tablo::WrapMode::Rune,
@@ -84,7 +84,7 @@ describe Tablo::Cell do
       end
     end
     context "Using Word wrap mode (same as Rune for Japaneese)" do
-      it "correctly cuts lines at appropriate locations and set truncation indicator" do
+      it "cuts lines at appropriate locations and set truncation indicator" do
         table = Tablo::Table.new(["クリスタルのコンピューター言語は本当に素晴らしい！"],
           truncation_indicator: "~",
           wrap_mode: Tablo::WrapMode::Word,
@@ -109,7 +109,7 @@ describe Tablo::Cell do
   describe Tablo::Cell::Text do
     # formatter and styler procs
     context "Check use of cell value in formatter proc" do
-      it "correctly renders table, based on cell'a value, globally" do
+      it "renders table, based on cell'a value, globally" do
         table = Tablo::Table.new(["A", "B", "C"],
           body_formatter: ->(value : Tablo::CellType) {
             if value.is_a?(String)
@@ -133,7 +133,7 @@ describe Tablo::Cell do
           OUTPUT
         table.to_s.should eq(expected_output)
       end
-      it "correctly renders table, based on cell'a value, at column level" do
+      it "renders table, based on cell'a value, at column level" do
         table = Tablo::Table.new(["A", "B", "C"]) do |t|
           t.add_column("itself", &.itself)
           t.add_column("itself x 2",
@@ -160,7 +160,7 @@ describe Tablo::Cell do
       end
     end
     context "Check use of cell value in styler proc" do
-      it "correctly renders colorized table, based on formatted content and cell line number" do
+      it "renders colorized table, based on formatted content and cell line number" do
         table = Tablo::Table.new(["A", "B", "C"],
           title: Tablo::Heading.new("My Title", framed: true),
           body_styler: ->(content : String, line_index : Int32) {
@@ -201,7 +201,7 @@ describe Tablo::Cell do
 
   describe Tablo::Cell::Data do
     context "Check use of cell coords and value in formatter proc" do
-      it "correctly renders table, based on cell'a value and coords, globally" do
+      it "renders table, based on cell'a value and coords, globally" do
         table = Tablo::Table.new(["A", "B", "C"],
           body_formatter: ->(value : Tablo::CellType, coords : Tablo::Cell::Data::Coords) {
             if value.is_a?(String)
@@ -225,7 +225,7 @@ describe Tablo::Cell do
           OUTPUT
         table.to_s.should eq(expected_output)
       end
-      it "correctly renders table, based on cell'a value and coords, at column level" do
+      it "renders table, based on cell'a value and coords, at column level" do
         table = Tablo::Table.new(["A", "B", "C"]) do |t|
           t.add_column("itself", &.itself)
           t.add_column("itself x 2",
@@ -252,7 +252,7 @@ describe Tablo::Cell do
       end
     end
     context "Check use of cell coords, formatted content and value in styler proc" do
-      it "correctly renders colorized table, based on cell'a value, formatted content and coords" do
+      it "renders colorized table, based on cell'a value, formatted content and coords" do
         table = Tablo::Table.new(["A", "B", "C"],
           title: Tablo::Heading.new("My Title", framed: true),
           body_styler: ->(_value : Tablo::CellType, coords : Tablo::Cell::Data::Coords, content : String, line_index : Int32) {
@@ -299,7 +299,7 @@ end
 #   getter content_postformat
 #   getter subcells
 
-#   def formatted_content
+#   def content
 #     previous_def
 #   end
 
@@ -372,9 +372,9 @@ end
 #           styler: ->(_c : Tablo::CellType, s : String) { s },
 #           formatter: ->(c : Tablo::CellType) { "%7.2f" % c },
 #           truncation_indicator: "~", wrap_mode: Tablo::WrapMode::Word, width: 12)
-#         it "correctly apply the formatter" do
+#         it "applies the formatter" do
 #           bodycell.line_count
-#           bodycell.formatted_content.should eq("   3.14")
+#           bodycell.content.should eq("   3.14")
 #         end
 #       end
 
@@ -386,7 +386,7 @@ end
 #           styler: ->(_c : Tablo::CellType, s : String) { s.colorize(:red).to_s },
 #           formatter: ->(c : Tablo::CellType) { "%7.2f" % c },
 #           truncation_indicator: "~", wrap_mode: Tablo::WrapMode::Word, width: 12)
-#         it "correctly returns an array of formatted and styled subcells" do
+#         it "returns an array of formatted and styled subcells" do
 #           bodycell.line_count
 #           if Tablo::Util.styler_allowed
 #             bodycell.rendered_subcells.should eq(["     \e[31m   3.14\e[0m"])
@@ -413,7 +413,7 @@ end
 #       end
 
 #       describe "#content_postformat" do
-#         it "correctly apply the formatter" do
+#         it "applies the formatter" do
 #           headercell = Tablo::Cell::Data.new(
 #             value: header_value, coords: Tablo::Cell::Data::Coords.new(header_value, 0, 0),
 #             left_padding: 1, right_padding: 1, padding_character: " ", alignment: nil,
@@ -423,12 +423,12 @@ end
 #           expected_result = "THIS IS A VERY LONG AND MULTILINE HEADER " \
 #                             "FOR TESTING FORMATTING, STYLING AND ALIGNMENT"
 #           headercell.line_count
-#           headercell.formatted_content.should eq(expected_result)
+#           headercell.content.should eq(expected_result)
 #         end
 #       end
 
 #       describe "#calculate_subcells" do
-#         it "correctly returns an array of formatted and styled subcells, " \
+#         it "returns an array of formatted and styled subcells, " \
 #            "left aligned as bodycell value is a string" do
 #           headercell = Tablo::Cell::Data.new(
 #             value: header_value, coords: Tablo::Cell::Data::Coords.new(header_value, 0, 0),
@@ -454,7 +454,7 @@ end
 #           headercell.rendered_subcells.should eq(expected_result)
 #         end
 
-#         it "correctly returns an array of formatted and styled subcells, " \
+#         it "returns an array of formatted and styled subcells, " \
 #            "center justified" do
 #           headercell = Tablo::Cell::Data.new(
 #             value: header_value, coords: Tablo::Cell::Data::Coords.new(header_value, 0, 0),
@@ -483,7 +483,7 @@ end
 #           headercell.rendered_subcells.should eq(expected_result)
 #         end
 
-#         it "correctly returns an array of formatted and styled subcells, " \
+#         it "returns an array of formatted and styled subcells, " \
 #            "with different styled lines, left aligned as value is string" do
 #           headercell = Tablo::Cell::Data.new(
 #             value: header_value, coords: Tablo::Cell::Data::Coords.new(header_value, 0, 0),

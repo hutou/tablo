@@ -19,7 +19,7 @@ module Tablo
     private getter formatter, styler
     protected property width
     # Instance variables used for memoization, dynamically initialized later
-    private property memoized_formatted_content : String? = nil
+    private property memoized_content : String? = nil
     private property memoized_rendered_subcells : Array(String)? = nil
 
     private abstract def apply_formatter
@@ -132,7 +132,7 @@ module Tablo
     private def render_subcells
       subcells = [] of String
       line_index = 0
-      formatted_content.split(NEWLINE).flat_map do |line|
+      content.split(NEWLINE).flat_map do |line|
         if line =~ /^\s*$/
           # Allows for blank lines, but use an EMPTY one
           parsed_subcell = [""]
@@ -153,9 +153,9 @@ module Tablo
     end
 
     # Returns the formatted value of the Cell, after applying the formatter
-    # for this column (but without applying any wrapping or the styler).
-    def formatted_content
-      self.memoized_formatted_content ||= apply_formatter
+    # for this column (but without applying any wrapping or styling).
+    def content
+      self.memoized_content ||= apply_formatter
     end
 
     # returns an array of formatted and styled subcells, ready to print,

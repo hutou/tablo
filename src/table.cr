@@ -1062,9 +1062,9 @@ module Tablo
           if row_index == 0
             # if first row, create a Cell::Data for Header
             header_cell = column.header_cell(body_cell)
-            column.width = wrapped_width(header_cell.formatted_content)
+            column.width = wrapped_width(header_cell.content)
           end
-          body_cell_width = wrapped_width(body_cell.formatted_content)
+          body_cell_width = wrapped_width(body_cell.content)
           column.width = ([column.width, body_cell_width].max)
         end
       end

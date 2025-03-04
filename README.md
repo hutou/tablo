@@ -968,11 +968,11 @@ example.*_
 
 Overview of the 5 different forms of styler procs:
 
-- 1st form: `(formatted) content` : `String` <br />used by: `Border`, `TextCell` or `DataCell`
-- 2nd form: `(formatted) content` : `String`, `line_index` : `Int32` <br /> used by: `TextCell`
-- 3rd form: `value` : `Tablo::CellType`, `(formatted) content` : `String` <br /> used by: `DataCell`
-- 4th form: `value` : `Tablo::CellType`, `coords` : `Tablo::Cell::Data::Coords`, <br /> `(formatted) content` : `String` used by: `DataCell`
-- 5th form: `value` : `Tablo::CellType`, `coords` : `Tablo::Cell::Data::Coords`, <br /> `(formatted) content` : `String`, `line_index` : `Int32` <br /> used by: `DataCell`
+- 1st form: `content` : `String` <br />used by: `Border`, `TextCell` or `DataCell`
+- 2nd form: `content` : `String`, `line_index` : `Int32` <br /> used by: `TextCell`
+- 3rd form: `value` : `Tablo::CellType`, `content` : `String` <br /> used by: `DataCell`
+- 4th form: `value` : `Tablo::CellType`, `coords` : `Tablo::Cell::Data::Coords`, <br /> `content` : `String` used by: `DataCell`
+- 5th form: `value` : `Tablo::CellType`, `coords` : `Tablo::Cell::Data::Coords`, <br /> `content` : `String`, `line_index` : `Int32` <br /> used by: `DataCell`
 
 ## Packing
 

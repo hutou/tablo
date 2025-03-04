@@ -12,7 +12,7 @@ module Tablo
 
     # Calls the given block once for each column in the row and returns
     # the corresponding cell as parameter, giving access to its raw value,
-    # formatted_content and coords attributes
+    # content and coords attributes
     #
     # ```
     # require "tablo"
@@ -24,7 +24,7 @@ module Tablo
     # end
     # table.each do |row|
     #   row.each do |cell|
-    #     print cell.value.to_s, "  ", cell.formatted_content, "  ",
+    #     print cell.value.to_s, "  ", cell.content, "  ",
     #       cell.coords.row_index, "  ", cell.coords.column_index, "    "
     #   end
     #   puts
@@ -101,7 +101,7 @@ module Tablo
     # table.each do |row|
     #   h = row.to_h
     #   puts typeof(h)
-    #   print h["String"].value, "  ", h["String"].formatted_content, "  ",
+    #   print h["String"].value, "  ", h["String"].content, "  ",
     #     h["String"].coords.row_index, "  ", h["String"].coords.column_index, "\n"
     # end
     # ```

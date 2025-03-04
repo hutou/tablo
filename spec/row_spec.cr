@@ -2,7 +2,7 @@ require "./spec_helper"
 
 describe Tablo::Row do
   describe "#each" do
-    it "correctly loops over defined columns for a given row" do
+    it "loops over defined columns for a given row" do
       table = Tablo::Table.new(["a", "b"]) do |t|
         t.add_column("Char", &.itself)
         t.add_column("String", body_formatter: ->(value : Tablo::CellType) {
@@ -15,7 +15,7 @@ describe Tablo::Row do
       output = ""
       table.each do |row|
         row.each do |cell|
-          output += cell.value.to_s + "  " + cell.formatted_content + "  " +
+          output += cell.value.to_s + "  " + cell.content + "  " +
                     cell.coords.row_index.to_s + "  " + cell.coords.column_index.to_s + "    "
         end
         output += "\n"
@@ -26,7 +26,7 @@ describe Tablo::Row do
     end
   end
   describe "#to_s" do
-    it "correctly displays (numbered) rows with their associated headings" do
+    it "displays (numbered) rows with their associated headings" do
       table = Tablo::Table.new(["a", "b", "c"],
         title: Tablo::Heading.new("Title", framed: true),
         subtitle: Tablo::Heading.new("SubTitle", framed: true),
@@ -62,7 +62,7 @@ describe Tablo::Row do
   end
 
   describe "#to_h" do
-    it "correctly returns a hash of data cells from a given row" do
+    it "returns a hash of data cells from a given row" do
       table = Tablo::Table.new(["a"]) do |t|
         t.add_column("Char", &.itself)
         t.add_column("String", body_formatter: ->(value : Tablo::CellType) {
@@ -73,10 +73,10 @@ describe Tablo::Row do
       table.each do |row|
         h = row.to_h
         output += "#{typeof(h)}\n"
-        output += h["Char"].value.to_s + "  " + h["Char"].formatted_content + "  " +
+        output += h["Char"].value.to_s + "  " + h["Char"].content + "  " +
                   h["Char"].coords.row_index.to_s + "  " +
                   h["Char"].coords.column_index.to_s + "\n"
-        output += h["String"].value.to_s + "  " + h["String"].formatted_content + "  " +
+        output += h["String"].value.to_s + "  " + h["String"].content + "  " +
                   h["String"].coords.row_index.to_s + "  " +
                   h["String"].coords.column_index.to_s
       end
