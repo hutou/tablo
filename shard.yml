@@ -9,9 +9,9 @@ dependencies:
     github: naqvis/uni_char_width
 
 development_dependencies:
-  ameba:
-    github: crystal-ameba/ameba
-    branch: master
+  # ameba:
+  #   github: crystal-ameba/ameba
+  #   branch: master
   debug:
     github: Sija/debug.cr
   tablo:
