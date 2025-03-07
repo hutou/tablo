@@ -329,7 +329,7 @@ describe Tablo::Cell do
             | C            | CC           | C            |
             |              |              | C            |
             |              |              | C            |
-            +--------------+--------------+--------------+          
+            +--------------+--------------+--------------+
             OUTPUT
         end
         table.to_s.should eq(expected_output)
