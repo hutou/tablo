@@ -646,9 +646,9 @@ module Tablo
             add_group(:dummy_last_group, header: "")
           end
         end
-        # Update sources in case data has changed since a previous print
-        # of this table
-        self.sources = sources
+        # Update sources in case data has changed since a previous print of this table
+        # sources= method set child to nil, so changes cources only if child is already nil !
+        self.sources = sources if self.summary.nil?
         # Line below is equivalent to: rows = self.map { |row| row.to_s }
         rows = map &.to_s
         io << join_lines(rows)
@@ -1543,7 +1543,7 @@ module Tablo
     end
 
     private def save_group_context
-      self.group_registry_saved = group_registry.clone
+      self.group_registry_saved = group_registry # .clone    XXX clone does not seem to be necessary ? XXX
       self.column_groups_saved = column_groups.dup
     end
 

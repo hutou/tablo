@@ -208,6 +208,6 @@ module Tablo
       stretched_text.join("\n")
     end
 
-    extend self
+    # extend self
   end
 end

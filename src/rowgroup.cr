@@ -2,30 +2,36 @@
 # require "./heading"
 
 module Tablo
-  # :nodoc:
-  # Each time the source is read, an instance of the RowGroup class is created
-  # to display Body and all other preceeding possible row types and rule
-  # types.
+  # The main purpose of the RowGroup class is to manage the alternation of different
+  # types of rows and the types of rules that separate them.
   #
-  # The main purpose of the RowGroup class is to manage the alternation of
-  # different row types and their separating rule types.
+  # Each time the data source is read and ready to print, an instance of the
+  # RowGroup class is created to display the body and all other possible previous
+  # row types and rule types.
   #
-  # To do this, the previous and current row types are used to determine the
-  # rule type and deduce border position to be used (see ROWTYPE_POSITION below).
+  # To do this, the previous and current row types are used to determine the rule type
+  # and border position to be used.
   #
-  # From one instance to the next, the RowGroup class has no memory: the
-  # RowGroup.rowtype_memory class variable is therefore used to ensure the link:
-  # when a new instance of RowGroup is created, the previous_rowtype instance
-  # variable is initialized by RowGroup.rowtype_memory, and on exit from
-  # RowGroup's run method, the current_rowtype instance variable is assigned to
-  # RowGroup.rowtype_memory.
+  # The RowGroup class also manages the transition between the main table and its
+  # child, the summary table, where applicable.
   #
-  # Linking conditions between table :main and table :summary is governed by
-  # the class variable RowGroup.transition_footer, where we store the footer of
-  # :main or nil, depending of the last rowtype of :main. This info is then
-  # use on first row of :summary to properly link or not the two tables.
+  # The RowGroup class is of crucial importance for managing table layout, but it is
+  # only used internally and therefore has no public interface.
+  #
+  #
   class RowGroup(T)
+    # From one instance to the next, the RowGroup class has no memory: the
+    # RowGroup.rowtype_memory class variable is therefore used to ensure the link:
+    # when a new instance of RowGroup is created, the previous_rowtype instance
+    # variable is initialized by RowGroup.rowtype_memory, and on exit from
+    # RowGroup's run method, the current_rowtype instance variable is assigned to
+    # RowGroup.rowtype_memory.
     protected class_property rowtype_memory : RowType? = nil
+
+    # Linking conditions between table :main and table :summary is governed by
+    # the class variable RowGroup.transition_footer, where we store the footer of
+    # :main or nil, depending of the last rowtype of :main. This info is then
+    # use on first row of :summary to properly link or not the two tables.
     protected class_property transition_footer : Heading? = nil
 
     # Whenever we enter rowgroup, we retrieve the previous rowtype from
@@ -36,12 +42,15 @@ module Tablo
     private getter rows = [] of String
     private getter table, source, row_index, row_divider
 
+    # :nodoc:
     def initialize(@table : Table(T),
                    @source : T,
                    @row_divider : Bool?,
                    @row_index : Int32)
     end
 
+    # If compilation is done with the flag DEBUG_ROWs, debugging infos are
+    # displayed before each output line
     private def add_row(rows, linenum = 0)
       {% if flag?(:DEBUG_ROWS) %}
         rows.each_line.with_index do |r, i|
@@ -145,7 +154,6 @@ module Tablo
         missing_rows.times do
           add_rule(ROWTYPE_POSITION[{RowType::Body, :filler}],
             groups: [] of Array(Int32), linenum: {{__LINE__}})
-          # groups: nil, linenum: {{__LINE__}})
         end
       end
     end
@@ -389,7 +397,7 @@ module Tablo
     end
 
     private def summary_first?
-      first_row? && table.name == :summary # ? true : false
+      first_row? && table.name == :summary
     end
 
     private def main_first?

@@ -357,7 +357,7 @@ module Tablo
       # called from Table
       protected getter row_type
 
-      protected def_clone
+      # def_clone
 
       # :nodoc:
       def initialize(@value : CellType,
