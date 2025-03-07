@@ -1851,17 +1851,31 @@ describe Tablo::Table do
           end
           output = table.to_s
           {% if flag?(:DEBUG) %} puts "\n#{output}" {% end %}
-          expected_output = <<-OUTPUT
-            ╭────────────────────────────────────────────╮
-            │             Justifying headers             │
-            ├──────────────┬──────────────┬──────────────┤
-            │      numbers :   Booleans   : Strings      │
-            ├--------------┼--------------┼--------------┤
-            │            \e[31m1\e[0m :     \e[31mfalse\e[0m    : \e[31mAbc\e[0m          │
-            │            \e[31m2\e[0m :     \e[31mtrue\e[0m     : \e[31mdef\e[0m          │
-            │            \e[31m3\e[0m :     \e[31mtrue\e[0m     : \e[31mghi\e[0m          │
-            ╰──────────────┴──────────────┴──────────────╯
-            OUTPUT
+          if Tablo::Util.styler_allowed
+            expected_output = <<-OUTPUT
+              ╭────────────────────────────────────────────╮
+              │             Justifying headers             │
+              ├──────────────┬──────────────┬──────────────┤
+              │      numbers :   Booleans   : Strings      │
+              ├--------------┼--------------┼--------------┤
+              │            \e[31m1\e[0m :     \e[31mfalse\e[0m    : \e[31mAbc\e[0m          │
+              │            \e[31m2\e[0m :     \e[31mtrue\e[0m     : \e[31mdef\e[0m          │
+              │            \e[31m3\e[0m :     \e[31mtrue\e[0m     : \e[31mghi\e[0m          │
+              ╰──────────────┴──────────────┴──────────────╯
+              OUTPUT
+          else
+            expected_output = <<-OUTPUT
+              ╭────────────────────────────────────────────╮
+              │             Justifying headers             │
+              ├──────────────┬──────────────┬──────────────┤
+              │      numbers :   Booleans   : Strings      │
+              ├--------------┼--------------┼--------------┤
+              │            1 :     false    : Abc          │
+              │            2 :     true     : def          │
+              │            3 :     true     : ghi          │
+              ╰──────────────┴──────────────┴──────────────╯            
+              OUTPUT
+          end
           output.should eq expected_output
         end
       end
