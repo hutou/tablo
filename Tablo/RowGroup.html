@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="tablo">
-  <title>Tablo::Column(T) - tablo development</title>
+  <title>Tablo::RowGroup(T) - tablo development</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -142,7 +142,7 @@
       
     </li>
   
-  <li class=" current" data-id="tablo/Tablo/Column" data-name="tablo::column(t)">
+  <li class=" " data-id="tablo/Tablo/Column" data-name="tablo::column(t)">
       <a href="../Tablo/Column.html">Column</a>
       
     </li>
@@ -242,7 +242,7 @@
       
     </li>
   
-  <li class=" " data-id="tablo/Tablo/RowGroup" data-name="tablo::rowgroup(t)">
+  <li class=" current" data-id="tablo/Tablo/RowGroup" data-name="tablo::rowgroup(t)">
       <a href="../Tablo/RowGroup.html">RowGroup</a>
       
     </li>
@@ -301,12 +301,12 @@
 <div class="main-content">
 <h1 class="type-name">
 
-  <span class="kind">class</span> Tablo::<wbr>Column(T)
+  <span class="kind">class</span> Tablo::<wbr>RowGroup(T)
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../Tablo/Column.html">Tablo::Column(T)</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../Tablo/RowGroup.html">Tablo::RowGroup(T)</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
@@ -320,10 +320,17 @@
     Overview
   </h2>
 
-  <p>The Column class is used internally by the Tablo library and offers no
-public interface to its attributes and methods.</p>
-<p>Its main function is to manage the creation of table columns, using
-the <code><a href="../Tablo/Table.html#add_column%28label%3ALabelType%2C%2A%2Cheader%3Dlabel.to_s%2Cheader_alignment%3Dheader_alignment%2Cheader_formatter%3Dheader_formatter%2Cheader_styler%3Dheader_styler%2Cbody_alignment%3Dbody_alignment%2Cbody_formatter%3Dbody_formatter%2Cbody_styler%3Dbody_styler%2Cleft_padding%3Dleft_padding%2Cright_padding%3Dright_padding%2Cpadding_character%3Dpadding_character%2Cwidth%3Dwidth%2Ctruncation_indicator%3Dtruncation_indicator%2Cwrap_mode%3Dwrap_mode%2C%26extractor%3AT%2CInt32-%3ECellType%29-instance-method">Table#add_column</a></code> method.</p>
+  <p>The main purpose of the RowGroup class is to manage the alternation of different
+types of rows and the types of rules that separate them.</p>
+<p>Each time the data source is read and ready to print, an instance of the
+RowGroup class is created to display the body and all other possible previous
+row types and rule types.</p>
+<p>To do this, the previous and current row types are used to determine the rule type
+and border position to be used.</p>
+<p>The RowGroup class also manages the transition between the main table and its
+child, the summary table, where applicable.</p>
+<p>The RowGroup class is of crucial importance for managing table layout, but it is
+only used internally and therefore has no public interface.</p>
 
 
 
@@ -348,8 +355,8 @@ the <code><a href="../Tablo/Table.html#add_column%28label%3ALabelType%2C%2A%2Che
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/a5e2efbd0d0bb1ab415de6ad6d660629fbd16177/src/column.cr#L7" target="_blank">
-        column.cr
+      <a href="https://github.com/hutou/tablo/blob/a5e2efbd0d0bb1ab415de6ad6d660629fbd16177/src/rowgroup.cr#L22" target="_blank">
+        rowgroup.cr
       </a>
     
     <br/>
