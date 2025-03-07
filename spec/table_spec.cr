@@ -1413,7 +1413,7 @@ describe Tablo::Table do
               │            1 :     false    : Abc          │
               │            2 :     true     : def          │
               │            3 :     true     : ghi          │
-              ╰──────────────┴──────────────┴──────────────╯            
+              ╰──────────────┴──────────────┴──────────────╯
               OUTPUT
           end
           output.should eq expected_output
