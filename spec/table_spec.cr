@@ -1391,17 +1391,31 @@ describe Tablo::Table do
           end
           output = table.to_s
           {% if flag?(:DEBUG) %} puts "\n#{output}" {% end %}
-          expected_output = <<-OUTPUT
-            ╭────────────────────────────────────────────╮
-            │             Justifying headers             │
-            ├──────────────┬──────────────┬──────────────┤
-            │      \e[34mnumbers\e[0m :   \e[34mBooleans\e[0m   : \e[34mStrings\e[0m      │
-            ├--------------┼--------------┼--------------┤
-            │            1 :     false    : Abc          │
-            │            2 :     true     : def          │
-            │            3 :     true     : ghi          │
-            ╰──────────────┴──────────────┴──────────────╯
-            OUTPUT
+          if Tablo::Util.styler_allowed
+            expected_output = <<-OUTPUT
+              ╭────────────────────────────────────────────╮
+              │             Justifying headers             │
+              ├──────────────┬──────────────┬──────────────┤
+              │      \e[34mnumbers\e[0m :   \e[34mBooleans\e[0m   : \e[34mStrings\e[0m      │
+              ├--------------┼--------------┼--------------┤
+              │            1 :     false    : Abc          │
+              │            2 :     true     : def          │
+              │            3 :     true     : ghi          │
+              ╰──────────────┴──────────────┴──────────────╯
+              OUTPUT
+          else
+            expected_output = <<-OUTPUT
+              ╭────────────────────────────────────────────╮
+              │             Justifying headers             │
+              ├──────────────┬──────────────┬──────────────┤
+              │      numbers :   Booleans   : Strings      │
+              ├--------------┼--------------┼--------------┤
+              │            1 :     false    : Abc          │
+              │            2 :     true     : def          │
+              │            3 :     true     : ghi          │
+              ╰──────────────┴──────────────┴──────────────╯            
+              OUTPUT
+          end
           output.should eq expected_output
         end
       end
