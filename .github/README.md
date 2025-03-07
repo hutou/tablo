@@ -1,5 +1,11 @@
 ![logo](../docs/assets/images/logo.png)
 
+[![CI](https://github.com/hutou/tablo.cr/actions/workflows/ci.yml/badge.svg)](https://github.com/hutou/tablo.cr/actions/workflows/ci.yml)
+
+[![Releases](https://img.shields.io/github/release/hutou/tablo.cr.svg)](https://github.com/hutou/tablo.cr/releases)
+
+[![License](https://img.shields.io/github/license/hutou/tablo.cr.svg)](https://github.com/hutou/tablo.cr/blob/master/LICENSE)
+
 ## About Tablo
 
 Tablo is a Crystal library that facilitates the creation of tabular
