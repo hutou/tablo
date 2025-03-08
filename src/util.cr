@@ -67,7 +67,7 @@ module Tablo
 
     # :nodoc:
     # returns terminal size, as tuple {lines, columns}
-    def self.get_terminal_lines_and_columns
+    def self.terminal_lines_and_columns
       # def self.terminal_size
       if (ENV["COLUMNS"]? =~ /^\d+$/) && (ENV["LINES"]? =~ /^\d+$/)
         lines = ENV["LINES"].to_i

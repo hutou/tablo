@@ -293,11 +293,11 @@ module Tablo
       defined_rows.sort!.uniq!.each_with_index do |row, index|
         row_number[row] = index
       end
-      row_number.size.times do |i|
+      row_number.size.times do
         summary_sources << Array.new(table.column_registry.size, nil.as(CellType))
       end
-      body_values.each do |column_label, body_rows|
-        body_rows.each do |body_row|
+      body_values.each do |column_label, w_body_rows|
+        w_body_rows.each do |body_row|
           row = body_row[0]
           value = body_row[1]
           summary_sources[row_number[row]][column_number[column_label]] = value.as(CellType)

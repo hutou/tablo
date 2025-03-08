@@ -9,6 +9,8 @@ dependencies:
     github: naqvis/uni_char_width
 
 development_dependencies:
+  sqlite3:
+    github: crystal-lang/crystal-sqlite3
   # ameba:
   #   github: crystal-ameba/ameba
   #   branch: master

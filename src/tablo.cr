@@ -173,7 +173,8 @@ module Tablo
       pre_fix, pre_var, pre_head = parse.call(prefix)
       suf_head, suf_var, suf_fix = parse.call(suffix)
 
-      max_line_len = text.lines.map(&.strip.size).max
+      # max_line_len = text.lines.map(&.strip.size).max
+      max_line_len = text.lines.max_of(&.strip.size)
       intervals = max_line_len - 1
       pre_fix_head_size = pre_fix.size + pre_head.size
       suf_fix_head_size = suf_fix.size + suf_head.size

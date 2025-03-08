@@ -228,7 +228,7 @@ describe Tablo::Border do
   describe "Border strings" do
     it "raises an exception on incorrect string length definition" do
       expect_raises Tablo::Error::InvalidBorderDefinition do
-        border = Tablo::Border.new("abcdefghijklmnopz")
+        Tablo::Border.new("abcdefghijklmnopz")
       end
     end
 
@@ -325,9 +325,8 @@ describe Tablo::Border do
   describe "Border styler" do
     it "colorizes border characters" do
       table = Tablo::Table.new([1, 2, 3],
-        # TODO
-        border: Tablo::Border.new("ABCDSFGHIJKLMNOP", styler: ->(x : String) { x.colorize.fore(:green).mode(:bold).to_s }),
-        # TODO
+        border: Tablo::Border.new("ABCDSFGHIJKLMNOP",
+          styler: ->(x : String) { x.colorize.fore(:green).mode(:bold).to_s }),
         title: Tablo::Heading.new("Title", framed: true),
         subtitle: Tablo::Heading.new("SubTitle", framed: true),
         footer: Tablo::Heading.new("Footer", framed: true),

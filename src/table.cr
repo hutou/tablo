@@ -518,7 +518,8 @@ module Tablo
       check_truncation_indicator(truncation_indicator)
 
       column_groups << columns_group
-      columns = column_list.select { |e| e.index.in?(column_groups.last) }
+      # columns = column_list.select { |e| e.index.in?(column_groups.last) }
+      columns = column_list.select(&.index.in?(column_groups.last))
       group_width = calc_group_width(columns)
 
       group_registry[label] = Cell::Text.new(
@@ -562,7 +563,8 @@ module Tablo
       group_width += ((columns.size - 1) * border.vdiv_mid.size) unless border.vdiv_mid.empty?
       # Substract paddings at each end of the group as they are not part of
       # the group width
-      group_width -= (left_padding + right_padding)
+      # group_width -= (left_padding + right_padding)
+      group_width - (left_padding + right_padding)
     end
 
     # Calculates width of each defined group
@@ -640,7 +642,9 @@ module Tablo
       # below to create rows, formatting them with (Row)to_s and joining all
       # formatted rows with newline to output the formatted table.
       # debugger
-      unless column_registry.empty?
+      if column_registry.empty?
+        io << ""
+      else
         unless column_groups.empty?
           if column_groups.flatten.size != column_list.size
             add_group(:dummy_last_group, header: "")
@@ -652,8 +656,6 @@ module Tablo
         # Line below is equivalent to: rows = self.map { |row| row.to_s }
         rows = map &.to_s
         io << join_lines(rows)
-      else
-        io << ""
       end
       # Clean up after table display
       unless used_columns.indexes.empty?
@@ -761,7 +763,8 @@ module Tablo
 
     private def format_row(cells, wrap_cells_to)
       # The line below does the whole job of formatting and styling cells
-      line_count_max = cells.map(&.line_count).max
+      # line_count_max = cells.map(&.line_count).max
+      line_count_max = cells.max_of(&.line_count)
       # Array.compact removes all nil elements
       row_line_count = ([wrap_cells_to, line_count_max].compact.min || 1)
       subcell_stacks = cells.map do |cell|
@@ -1023,7 +1026,7 @@ module Tablo
       required_width = case width
                        in Nil
                          if STDOUT.tty? && Config.terminal_capped_width?
-                           Util.get_terminal_lines_and_columns[1]
+                           Util.terminal_lines_and_columns[1]
                          else
                            nil
                          end
@@ -1078,7 +1081,8 @@ module Tablo
       # and taking into account non-shrinkable columns
 
       # Unshrinkable_width is the total with of ignored columns
-      unshrinkable_width = (column_list - columns).sum { |column| column.width }
+      # unshrinkable_width = (column_list - columns).sum { |column| column.width }
+      unshrinkable_width = (column_list - columns).sum(&.width)
       # unshrinkable_width = except.sum { |label| column_registry[label].width }
 
       min_table_width = columns.size + unshrinkable_width + border_padding_width
@@ -1250,7 +1254,8 @@ module Tablo
       table = Table.new(fields, **initializer_opts) do |t|
         # table = Table.new(fields, **opts) do |t|
         width_opt = extra_opts[:field_names_width]
-        field_names_width = width_opt.nil? ? fields.map { |f| f.header.size }.max : width_opt
+        # field_names_width = width_opt.nil? ? fields.map { |f| f.header.size }.max : width_opt
+        field_names_width = width_opt.nil? ? fields.max_of(&.header.size) : width_opt
         # field_names_body_styler = fields.map { |f| f.body_styler }
 
         # Fist, we add a first column for the headers of the original table
@@ -1515,7 +1520,8 @@ module Tablo
           delayed_column_groups_deletes = [] of Int32
           # then, compute new column_groups
           group_registry.each_with_index do |(k, v), idx|
-            cols = column_groups[idx].select { |c| c.in?(used_columns.indexes) }
+            # cols = column_groups[idx].select { |c| c.in?(used_columns.indexes) }
+            cols = column_groups[idx].select(&.in?(used_columns.indexes))
             if cols.empty?
               # delay deletes, as it is not safe to delete elements
               # inside a loop !

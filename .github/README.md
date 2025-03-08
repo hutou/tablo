@@ -1,10 +1,6 @@
 ![logo](../docs/assets/images/logo.png)
 
-[![CI](https://github.com/hutou/tablo/actions/workflows/ci.yml/badge.svg)](https://github.com/hutou/tablo/actions/workflows/ci.yml)
-
-[![Releases](https://img.shields.io/github/release/hutou/tablo.svg)](https://github.com/hutou/tablo/releases)
-
-[![License](https://img.shields.io/github/license/hutou/tablo.svg)](https://github.com/hutou/tablo/blob/master/LICENSE)
+[![CI](https://github.com/hutou/tablo/actions/workflows/ci.yml/badge.svg)](https://github.com/hutou/tablo/actions/workflows/ci.yml) [![Releases](https://img.shields.io/github/release/hutou/tablo.svg)](https://github.com/hutou/tablo/releases) [![License](https://img.shields.io/github/license/hutou/tablo.svg)](https://github.com/hutou/tablo/blob/master/LICENSE)
 
 ## About Tablo
 
