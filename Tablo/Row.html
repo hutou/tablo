@@ -359,7 +359,7 @@
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/7cffefa3b1c27ebb30f05ebfa46e48d23bcab83f/src/row.cr#L3" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/58158b83ba4e8eeb14a955cb2cbceb1441d56eeb/src/row.cr#L3" target="_blank">
         row.cr
       </a>
     
@@ -497,15 +497,15 @@ table.each <span class="k">do</span> <span class="o">|</span>row<span class="o">
   <span class="k">end</span>
   puts
 <span class="k">end</span></code></pre>
-<pre><code class="language-crystal">a  a  <span class="n">0</span>  <span class="n">0</span>    aaaaa  <span class="t">AAAAA</span>  <span class="n">0</span>  <span class="n">1</span>
-b  b  <span class="n">1</span>  <span class="n">0</span>    bbbbb  <span class="t">BBBBB</span>  <span class="n">1</span>  <span class="n">1</span>
-c  c  <span class="n">2</span>  <span class="n">0</span>    ccccc  <span class="t">CCCCC</span>  <span class="n">2</span>  <span class="n">1</span></code></pre>
+<pre><code class="language-text">a  a  0  0    aaaaa  AAAAA  0  1
+b  b  1  0    bbbbb  BBBBB  1  1
+c  c  2  0    ccccc  CCCCC  2  1</code></pre>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7cffefa3b1c27ebb30f05ebfa46e48d23bcab83f/src/row.cr#L39" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/58158b83ba4e8eeb14a955cb2cbceb1441d56eeb/src/row.cr#L39" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -535,14 +535,14 @@ table.each <span class="k">do</span> <span class="o">|</span>row<span class="o">
   print h[<span class="s">&quot;String&quot;</span>].value, <span class="s">&quot;  &quot;</span>, h[<span class="s">&quot;String&quot;</span>].content, <span class="s">&quot;  &quot;</span>,
     h[<span class="s">&quot;String&quot;</span>].coords.row_index, <span class="s">&quot;  &quot;</span>, h[<span class="s">&quot;String&quot;</span>].coords.column_index, <span class="s">&quot;\n&quot;</span>
 <span class="k">end</span></code></pre>
-<pre><code class="language-crystal"><span class="t">Hash</span>(<span class="t">Int32</span> <span class="o">|</span> <span class="t">String</span> <span class="o">|</span> <span class="t">Symbol</span>, <span class="t">Tablo</span><span class="t">::</span><span class="t">Cell</span><span class="t">::</span><span class="t">Data</span>)
-aaaaa  <span class="t">AAAAA</span>  <span class="n">0</span>  <span class="n">1</span></code></pre>
+<pre><code class="language-text">Hash(Int32 | String | Symbol, Tablo::Cell::Data)
+aaaaa  AAAAA  0  1</code></pre>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7cffefa3b1c27ebb30f05ebfa46e48d23bcab83f/src/row.cr#L113" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/58158b83ba4e8eeb14a955cb2cbceb1441d56eeb/src/row.cr#L113" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -575,7 +575,7 @@ table.each_with_index <span class="k">do</span> <span class="o">|</span>row, i<s
     puts <span class="s">&quot;row </span><span class="i">#{</span>i<span class="i">}</span><span class="s"> -&gt; </span><span class="i">#{</span>line<span class="i">}</span><span class="s">&quot;</span>
   <span class="k">end</span>
 <span class="k">end</span></code></pre>
-<pre><code class="language-crystal">row 0 -&gt; +-----------------------------+
+<pre><code class="language-text">row 0 -&gt; +-----------------------------+
 row 0 -&gt; |            Title            |
 row 0 -&gt; +-----------------------------+
 row 0 -&gt; |           SubTitle          |
@@ -593,7 +593,7 @@ row 2 -&gt; +-----------------------------+</code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7cffefa3b1c27ebb30f05ebfa46e48d23bcab83f/src/row.cr#L82" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/58158b83ba4e8eeb14a955cb2cbceb1441d56eeb/src/row.cr#L82" target="_blank">View source</a>]
         
       </div>
     </div>

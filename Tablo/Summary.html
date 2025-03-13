@@ -357,7 +357,7 @@ in <code><a href="../Tablo/Table.html#initialize%28block_given%29-macro">Tablo::
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/7cffefa3b1c27ebb30f05ebfa46e48d23bcab83f/src/summary.cr#L16" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/58158b83ba4e8eeb14a955cb2cbceb1441d56eeb/src/summary.cr#L16" target="_blank">
         summary.cr
       </a>
     
@@ -591,23 +591,31 @@ puts table.summary</code></pre>
 <img src="../assets/images/api_summary.png">
 <p>A few points of note: <br /></p>
 <ul>
-<li>Use of the <code>BigDecimal</code> type (not included in Tablo by default, but made
-possible by reopening the <code>BigDecimal</code> struct and adding the <code>include <a href="../Tablo/CellType.html">CellType</a></code>
-statement).</li>
-<li>Joining of the summary table to the main table, with the main table's
-<code>omit_last_rule</code> parameter set to <code>true</code>.</li>
-<li>Row numbers need not be consecutive. What's important is that their
+<li>
+<p>Use of the <code>BigDecimal</code> type (not included in Tablo by default, but made
+possible by reopening the <code>BigDecimal</code> struct and adding
+the <code>include <a href="../Tablo/CellType.html">Tablo::CellType</a></code> statement).</p>
+</li>
+<li>
+<p>Joining of the summary table to the main table, with the main table's
+<code>omit_last_rule</code> parameter set to <code>true</code>.</p>
+</li>
+<li>
+<p>Row numbers need not be consecutive. What's important is that their
 order is well defined, as they will ultimately be replaced by their index
-in a sorted array of row values.</li>
-<li>To obtain optimal result in packing, the main table must be packed
-before summary table definition.</li>
+in a sorted array of row values.</p>
+</li>
+<li>
+<p>To obtain optimal result in packing, the main table must be packed
+before summary table definition.</p>
+</li>
 </ul>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7cffefa3b1c27ebb30f05ebfa46e48d23bcab83f/src/summary.cr#L171" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/58158b83ba4e8eeb14a955cb2cbceb1441d56eeb/src/summary.cr#L172" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -645,7 +653,7 @@ a previous calculation identified by <code>:total_sum</code>:</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/7cffefa3b1c27ebb30f05ebfa46e48d23bcab83f/src/summary.cr#L190" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/58158b83ba4e8eeb14a955cb2cbceb1441d56eeb/src/summary.cr#L191" target="_blank">View source</a>]
         
       </div>
     </div>

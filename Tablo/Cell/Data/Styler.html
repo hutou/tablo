@@ -326,16 +326,14 @@ modes (bold, italic, etc.).</p>
 5 different forms, as shown below by their commonly used parameter names and types:</p>
 <ul>
 <li>1st form : (<em>content</em> : <code>String</code>) <br /></li>
-<li>2nd form : (<em>content</em> : <code>String</code>, <em>line_index</em> : <code>Int32</code>)</li>
-<li>3rd form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, <em>content</em> : <code>String</code>)</li>
-<li>4th form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, <em>coords</em> : <code><a href="../../../Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>,
-<em>content</em> : <code>String</code>)</li>
-<li>5th form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, <em>coords</em> : <code><a href="../../../Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>,
-<em>content</em> : <code>String</code>, <em>line_index</em> : <code>Int32</code>)
-Default styler, defined by<code><a href="../../../Tablo/Config/Defaults.html#body_styler%3ACell%3A%3AData%3A%3AStyler-class-method">Tablo::Config::Defaults.body_styler</a></code> (or
-<code><a href="../../../Tablo/Config/Defaults.html#header_styler%3ACell%3A%3AData%3A%3AStyler-class-method">Tablo::Config::Defaults.header_styler</a></code>)</li>
+<li>2nd form : (<em>content</em> : <code>String</code>, <em>line_index</em> : <code>Int32</code>)  <br /></li>
+<li>3rd form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, <em>content</em> : <code>String</code>)   <br /></li>
+<li>4th form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, <em>coords</em> : <code><a href="../../../Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>,             <em>content</em> : <code>String</code>)   <br /></li>
+<li>5th form : (<em>value</em> : <code><a href="../../../Tablo/CellType.html">Tablo::CellType</a></code>, <em>coords</em> : <code><a href="../../../Tablo/Cell/Data/Coords.html">Tablo::Cell::Data::Coords</a></code>,          <em>content</em> : <code>String</code>, <em>line_index</em> : <code>Int32</code>)   <br /></li>
 </ul>
-<p>and the return type is String for all of them.</p>
+<p>The default styler vis defined by<code><a href="../../../Tablo/Config/Defaults.html#body_styler%3ACell%3A%3AData%3A%3AStyler-class-method">Tablo::Config::Defaults.body_styler</a></code> (or
+<code><a href="../../../Tablo/Config/Defaults.html#header_styler%3ACell%3A%3AData%3A%3AStyler-class-method">Tablo::Config::Defaults.header_styler</a></code>) and the return type is String for
+all of them.</p>
 <ul>
 <li><em>content</em> is the formatted value of the cell (after formatter
 has been applied) <br /></li>
@@ -423,7 +421,7 @@ puts table</code></pre>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/7cffefa3b1c27ebb30f05ebfa46e48d23bcab83f/src/cell.cr#L617" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/58158b83ba4e8eeb14a955cb2cbceb1441d56eeb/src/cell.cr#L607" target="_blank">
         cell.cr
       </a>
     
