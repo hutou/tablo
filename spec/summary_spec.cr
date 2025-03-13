@@ -247,7 +247,7 @@ invoice_summary_definition_big = [
   Tablo::Summary::BodyRow.new(:total, 60, -> { Tablo::Summary.use(:total_due) }),
 ]
 
-invoice_layout_0 = <<-EOS
+invoice_layout_0 = <<-OUTPUT
                             Invoice                         
   ╭─────────────┬──────────┬────────────────────┬──────────╮
   │ Product     : Quantity :              Price :    Total │
@@ -258,29 +258,29 @@ invoice_layout_0 = <<-EOS
   │ Switch      : N/A      :              45.00 :          │
   │ Accessories :        5 :              64.50 :   322.50 │
   ╰─────────────┴──────────┴────────────────────┴──────────╯
-  EOS
+  OUTPUT
 invoice_layout_0 += "\n" + if Tablo::Util.styler_allowed
-  <<-EOS
+  <<-OUTPUT
                                        SubTotal    \e[1m3671.48\e[0m  
                                     Discount 5%     \e[3m183.57\e[0m  
                              S/T after discount    \e[1m3487.91\e[0m  
                                       Tax (20%)     697.58  
                                                   ========  
                                     Balance due    \e[1m4185.49\e[0m  
-  EOS
+  OUTPUT
 else
-  <<-EOS
+  <<-OUTPUT
                                        SubTotal    3671.48  
                                     Discount 5%     183.57  
                              S/T after discount    3487.91  
                                       Tax (20%)     697.58  
                                                   ========  
                                     Balance due    4185.49  
-  EOS
+  OUTPUT
 end
 
 invoice_layout1 =
-  <<-EOS
+  <<-OUTPUT
                              Invoice                           
   ╭──────────────┬──────────────┬──────────────┬──────────────╮
   │ Product      :     Quantity :        Price :        Total │
@@ -291,9 +291,9 @@ invoice_layout1 =
   │ Switch       : N/A          :        45.00 :              │
   │ Accessories  :            5 :        64.50 :       322.50 │
   ╰──────────────┴──────────────┴──────────────┴──────────────╯
-  EOS
+  OUTPUT
 invoice_layout1 += "\n" + if Tablo::Util.styler_allowed
-  <<-EOS
+  <<-OUTPUT
   ╭──────────────┬──────────────┬──────────────┬──────────────╮
   │              :              :     SubTotal :      \e[1m3671.48\e[0m │
   │              :              :  Discount 5% :       \e[3m183.57\e[0m │
@@ -303,9 +303,9 @@ invoice_layout1 += "\n" + if Tablo::Util.styler_allowed
   │              :              :              :     ======== │
   │              :              :  Balance due :      \e[1m4185.49\e[0m │
   ╰──────────────┴──────────────┴──────────────┴──────────────╯
-  EOS
+  OUTPUT
 else
-  <<-EOS
+  <<-OUTPUT
   ╭──────────────┬──────────────┬──────────────┬──────────────╮
   │              :              :     SubTotal :      3671.48 │
   │              :              :  Discount 5% :       183.57 │
@@ -315,10 +315,10 @@ else
   │              :              :              :     ======== │
   │              :              :  Balance due :      4185.49 │
   ╰──────────────┴──────────────┴──────────────┴──────────────╯
-  EOS
+  OUTPUT
 end
 
-invoice_layout2 = <<-EOS
+invoice_layout2 = <<-OUTPUT
                                 Invoice                              
   ╭──────────────┬──────────────┬────────────────────┬──────────────╮
   │ Product      :     Quantity :              Price :        Total │
@@ -329,9 +329,9 @@ invoice_layout2 = <<-EOS
   │ Switch       : N/A          :              45.00 :              │
   │ Accessories  :            5 :              64.50 :       322.50 │
   ╰──────────────┴──────────────┴────────────────────┴──────────────╯
-  EOS
+  OUTPUT
 invoice_layout2 += "\n" + if Tablo::Util.styler_allowed
-  <<-EOS
+  <<-OUTPUT
   ╭──────────────┬──────────────┬────────────────────┬──────────────╮
   │              :              :           SubTotal :      \e[1m3671.48\e[0m │
   │              :              :        Discount 5% :       \e[3m183.57\e[0m │
@@ -340,9 +340,9 @@ invoice_layout2 += "\n" + if Tablo::Util.styler_allowed
   │              :              :                    :     ======== │
   │              :              :        Balance due :      \e[1m4185.49\e[0m │
   ╰──────────────┴──────────────┴────────────────────┴──────────────╯
-  EOS
+  OUTPUT
 else
-  <<-EOS
+  <<-OUTPUT
   ╭──────────────┬──────────────┬────────────────────┬──────────────╮
   │              :              :           SubTotal :      3671.48 │
   │              :              :        Discount 5% :       183.57 │
@@ -351,10 +351,10 @@ else
   │              :              :                    :     ======== │
   │              :              :        Balance due :      4185.49 │
   ╰──────────────┴──────────────┴────────────────────┴──────────────╯
-  EOS
+  OUTPUT
 end
 
-invoice_layout3 = <<-EOS
+invoice_layout3 = <<-OUTPUT
                             Invoice                         
   ╭─────────────┬──────────┬────────────────────┬──────────╮
   │ Product     : Quantity :              Price :    Total │
@@ -365,9 +365,9 @@ invoice_layout3 = <<-EOS
   │ Switch      : N/A      :              45.00 :          │
   │ Accessories :        5 :              64.50 :   322.50 │
   ╰─────────────┴──────────┴────────────────────┴──────────╯
-  EOS
+  OUTPUT
 invoice_layout3 += "\n" + if Tablo::Util.styler_allowed
-  <<-EOS
+  <<-OUTPUT
   ╭─────────────┬──────────┬────────────────────┬──────────╮
   │             :          :           SubTotal :  \e[1m3671.48\e[0m │
   │             :          :        Discount 5% :   \e[3m183.57\e[0m │
@@ -376,9 +376,9 @@ invoice_layout3 += "\n" + if Tablo::Util.styler_allowed
   │             :          :                    : ======== │
   │             :          :        Balance due :  \e[1m4185.49\e[0m │
   ╰─────────────┴──────────┴────────────────────┴──────────╯
-  EOS
+  OUTPUT
 else
-  <<-EOS
+  <<-OUTPUT
   ╭─────────────┬──────────┬────────────────────┬──────────╮
   │             :          :           SubTotal :  3671.48 │
   │             :          :        Discount 5% :   183.57 │
@@ -387,10 +387,10 @@ else
   │             :          :                    : ======== │
   │             :          :        Balance due :  4185.49 │
   ╰─────────────┴──────────┴────────────────────┴──────────╯
-  EOS
+  OUTPUT
 end
 
-invoice_layout4 = <<-EOS
+invoice_layout4 = <<-OUTPUT
                             Invoice                         
   ╭─────────────┬──────────┬────────────────────┬──────────╮
   │ Product     : Quantity :              Price :    Total │
@@ -401,9 +401,9 @@ invoice_layout4 = <<-EOS
   │ Switch      : N/A      :              45.00 :          │
   │ Accessories :        5 :              64.50 :   322.50 │
   ├─────────────┼──────────┼────────────────────┼──────────┤
-  EOS
+  OUTPUT
 invoice_layout4 += "\n" + if Tablo::Util.styler_allowed
-  <<-EOS
+  <<-OUTPUT
   │             :          :           SubTotal :  \e[1m3671.48\e[0m │
   │             :          :        Discount 5% :   \e[3m183.57\e[0m │
   │             :          : S/T after discount :  \e[1m3487.91\e[0m │
@@ -411,9 +411,9 @@ invoice_layout4 += "\n" + if Tablo::Util.styler_allowed
   │             :          :                    : ======== │
   │             :          :        Balance due :  \e[1m4185.49\e[0m │
   ╰─────────────┴──────────┴────────────────────┴──────────╯
-  EOS
+  OUTPUT
 else
-  <<-EOS
+  <<-OUTPUT
   │             :          :           SubTotal :  3671.48 │
   │             :          :        Discount 5% :   183.57 │
   │             :          : S/T after discount :  3487.91 │
@@ -421,10 +421,10 @@ else
   │             :          :                    : ======== │
   │             :          :        Balance due :  4185.49 │
   ╰─────────────┴──────────┴────────────────────┴──────────╯
-  EOS
+  OUTPUT
 end
 
-invoice_layout_big = <<-EOS
+invoice_layout_big = <<-OUTPUT
                                                             
                             Invoice                         
                             =======                         
@@ -444,9 +444,9 @@ invoice_layout_big = <<-EOS
   ├─────────────┬──────────┬────────────────────┬──────────┤
   │             :          :      Total Invoice :  Amounts │
   ├-------------┼----------┼--------------------┼----------┤
-  EOS
+  OUTPUT
 invoice_layout_big += "\n" + if Tablo::Util.styler_allowed
-  <<-EOS
+  <<-OUTPUT
   │             :          :           SubTotal :  \e[1m3671.48\e[0m │
   │             :          :        Discount 5% :   \e[3m183.57\e[0m │
   │             :          : S/T after discount :  \e[1m3487.91\e[0m │
@@ -454,9 +454,9 @@ invoice_layout_big += "\n" + if Tablo::Util.styler_allowed
   │             :          :                    : ======== │
   │             :          :        Balance due :  \e[1m4185.49\e[0m │
   ╰─────────────┴──────────┴────────────────────┴──────────╯
-  EOS
+  OUTPUT
 else
-  <<-EOS
+  <<-OUTPUT
   │             :          :           SubTotal :  3671.48 │
   │             :          :        Discount 5% :   183.57 │
   │             :          : S/T after discount :  3487.91 │
@@ -464,7 +464,7 @@ else
   │             :          :                    : ======== │
   │             :          :        Balance due :  4185.49 │
   ╰─────────────┴──────────┴────────────────────┴──────────╯
-  EOS
+  OUTPUT
 end
 
 describe "#{Tablo::Summary}", tags: "summary" do

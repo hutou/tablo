@@ -102,13 +102,7 @@ describe "Tablo::Functions.stretch" do
       ABC. T--h--i--s-- --i--s-- --a-- --t--e--s--t .CBA
       OUTPUT
   end
-  # +------------------------------------------------+
-  # 0        1         2         3         4         5
-  # 1---5----0----5----0----5----0----5----0----5----+
-  #
   it "renders the stretched string with max_fill = 3 and fixed and long variable prefixes only" do
-    # it "renders the stretched string with  max_fill = 3\n" +
-    #    "\tand fixed and long variable prefixes only" do
     Tablo::Functions.stretch("Hello\nThis is a test", 50, fill_char: '-',
       prefix: "ABC{....................} ",
       suffix: "", max_fill: 3).should eq <<-OUTPUT
@@ -139,7 +133,4 @@ describe "Tablo::Functions.stretch" do
       suffix: "------------------",
       max_fill: 3).should eq "Hello\nThis is a test"
   end
-  # 1--------------------------------------------------------------------+
-  # 0        1         2         3         4         5         6         7
-  # 1---5----0----5----0----5----0----5----0----5----0----5----0----5----+
 end

@@ -159,8 +159,9 @@ module Tablo
     #
     # A few points of note: <br />
     # - Use of the `BigDecimal` type (not included in Tablo by default, but made
-    #   possible by reopening the `BigDecimal` struct and adding the `include CellType`
-    #   statement).
+    #   possible by reopening the `BigDecimal` struct and adding
+    #   the `include Tablo::CellType` statement).
+    #
     # - Joining of the summary table to the main table, with the main table's
     # `omit_last_rule` parameter set to `true`.
     # - Row numbers need not be consecutive. What's important is that their

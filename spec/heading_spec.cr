@@ -1,7 +1,7 @@
 require "./spec_helper"
 
 describe Tablo::Heading do
-  describe "Heading : common features for title, subtitle and footer" do
+  context "Heading : common features for title, subtitle and footer" do
     it "displays the table headings, centered, unframed, over 2 lines, wrap mode=default(Word)" do
       table = Tablo::Table.new(["a", "b", "c"],
         title: Tablo::Heading.new("This is a title"),
@@ -126,7 +126,7 @@ describe Tablo::Heading do
     end
   end
 
-  describe "Title specific : 'repeated' flag" do
+  context "Title specific : 'repeated' flag" do
     it "repeats footer, but not title and subtitle (all unframed), repeated=false" do
       table = Tablo::Table.new(["a", "b", "c"],
         header_frequency: 2,
@@ -276,7 +276,8 @@ describe Tablo::Heading do
       output.should eq(expected_output)
     end
   end
-  describe "SubTitle specific : Title missing" do
+
+  context "SubTitle specific : Title missing" do
     it "omits subtitle if title is missing" do
       table = Tablo::Table.new(["a", "b", "c"],
         subtitle: Tablo::Heading.new("This is a subtitle", framed: true),
@@ -299,7 +300,8 @@ describe Tablo::Heading do
       output.should eq(expected_output)
     end
   end
-  describe "Footer specific : 'page_break' flag" do
+
+  context "Footer specific : 'page_break' flag" do
     it "adds a page break after footer's frame (not repeated)" do
       table = Tablo::Table.new(["a", "b", "c"],
         footer: Tablo::Heading.new("This is a footer", framed: true,
@@ -398,6 +400,45 @@ describe Tablo::Heading do
         +--------------+\f
         OUTPUT
       output.should eq(expected_output)
+    end
+  end
+
+  context "'repeated' flag : only for title" do
+    it "raises an error if 'repeated' flag used for subtitle" do
+      expect_raises Tablo::Error::InvalidValue do
+        table = Tablo::Table.new(["a", "b", "c"],
+          title: Tablo::Heading.new("This is a title"),
+          subtitle: Tablo::Heading.new("This is a subtitle", repeated: true)) do |t|
+          t.add_column("Char", &.itself)
+        end
+      end
+    end
+    it "raises an error if 'repeated' flag used for footer" do
+      expect_raises Tablo::Error::InvalidValue do
+        table = Tablo::Table.new(["a", "b", "c"],
+          footer: Tablo::Heading.new("This is a footer", repeated: true)) do |t|
+          t.add_column("Char", &.itself)
+        end
+      end
+    end
+  end
+  context "'page_break' flag : only for footer" do
+    it "raises an error if 'page_break' flag used for title" do
+      expect_raises Tablo::Error::InvalidValue do
+        table = Tablo::Table.new(["a", "b", "c"],
+          title: Tablo::Heading.new("This is a title", page_break: true)) do |t|
+          t.add_column("Char", &.itself)
+        end
+      end
+    end
+    it "raises an error if 'page_break' flag used for subtitle" do
+      expect_raises Tablo::Error::InvalidValue do
+        table = Tablo::Table.new(["a", "b", "c"],
+          title: Tablo::Heading.new("This is a title"),
+          subtitle: Tablo::Heading.new("This is a subtitle", page_break: true)) do |t|
+          t.add_column("Char", &.itself)
+        end
+      end
     end
   end
 end

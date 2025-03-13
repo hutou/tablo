@@ -16,7 +16,8 @@ describe Tablo::Row do
       table.each do |row|
         row.each do |cell|
           output += cell.value.to_s + "  " + cell.content + "  " +
-                    cell.coords.row_index.to_s + "  " + cell.coords.column_index.to_s + "    "
+                    cell.coords.row_index.to_s + "  " +
+                    cell.coords.column_index.to_s + "    "
         end
         output += "\n"
       end

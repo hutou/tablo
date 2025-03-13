@@ -31,7 +31,7 @@ module Tablo
     # end
     # ```
     #
-    # ```
+    # ```text
     # a  a  0  0    aaaaa  AAAAA  0  1
     # b  b  1  0    bbbbb  BBBBB  1  1
     # c  c  2  0    ccccc  CCCCC  2  1
@@ -64,7 +64,7 @@ module Tablo
     # end
     # ```
     #
-    # ```
+    # ```text
     # row 0 -> +-----------------------------+
     # row 0 -> |            Title            |
     # row 0 -> +-----------------------------+
@@ -106,7 +106,7 @@ module Tablo
     # end
     # ```
     #
-    # ```
+    # ```text
     # Hash(Int32 | String | Symbol, Tablo::Cell::Data)
     # aaaaa  AAAAA  0  1
     # ```

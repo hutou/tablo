@@ -112,6 +112,7 @@ module Tablo
         check_padding(right_padding)
         check_padding_character(padding_character)
         check_truncation_indicator(truncation_indicator)
+        check_heading
       end
     end
 
@@ -310,6 +311,15 @@ module Tablo
     private def check_truncation_indicator(truncation_indicator)
       raise Error::InvalidValue.new "Truncation indicator string  must be exactly" \
                                     " *one* character" if truncation_indicator.size != 1
+    end
+
+    private def check_heading
+      unless @footer.repeated?.nil? && @subtitle.repeated?.nil?
+        raise Error::InvalidValue.new "Assigning a boolean value to 'repeated' makes no sense here"
+      end
+      unless @subtitle.page_break?.nil? && @title.page_break?.nil?
+        raise Error::InvalidValue.new "Assigning a boolean value to 'page_break' makes no sense here"
+      end
     end
 
     # Replaces existing data source with a new one. <br />
@@ -1252,11 +1262,8 @@ module Tablo
       fields = column_registry.values
 
       table = Table.new(fields, **initializer_opts) do |t|
-        # table = Table.new(fields, **opts) do |t|
         width_opt = extra_opts[:field_names_width]
-        # field_names_width = width_opt.nil? ? fields.map { |f| f.header.size }.max : width_opt
         field_names_width = width_opt.nil? ? fields.max_of(&.header.size) : width_opt
-        # field_names_body_styler = fields.map { |f| f.body_styler }
 
         # Fist, we add a first column for the headers of the original table
         # This is the header of the ex-headers column
@@ -1273,7 +1280,6 @@ module Tablo
         sources.each_with_index do |source, i|
           header = extra_opts[:body_headers]
           header = if header.nil?
-                     # "##{i}"
                      source.to_s
                    else
                      if header =~ /%d/
@@ -1283,10 +1289,6 @@ module Tablo
                      end
                    end
           t.add_column(i + 1,
-            # body_alignment: body_alignment,
-            # header_alignment: header_alignment,
-            # body_alignment: extra_opts[:field_names_body_alignment],
-            # header_alignment: extra_opts[:field_names_header_alignment],
             header: header
           ) do |original_column|
             original_column.body_cell_value(source, row_index: i)
@@ -1542,19 +1544,18 @@ module Tablo
           delayed_column_groups_deletes.reverse.each do |i|
             column_groups.delete_at(i)
           end
-          # column_groups = x
           update_group_widths
         end
       end
     end
 
     private def save_group_context
-      self.group_registry_saved = group_registry # .clone    XXX clone does not seem to be necessary ? XXX
+      self.group_registry_saved = group_registry
       self.column_groups_saved = column_groups.dup
     end
 
     private def restore_group_context
-      self.group_registry = group_registry_saved # .clone
+      self.group_registry = group_registry_saved
       self.column_groups = column_groups_saved
       update_group_widths
     end

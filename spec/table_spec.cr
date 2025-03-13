@@ -53,9 +53,6 @@ test_data_array_int32 = [1, 2, 3]
 test_data_hash_string_int32 = {"A" => 1, "B" => 2, "C" => 3}
 test_data_range_int32 = 1..3
 
-# Tablo::Config::Defaults.border_definition = Tablo::Border::PreSet::Fancy
-# border = Tablo::Border.new(Tablo::Border::PreSet::Fancy)
-
 describe Tablo::Table do
   context "Initialization with different types of Enumerable" do
     context "#initialize with block given" do

@@ -1,6 +1,3 @@
-# require "./types"
-# require "./heading"
-
 module Tablo
   # The main purpose of the RowGroup class is to manage the alternation of different
   # types of rows and the types of rules that separate them.
@@ -17,8 +14,6 @@ module Tablo
   #
   # The RowGroup class is of crucial importance for managing table layout, but it is
   # only used internally and therefore has no public interface.
-  #
-  #
   class RowGroup(T)
     # From one instance to the next, the RowGroup class has no memory: the
     # RowGroup.rowtype_memory class variable is therefore used to ensure the link:
@@ -49,17 +44,18 @@ module Tablo
                    @row_index : Int32)
     end
 
-    # If compilation is done with the flag DEBUG_ROWs, debugging infos are
+    # If compilation is done with the flag DEBUG_ROWS, debugging infos are
     # displayed before each output line
     private def add_row(rows, linenum = 0)
       {% if flag?(:DEBUG_ROWS) %}
-        rows.each_line.with_index do |r, i|
+        rows.each_line.with_index do |line, i|
           if i == 0
             self.rows << "[in %-8s from %-8s%18s (%3d)] => %s" % [
-              current_rowtype.to_s, previous_rowtype.to_s, "", linenum, r,
+              current_rowtype.to_s, previous_rowtype.to_s, "",
+              linenum, line,
             ]
           else
-            self.rows << "%-15s%-16s%24s%s" % ["", "...", "", r]
+            self.rows << "%-15s%-16s%24s%s" % ["", "...", "", line]
           end
         end
       {% else %}
@@ -67,13 +63,13 @@ module Tablo
       {% end %}
     end
 
-    # private def add_rule(position, groups = nil, linenum = 0)
     private def add_rule(position, groups = [] of Array(Int32), linenum = 0)
       {% if flag?(:DEBUG_ROWS) %}
         row = table.horizontal_rule(position, groups)
         unless row.empty?
           self.rows << "[in %-8s from %-8s  pos:%-12.12s (%3d)] => %s" % [
-            current_rowtype.to_s, previous_rowtype.to_s, position.to_s, linenum, row,
+            current_rowtype.to_s, previous_rowtype.to_s,
+            position.to_s, linenum, row,
           ]
         end
       {% else %}
@@ -85,10 +81,8 @@ module Tablo
     end
 
     private def apply_rules
-      # Determine columns to be used for grouped rules if either previous or current row is a group.
-      groups = (previous_rowtype == RowType::Group || current_rowtype == RowType::Group) ? table.column_groups : [] of Array(Int32)
-      # Compute maximum spacing required between the previous and current rows.
-      spacing = [line_breaks_after(previous_rowtype), line_breaks_before(current_rowtype)].max
+      groups = compute_groups
+      spacing = compute_spacing
 
       if framed?(previous_rowtype) && framed?(current_rowtype)
         handle_both_framed(groups, spacing)
@@ -102,16 +96,35 @@ module Tablo
       self.previous_rowtype = current_rowtype
     end
 
+    # Compute the groups array based on whether either row is a group.
+    private def compute_groups
+      if (previous_rowtype == RowType::Group || current_rowtype == RowType::Group)
+        table.column_groups
+      else
+        [] of Array(Int32)
+      end
+    end
+
+    # Compute the maximum spacing needed between rows.
+    private def compute_spacing
+      [
+        line_breaks_after(previous_rowtype),
+        line_breaks_before(current_rowtype),
+      ].max
+    end
+
     private def handle_both_framed(groups : Array(Array(Int32)), spacing : Int32)
       if spacing.zero?
         fill_page
         summary_first? ? handle_summary_first(groups) : handle_regular_framed(groups)
       else
         fill_page
-        add_rule(ROWTYPE_POSITION[{previous_rowtype, :bottom}], groups: groups, linenum: {{__LINE__}})
+        add_rule(ROWTYPE_POSITION[{previous_rowtype, :bottom}],
+          groups: groups, linenum: {{__LINE__}})
         manage_page_break if previous_rowtype == RowType::Footer
         apply_line_spacing(spacing - 1)
-        add_rule(ROWTYPE_POSITION[{current_rowtype, :top}], groups: groups, linenum: {{__LINE__}})
+        add_rule(ROWTYPE_POSITION[{current_rowtype, :top}],
+          groups: groups, linenum: {{__LINE__}})
       end
     end
 
@@ -125,7 +138,8 @@ module Tablo
       when {RowType::Body, RowType::Body}
         add_rule(RuleType::SummaryBody, groups: groups, linenum: {{__LINE__}})
       else
-        add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}], groups: groups, linenum: {{__LINE__}})
+        add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}],
+          groups: groups, linenum: {{__LINE__}})
       end
     end
 
@@ -133,25 +147,30 @@ module Tablo
       # Handle consecutive framed rows within the same table.
       case {previous_rowtype, current_rowtype}
       when {RowType::Body, RowType::Body}
-        add_rule(RuleType::BodyBody, groups: groups, linenum: {{__LINE__}}) if row_divider
+        add_rule(RuleType::BodyBody, groups: groups,
+          linenum: {{__LINE__}}) if row_divider
       when {RowType::Group, RowType::Header}
-        add_rule(RuleType::GroupHeader, groups: groups, linenum: {{__LINE__}}) unless table.omit_group_header_rule?
+        add_rule(RuleType::GroupHeader, groups: groups,
+          linenum: {{__LINE__}}) unless table.omit_group_header_rule?
       else
-        add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}], groups: groups, linenum: {{__LINE__}})
+        add_rule(ROWTYPE_POSITION[{previous_rowtype, current_rowtype}],
+          groups: groups, linenum: {{__LINE__}})
       end
     end
 
     private def handle_prev_framed_only(groups : Array(Array(Int32)))
       # Handle the case where the previous row is framed and the current row is not.
       fill_page
-      add_rule(ROWTYPE_POSITION[{previous_rowtype, :bottom}], groups: groups, linenum: {{__LINE__}})
+      add_rule(ROWTYPE_POSITION[{previous_rowtype, :bottom}],
+        groups: groups, linenum: {{__LINE__}})
       apply_line_spacing(line_breaks_after(previous_rowtype) - 1)
     end
 
     private def handle_curr_framed_only(groups : Array(Array(Int32)))
       # Handle the case where the current row is framed and the previous is not.
       apply_line_spacing(line_breaks_before(current_rowtype) - 1)
-      add_rule(ROWTYPE_POSITION[{current_rowtype, :top}], groups: groups, linenum: {{__LINE__}})
+      add_rule(ROWTYPE_POSITION[{current_rowtype, :top}], groups: groups,
+        linenum: {{__LINE__}})
     end
 
     private def process_last_row
@@ -167,14 +186,17 @@ module Tablo
     private def process_main_table_last_row
       # Process the end of the main table.
       if !table.child.nil?
-        # When a summary table exists, decide whether to link based on omit_last_rule? and current row type.
+        # When a summary table exists, decide whether to link based
+        # on omit_last_rule? and current row type.
         if !(table.omit_last_rule? && (current_rowtype == RowType::Body ||
-           (current_rowtype == RowType::Footer && table.footer.framed? && !table.footer.page_break?)))
+           (current_rowtype == RowType::Footer && table.footer.framed? &&
+           !table.footer.page_break?)))
           close_table unless table.omit_last_rule?
           RowGroup.rowtype_memory = nil
           manage_page_break if table.omit_last_rule?
         end
-        # Prepare transition: if the last row is a framed Footer, store it for the summary table.
+        # Prepare transition: if the last row is a framed Footer,
+        # store it for the summary table.
         RowGroup.transition_footer = (current_rowtype == RowType::Footer) ? table.footer : nil
       else
         # No summary table attached.
@@ -183,24 +205,6 @@ module Tablo
         manage_page_break if table.omit_last_rule?
       end
     end
-
-    # private def process_title
-    #   print_title if has_title?
-    # end
-
-    # private def process_subtitle
-    #   print_subtitle if has_subtitle?
-    # end
-
-    # private def process_group_header
-    #   print_group if has_group?
-    # end
-
-    # private def process_rows
-    #   rows.each do |row|
-    #     process_row(row)
-    #   end
-    # end
 
     private def fill_page
       # Add "filler" rows to reach page size (header_frequency)
@@ -374,6 +378,12 @@ module Tablo
       end
     end
 
+    private def process_body
+      # For Body, always !
+      self.current_rowtype = RowType::Body
+      apply_rules
+    end
+
     private def process_footer
       if has_footer?
         self.current_rowtype = RowType::Footer
@@ -383,14 +393,12 @@ module Tablo
 
     protected def run
       process_table_transition
+
       process_title
       process_subtitle
       process_group
       process_header
-
-      # For Body, always !
-      self.current_rowtype = RowType::Body
-      apply_rules
+      process_body
       process_footer
 
       # After each fired rule, previous_rowtype and current_rowtype are equal
@@ -405,8 +413,7 @@ module Tablo
 
     private def apply_line_spacing(count)
       count.times do
-        # self.rows << " " # min one space char, otherwise row if rejected !
-        self.rows << "" # empty string seems Ok now !
+        self.rows << ""
       end
     end
 
@@ -430,7 +437,6 @@ module Tablo
       return false if table.title.value.nil? ||
                       table.header_frequency.nil?
       first_row? || (repeated? && table.title.repeated?)
-      # masked_headers involved ???? TODO
     end
 
     private def has_subtitle?
@@ -453,36 +459,30 @@ module Tablo
 
     private def has_footer?
       hf = table.header_frequency
-      return false if hf.nil?
-      return false if table.footer.value.nil?
-      disp = if row_index > 0 && hf > 0
-               (row_index + 1) % hf == 0
-             else
-               row_index + 1 == hf
-             end
-      disp || last_row?
+      return false if hf.nil? || table.footer.value.nil?
+      row_number = row_index + 1
+      footer_due = if row_index > 0 && hf > 0
+                     row_number % hf == 0
+                   else
+                     row_number == hf
+                   end
+      footer_due || last_row?
     end
 
     private def repeated?
-      if (hf = table.header_frequency).nil?
-        false
-      else
-        if hf == 0
-          false
-        else
-          (row_index % hf == 0) && (row_index > 0)
-        end
-      end
+      hf = table.header_frequency
+      return false if hf.nil? || hf == 0
+      row_index > 0 && row_index % hf == 0
     end
 
-    private def missing_rows
+    private def missing_rows : Int32
       hf = table.header_frequency
-      return 0 if hf.nil?
-      return 0 unless last_row?
-      return 0 if hf.zero?
+      # Return 0 if header frequency is nil, zero, or it's not the last row.
+      return 0 if hf.nil? || hf.zero? || !last_row?
       mod = (row_index + 1) % hf
-      return 0 if mod.zero?
-      hf - mod
+      # If the remainder is zero, no rows are missing;
+      # otherwise, return the difference.
+      mod.zero? ? 0 : hf - mod
     end
 
     private def page

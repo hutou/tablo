@@ -74,36 +74,8 @@ module Tablo
 
   DEFAULT_HEADING_ALIGNMENT = Justify::Center
 
-  # ---------- LabelType ----------------------------------------------------------
-  #
-  #
-
   # `Tablo::LabelType` is an union of allowed types for a column identifier (*label*).
   alias LabelType = String | Symbol | Int32
-
-  # ---------- LabelType ----------------------------------------------------------
-  #
-  #
-
-  # Excepted columns
-  # alias Except = LabelType | Array(LabelType)
-
-  # -------------------------------------------------------------------------------
-  #
-  #
-
-  # :nodoc:
-  # Table width, packing
-  # enum GetWidthFrom
-  #   Screen
-  # end
-  # alias TableWidth = GetWidthFrom | Int32
-
-  # enum PackingMode
-  #   Initial
-  #   Current
-  #   AutoSized
-  # end
 
   # Line break settings :
   # - Rune: allowed between characters

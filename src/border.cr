@@ -214,14 +214,12 @@ module Tablo
     end
 
     # Renders a horizontal rule, depending on its ruletype.
-    # (cannot be private, because of call from table.cr)
     protected def horizontal_rule(column_widths, ruletype = RuleType::Bottom,
                                   groups = [] of Array(Int32)) # nil)
       left, middle, right, segment, altmiddle = connectors(ruletype)
       segments = column_widths.map { |width| segment * width }
       # Purpose of the line below ???  Use case not clear, but doesn't hurt though!
       left = right = middle = altmiddle = "" if segments.all?(&.empty?)
-      # str = if groups.nil?
       str = if groups.empty?
               segments.join(vdiv_mid.empty? ? "" : middle)
             else
@@ -239,7 +237,6 @@ module Tablo
     end
 
     # Joins elements of a row (styled connectors and column contents).
-    # (cannot be private, because of call from table.cr)
     protected def join_cell_contents(cells)
       styled_divider_vertical = style(vdiv_mid)
       styled_edge_left = style(vdiv_left)

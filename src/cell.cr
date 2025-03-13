@@ -9,9 +9,9 @@ module Tablo
   #
   # It is made up of several attributes and methods, including the *value*
   # attribute, of type `Tablo::CellType`, which holds the raw content of each element
-  # in the data source.
+  # from the data source.
   abstract class Cell
-    # Returns the raw value of the cell, as `Tablo::CellType`
+    # Returns the raw value of the cell, as a `Tablo::CellType`
     getter value
     #
     private getter left_padding, right_padding, padding_character
@@ -162,8 +162,6 @@ module Tablo
     # adding a truncator characted at the end of the last line, replacing
     # the first character of right padding, if line count
     # is > than iheader_wrap or body_wrap.
-    #
-    # called from table.format_row
     protected def padded_truncated_subcells(line_count_max)
       truncated = (line_count > line_count_max)
       (0...line_count_max).map do |subcell_index|
@@ -219,19 +217,17 @@ module Tablo
     class Text < Cell
       # The purpose of the formatter is to transform the raw value of a cell
       # into a formatted character string <br />
-      # (`Tablo::DEFAULT_FORMATTER` is applied if none is defined by the user).
       #
       # For cells of type `Tablo::Cell::Text` (headings and group), the formatter Proc can
       # take 2 different forms, as shown below by their commonly used parameter
       # names  and types: <br />
       # - 1st form : (*value* : `Tablo::CellType`) <br />
       # - 2nd form : (*value* : `Tablo::CellType`, *column_width* : `Int32`)
-      #   Default formatter, defined by`Tablo::Config::Defaults.heading_formatter` (or
-      #                   `Tablo::Config::Defaults.group_formatter`)
       #
-      # and the return type is String for both.
+      # The default formatter is defined by`Tablo::Config::Defaults.heading_formatter` (or
+      # Tablo::Config::Defaults.group_formatter`) and the return type is String for both.
       #
-      # Any processing can be done on cell value. For example, in a group, if the
+      # Any processing can be done on the cell value. For example, in a group, if the
       # runtime cell value contains a `Time` type, we could format as :
       # ```
       # require "tablo"
@@ -249,7 +245,7 @@ module Tablo
       # puts table
       #  ```
       #
-      # ```
+      # ```text
       # +--------------+-----------------------------+
       # |    Before    | After                       |
       # |   15/1/2024  | Date = 2024-01-15           |
@@ -277,7 +273,7 @@ module Tablo
       # puts table
       # ```
       #
-      # ```
+      # ```text
       # +--------------------------------------------+
       # |    M    y         T    i    t    l    e    |
       # +--------------+--------------+--------------+
@@ -302,10 +298,9 @@ module Tablo
       #
       # - 1st form : (*content* : `String`) <br />
       # - 2nd form : (*content* : `String`, *line* : `Int32`)
-      #   Default styler, defined by`Tablo::Config::Defaults.heading_styler` (or
-      #                   `Tablo::Config::Defaults.group_styler`)
       #
-      # and the return type is String for both.
+      # The default styler, defined by`Tablo::Config::Defaults.heading_styler` (or
+      # `Tablo::Config::Defaults.group_styler`) and the return type is String for both.
       #
       # *content* is the formatted cell value, after the formatter has been applied.<br />
       # *line* designates the line number in a (multi-line) cell (0..n).
@@ -356,8 +351,6 @@ module Tablo
                      Proc(String, Int32, String)
       # called from Table
       protected getter row_type
-
-      # def_clone
 
       # :nodoc:
       def initialize(@value : CellType,
@@ -440,18 +433,17 @@ module Tablo
 
       # The purpose of the formatter is to transform the raw value of a cell
       # into a formatted character string <br />
-      # (`Tablo::DEFAULT_FORMATTER` is applied if none is defined by the user).
       #
       # For cells of type `Tablo::Cell::Data`, the Formatter Proc can take 4 different
       # forms, as shown below by their commonly used parameter names  and types: <br />
       # - 1st form : (*value* : `Tablo::CellType`) <br />
-      # - 2nd form : (*value* : `Tablo::CellType`, *column_width* : `Int32`)
-      # - 3rd form : (*value* : `Tablo::CellType`, *coords* : `Tablo::Cell::Data::Coords`)
+      # - 2nd form : (*value* : `Tablo::CellType`, *column_width* : `Int32`)  <br />
+      # - 3rd form : (*value* : `Tablo::CellType`, *coords* : `Tablo::Cell::Data::Coords`)  <br />
       # - 4th form : (*value* : `Tablo::CellType`, *coords* : `Tablo::Cell::Data::Coords`, *column_width* : `Int32`)
-      #   Default formatter, defined by`Tablo::Config::Defaults.body_formatter` (or
-      #                   `Tablo::Config::Defaults.header_formatter`)
       #
-      # and the return type is String for all of them.
+      # The default formatter is defined by`Tablo::Config::Defaults.body_formatter` (or
+      # `Tablo::Config::Defaults.header_formatter`) and the return type is String for
+      # all of them.
       #
       # These different forms can be used for conditional formatting.
       #
@@ -474,7 +466,7 @@ module Tablo
       # puts table
       # ```
       #
-      # ```
+      # ```text
       # +--------------+--------------+--------------+
       # | itself       | itself x 2   | itself x 3   |
       # +--------------+--------------+--------------+
@@ -520,7 +512,7 @@ module Tablo
       # puts table
       # ```
       #
-      # ```
+      # ```text
       # +--------------+--------------+--------------+
       # | itself       | itself x 2   | itself x 3   |
       # +--------------+--------------+--------------+
@@ -543,16 +535,14 @@ module Tablo
       # 5 different forms, as shown below by their commonly used parameter names and types:
       #
       # - 1st form : (*content* : `String`) <br />
-      # - 2nd form : (*content* : `String`, *line_index* : `Int32`)
-      # - 3rd form : (*value* : `Tablo::CellType`, *content* : `String`)
-      # - 4th form : (*value* : `Tablo::CellType`, *coords* : `Tablo::Cell::Data::Coords`,
-      #              *content* : `String`)
-      # - 5th form : (*value* : `Tablo::CellType`, *coords* : `Tablo::Cell::Data::Coords`,
-      #              *content* : `String`, *line_index* : `Int32`)
-      #   Default styler, defined by`Tablo::Config::Defaults.body_styler` (or
-      #                   `Tablo::Config::Defaults.header_styler`)
+      # - 2nd form : (*content* : `String`, *line_index* : `Int32`)  <br />
+      # - 3rd form : (*value* : `Tablo::CellType`, *content* : `String`)   <br />
+      # - 4th form : (*value* : `Tablo::CellType`, *coords* : `Tablo::Cell::Data::Coords`,             *content* : `String`)   <br />
+      # - 5th form : (*value* : `Tablo::CellType`, *coords* : `Tablo::Cell::Data::Coords`,          *content* : `String`, *line_index* : `Int32`)   <br />
       #
-      # and the return type is String for all of them.
+      # The default styler vis defined by`Tablo::Config::Defaults.body_styler` (or
+      # `Tablo::Config::Defaults.header_styler`) and the return type is String for
+      # all of them.
       #
       # - *content* is the formatted value of the cell (after formatter
       # has been applied) <br />

@@ -27,8 +27,8 @@ module Tablo
       end
     end
 
-    protected property? repeated   # Specific to tiles
-    protected property? page_break # specific to footers
+    protected property? repeated   # Specific to title
+    protected property? page_break # specific to footer
 
     # The struct Heading instantiation can accept up to 9 parameters, all of
     # which have a default value.
@@ -64,15 +64,15 @@ module Tablo
     #   subtitle when the *header_frequency* attribute of Table is greater than
     #   0 (if `true`, title and subtitle are inserted before the repeated group
     #   and header rows). <br />
-    #   *-> only applicable to the title attribute, no effect on footer or subtitle* <br />
-    #   (Default: `false`)
+    #   *-> only applicable to the title attribute, forbidden on footer or subtitle* <br />
+    #   (Default: `nil`)
     #
     # - *page_break*: If true, a page break is inserted after the footer
     #   content (or after the footer frame, but note that in this case, it
     #   prevents the join with the frame that follows when the value of the
     #   *omit_last_rule* parameter of Table is `true`). <br />
-    #   *-> only applicable to the footer attribute, no effect on title or subtitle* <br />
-    #   (Default: `false`)
+    #   *-> only applicable to the footer attribute, forbidden on title or subtitle* <br />
+    #   (Default: `nil`)
     #
     # A minimal example could be:
     # ```
@@ -84,7 +84,7 @@ module Tablo
     # puts table
     # ```
     #
-    # ```
+    # ```text
     # +--------------+
     # |   My title   |
     # +--------------+
@@ -121,7 +121,7 @@ module Tablo
     # but two line breaks have been issued. We can also see that the footer is not
     # joined to the last body row because of the *line_breaks_before* parameter set to 1.
     #
-    # ```
+    # ```text
     # +--------------+
     # |   My title   |
     # +--------------+
@@ -145,8 +145,8 @@ module Tablo
                    @alignment : Justify = Config::Defaults.heading_alignment,
                    @formatter : Cell::Text::Formatter = Config::Defaults.heading_formatter,
                    @styler : Cell::Text::Styler = Config::Defaults.heading_styler,
-                   @repeated : Bool = false,
-                   @page_break : Bool = false)
+                   @repeated : Bool? = nil,
+                   @page_break : Bool? = nil)
     end
   end
 

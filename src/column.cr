@@ -5,15 +5,15 @@ module Tablo
   # Its main function is to manage the creation of table columns, using
   # the `Table#add_column` method.
   class Column(T)
-    protected property width                   # called from Table, Summary
-    protected getter initial_width : Int32 = 0 # called from Table
-    protected getter index                     # called from Table
-    protected getter extractor                 # called from Table, Summary
-    protected getter header                    # called from Table
-    protected getter left_padding              # called from Table, Summary
-    protected getter right_padding             # called from Table, Summary
-    protected getter padding_character         # called from Summary
-    protected getter truncation_indicator      # called from Summary
+    protected property width
+    protected getter initial_width : Int32 = 0
+    protected getter index
+    protected getter extractor
+    protected getter header
+    protected getter left_padding
+    protected getter right_padding
+    protected getter padding_character
+    protected getter truncation_indicator
 
     private getter header_alignment
     private getter header_formatter
@@ -51,7 +51,6 @@ module Tablo
     end
 
     # Creates a HeaderCell type cell
-    # called from Table
     # Returns a Cell::Data
     protected def header_cell(bodycell)
       Cell::Data.new(
@@ -70,7 +69,6 @@ module Tablo
     end
 
     # Creates a BodyCell type cell
-    # called from Table
     # Returns a Cell::Data
     protected def body_cell(source, row_index, column_index)
       value = body_cell_value(source, row_index)
@@ -95,19 +93,16 @@ module Tablo
     # 2 parameters, but using only one is valid syntax
     # for source, use first block parameter = add_column(...) {|n| n} or {|n, i| n}
     # for row index, use second block parameter = add_column(...) {|n, i| i}
-    # called from Table
     protected def body_cell_value(source, row_index)
       extractor.call(source, row_index)
     end
 
     # Returns total column width (content width + padding widths)
-    # called from Table
     protected def padded_width
       width + total_padding
     end
 
     # Returns total column padding
-    # called from Table
     protected def total_padding
       left_padding + right_padding
     end

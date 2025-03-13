@@ -22,7 +22,6 @@ module Tablo
     # - *NoDot*: Decimal part of field (including dot) is blank if all decimals are zeroes
     # - *DotOnly*: Decimal part of field is blank if all decimals are zeroes
     # - *DotZero*: Decimal part of field is blank if all decimals are zeroes, except first (.0)
-
     enum FPAlign
       Blank
       NoDot
@@ -159,7 +158,6 @@ module Tablo
                      text_alignment : Justify = Justify::Center,
                      max_fill : Int32 = Int32::MAX) : String
       stretched_text = [] of String
-
       if max_fill < 0
         raise Error::InvalidValue.new "stretch: filler size cannot be negative"
       end
@@ -173,7 +171,6 @@ module Tablo
       pre_fix, pre_var, pre_head = parse.call(prefix)
       suf_head, suf_var, suf_fix = parse.call(suffix)
 
-      # max_line_len = text.lines.map(&.strip.size).max
       max_line_len = text.lines.max_of(&.strip.size)
       intervals = max_line_len - 1
       pre_fix_head_size = pre_fix.size + pre_head.size
@@ -208,7 +205,5 @@ module Tablo
       end
       stretched_text.join("\n")
     end
-
-    # extend self
   end
 end

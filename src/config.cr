@@ -6,6 +6,7 @@ module Tablo
     # - `true` : styling not allowed (Default)
     # - `false` : styling allowed
     STYLER_TTY_ONLY = true
+    # see `STYLER_TTY_ONLY`
     class_property? styler_tty_only : Bool = STYLER_TTY_ONLY
 
     # Checks whether terminal size is used as table total width when packing is
@@ -13,6 +14,7 @@ module Tablo
     # - `true` : table width is capped to terminal size
     # - `false` : terminal size is ignored (Default) <br />
     TERMINAL_CAPPED_WIDTH = false
+    # see `TERMINAL_CAPPED_WIDTH`
     class_property? terminal_capped_width : Bool = TERMINAL_CAPPED_WIDTH
 
     # Default control values for Table and/or Column initialization,
