@@ -182,10 +182,9 @@ module Tablo
     # Method to style and align formatted data **inside** cell data area,
     # **excluding** padding areas.
     private def render_subcell(subcell, line_index)
-      if wrap_mode == WrapMode::Word
-        # preserve dot alignment format if number
-        subcell = subcell.strip if value.is_a?(String)
-      end
+      # Strip spaces for normal alignment
+      # if blank space needed, use NO-BREAK SPACE char in source code
+      subcell = subcell.strip(' ') if value.is_a?(String)
 
       spacing = [width - subcell.size, 0].max
       {% if @top_level.has_constant?("UnicodeCharWidth") %}
