@@ -1107,6 +1107,7 @@ puts table.pack(30)
 |     |     | nge | pha | nt |
 |     |     |     | nt  | St |
 |     |     |     |     | Mi |
+|     |     |     |     | ch |
 |     |     |     |     | el |
 +-----+-----+-----+-----+----+
 table width = 30
