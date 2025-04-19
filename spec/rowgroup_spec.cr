@@ -896,7 +896,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         t.add_summary(
           [
             Tablo::Summary::UserProc.new(proc: ->(table : Tablo::Table(Int32)) {
-              sum_int = (table.column_data(2).map &.as(Number)).sum
+              sum_int = (table.column_data(2).map &.as(Int32)).sum
               {:sum_int => sum_int.as(Tablo::CellType)}
             }),
             Tablo::Summary::BodyRow.new(2, 1, -> { Tablo::Summary.use(:sum_int) }),
@@ -914,7 +914,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         │            3 :            6 : false        │
         ╰──────────────┴──────────────┴──────────────╯
         ╭──────────────┬──────────────┬──────────────╮
-        │              :         12.0 :              │
+        │              :           12 :              │
         ╰──────────────┴──────────────┴──────────────╯
         OUTPUT
       {% if flag?(:DEBUG) %}
@@ -939,7 +939,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         t.add_summary(
           [
             Tablo::Summary::UserProc.new(proc: ->(table : Tablo::Table(Int32)) {
-              sum_int = (table.column_data(2).map &.as(Number)).sum
+              sum_int = (table.column_data(2).map &.as(Int32)).sum
               {:sum_int => sum_int.as(Tablo::CellType)}
             }),
             Tablo::Summary::BodyRow.new(2, 1, -> { Tablo::Summary.use(:sum_int) }),
@@ -956,7 +956,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         │            2 :            4 : true         │
         │            3 :            6 : false        │
         ├──────────────┼──────────────┼──────────────┤
-        │              :         12.0 :              │
+        │              :           12 :              │
         ╰──────────────┴──────────────┴──────────────╯
         OUTPUT
       {% if flag?(:DEBUG) %}
@@ -981,7 +981,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         t.add_summary(
           [
             Tablo::Summary::UserProc.new(proc: ->(table : Tablo::Table(Int32)) {
-              sum_int = (table.column_data(2).map &.as(Number)).sum
+              sum_int = (table.column_data(2).map &.as(Int32)).sum
               {:sum_int => sum_int.as(Tablo::CellType)}
             }),
             Tablo::Summary::BodyRow.new(2, 1, -> { Tablo::Summary.use(:sum_int) }),
@@ -995,7 +995,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         │            3 :            6 : false        │
         ╰──────────────┴──────────────┴──────────────╯
         ╭──────────────┬──────────────┬──────────────╮
-        │              :         12.0 :              │
+        │              :           12 :              │
         ╰──────────────┴──────────────┴──────────────╯
         OUTPUT
       {% if flag?(:DEBUG) %}
@@ -1020,7 +1020,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         t.add_summary(
           [
             Tablo::Summary::UserProc.new(proc: ->(table : Tablo::Table(Int32)) {
-              sum_int = (table.column_data(2).map &.as(Number)).sum
+              sum_int = (table.column_data(2).map &.as(Int32)).sum
               {:sum_int => sum_int.as(Tablo::CellType)}
             }),
             Tablo::Summary::BodyRow.new(2, 1, -> { Tablo::Summary.use(:sum_int) }),
@@ -1033,7 +1033,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         │            2 :            4 : true         │
         │            3 :            6 : false        │
         ├──────────────┼──────────────┼──────────────┤
-        │              :         12.0 :              │
+        │              :           12 :              │
         ╰──────────────┴──────────────┴──────────────╯
         OUTPUT
       {% if flag?(:DEBUG) %}
@@ -1059,7 +1059,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         t.add_summary(
           [
             Tablo::Summary::UserProc.new(proc: ->(table : Tablo::Table(Int32)) {
-              sum_int = (table.column_data(2).map &.as(Number)).sum
+              sum_int = (table.column_data(2).map &.as(Int32)).sum
               {:sum_int => sum_int.as(Tablo::CellType)}
             }),
             Tablo::Summary::BodyRow.new(2, 1, -> { Tablo::Summary.use(:sum_int) }),
@@ -1079,7 +1079,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         │                 End of page                │
         ╰────────────────────────────────────────────╯
         ╭──────────────┬──────────────┬──────────────╮
-        │              :         12.0 :              │
+        │              :           12 :              │
         ╰──────────────┴──────────────┴──────────────╯
         OUTPUT
       {% if flag?(:DEBUG) %}
@@ -1105,7 +1105,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         t.add_summary(
           [
             Tablo::Summary::UserProc.new(proc: ->(table : Tablo::Table(Int32)) {
-              sum_int = (table.column_data(2).map &.as(Number)).sum
+              sum_int = (table.column_data(2).map &.as(Int32)).sum
               {:sum_int => sum_int.as(Tablo::CellType)}
             }),
             Tablo::Summary::BodyRow.new(2, 1, -> { Tablo::Summary.use(:sum_int) }),
@@ -1125,7 +1125,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         │                 End of page                │
         ╰────────────────────────────────────────────╯\f
         ╭──────────────┬──────────────┬──────────────╮
-        │              :         12.0 :              │
+        │              :           12 :              │
         ╰──────────────┴──────────────┴──────────────╯
         OUTPUT
       {% if flag?(:DEBUG) %}
@@ -1151,7 +1151,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         t.add_summary(
           [
             Tablo::Summary::UserProc.new(proc: ->(table : Tablo::Table(Int32)) {
-              sum_int = (table.column_data(2).map &.as(Number)).sum
+              sum_int = (table.column_data(2).map &.as(Int32)).sum
               {:sum_int => sum_int.as(Tablo::CellType)}
             }),
             Tablo::Summary::BodyRow.new(2, 1, -> { Tablo::Summary.use(:sum_int) }),
@@ -1170,7 +1170,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         ├──────────────┴──────────────┴──────────────┤
         │                 End of page                │
         ├──────────────┬──────────────┬──────────────┤
-        │              :         12.0 :              │
+        │              :           12 :              │
         ╰──────────────┴──────────────┴──────────────╯
         OUTPUT
       {% if flag?(:DEBUG) %}
@@ -1196,7 +1196,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         t.add_summary(
           [
             Tablo::Summary::UserProc.new(proc: ->(table : Tablo::Table(Int32)) {
-              sum_int = (table.column_data(2).map &.as(Number)).sum
+              sum_int = (table.column_data(2).map &.as(Int32)).sum
               {:sum_int => sum_int.as(Tablo::CellType)}
             }),
             Tablo::Summary::BodyRow.new(2, 1, -> { Tablo::Summary.use(:sum_int) }),
@@ -1215,7 +1215,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         ├──────────────┴──────────────┴──────────────┤
         │                 End of page                │\f
         ╭──────────────┬──────────────┬──────────────╮
-        │              :         12.0 :              │
+        │              :           12 :              │
         ╰──────────────┴──────────────┴──────────────╯
         OUTPUT
       {% if flag?(:DEBUG) %}
@@ -1243,7 +1243,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         t.add_summary(
           [
             Tablo::Summary::UserProc.new(proc: ->(table : Tablo::Table(Int32)) {
-              sum_int = (table.column_data(2).map &.as(Number)).sum
+              sum_int = (table.column_data(2).map &.as(Int32)).sum
               {:sum_int => sum_int.as(Tablo::CellType)}
             }),
             Tablo::Summary::BodyRow.new(2, 1, -> { Tablo::Summary.use(:sum_int) }),
@@ -1257,7 +1257,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         │            3 :            6 : false        │
         ╰──────────────┴──────────────┴──────────────╯
         ╭──────────────┬──────────────┬──────────────╮
-        │              :         12.0 :              │
+        │              :           12 :              │
         ╰──────────────┴──────────────┴──────────────╯
         OUTPUT
       {% if flag?(:DEBUG) %}
@@ -1283,7 +1283,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         t.add_summary(
           [
             Tablo::Summary::UserProc.new(proc: ->(table : Tablo::Table(Int32)) {
-              sum_int = (table.column_data(2).map &.as(Number)).sum
+              sum_int = (table.column_data(2).map &.as(Int32)).sum
               {:sum_int => sum_int.as(Tablo::CellType)}
             }),
             Tablo::Summary::BodyRow.new(2, 1, -> { Tablo::Summary.use(:sum_int) }),
@@ -1297,7 +1297,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         │            3 :            6 : false        │
         ╰──────────────┴──────────────┴──────────────╯
         ╭──────────────┬──────────────┬──────────────╮
-        │              :         12.0 :              │
+        │              :           12 :              │
         ╰──────────────┴──────────────┴──────────────╯
         OUTPUT
       {% if flag?(:DEBUG) %}
@@ -1323,7 +1323,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         t.add_summary(
           [
             Tablo::Summary::UserProc.new(proc: ->(table : Tablo::Table(Int32)) {
-              sum_int = (table.column_data(2).map &.as(Number)).sum
+              sum_int = (table.column_data(2).map &.as(Int32)).sum
               {:sum_int => sum_int.as(Tablo::CellType)}
             }),
             Tablo::Summary::BodyRow.new(2, 1, -> { Tablo::Summary.use(:sum_int) }),
@@ -1336,7 +1336,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         │            2 :            4 : true         │
         │            3 :            6 : false        │
         ├──────────────┼──────────────┼──────────────┤
-        │              :         12.0 :              │
+        │              :           12 :              │
         ╰──────────────┴──────────────┴──────────────╯
         OUTPUT
       {% if flag?(:DEBUG) %}
@@ -1362,7 +1362,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         t.add_summary(
           [
             Tablo::Summary::UserProc.new(proc: ->(table : Tablo::Table(Int32)) {
-              sum_int = (table.column_data(2).map &.as(Number)).sum
+              sum_int = (table.column_data(2).map &.as(Int32)).sum
               {:sum_int => sum_int.as(Tablo::CellType)}
             }),
             Tablo::Summary::BodyRow.new(2, 1, -> { Tablo::Summary.use(:sum_int) }),
@@ -1375,7 +1375,7 @@ describe "#{Tablo::RowGroup} -> Sequences of row types (Title, subtitle, " +
         │            2 :            4 : true         │
         │            3 :            6 : false        │
         ├──────────────┼──────────────┼──────────────┤
-        │              :         12.0 :              │
+        │              :           12 :              │
         ╰──────────────┴──────────────┴──────────────╯
         OUTPUT
       {% if flag?(:DEBUG) %}
