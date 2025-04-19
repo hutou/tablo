@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.14.0">
+<meta name="generator" content="Crystal Docs 1.15.1">
 <meta name="crystal_docs.project_version" content="main">
 <meta name="crystal_docs.project_name" content="tablo">
 
@@ -1508,7 +1508,9 @@ puts <span class="s">&quot;Table width = </span><span class="i">#{</span>transpo
 | String 1d | -1           | 0            | 1            |
 +-----------+--------------+--------------+--------------+
 Table width = 58</code></pre>
-<p>See API for details.</p>
+<p>When transposing, unwanted alignments may occur. To avoid this problem,
+replace all space characters with no-break space characters in the content
+of the cells concerned, like <code>cell_content.gsub(' ', '\u{a0}')</code></p>
 <h2><a id="columns-selection-and-ordering" class="anchor" href="#columns-selection-and-ordering">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
