@@ -1483,7 +1483,9 @@ puts "Table width = #{transposed_table.total_table_width}"
 Table width = 58
 ```
 
-See API for details.
+When transposing, unwanted alignments may occur. To avoid this problem,
+replace all space characters with no-break space characters in the content
+of the cells concerned, like `cell_content.gsub(' ', '\u{a0}')`
 
 ## Columns selection and ordering
 
