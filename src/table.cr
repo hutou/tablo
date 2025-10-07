@@ -815,7 +815,7 @@ module Tablo
     # end
     # ```
     # - Returns a String representing the formatted horizontal rule
-    def horizontal_rule(position = RuleType::Bottom, column_groups = [] of Array(Int32)) # nil)
+    def horizontal_rule(position = RuleType::BodyBody, column_groups = [] of Array(Int32)) # nil)
       # column_groups = column count per group, eg: [3,1,2,4]
       widths = column_list.map { |column| column.width + column.total_padding }
       border.horizontal_rule(widths, position, groups: column_groups)

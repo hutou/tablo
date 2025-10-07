@@ -214,7 +214,7 @@ module Tablo
     end
 
     # Renders a horizontal rule, depending on its ruletype.
-    protected def horizontal_rule(column_widths, ruletype = RuleType::Bottom,
+    protected def horizontal_rule(column_widths, ruletype = RuleType::BodyBody,
                                   groups = [] of Array(Int32)) # nil)
       left, middle, right, segment, altmiddle = connectors(ruletype)
       segments = column_widths.map { |width| segment * width }
