@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.16.3">
+<meta name="generator" content="Crystal Docs 1.18.2">
 <meta name="crystal_docs.project_version" content="main">
 <meta name="crystal_docs.project_name" content="tablo">
 
@@ -277,8 +277,23 @@
       
     </li>
   
-  <li class=" current" data-id="tablo/Tablo/Table" data-name="tablo::table(t)">
+  <li class="parent open current" data-id="tablo/Tablo/Table" data-name="tablo::table(t)">
       <a href="../Tablo/Table.html">Table</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Table/ColumnIndex" data-name="tablo::table::columnindex">
+      <a href="../Tablo/Table/ColumnIndex.html">ColumnIndex</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Table/ColumnItem" data-name="tablo::table::columnitem">
+      <a href="../Tablo/Table/ColumnItem.html">ColumnItem</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -365,7 +380,7 @@ the data source and column definitions.</p>
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L12" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L12" target="_blank">
         table.cr
       </a>
     
@@ -551,16 +566,16 @@ the data source and column definitions.</p>
       </li>
     
       <li class="entry-summary">
-        <a href="#using_column_indexes%28%2Aindexes%2Creordered%3Dfalse%29-instance-method" class="signature"><strong>#using_column_indexes</strong>(*indexes, reordered = <span class="n">false</span>)</a>
+        <a href="#using_column_indexes%28%2Aindexes%3AColumnIndex%7CEnumerable%28ColumnIndex%29%2Creordered%3ABool%3Dfalse%29-instance-method" class="signature"><strong>#using_column_indexes</strong>(*indexes : ColumnIndex | Enumerable(ColumnIndex), reordered : Bool = <span class="n">false</span>)</a>
         
-          <div class="summary"><p>Once a table has been defined, the <code><a href="../Tablo/Table.html#using_column_indexes%28%2Aindexes%2Creordered%3Dfalse%29-instance-method">Table#using_column_indexes</a></code> method is used to select the columns to be displayed by their index in the column registry, and to reorder them if necessary.</p></div>
+          <div class="summary"><p>Once a table has been defined, the <code><a href="../Tablo/Table.html#using_column_indexes%28%2Aindexes%3AColumnIndex%7CEnumerable%28ColumnIndex%29%2Creordered%3ABool%3Dfalse%29-instance-method">Table#using_column_indexes</a></code> method is used to select the columns to be displayed by their index in the column registry, and to reorder them if necessary.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#using_columns%28%2Acolumns%2Creordered%3Dfalse%29-instance-method" class="signature"><strong>#using_columns</strong>(*columns, reordered = <span class="n">false</span>)</a>
+        <a href="#using_columns%28%2Acolumns%3AColumnItem%7CEnumerable%28ColumnItem%29%2Creordered%3ABool%3Dfalse%29-instance-method" class="signature"><strong>#using_columns</strong>(*columns : ColumnItem | Enumerable(ColumnItem), reordered : Bool = <span class="n">false</span>)</a>
         
-          <div class="summary"><p>Once a table has been defined, the <code><a href="../Tablo/Table.html#using_columns%28%2Acolumns%2Creordered%3Dfalse%29-instance-method">Table#using_columns</a></code> method is used to select the columns to be displayed, and to reorder them if necessary.</p></div>
+          <div class="summary"><p>Once a table has been defined, the <code><a href="../Tablo/Table.html#using_columns%28%2Acolumns%3AColumnItem%7CEnumerable%28ColumnItem%29%2Creordered%3ABool%3Dfalse%29-instance-method">Table#using_columns</a></code> method is used to select the columns to be displayed, and to reorder them if necessary.</p></div>
         
       </li>
     
@@ -782,7 +797,7 @@ and Summary tables)</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L227" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L227" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -803,7 +818,7 @@ and Summary tables)</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L230" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L230" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -839,7 +854,7 @@ and one with block_given = false</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L59" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L59" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -924,7 +939,7 @@ Captured block for extracting data from source</li>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L434" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L434" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -977,7 +992,7 @@ Can be an empty string</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L513" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L513" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1013,7 +1028,7 @@ where <code>&lt;<a href="../Tablo/Table.html">Table</a> parameters&gt;</code> is
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L633" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L633" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1034,7 +1049,7 @@ where <code>&lt;<a href="../Tablo/Table.html">Table</a> parameters&gt;</code> is
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L639" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L639" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1066,7 +1081,7 @@ puts table.column_data(<span class="s">&quot;double&quot;</span>) <span class="c
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L1626" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L1652" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1094,7 +1109,7 @@ according to the Table <em>header_frequency</em> value.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L694" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L694" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1125,7 +1140,7 @@ between some Body rows, we can do :</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L818" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L818" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1286,7 +1301,7 @@ in this calculation.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L995" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L995" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1308,7 +1323,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L1003" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L1003" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1330,7 +1345,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L1020" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L1020" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1351,7 +1366,7 @@ Returns <code>self</code> (the current Table instance) after modifying its colum
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L39" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L39" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1424,7 +1439,7 @@ puts table</code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L389" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L389" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1445,7 +1460,7 @@ puts table</code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L645" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L645" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1466,7 +1481,7 @@ puts table</code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L650" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L650" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1487,7 +1502,7 @@ puts table</code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L1307" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L1307" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1579,22 +1594,22 @@ puts table</code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L1209" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L1209" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="using_column_indexes(*indexes,reordered=false)-instance-method">
+    <div class="entry-detail" id="using_column_indexes(*indexes:ColumnIndex|Enumerable(ColumnIndex),reordered:Bool=false)-instance-method">
       <div class="signature">
         
-        def <strong>using_column_indexes</strong>(*indexes, reordered = <span class="n">false</span>)
+        def <strong>using_column_indexes</strong>(*indexes : <a href="../Tablo/Table/ColumnIndex.html">ColumnIndex</a> | Enumerable(<a href="../Tablo/Table/ColumnIndex.html">ColumnIndex</a>), reordered : Bool = <span class="n">false</span>)
 
-        <a class="method-permalink" href="#using_column_indexes%28%2Aindexes%2Creordered%3Dfalse%29-instance-method">#</a>
+        <a class="method-permalink" href="#using_column_indexes%28%2Aindexes%3AColumnIndex%7CEnumerable%28ColumnIndex%29%2Creordered%3ABool%3Dfalse%29-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Once a table has been defined, the <code><a href="../Tablo/Table.html#using_column_indexes%28%2Aindexes%2Creordered%3Dfalse%29-instance-method">Table#using_column_indexes</a></code> method is used to
+          <p>Once a table has been defined, the <code><a href="../Tablo/Table.html#using_column_indexes%28%2Aindexes%3AColumnIndex%7CEnumerable%28ColumnIndex%29%2Creordered%3ABool%3Dfalse%29-instance-method">Table#using_column_indexes</a></code> method is used to
 select the columns to be displayed by their index in the column registry, and to
 reorder them if necessary.</p>
 <p><em>Mandatory parameter:</em></p>
@@ -1609,7 +1624,7 @@ define an interval, selecting all the columns it contains.</li>
 If <code>true</code>, allows to reorder the selected columns according to the order in which
 they appear in the <code>*indexes</code> parameter.</li>
 </ul>
-<p>Using the <code><a href="../Tablo/Table.html#using_column_indexes%28%2Aindexes%2Creordered%3Dfalse%29-instance-method">#using_column_indexes</a></code> method with reordering (<code>reordered=true</code>)
+<p>Using the <code><a href="../Tablo/Table.html#using_column_indexes%28%2Aindexes%3AColumnIndex%7CEnumerable%28ColumnIndex%29%2Creordered%3ABool%3Dfalse%29-instance-method">#using_column_indexes</a></code> method with reordering (<code>reordered=true</code>)
 temporarily disables the display of group headers.</p>
 <p>Examples:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
@@ -1663,22 +1678,22 @@ Group headers are omitted</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L1481" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L1496" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="using_columns(*columns,reordered=false)-instance-method">
+    <div class="entry-detail" id="using_columns(*columns:ColumnItem|Enumerable(ColumnItem),reordered:Bool=false)-instance-method">
       <div class="signature">
         
-        def <strong>using_columns</strong>(*columns, reordered = <span class="n">false</span>)
+        def <strong>using_columns</strong>(*columns : <a href="../Tablo/Table/ColumnItem.html">ColumnItem</a> | Enumerable(<a href="../Tablo/Table/ColumnItem.html">ColumnItem</a>), reordered : Bool = <span class="n">false</span>)
 
-        <a class="method-permalink" href="#using_columns%28%2Acolumns%2Creordered%3Dfalse%29-instance-method">#</a>
+        <a class="method-permalink" href="#using_columns%28%2Acolumns%3AColumnItem%7CEnumerable%28ColumnItem%29%2Creordered%3ABool%3Dfalse%29-instance-method">#</a>
       </div>
       
         <div class="doc">
           
-          <p>Once a table has been defined, the <code><a href="../Tablo/Table.html#using_columns%28%2Acolumns%2Creordered%3Dfalse%29-instance-method">Table#using_columns</a></code> method is used to
+          <p>Once a table has been defined, the <code><a href="../Tablo/Table.html#using_columns%28%2Acolumns%3AColumnItem%7CEnumerable%28ColumnItem%29%2Creordered%3ABool%3Dfalse%29-instance-method">Table#using_columns</a></code> method is used to
 select the columns to be displayed, and to reorder them if necessary.</p>
 <p><em>Mandatory parameter:</em></p>
 <ul>
@@ -1692,7 +1707,7 @@ define an interval, selecting all the columns it contains.</li>
 If <code>true</code>, allows to reorder the selected columns according to the order in which
 they appear in the <code>*columns</code> parameter.</li>
 </ul>
-<p>Using the <code><a href="../Tablo/Table.html#using_columns%28%2Acolumns%2Creordered%3Dfalse%29-instance-method">#using_columns</a></code> method with reordering (<code>reordered=true</code>)
+<p>Using the <code><a href="../Tablo/Table.html#using_columns%28%2Acolumns%3AColumnItem%7CEnumerable%28ColumnItem%29%2Creordered%3ABool%3Dfalse%29-instance-method">#using_columns</a></code> method with reordering (<code>reordered=true</code>)
 temporarily disables the display of group headers.</p>
 <p>Examples:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;tablo&quot;</span>
@@ -1733,7 +1748,7 @@ table <span class="o">=</span> <span class="t">Tablo</span><span class="t">::</s
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/table.cr#L1380" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/table.cr#L1382" target="_blank">View source</a>]
         
       </div>
     </div>

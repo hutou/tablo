@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Crystal Docs 1.16.3">
+<meta name="generator" content="Crystal Docs 1.18.2">
 <meta name="crystal_docs.project_version" content="main">
 <meta name="crystal_docs.project_name" content="tablo">
 
@@ -277,8 +277,23 @@
       
     </li>
   
-  <li class=" " data-id="tablo/Tablo/Table" data-name="tablo::table(t)">
+  <li class="parent " data-id="tablo/Tablo/Table" data-name="tablo::table(t)">
       <a href="../Tablo/Table.html">Table</a>
+      
+        <ul>
+  
+  <li class=" " data-id="tablo/Tablo/Table/ColumnIndex" data-name="tablo::table::columnindex">
+      <a href="../Tablo/Table/ColumnIndex.html">ColumnIndex</a>
+      
+    </li>
+  
+  <li class=" " data-id="tablo/Tablo/Table/ColumnItem" data-name="tablo::table::columnitem">
+      <a href="../Tablo/Table/ColumnItem.html">ColumnItem</a>
+      
+    </li>
+  
+</ul>
+
       
     </li>
   
@@ -336,7 +351,7 @@
   </h2>
   
     
-      <a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/tablo.cr#L16" target="_blank">
+      <a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/tablo.cr#L16" target="_blank">
         tablo.cr
       </a>
     
@@ -364,6 +379,13 @@
         <a href="#fp_align%28value%3AFloat%2Cdec%3AInt32%2Cmode%3AFPAlign%3DFPAlign%3A%3ADotZero%29-class-method" class="signature"><strong>.fp_align</strong>(value : Float, dec : Int32, mode : FPAlign = <span class="t">FPAlign</span><span class="t">::</span><span class="t">DotZero</span>)</a>
         
           <div class="summary"><p>Method to align floats on decimal point, where non significant zeroes are replaced by spaces (see <code><a href="../Tablo/Functions/FPAlign.html">FPAlign</a></code>)</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#fp_reduce_precision%28values%3AEnumerable%28Number%29%2Cprecision%3AInt32%29%3AInt32-class-method" class="signature"><strong>.fp_reduce_precision</strong>(values : Enumerable(Number), precision : Int32) : Int32</a>
+        
+          <div class="summary"><p>This method aims to reduce insignificant zeroes common to a column of floating point numbers.</p></div>
         
       </li>
     
@@ -443,7 +465,38 @@ puts table</code></pre>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/tablo.cr#L64" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/tablo.cr#L64" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="fp_reduce_precision(values:Enumerable(Number),precision:Int32):Int32-class-method">
+      <div class="signature">
+        
+        def self.<strong>fp_reduce_precision</strong>(values : Enumerable(Number), precision : Int32) : Int32
+
+        <a class="method-permalink" href="#fp_reduce_precision%28values%3AEnumerable%28Number%29%2Cprecision%3AInt32%29%3AInt32-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>This method aims to reduce insignificant zeroes common to a column of
+floating point numbers. For example, the array [3.141, 2.28, 3.3], when
+its elements are formatted by &quot;%.5f&quot; would give [3.14100, 2.28000, 3.30000]
+and we can see that 2 zeroes (&quot;00&quot;) can be removed from the end of each
+without changing their value.</p>
+<p>In this case, 2 is the value of the number of zeroes calculated by the method,
+so it returns 5 - 2 = 3, the actual minimal useful precision for the format string.</p>
+<p>precision = fp_reduce_precision(array_of_floats, 5) = 3 !</p>
+<p>This precision can then be used in the fmt parameter of the fp_align method
+as <code>&quot;%.#{precision}f&quot;</code>, in order to better fit the Tablo columns (by removing
+spaces on the right)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/tablo.cr#L114" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -519,7 +572,7 @@ limited by the <em>max_fill</em> parameter to one character.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/hutou/tablo/blob/e0698184c0e78ef09ba842c6ef7bcc2207515ca2/src/tablo.cr#L155" target="_blank">View source</a>]
+          [<a href="https://github.com/hutou/tablo/blob/69b925ed5db1f8c53b7dc1aa2de16bcda7ec65d8/src/tablo.cr#L204" target="_blank">View source</a>]
         
       </div>
     </div>
