@@ -157,7 +157,7 @@ describe Tablo::Table do
       context "from a SQL query" do
         it "creates and displays a new table from a populated SQL database" do
           conn_db : DB::Connection = DB.connect "sqlite3://%3Amemory%3A"
-          conn_db.exec "Drop TABLE game"
+          conn_db.exec "DROP TABLE IF EXISTS 'game'"
           conn_db.exec "CREATE TABLE game (id INTEGER, name TEXT, score INTEGER)"
           1.upto 9 do |num|
             conn_db.exec "INSERT INTO game (name, score) VALUES(?, ?)",
@@ -289,7 +289,7 @@ describe Tablo::Table do
       context "from a SQL query" do
         it "creates and displays a new table from a populated SQL database" do
           conn_db : DB::Connection = DB.connect "sqlite3://%3Amemory%3A"
-          conn_db.exec "Drop TABLE game"
+          conn_db.exec "DROP TABLE IF EXISTS 'game'"
           conn_db.exec "CREATE TABLE game (id INTEGER, name TEXT, score INTEGER)"
           1.upto 9 do |num|
             conn_db.exec "INSERT INTO game (name, score) VALUES(?, ?)",
