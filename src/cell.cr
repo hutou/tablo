@@ -168,8 +168,8 @@ module Tablo
         append_truncator = (truncated && !right_padding.zero? &&
                             (subcell_index + 1 == line_count_max))
         if append_truncator
-          rpad = apply_styler(truncation_indicator, subcell_index) +
-                 padding(right_padding - 1)
+          rpad = apply_styler(truncation_indicator, subcell_index)
+          padding(right_padding - 1)
         else
           rpad = padding(right_padding)
         end

@@ -1321,6 +1321,8 @@ module Tablo
       end
     end
 
+    alias ColumnItem = Symbol | Tuple(Symbol, Symbol)
+
     # Once a table has been defined, the `Table#using_columns` method is used to
     # select the columns to be displayed, and to reorder them if necessary.
     #
@@ -1377,10 +1379,21 @@ module Tablo
     # |           42 |           33 | Halo         | Xyz          |         42.3 |
     # +--------------+--------------+--------------+--------------+--------------+
     # ```
-    def using_columns(*columns, reordered = false)
+    def using_columns(*columns : ColumnItem | Enumerable(ColumnItem),
+                      reordered : Bool = false)
       raise Error::InvalidValue.new "No column given" if columns.empty?
       used_columns.reordered = reordered
-      columns.each do |e|
+      # On "aplatit" la structure pour traiter tout de la même manière
+      # .flatten ne fonctionne que sur Array, donc on convertit en Array d'abord
+      final_columns = [] of ColumnItem
+      columns.each do |item|
+        if item.is_a?(Enumerable) && !item.is_a?(Tuple(Symbol, Symbol))
+          item.each { |sub| final_columns << sub }
+        else
+          final_columns << item
+        end
+      end
+      final_columns.each do |e|
         case e
         when LabelType
           index = column_registry.keys.index(e)
@@ -1405,6 +1418,8 @@ module Tablo
       deal_with_groups
       self
     end
+
+    alias ColumnIndex = Int32 | Tuple(Int32, Int32)
 
     # Once a table has been defined, the `Table#using_column_indexes` method is used to
     # select the columns to be displayed by their index in the column registry, and to
@@ -1478,11 +1493,22 @@ module Tablo
     # | Xyz          | Halo         |         42.3 |
     # +--------------+--------------+--------------+
     # ```
-    def using_column_indexes(*indexes, reordered = false)
+    def using_column_indexes(*indexes : ColumnIndex | Enumerable(ColumnIndex),
+                             reordered : Bool = false)
       raise Error::InvalidValue.new "No column index given" if indexes.empty?
       used_columns.reordered = reordered
+      # We “flatten” the structure to treat everything in the same way
+      # #.flatten only works on Arrays, so we convert to an Array first
+      final_indexes = [] of ColumnIndex
+      indexes.each do |item|
+        if item.is_a?(Enumerable) && !item.is_a?(Tuple(Int32, Int32))
+          item.each { |sub| final_indexes << sub }
+        else
+          final_indexes << item
+        end
+      end
       index_range = 0..column_registry.size - 1
-      indexes.each do |e|
+      final_indexes.each do |e|
         case e
         when Int32
           raise Error::InvalidColumnIndex.new "No such column index <#{e}>" if !e.in?(index_range)

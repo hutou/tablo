@@ -338,21 +338,21 @@ describe Tablo::Border do
       {% if flag?(:DEBUG) %} puts "\n#{output}" {% end %}
       if Tablo::Util.styler_allowed
         expected_output = <<-OUTPUT
-          \e[32;1mAMMMMMMMMMMMMMMMMMMMMMMMMMMMMMC\e[0m
-          \e[32;1mJ\e[0m            Title            \e[32;1mL\e[0m
-          \e[32;1mDMMMMMMMMMMMMMMMMMMMMMMMMMMMMMF\e[0m
-          \e[32;1mJ\e[0m           SubTitle          \e[32;1mL\e[0m
-          \e[32;1mDMMMMMMMMMMMMMMBMMMMMMMMMMMMMMF\e[0m
-          \e[32;1mJ\e[0m       itself \e[32;1mK\e[0m       double \e[32;1mL\e[0m
-          \e[32;1mDOOOOOOOOOOOOOO OOOOOOOOOOOOOOF\e[0m
-          \e[32;1mJ\e[0m            1 \e[32;1mK\e[0m            2 \e[32;1mL\e[0m
-          \e[32;1mDPPPPPPPPPPPPPP PPPPPPPPPPPPPPF\e[0m
-          \e[32;1mJ\e[0m            2 \e[32;1mK\e[0m            4 \e[32;1mL\e[0m
-          \e[32;1mDPPPPPPPPPPPPPP PPPPPPPPPPPPPPF\e[0m
-          \e[32;1mJ\e[0m            3 \e[32;1mK\e[0m            6 \e[32;1mL\e[0m
-          \e[32;1mDMMMMMMMMMMMMMMHMMMMMMMMMMMMMMF\e[0m
-          \e[32;1mJ\e[0m            Footer           \e[32;1mL\e[0m
-          \e[32;1mGMMMMMMMMMMMMMMMMMMMMMMMMMMMMMI\e[0m
+          \e[32;1mAMMMMMMMMMMMMMMMMMMMMMMMMMMMMMC\e[39;22m
+          \e[32;1mJ\e[39;22m            Title            \e[32;1mL\e[39;22m
+          \e[32;1mDMMMMMMMMMMMMMMMMMMMMMMMMMMMMMF\e[39;22m
+          \e[32;1mJ\e[39;22m           SubTitle          \e[32;1mL\e[39;22m
+          \e[32;1mDMMMMMMMMMMMMMMBMMMMMMMMMMMMMMF\e[39;22m
+          \e[32;1mJ\e[39;22m       itself \e[32;1mK\e[39;22m       double \e[32;1mL\e[39;22m
+          \e[32;1mDOOOOOOOOOOOOOO OOOOOOOOOOOOOOF\e[39;22m
+          \e[32;1mJ\e[39;22m            1 \e[32;1mK\e[39;22m            2 \e[32;1mL\e[39;22m
+          \e[32;1mDPPPPPPPPPPPPPP PPPPPPPPPPPPPPF\e[39;22m
+          \e[32;1mJ\e[39;22m            2 \e[32;1mK\e[39;22m            4 \e[32;1mL\e[39;22m
+          \e[32;1mDPPPPPPPPPPPPPP PPPPPPPPPPPPPPF\e[39;22m
+          \e[32;1mJ\e[39;22m            3 \e[32;1mK\e[39;22m            6 \e[32;1mL\e[39;22m
+          \e[32;1mDMMMMMMMMMMMMMMHMMMMMMMMMMMMMMF\e[39;22m
+          \e[32;1mJ\e[39;22m            Footer           \e[32;1mL\e[39;22m
+          \e[32;1mGMMMMMMMMMMMMMMMMMMMMMMMMMMMMMI\e[39;22m
           OUTPUT
       else
         expected_output = <<-OUTPUT

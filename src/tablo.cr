@@ -66,25 +66,74 @@ module Tablo
         raise Error::InvalidValue.new "fp_align: number of decimals must be in range " +
                                       "(#{Config::Controls.rounding_range})"
       end
-      snum = value.round(dec).to_s
-      dec = 1 if dec <= 0
-      ipart, fpart = snum.split(".")
-      if fpart == "0"
+      sign = value < 0 ? "-" : ""
+      value = value.abs
+      ipart = value.to_i
+      if dec <= 0
+        ipart = ipart.round(dec)
+        fpart = 0.0
+      else
+        fpart = (value - ipart).round(dec)
+      end
+      sipart = ipart.to_s
+      if fpart.zero?
         case mode
         in FPAlign::DotZero
-          ipart + ".0" + " " * (dec - 1)
+          sfpart = dec <= 0 ? ".0" : ".0" + " " * (dec - 1)
         in FPAlign::DotOnly
-          ipart + "." + " " * dec
+          sfpart = dec <= 0 ? "." : "." + " " * (dec)
         in FPAlign::NoDot, FPAlign::Blank
-          if value.zero? && mode == FPAlign::Blank
-            " " * (dec + 1)
-          else
-            ipart + " " * (dec + 1)
-          end
+          sfpart = dec <= 0 ? "" : " " * (dec + 1)
+          sipart = "" if ipart.zero? && mode == FPAlign::Blank
         end
       else
-        ipart + "." + fpart + " " * (dec - fpart.size)
+        sfpart = ("%.#{dec}f" % fpart).gsub(/0*$/) { |n| " " * n.size }[1..-1]
       end
+      str = sipart + sfpart
+      if sign == "-" && str =~ /[1-9]/
+        sign + str
+      else
+        str
+      end
+    end
+
+    # This method aims to reduce insignificant zeroes common to a column of
+    # floating point numbers. For example, the array [3.141, 2.28, 3.3], when
+    # its elements are formatted by "%.5f" would give [3.14100, 2.28000, 3.30000]
+    # and we can see that 2 zeroes ("00") can be removed from the end of each
+    # without changing their value.
+    #
+    # In this case, 2 is the value of the number of zeroes calculated by the method,
+    # so it returns 5 - 2 = 3, the actual minimal useful precision for the format string.
+    #
+    # precision = fp_reduce_precision(array_of_floats, 5) = 3 !
+    #
+    # This precision can then be used in the fmt parameter of the fp_align method
+    # as `"%.#{precision}f"`, in order to better fit the Tablo columns (by removing
+    # spaces on the right)
+    def self.fp_reduce_precision(values : Enumerable(Number), precision : Int32) : Int32
+      fmt = "%.#{precision}f"
+      trailing_zeros_in_fraction = ->(s : String) : Int32 {
+        i = s.size - 1
+        count = 0
+        zero = '0'.ord
+        dot = '.'.ord
+        while i >= 0
+          b = s.byte_at(i)
+          break if b == dot
+          break unless b == zero
+          count += 1
+          i -= 1
+        end
+        count
+      }
+      # Si precision = 0 : aucune fraction -> suffixe commun = 0
+      return 0 if precision <= 0
+      reduce = values.map do |x|
+        s = sprintf(fmt, x.to_f64)
+        trailing_zeros_in_fraction.call(s)
+      end.min? || 0
+      precision - reduce
     end
 
     # The `.stretch` method is designed to optimize the filling of a text zone,

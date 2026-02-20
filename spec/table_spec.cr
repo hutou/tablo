@@ -157,6 +157,7 @@ describe Tablo::Table do
       context "from a SQL query" do
         it "creates and displays a new table from a populated SQL database" do
           conn_db : DB::Connection = DB.connect "sqlite3://%3Amemory%3A"
+          conn_db.exec "Drop TABLE game"
           conn_db.exec "CREATE TABLE game (id INTEGER, name TEXT, score INTEGER)"
           1.upto 9 do |num|
             conn_db.exec "INSERT INTO game (name, score) VALUES(?, ?)",
@@ -187,6 +188,7 @@ describe Tablo::Table do
             +--------------+--------------+
             OUTPUT
           output.should eq expected_output
+          conn_db.close
         end
       end
     end
@@ -287,6 +289,7 @@ describe Tablo::Table do
       context "from a SQL query" do
         it "creates and displays a new table from a populated SQL database" do
           conn_db : DB::Connection = DB.connect "sqlite3://%3Amemory%3A"
+          conn_db.exec "Drop TABLE game"
           conn_db.exec "CREATE TABLE game (id INTEGER, name TEXT, score INTEGER)"
           1.upto 9 do |num|
             conn_db.exec "INSERT INTO game (name, score) VALUES(?, ?)",
@@ -316,6 +319,7 @@ describe Tablo::Table do
             +--------------+--------------+
             OUTPUT
           output.should eq expected_output
+          conn_db.close
         end
       end
     end
@@ -1305,7 +1309,7 @@ describe Tablo::Table do
           {% if flag?(:DEBUG) %} puts "\n#{output}" {% end %}
           if Tablo::Util.styler_allowed
             expected_output = <<-OUTPUT
-                  \e[34mmy title\e[0m     
+                  \e[34mmy title\e[39m     
             ╭─────────────────╮
             │          itself │
             ├-----------------┤
@@ -1353,9 +1357,9 @@ describe Tablo::Table do
           {% if flag?(:DEBUG) %} puts "\n#{output}" {% end %}
           if Tablo::Util.styler_allowed
             expected_output = <<-OUTPUT
-                 \e[34mThis is a\e[0m     
-                \e[32mvery, very,\e[0m    
-              \e[31mvery long title\e[0m  
+                 \e[34mThis is a\e[39m     
+                \e[32mvery, very,\e[39m    
+              \e[31mvery long title\e[39m  
             ╭─────────────────╮
             │          itself │
             ├-----------------┤
@@ -1404,9 +1408,9 @@ describe Tablo::Table do
           {% if flag?(:DEBUG) %} puts "\n#{output}" {% end %}
           if Tablo::Util.styler_allowed
             expected_output = <<-OUTPUT
-                \e[34mTitle line 1\e[0m   
-                \e[32mTitle line 2\e[0m   
-                \e[31mTitle line 3\e[0m   
+                \e[34mTitle line 1\e[39m   
+                \e[32mTitle line 2\e[39m   
+                \e[31mTitle line 3\e[39m   
             ╭─────────────────╮
             │          itself │
             ├-----------------┤
@@ -1500,7 +1504,7 @@ describe Tablo::Table do
           if Tablo::Util.styler_allowed
             expected_output = <<-OUTPUT
               ╭─────────────────────────────┬──────────────╮
-              │  \e[32;1mN\e[0m   \e[32;1mu\e[0m   \e[34;1mm\e[0m   \e[34;1me\e[0m   \e[32;1mr\e[0m   \e[32;1mi\e[0m   \e[34;1mc\e[0m  :  S t r i n g │
+              │  \e[32;1mN\e[39;22m   \e[32;1mu\e[39;22m   \e[34;1mm\e[39;22m   \e[34;1me\e[39;22m   \e[32;1mr\e[39;22m   \e[32;1mi\e[39;22m   \e[34;1mc\e[39;22m  :  S t r i n g │
               ├−−−−−−−−−−−−−−┬−−−−−−−−−−−−−−┼−−−−−−−−−−−−−−┤
               │       itself :       double : stringified  │
               ├--------------┼--------------┼--------------┤
@@ -1570,7 +1574,7 @@ describe Tablo::Table do
               ╭────────────────────────────────────────────╮
               │             Justifying headers             │
               ├──────────────┬──────────────┬──────────────┤
-              │      \e[34mnumbers\e[0m :   \e[34mBooleans\e[0m   : \e[34mStrings\e[0m      │
+              │      \e[34mnumbers\e[39m :   \e[34mBooleans\e[39m   : \e[34mStrings\e[39m      │
               ├--------------┼--------------┼--------------┤
               │            1 :     false    : Abc          │
               │            2 :     true     : def          │
@@ -1718,11 +1722,11 @@ describe Tablo::Table do
               ├──────────────────┤
               │           itself │
               ├------------------┤
-              │           \e[31m0     \e[0m │
-              │         \e[31m-10.3   \e[0m │
-              │          \e[31m43.606 \e[0m │
-              │        \e[31m-909.0302\e[0m │
-              │        \e[31m1024     \e[0m │
+              │           \e[31m0     \e[39m │
+              │         \e[31m-10.3   \e[39m │
+              │          \e[31m43.606 \e[39m │
+              │        \e[31m-909.0302\e[39m │
+              │        \e[31m1024     \e[39m │
               ╰──────────────────╯
               OUTPUT
           else
@@ -1768,11 +1772,11 @@ describe Tablo::Table do
               ├──────────────────┤
               │           itself │
               ├------------------┤
-              │           \e[32m0     \e[0m │
-              │         \e[31m-10.3   \e[0m │
-              │          \e[32m43.606 \e[0m │
-              │        \e[31m-909.0302\e[0m │
-              │        \e[32m1024     \e[0m │
+              │           \e[32m0     \e[39m │
+              │         \e[31m-10.3   \e[39m │
+              │          \e[32m43.606 \e[39m │
+              │        \e[31m-909.0302\e[39m │
+              │        \e[32m1024     \e[39m │
               ╰──────────────────╯
               OUTPUT
           else
@@ -1818,11 +1822,11 @@ describe Tablo::Table do
               ├──────────────────┤
               │           itself │
               ├------------------┤
-              │           \e[34m0.    \e[0m │
-              │         \e[35m-10.3   \e[0m │
-              │          \e[34m43.606 \e[0m │
-              │        \e[35m-909.0302\e[0m │
-              │        \e[34m1024.    \e[0m │
+              │           \e[34m0.    \e[39m │
+              │         \e[35m-10.3   \e[39m │
+              │          \e[34m43.606 \e[39m │
+              │        \e[35m-909.0302\e[39m │
+              │        \e[34m1024.    \e[39m │
               ╰──────────────────╯
               OUTPUT
           else
@@ -1870,11 +1874,11 @@ describe Tablo::Table do
               ├──────────────────┬──────────────────┤
               │           itself :           Double │
               ├------------------┼------------------┤
-              │           \e[31m0.    \e[0m :           \e[31m0.    \e[0m │
-              │         \e[34m-10.3   \e[0m :         \e[34m-20.6   \e[0m │
-              │          \e[31m43.606 \e[0m :          \e[31m87.212 \e[0m │
-              │        \e[34m-909.0302\e[0m :       \e[34m-1818.0604\e[0m │
-              │        \e[31m1024.    \e[0m :        \e[31m2048.    \e[0m │
+              │           \e[31m0.    \e[39m :           \e[31m0.    \e[39m │
+              │         \e[34m-10.3   \e[39m :         \e[34m-20.6   \e[39m │
+              │          \e[31m43.606 \e[39m :          \e[31m87.212 \e[39m │
+              │        \e[34m-909.0302\e[39m :       \e[34m-1818.0604\e[39m │
+              │        \e[31m1024.    \e[39m :        \e[31m2048.    \e[39m │
               ╰──────────────────┴──────────────────╯
               OUTPUT
           else
@@ -1925,11 +1929,11 @@ describe Tablo::Table do
               ├──────────────────┬──────────────────┤
               │           itself :           Double │
               ├------------------┼------------------┤
-              │           \e[31m0.    \e[0m :           \e[33m0.    \e[0m │
-              │         \e[34m-10.3   \e[0m :         \e[34m-20.6   \e[0m │
-              │          \e[31m43.606 \e[0m :          \e[33m87.212 \e[0m │
-              │        \e[34m-909.0302\e[0m :       \e[34m-1818.0604\e[0m │
-              │        \e[31m1024.    \e[0m :        \e[33m2048.    \e[0m │
+              │           \e[31m0.    \e[39m :           \e[33m0.    \e[39m │
+              │         \e[34m-10.3   \e[39m :         \e[34m-20.6   \e[39m │
+              │          \e[31m43.606 \e[39m :          \e[33m87.212 \e[39m │
+              │        \e[34m-909.0302\e[39m :       \e[34m-1818.0604\e[39m │
+              │        \e[31m1024.    \e[39m :        \e[33m2048.    \e[39m │
               ╰──────────────────┴──────────────────╯
               OUTPUT
           else
@@ -1985,13 +1989,13 @@ describe Tablo::Table do
               ├──────────────────┬────────┤
               │           itself : Double │
               ├------------------┼--------┤
-              │           \e[31m0.    \e[0m :   \e[33m0.00\e[0m │
-              │         \e[34m-10.3   \e[0m : \e[34m-20.60\e[0m │
-              │          \e[31m43.606 \e[0m :  \e[33m87.21\e[0m │
-              │        \e[34m-909.0302\e[0m : \e[34m-1818.\e[0m │
-              │                  :     \e[35;1m06\e[0m │
-              │        \e[31m1024.    \e[0m : \e[33m2048.0\e[0m │
-              │                  :      \e[35;1m0\e[0m │
+              │           \e[31m0.    \e[39m :   \e[33m0.00\e[39m │
+              │         \e[34m-10.3   \e[39m : \e[34m-20.60\e[39m │
+              │          \e[31m43.606 \e[39m :  \e[33m87.21\e[39m │
+              │        \e[34m-909.0302\e[39m : \e[34m-1818.\e[39m │
+              │                  :     \e[35;1m06\e[39;22m │
+              │        \e[31m1024.    \e[39m : \e[33m2048.0\e[39m │
+              │                  :      \e[35;1m0\e[39;22m │
               ╰──────────────────┴────────╯
               OUTPUT
           else
@@ -2032,9 +2036,9 @@ describe Tablo::Table do
               ├──────────────┬──────────────┬──────────────┤
               │      numbers :   Booleans   : Strings      │
               ├--------------┼--------------┼--------------┤
-              │            \e[31m1\e[0m :     \e[31mfalse\e[0m    : \e[31mAbc\e[0m          │
-              │            \e[31m2\e[0m :     \e[31mtrue\e[0m     : \e[31mdef\e[0m          │
-              │            \e[31m3\e[0m :     \e[31mtrue\e[0m     : \e[31mghi\e[0m          │
+              │            \e[31m1\e[39m :     \e[31mfalse\e[39m    : \e[31mAbc\e[39m          │
+              │            \e[31m2\e[39m :     \e[31mtrue\e[39m     : \e[31mdef\e[39m          │
+              │            \e[31m3\e[39m :     \e[31mtrue\e[39m     : \e[31mghi\e[39m          │
               ╰──────────────┴──────────────┴──────────────╯
               OUTPUT
           else
@@ -2115,7 +2119,8 @@ describe Tablo::Table do
           t.add_column(:col5, &.[4])
           t.add_group(:group3)
         end
-        output = table.using_columns({:col5, :col1}, reordered: true).to_s
+        # output = table.using_columns({:col5, :col1}, reordered: true).to_s
+        output = table.using_column_indexes({4, 0}, reordered: true).to_s
         {% if flag?(:DEBUG) %} puts "\n#{output}" {% end %}
         expected_output = <<-OUTPUT
         +--------------+--------------+--------------+--------------+--------------+
@@ -2143,7 +2148,9 @@ describe Tablo::Table do
           t.add_column(:col5, &.[4])
           t.add_group(:group3)
         end
-        output = table.using_column_indexes({1, 2}, 0).to_s
+        output = table.using_columns({ {:col1, :col2}, :col3 }, reordered: false).to_s
+        # output = table.using_columns([{:col1, :col2}, :col3], reordered: false).to_s
+        # output = table.using_column_indexes({1, 2}, 0, reordered: false).to_s
         {% if flag?(:DEBUG) %} puts "\n#{output}" {% end %}
         expected_output = <<-OUTPUT
           +-----------------------------+--------------+

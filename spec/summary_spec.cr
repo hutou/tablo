@@ -261,12 +261,12 @@ invoice_layout_0 = <<-OUTPUT
   OUTPUT
 invoice_layout_0 += "\n" + if Tablo::Util.styler_allowed
   <<-OUTPUT
-                                       SubTotal    \e[1m3671.48\e[0m  
-                                    Discount 5%     \e[3m183.57\e[0m  
-                             S/T after discount    \e[1m3487.91\e[0m  
+                                       SubTotal    \e[1m3671.48\e[22m  
+                                    Discount 5%     \e[3m183.57\e[23m  
+                             S/T after discount    \e[1m3487.91\e[22m  
                                       Tax (20%)     697.58  
                                                   ========  
-                                    Balance due    \e[1m4185.49\e[0m  
+                                    Balance due    \e[1m4185.49\e[22m  
   OUTPUT
 else
   <<-OUTPUT
@@ -295,13 +295,13 @@ invoice_layout1 =
 invoice_layout1 += "\n" + if Tablo::Util.styler_allowed
   <<-OUTPUT
   ╭──────────────┬──────────────┬──────────────┬──────────────╮
-  │              :              :     SubTotal :      \e[1m3671.48\e[0m │
-  │              :              :  Discount 5% :       \e[3m183.57\e[0m │
-  │              :              :    S/T after :      \e[1m3487.91\e[0m │
+  │              :              :     SubTotal :      \e[1m3671.48\e[22m │
+  │              :              :  Discount 5% :       \e[3m183.57\e[23m │
+  │              :              :    S/T after :      \e[1m3487.91\e[22m │
   │              :              :     discount :              │
   │              :              :    Tax (20%) :       697.58 │
   │              :              :              :     ======== │
-  │              :              :  Balance due :      \e[1m4185.49\e[0m │
+  │              :              :  Balance due :      \e[1m4185.49\e[22m │
   ╰──────────────┴──────────────┴──────────────┴──────────────╯
   OUTPUT
 else
@@ -333,12 +333,12 @@ invoice_layout2 = <<-OUTPUT
 invoice_layout2 += "\n" + if Tablo::Util.styler_allowed
   <<-OUTPUT
   ╭──────────────┬──────────────┬────────────────────┬──────────────╮
-  │              :              :           SubTotal :      \e[1m3671.48\e[0m │
-  │              :              :        Discount 5% :       \e[3m183.57\e[0m │
-  │              :              : S/T after discount :      \e[1m3487.91\e[0m │
+  │              :              :           SubTotal :      \e[1m3671.48\e[22m │
+  │              :              :        Discount 5% :       \e[3m183.57\e[23m │
+  │              :              : S/T after discount :      \e[1m3487.91\e[22m │
   │              :              :          Tax (20%) :       697.58 │
   │              :              :                    :     ======== │
-  │              :              :        Balance due :      \e[1m4185.49\e[0m │
+  │              :              :        Balance due :      \e[1m4185.49\e[22m │
   ╰──────────────┴──────────────┴────────────────────┴──────────────╯
   OUTPUT
 else
@@ -369,12 +369,12 @@ invoice_layout3 = <<-OUTPUT
 invoice_layout3 += "\n" + if Tablo::Util.styler_allowed
   <<-OUTPUT
   ╭─────────────┬──────────┬────────────────────┬──────────╮
-  │             :          :           SubTotal :  \e[1m3671.48\e[0m │
-  │             :          :        Discount 5% :   \e[3m183.57\e[0m │
-  │             :          : S/T after discount :  \e[1m3487.91\e[0m │
+  │             :          :           SubTotal :  \e[1m3671.48\e[22m │
+  │             :          :        Discount 5% :   \e[3m183.57\e[23m │
+  │             :          : S/T after discount :  \e[1m3487.91\e[22m │
   │             :          :          Tax (20%) :   697.58 │
   │             :          :                    : ======== │
-  │             :          :        Balance due :  \e[1m4185.49\e[0m │
+  │             :          :        Balance due :  \e[1m4185.49\e[22m │
   ╰─────────────┴──────────┴────────────────────┴──────────╯
   OUTPUT
 else
@@ -404,12 +404,12 @@ invoice_layout4 = <<-OUTPUT
   OUTPUT
 invoice_layout4 += "\n" + if Tablo::Util.styler_allowed
   <<-OUTPUT
-  │             :          :           SubTotal :  \e[1m3671.48\e[0m │
-  │             :          :        Discount 5% :   \e[3m183.57\e[0m │
-  │             :          : S/T after discount :  \e[1m3487.91\e[0m │
+  │             :          :           SubTotal :  \e[1m3671.48\e[22m │
+  │             :          :        Discount 5% :   \e[3m183.57\e[23m │
+  │             :          : S/T after discount :  \e[1m3487.91\e[22m │
   │             :          :          Tax (20%) :   697.58 │
   │             :          :                    : ======== │
-  │             :          :        Balance due :  \e[1m4185.49\e[0m │
+  │             :          :        Balance due :  \e[1m4185.49\e[22m │
   ╰─────────────┴──────────┴────────────────────┴──────────╯
   OUTPUT
 else
@@ -447,12 +447,12 @@ invoice_layout_big = <<-OUTPUT
   OUTPUT
 invoice_layout_big += "\n" + if Tablo::Util.styler_allowed
   <<-OUTPUT
-  │             :          :           SubTotal :  \e[1m3671.48\e[0m │
-  │             :          :        Discount 5% :   \e[3m183.57\e[0m │
-  │             :          : S/T after discount :  \e[1m3487.91\e[0m │
+  │             :          :           SubTotal :  \e[1m3671.48\e[22m │
+  │             :          :        Discount 5% :   \e[3m183.57\e[23m │
+  │             :          : S/T after discount :  \e[1m3487.91\e[22m │
   │             :          :          Tax (20%) :   697.58 │
   │             :          :                    : ======== │
-  │             :          :        Balance due :  \e[1m4185.49\e[0m │
+  │             :          :        Balance due :  \e[1m4185.49\e[22m │
   ╰─────────────┴──────────┴────────────────────┴──────────╯
   OUTPUT
 else
